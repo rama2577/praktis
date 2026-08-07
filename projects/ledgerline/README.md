@@ -15,6 +15,12 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
+**SLA, Confidence & Activity (Task 10):**
+- Monitoring SLA per stage review: progress bar vs target (Junior ≤2 jam, Senior ≤4 jam, Pajak ≤4 jam, Partner ≤2 jam), warna hijau/kuning/merah, rincian antre/terlambat/selesai (OK/breach).
+- Chart Distribusi Keyakinan AI (Recharts): bucket <50%, 50–70%, 70–85%, ≥85% dari skor confidence aktual.
+- Feed Aktivitas Terbaru: aksi nyata (AI drafting, review, exception, dll) dengan timestamp relatif ("5 mnt lalu").
+- Semua section auto-refresh tiap 30 detik via `GET /api/dashboard`.
+
 **Pipeline & Antrian (Task 9):**
 - Visualisasi 5 stage produksi: Draft Jurnal → Rule Engine → Junior → Senior → Pajak (termasuk partner), count real dari DB.
 - Panel Antrian Review per role dengan badge urgent merah; klik stage/queue → halaman antrian.

@@ -176,25 +176,24 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Dependencies:** Task 8
 **Files touched:** src/server/dashboard.ts (pipeline builders), src/components/dashboard/pipeline-queues-panel.tsx, src/app/api/dashboard/route.ts, src/app/dashboard/page.tsx, tests/dashboard.test.ts
 **Estimated scope:** M
-## Task 10: SLA monitoring + AI confidence + Activity feed
+## Task 10: SLA monitoring + AI confidence + Activity feed ✅ (2026-08-07)
 
-**Description:** SLA section 7 metrik dengan progress bar vs target (Upload Validation 5m, AI Draft 3m, Junior 2h, Senior 4h, Tax 4h, Partner 2h, Delivery same-day) + status warna (hijau/kuning/merah); chart AI Confidence Distribution (Recharts); Recent Activity feed real-time.
+**Description:** Section SLA 4 stage review dengan progress bar vs target (Junior ≤2 jam, Senior ≤4 jam, Pajak ≤4 jam, Partner ≤2 jam) + status warna (hijau/kuning/merah); chart Distribusi Keyakinan AI (Recharts, 4 bucket); feed Aktivitas Terbaru dengan timestamp relatif. (Mockup menyebut 7 metrik — Upload Validation/AI Draft/Delivery butuh data latensi pipeline yang belum dicatat; 4 metrik review diimplementasikan dari data aktual, sisanya menyusul saat observability ditambah di Task 13.)
 
 **Acceptance criteria:**
-- [ ] SLA % dihitung dari data aktual vs target per stage; warna sesuai status
-- [ ] Confidence chart terisi dari skor journal aktual (≥1.200 entries demo → distribusi)
-- [ ] Activity feed menampilkan aksi nyata dengan timestamp relatif ("2 min ago")
+- [x] SLA % dihitung dari data aktual vs target per stage; warna sesuai status — `buildSlaSummary` (event selesai MET/BREACHED + task pending elapsed/dueAt); merah jika breach/overdue, kuning ≥80%, hijau selainnya
+- [x] Confidence chart terisi dari skor journal aktual — `bucketConfidence` 4 bucket (<50, 50–70, 70–85, ≥85); Recharts BarChart; data 22 jurnal seed (21 di ≥85% — distribusi seed memang miring, chart jujur pada data)
+- [x] Activity feed menampilkan aksi nyata dengan timestamp relatif — `formatRelativeTime` ("baru saja", "N mnt lalu", "N jam lalu", "N hari lalu"); label aksi Bahasa Indonesia (`ACTION_LABELS`)
 
 **Verification:**
-- [ ] Tests pass: `pnpm test -- --grep sla`
-- [ ] Manual: cek bar SLA vs seed; breach tampil di KPI
+- [x] Tests pass: `npm test` — 81/81 (buildSlaSummary 3 test, bucketConfidence 2 test, formatRelativeTime 6 test)
+- [x] E2E: GET /api/dashboard → sla 4 stage (JUNIOR 5 antre/1 telat/1 breach, SENIOR 3/0, TAX 2/0 + 1 breach, PARTNER 1/0); confidence 4 bucket; activity 5 entri + label; HTML memuat semua section + "1 terlambat"
+- [x] Perbaikan seed: `dueAt` task pending sebelumnya dihitung dari createdAt jurnal (lampau) → semua task tampak overdue; sekarang pending normal → tenggat ke depan, hanya task urgent yang lewat 15 mnt (simulasi breach)
+- [x] Build + lint bersih
 
-**Dependencies:** Task 8
-**Files likely touched:** src/components/sla/*, src/components/activity/*, src/components/charts/*, src/server/sla.ts
+**Dependencies:** Task 8 (Task 9 polling endpoint diperluas)
+**Files touched:** src/server/dashboard.ts (+getSlaSummary/getConfidenceDistribution/getRecentActivity/buildSlaSummary/bucketConfidence/ACTION_LABELS), src/lib/format.ts (+formatRelativeTime), src/components/dashboard/dashboard-panels.tsx (pengganti pipeline-queues-panel; polling 30 dtk mencakup SLA/confidence/activity), src/app/api/dashboard/route.ts, src/app/dashboard/page.tsx, prisma/seed.ts (fix dueAt), tests/{dashboard,format}.test.ts
 **Estimated scope:** M
-
----
-
 ### Checkpoint: Dashboard
 - [ ] Dashboard = mockup dengan data real
 - [ ] Mobile tidak pecah

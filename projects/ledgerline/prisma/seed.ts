@@ -275,7 +275,14 @@ async function main() {
             assigneeId: users[t.assignee],
             status: t.status,
             urgent: j.urgent ?? false,
-            dueAt: new Date(j.createdAt.getTime() + SLA_TARGET_MIN[stage] * 60_000),
+            // Task pending: tenggat ke depan; urgent sengaja lewat 15 mnt (simulasi breach).
+            // Task riwayat (sudah di-review): tenggat dihitung dari createdAt jurnal.
+            dueAt:
+              t.status === "PENDING"
+                ? j.urgent
+                  ? new Date(Date.now() - 15 * 60_000)
+                  : new Date(Date.now() + SLA_TARGET_MIN[stage] * 60_000)
+                : new Date(j.createdAt.getTime() + SLA_TARGET_MIN[stage] * 60_000),
             reviewedAt: t.reviewedAt,
             note: t.status === "APPROVED" ? "Disetujui — sesuai referensi" : null,
           },

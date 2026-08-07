@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { SLA_TARGETS_MIN } from "@/server/sla";
 import type { DocumentStatus, JournalStatus, ReviewStage } from "@prisma/client";
 
 /** Status jurnal yang sedang "dalam proses" (belum final). */
@@ -119,6 +120,154 @@ export async function getPipelineData(firmId: string): Promise<PipelineData> {
     queues,
     totalInPipeline: stages.reduce((acc, s) => acc + s.count, 0),
   };
+}
+
+// ── SLA, confidence & activity ───────────────────────────────────────────
+
+export type SlaStageSummary = {
+  stage: ReviewStage;
+  targetMinutes: number;
+  completed: number;
+  met: number;
+  breached: number;
+  pending: number;
+  overdue: number;
+  avgPct: number; // rata-rata % target terpakai (selesai: actual/target; pending: elapsed/target)
+};
+
+export type ConfidenceBucket = { label: string; count: number };
+
+export type ActivityItem = {
+  id: string;
+  action: string;
+  label: string;
+  userName: string | null;
+  createdAt: string;
+};
+
+export const ACTION_LABELS: Record<string, string> = {
+  AI_DRAFT_COMPLETED: "AI membuat draft jurnal",
+  PIPELINE_ENQUEUED: "dokumen masuk pipeline",
+  PIPELINE_STARTED: "pipeline AI mulai memproses dokumen",
+  PIPELINE_FAILED: "pipeline AI gagal memproses dokumen",
+  EXCEPTION_FLAGGED: "dokumen ditandai pengecualian",
+  REVIEW_APPROVED: "menyetujui jurnal",
+  REVIEW_REJECTED: "menolak jurnal",
+  REVIEW_RETURNED: "mengembalikan jurnal ke tahap sebelumnya",
+  CLIENT_CREATED: "menambahkan klien baru",
+  CLIENT_UPDATED: "memperbarui data klien",
+  DOCUMENT_UPLOADED: "mengunggah dokumen",
+};
+
+/**
+ * Ringkas SLA per stage dari event selesai + task pending.
+ * Pure & unit-testable. `now` diinjeksi agar deterministik.
+ */
+export function buildSlaSummary(
+  events: Array<{ stage: ReviewStage; status: "MET" | "AT_RISK" | "BREACHED"; actualMinutes: number; targetMinutes: number }>,
+  pendingTasks: Array<{ stage: ReviewStage; createdAt: Date; dueAt: Date }>,
+  now: Date,
+): SlaStageSummary[] {
+  const order: ReviewStage[] = ["JUNIOR", "SENIOR", "TAX", "PARTNER"];
+  const pcts: Record<ReviewStage, number[]> = {
+    JUNIOR: [],
+    SENIOR: [],
+    TAX: [],
+    PARTNER: [],
+  };
+  const acc: Record<ReviewStage, SlaStageSummary> = {
+    JUNIOR: { stage: "JUNIOR", targetMinutes: SLA_TARGETS_MIN.JUNIOR, completed: 0, met: 0, breached: 0, pending: 0, overdue: 0, avgPct: 0 },
+    SENIOR: { stage: "SENIOR", targetMinutes: SLA_TARGETS_MIN.SENIOR, completed: 0, met: 0, breached: 0, pending: 0, overdue: 0, avgPct: 0 },
+    TAX: { stage: "TAX", targetMinutes: SLA_TARGETS_MIN.TAX, completed: 0, met: 0, breached: 0, pending: 0, overdue: 0, avgPct: 0 },
+    PARTNER: { stage: "PARTNER", targetMinutes: SLA_TARGETS_MIN.PARTNER, completed: 0, met: 0, breached: 0, pending: 0, overdue: 0, avgPct: 0 },
+  };
+
+  for (const e of events) {
+    acc[e.stage].completed += 1;
+    if (e.status === "BREACHED") acc[e.stage].breached += 1;
+    else acc[e.stage].met += 1;
+    pcts[e.stage].push((e.actualMinutes / e.targetMinutes) * 100);
+  }
+  for (const t of pendingTasks) {
+    acc[t.stage].pending += 1;
+    if (t.dueAt.getTime() < now.getTime()) acc[t.stage].overdue += 1;
+    const targetMs = acc[t.stage].targetMinutes * 60_000;
+    const elapsed = Math.max(0, now.getTime() - t.createdAt.getTime());
+    pcts[t.stage].push(Math.min(200, (elapsed / targetMs) * 100));
+  }
+  for (const s of order) {
+    const arr = pcts[s];
+    acc[s].avgPct = arr.length === 0 ? 0 : Math.round((arr.reduce((a, b) => a + b, 0) / arr.length) * 10) / 10;
+  }
+  return order.map((s) => acc[s]);
+}
+
+/** Distribusi keyakinan AI dalam 4 bucket (0–50, 50–70, 70–85, ≥85%). */
+export function bucketConfidence(confidences: number[]): ConfidenceBucket[] {
+  const buckets = [0, 0, 0, 0];
+  for (const c of confidences) {
+    if (c < 0.5) buckets[0] += 1;
+    else if (c < 0.7) buckets[1] += 1;
+    else if (c < 0.85) buckets[2] += 1;
+    else buckets[3] += 1;
+  }
+  return [
+    { label: "<50%", count: buckets[0] },
+    { label: "50–70%", count: buckets[1] },
+    { label: "70–85%", count: buckets[2] },
+    { label: "≥85%", count: buckets[3] },
+  ];
+}
+
+export async function getSlaSummary(firmId: string, now = new Date()): Promise<SlaStageSummary[]> {
+  const [events, pendingTasks] = await Promise.all([
+    prisma.slaEvent.findMany({
+      where: { firmId },
+      select: { stage: true, status: true, actualMinutes: true, targetMinutes: true },
+    }),
+    prisma.reviewTask.findMany({
+      where: { status: "PENDING", journalEntry: { firmId } },
+      select: { stage: true, createdAt: true, dueAt: true },
+    }),
+  ]);
+  return buildSlaSummary(
+    events
+      .filter((e) => e.actualMinutes !== null)
+      .map((e) => ({ stage: e.stage as ReviewStage, status: e.status as "MET" | "AT_RISK" | "BREACHED", actualMinutes: e.actualMinutes as number, targetMinutes: e.targetMinutes })),
+    pendingTasks
+      .filter((t) => t.dueAt !== null)
+      .map((t) => ({ stage: t.stage as ReviewStage, createdAt: t.createdAt, dueAt: t.dueAt as Date })),
+    now,
+  );
+}
+
+export async function getConfidenceDistribution(firmId: string): Promise<ConfidenceBucket[]> {
+  const rows = await prisma.journalEntry.findMany({
+    where: { firmId, confidence: { not: null } },
+    select: { confidence: true },
+  });
+  return bucketConfidence(rows.map((r) => r.confidence as number));
+}
+
+export async function getRecentActivity(firmId: string, limit = 12): Promise<ActivityItem[]> {
+  const logs = await prisma.activityLog.findMany({
+    where: { firmId },
+    orderBy: { createdAt: "desc" },
+    take: limit,
+    select: { id: true, action: true, userId: true, createdAt: true },
+  });
+  const userIds = [...new Set(logs.map((l) => l.userId).filter(Boolean))] as string[];
+  const users = userIds.length
+    ? await prisma.user.findMany({ where: { id: { in: userIds } }, select: { id: true, name: true } })
+    : [];
+  const nameById = new Map(users.map((u) => [u.id, u.name]));
+  return logs.map((l) => ({
+    id: l.id,
+    action: l.action,
+    label: ACTION_LABELS[l.action] ?? l.action,
+    userName: l.userId ? (nameById.get(l.userId) ?? "Sistem") : "Sistem",
+    createdAt: l.createdAt.toISOString(),
+  }));
 }
 
 // ── Agregasi data dashboard dari DB ──────────────────────────────────────

@@ -1,8 +1,10 @@
 import { describe, expect, it } from "vitest";
 import {
   automationPct,
+  bucketConfidence,
   buildPipelineStages,
   buildQueueSummary,
+  buildSlaSummary,
   deltaVsAverage,
   daysSince,
   successfulAutomationPct,
@@ -98,5 +100,73 @@ describe("pipeline & antrian", () => {
 
   it("buildQueueSummary: tanpa task → array kosong", () => {
     expect(buildQueueSummary([])).toEqual([]);
+  });
+});
+
+describe("SLA summary", () => {
+  const now = new Date("2026-08-07T12:00:00Z");
+  const events = [
+    { stage: "JUNIOR" as const, status: "MET" as const, actualMinutes: 90, targetMinutes: 120 },
+    { stage: "JUNIOR" as const, status: "BREACHED" as const, actualMinutes: 150, targetMinutes: 120 },
+    { stage: "TAX" as const, status: "MET" as const, actualMinutes: 100, targetMinutes: 240 },
+  ];
+  const pending = [
+    { stage: "JUNIOR" as const, createdAt: new Date("2026-08-07T10:00:00Z"), dueAt: new Date("2026-08-07T11:00:00Z") }, // overdue (due < now)
+    { stage: "SENIOR" as const, createdAt: new Date("2026-08-07T11:30:00Z"), dueAt: new Date("2026-08-07T15:30:00Z") }, // 50% target (2/4 jam)
+  ];
+
+  it("menghitung completed/met/breached/pending/overdue per stage", () => {
+    const s = buildSlaSummary(events, pending, now);
+    const junior = s.find((x) => x.stage === "JUNIOR")!;
+    expect(junior.completed).toBe(2);
+    expect(junior.met).toBe(1);
+    expect(junior.breached).toBe(1);
+    expect(junior.pending).toBe(1);
+    expect(junior.overdue).toBe(1);
+    const senior = s.find((x) => x.stage === "SENIOR")!;
+    expect(senior.pending).toBe(1);
+    expect(senior.overdue).toBe(0);
+    const tax = s.find((x) => x.stage === "TAX")!;
+    expect(tax.met).toBe(1);
+    expect(tax.breached).toBe(0);
+    expect(tax.pending).toBe(0);
+  });
+
+  it("avgPct: rata-rata % target terpakai (selesai + pending)", () => {
+    const s = buildSlaSummary(events, pending, now);
+    const junior = s.find((x) => x.stage === "JUNIOR")!;
+    // 90/120=75%, 150/120=125%, pending 120/120=100% → (75+125+100)/3 = 100
+    expect(junior.avgPct).toBe(100);
+    const senior = s.find((x) => x.stage === "SENIOR")!;
+    // elapsed 30m / target 240m = 12.5%
+    expect(senior.avgPct).toBe(12.5);
+    const partner = s.find((x) => x.stage === "PARTNER")!;
+    expect(partner.avgPct).toBe(0);
+  });
+
+  it("target per stage dari SLA_TARGETS_MIN", () => {
+    const s = buildSlaSummary([], [], now);
+    expect(s.find((x) => x.stage === "JUNIOR")!.targetMinutes).toBe(120);
+    expect(s.find((x) => x.stage === "TAX")!.targetMinutes).toBe(240);
+  });
+});
+
+describe("confidence buckets", () => {
+  it("mengelompokkan skor ke 4 bucket", () => {
+    expect(bucketConfidence([0.3, 0.49, 0.5, 0.6, 0.69, 0.7, 0.84, 0.85, 0.97])).toEqual([
+      { label: "<50%", count: 2 },
+      { label: "50–70%", count: 3 },
+      { label: "70–85%", count: 2 },
+      { label: "≥85%", count: 2 },
+    ]);
+  });
+
+  it("data kosong → semua bucket nol", () => {
+    expect(bucketConfidence([])).toEqual([
+      { label: "<50%", count: 0 },
+      { label: "50–70%", count: 0 },
+      { label: "70–85%", count: 0 },
+      { label: "≥85%", count: 0 },
+    ]);
   });
 });
