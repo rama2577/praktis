@@ -42,9 +42,11 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
 export function Sidebar({
   userName,
   userRole,
+  onNavigate,
 }: {
   userName: string;
   userRole: Role;
+  onNavigate?: () => void;
 }) {
   const pathname = usePathname();
 
@@ -88,6 +90,7 @@ export function Sidebar({
                   <li key={item.href}>
                     <Link
                       href={item.href}
+                      onClick={onNavigate}
                       aria-current={active ? "page" : undefined}
                       className={`flex items-center rounded-lg px-3 py-2 text-sm transition ${
                         active

@@ -15,6 +15,10 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
+**Dashboard KPI (Task 8):**
+- 5 KPI real-time dari DB: Klien Aktif (+bulan ini), AI Automation % (jurnal AI tanpa pengecualian), Jobs in Progress (draft AI vs menunggu review), Transactions Hari Ini (vs rata-rata harian), SLA Breaches (rincian per role).
+- Responsive: sidebar jadi drawer (hamburger) di layar mobile; header menampilkan tanggal + status AI Online.
+
 **Review queue engine (Task 7):**
 ```bash
 npm run dev   # atau build + start, lalu buka /dashboard/queues

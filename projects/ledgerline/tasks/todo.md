@@ -142,24 +142,23 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Estimated scope:** L (state machine + API + UI antrian + SLA)
 
 **Catatan:** assignee otomatis via load-balancing (user role stage dengan task pending paling sedikit); return dari JUNIOR → DRAFT (belum ada task — menunggu proses ulang). Halaman antrian menampilkan garis jurnal, ref PSAK, keyakinan AI, tenggat.
-## Task 8: Layout dashboard + KPI cards
+## Task 8: Layout dashboard + KPI cards ✅ (2026-08-07)
 
-**Description:** Layout sesuai mockup: sidebar 3 grup (OPERATIONS: Dashboard/Pipeline/Queues/Knowledge Base; ANALYTICS: Quality/SLA; SYSTEM: Clients/Settings), header (tanggal, status AI Online, profil user), dark theme; 5 KPI cards dari data real: Active Clients (+this month), AI Automation %, Jobs in Progress (AI vs review), Transactions Today (+vs avg), SLA Breaches (rincian role).
+**Description:** Layout sesuai mockup: sidebar 3 grup (Operasional/Analitik/Sistem), header (tanggal, status AI Online), dark navy theme; 5 KPI cards dari data real: Klien Aktif (+bulan ini), AI Automation %, Jobs in Progress (AI vs review), Transactions Hari Ini (vs rata-rata), SLA Breaches (rincian role).
 
 **Acceptance criteria:**
-- [ ] KPI menghitung dari DB (bukan hardcode); angka berubah saat data berubah
-- [ ] Sidebar aktif-state & navigasi berfungsi; profil user tampil; seluruh teks UI Bahasa Indonesia
-- [ ] Responsive: sidebar collapse di mobile
+- [x] KPI menghitung dari DB (bukan hardcode) — `src/server/dashboard.ts` (agregasi paralel + pure helpers); angka berubah saat data berubah (verified: 3 · 95,5% · 18 · 22 · 2 sesuai data seed)
+- [x] Sidebar aktif-state & navigasi berfungsi; profil user tampil; seluruh teks UI Bahasa Indonesia
+- [x] Responsive: sidebar jadi drawer di mobile (hamburger + overlay, `DashboardShell` client component)
 
 **Verification:**
-- [ ] Manual: bandingkan KPI dengan data seed; resize ke mobile
+- [x] Tests pass: `npm test` — dashboard.test.ts 5/5 (automationPct, deltaVsAverage, daysSince)
+- [x] Build + lint bersih
+- [x] E2E: login admin → `/dashboard` 200; semua label KPI ada; nilai KPI = 3 klien aktif / 95,5% AI automation (21/22 AI tanpa exception) / 18 jobs in progress (9 draft AI + 11 review) / 22 transaksi hari ini / 2 SLA breach (Junior + Pajak); elemen mobile (hamburger, drawer) ada di HTML
 
 **Dependencies:** Task 7
-**Files likely touched:** src/app/(dashboard)/layout.tsx, src/components/layout/*, src/components/kpi/*, src/server/dashboard.ts
+**Files touched:** src/server/dashboard.ts, src/components/dashboard/kpi-cards.tsx, src/components/layout/{dashboard-shell,sidebar}.tsx, src/app/dashboard/{layout,page}.tsx, tests/dashboard.test.ts
 **Estimated scope:** M
-
----
-
 ## Task 9: Pipeline visualization + Review Queues panel
 
 **Description:** Diagram alur 5 stage (Draft Journals → Rule Engine → Junior → Senior → Tax) dengan count item per stage; panel Review Queues 4 role dengan count + badge urgent (merah), sesuai mockup.
