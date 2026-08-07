@@ -1,3 +1,30 @@
+# Evolution Proposal: Memperbarui status proyek di MEMORY.md (Phase 2 sudah dimulai) agar konteks proyek tetap akurat untuk sesi-sesi berikutnya.
+
+- Proposal-ID: evo-2026-08-07-project-phase2
+- Status: approved
+- Signature: project-phase2-update
+- Created-At: 2026-08-07 13:04
+- Last-Seen-At: 2026-08-07 13:04
+- Target-File: MEMORY.md
+- Trigger-Type: preference
+- Confidence: medium
+
+## Why This Matters
+- Memperbarui status proyek di MEMORY.md (Phase 2 sudah dimulai) agar konteks proyek tetap akurat untuk sesi-sesi berikutnya.
+
+## Evidence
+- Interactive proposal card was present in the session UI.
+- The original pending draft file was unavailable at approval time.
+- AutoClaw reconstructed this draft from the proposal payload so the review result can still be recorded.
+
+## Duplicate Check
+- Checked: pending draft path + signature/proposal fallback
+- Result: original draft file missing
+- Decision: create surrogate draft from proposal payload
+
+## Proposed Change
+### MEMORY.md
+
 ---
 summary: "Long-term memory record"
 autoclaw.schema: "agent-profile/v1"
@@ -76,3 +103,12 @@ OpenClaw 三层记忆：
 
 ## 技能索引
 见 workspace/.agents/skills/ 目录下的 SKILL.md 文件
+
+## Apply Plan
+1. Keep this reconstructed draft as the approval artifact.
+2. Record the proposal content exactly as shown in the interactive card.
+3. Append an audit note after approval or rejection.
+
+## User Approval
+- Approve: 批准 evo-2026-08-07-project-phase2
+- Reject: 拒绝 evo-2026-08-07-project-phase2

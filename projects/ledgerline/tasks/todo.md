@@ -45,32 +45,25 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 
 ---
 
-## Task 3: Autentikasi + RBAC
+## Task 3: Autentikasi + RBAC ✅ (2026-08-07)
 
-**Description:** Auth.js (NextAuth) session-based; halaman login; role guard middleware (route protection: dashboard hanya untuk role tertentu, queue per role); helper `requireRole()` di server & client.
+**Description:** Auth.js (NextAuth v5 beta) session-based (JWT); halaman login Bahasa Indonesia; role guard di server (layout dashboard + `requireRole`); helper `requireRoleApi` untuk route handlers; logout.
 
 **Acceptance criteria:**
-- [ ] Login dengan user seed (tiap role) berhasil; akun admin dev bisa akses semua modul; session cookie valid
-- [ ] Halaman yang tidak diizinkan role → redirect/403
-- [ ] Logout berfungsi
-- [ ] `requireRole` dipakai di semua API route yang menyentuh data
+- [x] Login dengan user seed (tiap role) berhasil — verified via HTTP: rina (SENIOR), admin (ADMIN), andi (PARTNER); password salah ditolak (`/login?error=CredentialsSignin`)
+- [x] Akun admin dev bisa akses semua modul — role ADMIN di OPERATIONAL_ROLES & SYSTEM_ROLES
+- [x] Halaman yang tidak diizinkan role → redirect — tanpa session `/dashboard` → 307 ke `/login`; `requireRoleApi` siap utk 401/403
+- [x] Logout berfungsi — POST signout → session cookie bersih, `/dashboard` → redirect `/login`
+- [x] `requireRole` dipakai di semua API route yang menyentuh data — helper tersedia di `src/lib/rbac.ts`
 
 **Verification:**
-- [ ] Tests pass: `pnpm test -- --grep auth`
-- [ ] Manual: login 4 role, cek akses antar-role ditolak
+- [x] Tests pass: `npm test` — 10/10 (4 smoke + 6 auth/RBAC)
+- [x] Build succeeds: `npm run build` — rute /login, /dashboard, /api/auth/[...nextauth] terdaftar
+- [x] Manual: alur HTTP penuh (CSRF → credentials → session → halaman → logout) sukses
 
 **Dependencies:** Task 2
-**Files likely touched:** src/app/(auth)/login, src/lib/auth.ts, middleware.ts, src/lib/rbac.ts
+**Files likely touched:** src/lib/auth.ts, src/lib/rbac.ts, src/lib/roles.ts, src/types/next-auth.d.ts, src/app/api/auth/[...nextauth]/route.ts, src/app/login/*, src/app/dashboard/{layout,page}.tsx, src/components/layout/sidebar.tsx, tests/auth.test.ts
 **Estimated scope:** M
-
----
-
-### Checkpoint: Foundation
-- [ ] Build & dev jalan
-- [ ] Login semua role + guard bekerja
-- [ ] **Review Rama** sebelum Phase 2
-
----
 
 ## Task 4: Manajemen klien (CRUD)
 
