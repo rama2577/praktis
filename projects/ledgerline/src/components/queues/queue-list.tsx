@@ -4,6 +4,9 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { stageBadge, stageLabel, STAGE_ORDER } from "@/components/queues/stage-meta";
 import { formatCurrencyRp } from "@/lib/format";
+import { SkeletonList } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
 
 type QueueTask = {
   id: string;
@@ -112,23 +115,25 @@ export function QueueList() {
   );
 
   if (loading) {
-    return <p className="text-sm text-slate-400">Memuat antrian…</p>;
+    return <SkeletonList rows={3} />;
   }
   if (error) {
-    return <p className="text-sm text-red-400">{error}</p>;
+    return <ErrorState message={error} onRetry={() => { setLoading(true); void load(); }} />;
   }
   if (!data || data.data.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-700 p-10 text-center text-sm text-slate-400">
-        Antrian kosong — tidak ada jurnal menunggu review Anda saat ini.
-      </div>
+      <EmptyState
+        icon="🗂️"
+        title="Antrian kosong"
+        description="Tidak ada jurnal yang menunggu review Anda saat ini. Unggah dokumen klien untuk memulai pipeline AI."
+      />
     );
   }
 
   return (
     <div className="space-y-8">
       {flash && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
+        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
           {flash}
         </div>
       )}
@@ -188,11 +193,11 @@ export function QueueList() {
                       <table className="w-full text-left text-sm">
                         <thead className="bg-slate-800/60 text-xs uppercase tracking-wide text-slate-400">
                           <tr>
-                            <th className="px-3 py-2">Kode</th>
-                            <th className="px-3 py-2">Akun</th>
-                            <th className="px-3 py-2 text-right">Debit</th>
-                            <th className="px-3 py-2 text-right">Kredit</th>
-                            <th className="px-3 py-2">Ref. PSAK</th>
+                            <th scope="col" className="px-3 py-2">Kode</th>
+                            <th scope="col" className="px-3 py-2">Akun</th>
+                            <th scope="col" className="px-3 py-2 text-right">Debit</th>
+                            <th scope="col" className="px-3 py-2 text-right">Kredit</th>
+                            <th scope="col" className="px-3 py-2">Ref. PSAK</th>
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-800">

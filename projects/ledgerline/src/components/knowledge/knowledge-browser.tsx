@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react";
 import type { KnowledgeEntry } from "@/server/knowledge";
+import { EmptyState } from "@/components/ui/empty-state";
 
 const EXT_TONE: Record<string, string> = {
   MD: "border-sky-500/30 bg-sky-500/10 text-sky-300",
@@ -55,9 +56,11 @@ export function KnowledgeBrowser({ entries }: { entries: KnowledgeEntry[] }) {
       </div>
 
       {filtered.length === 0 ? (
-        <p className="rounded-xl border border-dashed border-slate-700 p-8 text-center text-sm text-slate-400">
-          Tidak ada referensi yang cocok dengan pencarian.
-        </p>
+        <EmptyState
+          icon="🔍"
+          title="Tidak ada referensi yang cocok"
+          description={`Coba kata kunci lain (mis. "PPN", "PSAK 72", "piutang"). ${entries.length} referensi tersedia.`}
+        />
       ) : (
         <ul className="space-y-3">
           {filtered.map((entry) => (

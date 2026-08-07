@@ -19,6 +19,14 @@ export function DashboardShell({
 
   return (
     <div className="flex min-h-screen">
+      {/* Skip link — terlihat saat fokus keyboard */}
+      <a
+        href="#main-content"
+        className="sr-only z-[60] rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#0b1120] focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+      >
+        Lewati ke konten utama
+      </a>
+
       {/* Overlay mobile */}
       {mobileOpen && (
         <div
@@ -62,7 +70,7 @@ export function DashboardShell({
             </span>
           </div>
         </header>
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
+        <main id="main-content" className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
       </div>
     </div>
   );

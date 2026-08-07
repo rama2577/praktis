@@ -2,6 +2,9 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { SkeletonList } from "@/components/ui/skeleton";
+import { EmptyState } from "@/components/ui/empty-state";
+import { ErrorState } from "@/components/ui/error-state";
 
 type ExceptionItem = {
   id: string;
@@ -64,20 +67,22 @@ export function ExceptionsList() {
     [load, note],
   );
 
-  if (loading) return <p className="text-sm text-slate-400">Memuat…</p>;
-  if (error) return <p className="text-sm text-red-400">{error}</p>;
+  if (loading) return <SkeletonList rows={2} />;
+  if (error) return <ErrorState message={error} onRetry={() => { setLoading(true); void load(); }} />;
   if (items.length === 0) {
     return (
-      <div className="rounded-xl border border-dashed border-slate-700 p-10 text-center text-sm text-slate-400">
-        Tidak ada exception — semua jurnal lolos pipeline. 🎉
-      </div>
+      <EmptyState
+        icon="🎉"
+        title="Tidak ada exception"
+        description="Semua jurnal lolos pipeline AI tanpa pengecualian."
+      />
     );
   }
 
   return (
     <div className="space-y-4">
       {flash && (
-        <div className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
+        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
           {flash}
         </div>
       )}

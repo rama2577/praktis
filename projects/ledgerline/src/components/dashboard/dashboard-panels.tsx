@@ -13,9 +13,7 @@ import {
 } from "recharts";
 import type { ActivityItem, ConfidenceBucket, PipelineData, SlaStageSummary } from "@/server/dashboard";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { formatRelativeTime } from "@/lib/format";
-
-const POLL_MS = 30_000;
+import { formatRelativeTime } from "@/lib/format";const POLL_MS = 30_000;
 
 type OpsData = {
   pipeline: PipelineData;
@@ -223,7 +221,18 @@ export function DashboardPanels({ initial }: { initial: OpsData }) {
         <div className="mb-4 flex items-center justify-between">
           <h2 className="font-medium text-slate-100">Pipeline Produksi</h2>
           <span className="text-xs text-slate-500">
-            {error ?? `auto-refresh · ${lastSync.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`}
+            {error ? (
+              <button
+                type="button"
+                onClick={() => void refresh()}
+                title="Coba sinkronisasi lagi"
+                className="text-red-400 underline decoration-dotted hover:text-red-300"
+              >
+                {error} — Coba lagi
+              </button>
+            ) : (
+              `auto-refresh · ${lastSync.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
+            )}
           </span>
         </div>
         <PipelineViz data={data.pipeline} />

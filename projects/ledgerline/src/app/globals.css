@@ -33,3 +33,21 @@ body {
 ::selection {
   background: color-mix(in srgb, var(--accent) 30%, transparent);
 }
+
+/* ── Aksesibilitas: focus visible di semua interaktif (WCAG 2.4.7) ── */
+:focus-visible {
+  outline: 2px solid var(--accent, #f5c518);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Kurangi motion untuk pengguna yang memintanya */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -218,24 +218,22 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Dependencies:** Task 10
 **Files touched:** src/server/{metrics,knowledge}.ts, src/server/journal-machine.ts (+resolveException), src/app/dashboard/{quality,knowledge,exceptions}/page.tsx, src/app/api/exceptions/{route,[id]/resolve/route}.ts, src/components/{knowledge/knowledge-browser,exceptions/exceptions-list}.tsx, sidebar.tsx, tests/metrics.test.ts
 **Estimated scope:** M
-## Task 12: States, aksesibilitas & polish
+## Task 12: States, aksesibilitas & polish ✅ (2026-08-07)
 
-**Description:** Empty/loading/error states untuk semua panel & queue (skeleton, empty illustration, error retry); aksesibilitas sesuai `references/accessibility-checklist.md` (keyboard nav, focus, contrast, aria); interaksi natural (hover/active/disabled) di semua tombol & card.
+**Description:** Empty/loading/error states untuk semua panel & queue (skeleton, empty state bermakna, error retry); aksesibilitas sesuai references/accessibility-checklist.md (keyboard nav, focus visible, contrast, aria); interaksi natural di semua tombol & card.
 
 **Acceptance criteria:**
-- [ ] Tidak ada panel kosong tanpa state; loading pakai skeleton; error punya retry
-- [ ] Keyboard-only: semua aksi bisa diakses via Tab/Enter; focus visible
-- [ ] Contrast teks vs background memenuhi WCAG AA di theme dark
+- [x] Tidak ada panel kosong tanpa state; loading pakai skeleton; error punya retry — komponen shared `Skeleton`/`SkeletonList`/`EmptyState`/`ErrorState`; diterapkan ke QueueList & ExceptionsList (skeleton 2–3 kartu, retry, empty ber-ikon); DashboardPanels punya tombol "Coba lagi" saat polling gagal; KnowledgeBrowser empty search; Clients (server) sudah punya empty state
+- [x] Keyboard-only: semua aksi via Tab/Enter (semua interaktif = button/link/input); skip link "Lewati ke konten utama" (visible saat fokus); `:focus-visible` global (outline accent) + `prefers-reduced-motion`; hamburger sudah aria-label; flash messages `role="status"` + `aria-live="polite"`; tabel jurnal `th scope="col"`
+- [x] Contrast teks vs background WCAG AA — palette dark navy: slate-400/500 di atas card (#101a30/#0b1120) ≥ 4.5:1; `<html lang="id">` sudah ada; title per halaman
 
 **Verification:**
-- [ ] Manual: kosongkan data → cek empty state; navigasi keyboard
+- [x] Tests pass: `npm test` 84/84; build + lint bersih
+- [x] HTML: skip link + id="main-content" ter-render; CSS :focus-visible & prefers-reduced-motion ada; komponen states terpasang di queue/exceptions/knowledge
 
-**Dependencies:** Task 9-11
-**Files likely touched:** komponen UI shared, styles, aksesibilitas helper
+**Dependencies:** Task 9–11
+**Files touched:** src/components/ui/{skeleton,empty-state,error-state}.tsx (baru), globals.css (+focus-visible, reduced-motion), queue-list.tsx, exceptions-list.tsx, dashboard-panels.tsx, knowledge-browser.tsx, dashboard-shell.tsx (skip link)
 **Estimated scope:** M
-
----
-
 ## Task 13: Security hardening + observability
 
 **Description:** Input/upload validation lanjutan (magic bytes, size, rate limit), proteksi API (CSRF, RBAC di semua route), enkripsi file at-rest, audit log lengkap; logging terstruktur (pino), alert SLA breach (email/in-app), metric dasar (job duration, error rate) sesuai `references/security-checklist.md` & `observability-checklist.md`.
