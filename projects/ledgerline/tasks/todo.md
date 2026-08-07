@@ -65,24 +65,24 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Files likely touched:** src/lib/auth.ts, src/lib/rbac.ts, src/lib/roles.ts, src/types/next-auth.d.ts, src/app/api/auth/[...nextauth]/route.ts, src/app/login/*, src/app/dashboard/{layout,page}.tsx, src/components/layout/sidebar.tsx, tests/auth.test.ts
 **Estimated scope:** M
 
-## Task 4: Manajemen klien (CRUD)
+## Task 4: Manajemen klien (CRUD) ✅ (2026-08-07)
 
 **Description:** Halaman Clients (daftar, tambah, edit, nonaktifkan) dengan validasi form; API routes CRUD ter-proteksi (ADMIN/SENIOR); kolom: nama, industri (retail/jasa/f&b → menentukan COA), status aktif.
 
 **Acceptance criteria:**
-- [ ] Admin bisa tambah/edit klien; list menampilkan jumlah dokumen & status
-- [ ] Validasi: nama wajib, industri dari enum; error state terlihat
-- [ ] Klien nonaktif tidak muncul di queue baru
+- [x] Admin bisa tambah/edit klien; list menampilkan jumlah dokumen & status — verified via HTTP: POST 201, PATCH edit 200, UI render daftar + badge status
+- [x] Validasi: nama wajib, industri dari enum; error state terlihat — POST nama kosong → 400 `{name: "Nama klien wajib diisi."}`; 6 unit test validasi
+- [x] Klien nonaktif tidak muncul di queue baru — `listActiveClients()` filter status ACTIVE (verified: hanya 3 klien aktif); PATCH status INACTIVE → hilang dari helper aktif
+- [x] Proteksi role: GET/POST/PATCH /api/clients → 401 tanpa session, 403 untuk JUNIOR (verified via HTTP)
 
 **Verification:**
-- [ ] Tests pass: `pnpm test -- --grep client`
-- [ ] Manual: CRUD klien via UI
+- [x] Tests pass: `npm test` — 16/16 (smoke 4 + auth 6 + clients 6)
+- [x] Build succeeds: `npm run build` — rute /api/clients, /api/clients/[id], /dashboard/clients terdaftar
+- [x] Manual: CRUD penuh via API + halaman UI; RBAC junior ditolak
 
 **Dependencies:** Task 3
-**Files likely touched:** src/app/(dashboard)/clients/*, src/server/clients.ts, tests/clients.test.ts
+**Files likely touched:** src/server/clients.ts, src/app/api/clients/route.ts, src/app/api/clients/[id]/route.ts, src/app/dashboard/clients/{page,clients-manager}.tsx, src/components/clients/{client-form,client-status-action}.tsx, tests/clients.test.ts
 **Estimated scope:** M
-
----
 
 ## Task 5: Upload dokumen
 
