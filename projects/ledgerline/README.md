@@ -15,6 +15,11 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
+**Quality, Knowledge Base & Exception (Task 11):**
+- `/dashboard/quality` — Lolos Tanpa Revisi, Exception Rate, Confidence vs Status (korelasi skor AI vs hasil review), SLA Breach Rate per stage.
+- `/dashboard/knowledge` — 13 referensi (business events, template jurnal, COA retail/jasa/F&B, PPN/PPh, PSAK) dari `src/ai/knowledge/`, bisa dicari.
+- `/dashboard/exceptions` — jurnal ber-exception; resolusi dengan catatan → jurnal kembali ke antrian Junior (EXCEPTION → JUNIOR_REVIEW via state machine), riwayat di Activity Log.
+
 **SLA, Confidence & Activity (Task 10):**
 - Monitoring SLA per stage review: progress bar vs target (Junior ≤2 jam, Senior ≤4 jam, Pajak ≤4 jam, Partner ≤2 jam), warna hijau/kuning/merah, rincian antre/terlambat/selesai (OK/breach).
 - Chart Distribusi Keyakinan AI (Recharts): bucket <50%, 50–70%, 70–85%, ≥85% dari skor confidence aktual.

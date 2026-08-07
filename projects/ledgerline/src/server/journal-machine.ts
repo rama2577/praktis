@@ -163,3 +163,53 @@ export async function pickAssignee(firmId: string, stage: ReviewStage): Promise<
   candidates.sort((a, b) => a._count.reviewTasks - b._count.reviewTasks);
   return candidates[0].id;
 }
+
+/**
+ * Resolusi exception (fungsi terpusat, jalur satu-satunya): EXCEPTION →
+ * JUNIOR_REVIEW + task JUNIOR baru + ActivityLog EXCEPTION_RESOLVED.
+ */
+export async function resolveException({
+  firmId,
+  journalId,
+  actor,
+  note,
+}: {
+  firmId: string;
+  journalId: string;
+  actor: User;
+  note: string;
+}) {
+  const entry = await prisma.journalEntry.findUnique({ where: { id: journalId } });
+  if (!entry || entry.firmId !== firmId) throw new Error("Jurnal tidak ditemukan");
+  if (!canTransition(entry.status, "JUNIOR_REVIEW")) {
+    throw new Error(`Jurnal berstatus ${entry.status} tidak bisa diresolusi`);
+  }
+
+  const now = new Date();
+  await prisma.journalEntry.update({
+    where: { id: journalId },
+    data: { status: "JUNIOR_REVIEW" },
+  });
+
+  const assigneeId = await pickAssignee(firmId, "JUNIOR");
+  await prisma.reviewTask.create({
+    data: {
+      journalEntryId: journalId,
+      stage: "JUNIOR",
+      assigneeId,
+      dueAt: new Date(now.getTime() + SLA_TARGETS_MIN.JUNIOR * 60_000),
+    },
+  });
+
+  await prisma.activityLog.create({
+    data: {
+      firmId,
+      userId: actor.id,
+      journalEntryId: journalId,
+      action: "EXCEPTION_RESOLVED",
+      detail: { note, from: "EXCEPTION", to: "JUNIOR_REVIEW" },
+    },
+  });
+
+  return { journalId, from: "EXCEPTION" as const, to: "JUNIOR_REVIEW" as const };
+}

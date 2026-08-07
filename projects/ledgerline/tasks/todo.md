@@ -201,24 +201,23 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 
 ---
 
-## Task 11: Quality Metrics + Knowledge Base + exception management
+## Task 11: Quality Metrics + Knowledge Base + exception management ✅ (2026-08-07)
 
-**Description:** Halaman Quality Metrics (akurasi AI vs hasil revisi manusia, trend); halaman Knowledge Base (daftar references ledgerline: business events, templates, tax rules — bisa dicari); manajemen exception (list flag, detail, resolusi/close).
+**Description:** Halaman Metrik Kualitas (akurasi AI vs hasil review manusia, korelasi confidence vs status, breach rate per stage); halaman Knowledge Base (daftar 13 referensi dari skill ledgerline — business events, template jurnal, COA, PPN/PPh, PSAK — dengan pencarian); manajemen exception (list, detail, resolusi → JUNIOR_REVIEW dengan catatan, riwayat tercatat).
 
 **Acceptance criteria:**
-- [ ] Metrik kualitas terhitung (mis. % draft yang lolos tanpa revisi)
-- [ ] Knowledge base menampilkan isi references dari skill (import/migrasi konten)
-- [ ] Exception bisa diresolusi dengan catatan; riwayat tersimpan
+- [x] Metrik kualitas terhitung — `getQualityMetrics`: Lolos Tanpa Revisi (% task selesai tanpa reject), Exception Rate (4,5% = 1/22), Rata-rata Confidence, Confidence vs Status (exception punya confidence terendah 55% — korelasi terbukti), SLA Breach Rate per stage
+- [x] Knowledge base menampilkan isi references dari skill — `listKnowledgeEntries` membaca `src/ai/knowledge/` (13 file, kategori otomatis, preview 800 char, pencarian client-side)
+- [x] Exception bisa diresolusi dengan catatan; riwayat tersimpan — `resolveException` (fungsi terpusat di journal-machine): EXCEPTION → JUNIOR_REVIEW + task JUNIOR baru (load-balancing) + ActivityLog `EXCEPTION_RESOLVED` {from, to, note}; catatan wajib (400)
 
 **Verification:**
-- [ ] Manual: buka 2 halaman baru, resolve 1 exception
+- [x] Tests pass: `npm test` — 84/84 (pct/avg, knowledgeCategory)
+- [x] E2E: halaman Quality/Knowledge/Exceptions render; GET /api/exceptions → 1 item ("Faktur PPN tidak ditemukan"); resolve tanpa catatan → 400; resolve dengan catatan → 200; DB: status JUNIOR_REVIEW + task JUNIOR PENDING ber-assignee + log EXCEPTION_RESOLVED; sisa exception 0
+- [x] Build + lint bersih; sidebar: Metrik Kualitas, Knowledge Base, Pengecualian aktif
 
 **Dependencies:** Task 10
-**Files likely touched:** src/app/(dashboard)/quality/*, src/app/(dashboard)/knowledge/*, src/server/metrics.ts
+**Files touched:** src/server/{metrics,knowledge}.ts, src/server/journal-machine.ts (+resolveException), src/app/dashboard/{quality,knowledge,exceptions}/page.tsx, src/app/api/exceptions/{route,[id]/resolve/route}.ts, src/components/{knowledge/knowledge-browser,exceptions/exceptions-list}.tsx, sidebar.tsx, tests/metrics.test.ts
 **Estimated scope:** M
-
----
-
 ## Task 12: States, aksesibilitas & polish
 
 **Description:** Empty/loading/error states untuk semua panel & queue (skeleton, empty illustration, error retry); aksesibilitas sesuai `references/accessibility-checklist.md` (keyboard nav, focus, contrast, aria); interaksi natural (hover/active/disabled) di semua tombol & card.

@@ -20,13 +20,14 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
       { label: "Dashboard", href: "/dashboard", ready: true },
       { label: "Pipeline Produksi", href: "/dashboard/pipeline", ready: false, task: "Task 9" },
       { label: "Antrian Review", href: "/dashboard/queues", ready: true },
-      { label: "Knowledge Base", href: "/dashboard/knowledge", ready: false, task: "Task 11" },
+      { label: "Pengecualian", href: "/dashboard/exceptions", ready: true },
+      { label: "Knowledge Base", href: "/dashboard/knowledge", ready: true },
     ],
   },
   {
     group: "Analitik",
     items: [
-      { label: "Metrik Kualitas", href: "/dashboard/quality", ready: false, task: "Task 11" },
+      { label: "Metrik Kualitas", href: "/dashboard/quality", ready: true },
       { label: "Monitoring SLA", href: "/dashboard/sla", ready: false, task: "Task 10" },
     ],
   },
