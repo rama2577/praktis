@@ -102,26 +102,26 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Files likely touched:** src/server/documents.ts (validasi+magic bytes+hash+sanitize), src/lib/storage.ts, src/lib/queue.ts (placeholder), src/app/api/documents/route.ts, src/app/dashboard/clients/[id]/page.tsx, src/components/documents/upload-form.tsx, tests/upload.test.ts
 **Estimated scope:** M
 
-## Task 6: AI pipeline worker (OCR → event → draft → score)
+## Task 6: AI pipeline worker (OCR → event → draft → score) ✅ (2026-08-07)
 
-**Description:** Worker BullMQ: ambil job → parse dokumen (PDF teks, XLSX via SheetJS, JPG via LLM vision) → deteksi business event → drafting journal via rule engine + LLM (prompt berdasar knowledge base `ledgerline-ai-bookkeeper`: business-events.md, journal-templates.md, COA per industri, tax-rules-ppn/pph.md) → validation rules → confidence score + exception flags (mis. "Missing VAT invoice") → simpan `JournalEntry` status DRAFT. Abstraksi provider LLM di `src/ai/`.
+**Description:** Worker BullMQ: ambil job → parse dokumen (PDF via pdf-parse v2, XLSX via SheetJS, JPG via LLM vision) → deteksi business event → drafting journal via rule engine + LLM (prompt berdasar knowledge base `ledgerline-ai-bookkeeper`) → validation rules → confidence score + exception flags → simpan `JournalEntry` status DRAFT/EXCEPTION. Abstraksi provider LLM di `src/ai/`.
 
 **Acceptance criteria:**
-- [ ] Worker memproses 1 dokumen PDF → JournalEntry DRAFT dengan JournalLine debit/kredit valid (balance = 0)
-- [ ] Setiap line punya `psakRef` & `coaAccount` (traceability)
-- [ ] Confidence score terisi; dokumen tidak jelas → flag EXCEPTION, bukan hasil asal
-- [ ] Provider LLM bisa diganti via env tanpa ubah pipeline
+- [x] Worker memproses dokumen → JournalEntry DRAFT dengan JournalLine debit/kredit valid (balance = 0) — verified E2E: PDF invoice → DRAFT 0.74 (Piutang 9.435.000 = 8.500.000 + PPN 935.000), XLSX rekening koran → DRAFT 0.7
+- [x] Setiap line punya `psakRef` & `accountCode` (traceability) — verified: traceable=true semua baris
+- [x] Confidence score terisi; dokumen tidak jelas → flag EXCEPTION, bukan hasil asal — skor 0–1; rule engine menandai exception saat event/jumlah tak terdeteksi; JPG tanpa LLM key → FAILED/EXCEPTION (bukan mengarang)
+- [x] Provider LLM bisa diganti via env tanpa ubah pipeline — `LLM_BASE_URL`/`LLM_MODEL`/`LLM_API_KEY` (GLM default, OpenAI-compatible, Ollama opsional); pipeline jalan TANPA key via rule engine
 
 **Verification:**
-- [ ] Tests pass: `pnpm test -- --grep pipeline` (rule engine ≥ 80% coverage)
-- [ ] Manual: upload invoice sample → cek draft + skor + flag
+- [x] Tests pass: `npm test` — 46/46; coverage rule-engine **96.5%**, validation 81.5% (target ≥80% tercapai)
+- [x] Build succeeds: `npm run build`
+- [x] Manual: upload invoice PDF & rekening koran XLSX → worker (`npm run worker`) → jurnal DRAFT balance 0 + traceable
 
 **Dependencies:** Task 5
-**Files likely touched:** src/ai/* (ocr, events, drafting, validation, scoring), src/server/pipeline.ts, src/lib/queue.ts
-**Estimated scope:** L (pecah: 6a OCR+event, 6b drafting+validation, 6c scoring+flags) — eksekusi bertahap
+**Files likely touched:** src/ai/{rule-engine,validation,llm,parsers,drafting}.ts + knowledge/ (13 file referensi dari skill), src/server/{pipeline,pipeline-worker}.ts, src/lib/queue.ts (BullMQ), scripts/{generate-fixtures,e2e-upload}.ts, tests/pipeline.test.ts
+**Estimated scope:** L (dipecah: 6a rule engine+validation, 6b parsers+LLM, 6c worker+orchestrasi)
 
----
-
+**Catatan:** Redis 8.10 diinstall via Homebrew (modul redisbloom/redisearch/redisjson/redistimeseries dinonaktifkan di redis.conf karena file .so tidak ada — service jalan normal tanpa modul itu).
 ## Task 7: Review queue engine
 
 **Description:** State machine terpusat untuk lifecycle journal (`DRAFT → JUNIOR_REVIEW → SENIOR_REVIEW → TAX_REVIEW → PARTNER_APPROVAL → APPROVED`, + EXCEPTION/REJECTED/ARCHIVED); queue per role (assign otomatis sesuai stage, urgent flag); aksi review (approve/reject/return dengan catatan); ActivityLog untuk tiap transisi; SLA timer mulai saat masuk stage.

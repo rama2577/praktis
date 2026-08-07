@@ -15,6 +15,15 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
+**Pipeline AI (Task 6):**
+```bash
+brew services start redis          # Redis 8 (sudah diinstall via Homebrew)
+npm run worker                     # jalankan worker pipeline (terminal terpisah)
+```
+- Pipeline berjalan tanpa API key (rule engine deterministik dari knowledge base). Aktifkan LLM (GLM default) dengan mengisi `LLM_API_KEY` di `.env` → drafting yang lebih baik untuk dokumen kompleks.
+- JPG/scan memerlukan LLM vision (`LLM_API_KEY`); tanpa key akan masuk status EXCEPTION/FAILED (tidak mengarang hasil).
+- Knowledge base: `src/ai/knowledge/` (salinan referensi skill ledgerline: PSAK, PPN/PPh, COA, template jurnal).
+
 **Database (PostgreSQL 16 via Homebrew):**
 ```bash
 brew services start postgresql@16   # pastikan service jalan

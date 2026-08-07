@@ -11,7 +11,8 @@ export default defineConfig({
     include: ["tests/**/*.test.{ts,tsx}"],
     coverage: {
       provider: "v8",
-      include: ["src/lib/**", "src/server/**", "src/components/**"],
+      include: ["src/lib/**", "src/server/**", "src/ai/**", "src/components/**"],
+      exclude: ["src/ai/knowledge/**", "src/ai/**/*.d.ts"],
     },
   },
   resolve: {
