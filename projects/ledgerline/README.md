@@ -1,0 +1,53 @@
+# LedgerLine — AI Bookkeeping Operations Platform
+
+Platform AI bookkeeping untuk kantor akuntan Indonesia: dokumen mentah klien → draft journal entries (PSAK/PPN/PPh-aware) → review manusia berjenjang → dashboard operasional real-time.
+
+> **Status proyek: FOUNDATION (Task 1 selesai ✅ 2026-08-07)** — scaffold Next.js + tooling test jalan. Lihat `docs/spec.md` & `tasks/plan.md`.
+
+## Cara Menjalankan (lokal)
+
+```bash
+npm install        # install dependencies
+npm run dev        # dev server → http://localhost:3000
+npm run lint       # ESLint
+npm test           # unit + component tests (Vitest)
+npm run build      # production build
+npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
+```
+
+Salin `.env.example` → `.env` saat masuk Task 2–3 (DB, Redis, AUTH_SECRET).
+
+## Struktur
+
+| Path | Isi |
+|---|---|
+| `src/app/` | Halaman & routing (App Router); saat ini: landing placeholder |
+| `src/components/` | `ui/` (StatusBadge, dll), `dashboard/`, `pipeline/`, `queues/`, `layout/` |
+| `src/lib/` | Utilitas shared (format Rupiah, dll) |
+| `src/server/` | Logic server: pipeline, rule engine, queue engine (Task 6–7) |
+| `src/ai/` | AI pipeline: parse dokumen, drafting, scoring (Task 6) |
+| `tests/` | Unit & component tests (Vitest) |
+| `e2e/` | End-to-end tests (Playwright) |
+| `docs/spec.md` | Spesifikasi produk |
+| `tasks/` | Rencana & checklist (plan.md, todo.md) |
+
+## Cara Kerja Proyek Ini
+
+Proyek ini dibangun mengikuti **agent-skills** (engineering workflow skills):
+1. Setiap fase diawali spec/plan → **review Rama** (gate) → baru implementasi.
+2. Implementasi per **vertical slice** (satu fitur utuh per task, maks ±5 file).
+3. Setiap task punya acceptance criteria + verification; selesai satu, lanjut satu.
+4. Domain accounting memakai knowledge base skill `ledgerline-ai-bookkeeper` (PSAK, PPN/PPh, COA, journal templates) — jangan invent treatment.
+
+## Alur Produk (dari mockup)
+
+```
+Dokumen klien (invoice, rekening koran)
+   → Upload + validasi (SLA 5 menit)
+   → AI pipeline: OCR → deteksi business event → draft journal + confidence score (SLA 3 menit)
+   → Rule Engine & validation (PSAK, PPN/PPh)
+   → Review: Junior (2 jam) → Senior (4 jam) → Tax (4 jam) → Partner (2 jam)
+   → APPROVED → Delivery same-day
+```
+
+Setiap stage di-track: SLA status, traceability (business event → referensi PSAK → COA → reviewer), activity log.
