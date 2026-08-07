@@ -84,24 +84,23 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Files likely touched:** src/server/clients.ts, src/app/api/clients/route.ts, src/app/api/clients/[id]/route.ts, src/app/dashboard/clients/{page,clients-manager}.tsx, src/components/clients/{client-form,client-status-action}.tsx, tests/clients.test.ts
 **Estimated scope:** M
 
-## Task 5: Upload dokumen
+## Task 5: Upload dokumen ✅ (2026-08-07)
 
 **Description:** Form upload (drag & drop) + API: validasi tipe (PDF/JPG/XLSX) & ukuran, simpan file (local dev) + record `Document` (clientId, tipe, hash, status=PENDING), enqueue job pipeline.
 
 **Acceptance criteria:**
-- [ ] Upload PDF/JPG sukses; tipe lain/oversize ditolak dengan pesan jelas
-- [ ] Document record tersimpan + file ter-hash (integritas)
-- [ ] Job pipeline ter-enqueue (status terlihat di DB)
+- [x] Upload PDF/JPG sukses; tipe lain/oversize ditolak dengan pesan jelas — verified: PDF 201; .exe / PDF palsu (magic bytes) / 11MB / klien invalid → 400 dengan pesan
+- [x] Document record tersimpan + file ter-hash (integritas) — record PENDING + SHA-256 + file di `uploads/{clientId}/{id}-{nama}`; 8 unit test validasi
+- [x] Job pipeline ter-enqueue (status terlihat di DB) — ActivityLog `PIPELINE_ENQUEUED` tercatat; implementasi BullMQ di Task 6 (`src/lib/queue.ts` placeholder)
 
 **Verification:**
-- [ ] Tests pass: `pnpm test -- --grep upload`
-- [ ] Manual: upload 1 invoice PDF, cek record + queue job
+- [x] Tests pass: `npm test` — 28/28 (smoke 4 + auth 6 + clients 6 + upload 12)
+- [x] Build succeeds: `npm run build` — rute /api/documents & /dashboard/clients/[id] terdaftar
+- [x] Manual: upload via curl (multipart) + cek record/activity/file + halaman detail render
 
-**Dependencies:** Task 3
-**Files likely touched:** src/app/(dashboard)/clients/[id]/upload, src/server/documents.ts, src/lib/storage.ts
+**Dependencies:** Task 3/4
+**Files likely touched:** src/server/documents.ts (validasi+magic bytes+hash+sanitize), src/lib/storage.ts, src/lib/queue.ts (placeholder), src/app/api/documents/route.ts, src/app/dashboard/clients/[id]/page.tsx, src/components/documents/upload-form.tsx, tests/upload.test.ts
 **Estimated scope:** M
-
----
 
 ## Task 6: AI pipeline worker (OCR → event → draft → score)
 

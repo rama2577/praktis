@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { ClientForm, type ClientFormData } from "@/components/clients/client-form";
 import { ClientStatusAction } from "@/components/clients/client-status-action";
 import { StatusBadge } from "@/components/ui/status-badge";
@@ -91,7 +92,12 @@ export function ClientsManager({
                   className="border-b border-line/60 last:border-0 hover:bg-white/[0.02]"
                 >
                   <td className="px-4 py-3">
-                    <p className="font-medium">{client.name}</p>
+                    <Link
+                      href={`/dashboard/clients/${client.id}`}
+                      className="font-medium transition hover:text-accent"
+                    >
+                      {client.name}
+                    </Link>
                     {client.taxId ? (
                       <p className="text-xs text-slate-500">NPWP: {client.taxId}</p>
                     ) : null}
