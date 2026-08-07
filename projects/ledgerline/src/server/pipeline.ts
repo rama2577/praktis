@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 import { parseDocument } from "@/ai/parsers";
 import { draftJournalFromText } from "@/ai/drafting";
 import { validateDraftLines } from "@/ai/validation";
@@ -8,8 +9,11 @@ import type { JournalStatus } from "@prisma/client";
  * Proses satu dokumen melalui pipeline:
  * PROCESSING → parse → draft (rule engine / LLM) → validasi → simpan jurnal
  * DRAFT (atau EXCEPTION) → PROCESSED.
+ * `traceId` mengalir di semua log untuk korelasi satu dokumen.
  */
-export async function processDocument(documentId: string) {
+export async function processDocument(documentId: string, traceId?: string) {
+  const trace = traceId ?? documentId;
+  const started = Date.now();
   const doc = await prisma.document.findUnique({
     where: { id: documentId },
     include: { client: true },
@@ -17,11 +21,13 @@ export async function processDocument(documentId: string) {
 
   if (!doc) return { ok: false as const, reason: "not_found" };
 
+  logger.info({ traceId: trace, documentId, event: "pipeline.start" }, "pipeline mulai memproses dokumen");
+
   await prisma.document.update({
     where: { id: documentId },
     data: { status: "PROCESSING" },
   });
-  await logActivity(doc.firmId, "PIPELINE_STARTED", { documentId });
+  await logActivity(doc.firmId, "PIPELINE_STARTED", { documentId, traceId: trace });
 
   let text: string;
   try {
@@ -32,7 +38,11 @@ export async function processDocument(documentId: string) {
       where: { id: documentId },
       data: { status: "FAILED" },
     });
-    await logActivity(doc.firmId, "PIPELINE_FAILED", { documentId, reason });
+    await logActivity(doc.firmId, "PIPELINE_FAILED", { documentId, traceId: trace, reason });
+    logger.error(
+      { traceId: trace, documentId, event: "pipeline.parse_error", reason, durationMs: Date.now() - started },
+      "parse dokumen gagal",
+    );
     return { ok: false as const, reason: "parse_error", message: reason };
   }
 
@@ -54,7 +64,7 @@ export async function processDocument(documentId: string) {
       status,
       confidence: draft.confidence,
       description: draft.description,
-      exceptionFlag: draft.exceptionFlag ?? (isException ? "Perlu review manual" : null),
+      exceptionFlag: draft.exceptionFlag ?? null,
       createdByAi: true,
       lines: {
         create: draft.lines.map((l) => ({
@@ -63,18 +73,9 @@ export async function processDocument(documentId: string) {
           debit: l.debit,
           credit: l.credit,
           psakRef: l.psakRef,
-          notes: l.notes,
         })),
       },
     },
-  });
-
-  await logActivity(doc.firmId, isException ? "EXCEPTION_FLAGGED" : "AI_DRAFT_COMPLETED", {
-    documentId,
-    journalId: journal.id,
-    confidence: draft.confidence,
-    exceptionFlag: draft.exceptionFlag,
-    validationErrors: validation.ok ? undefined : validation.errors,
   });
 
   await prisma.document.update({
@@ -82,11 +83,31 @@ export async function processDocument(documentId: string) {
     data: { status: "PROCESSED" },
   });
 
+  await logActivity(doc.firmId, "AI_DRAFT_COMPLETED", {
+    documentId,
+    journalId: journal.id,
+    status,
+    confidence: draft.confidence,
+    traceId: trace,
+  });
+
+  if (status === "EXCEPTION") {
+    await logActivity(doc.firmId, "EXCEPTION_FLAGGED", {
+      documentId,
+      journalId: journal.id,
+      reason: draft.exceptionFlag ?? "Event tidak terdeteksi",
+      traceId: trace,
+    });
+  }
+
+  logger.info(
+    { traceId: trace, documentId, journalId: journal.id, status, confidence: draft.confidence, durationMs: Date.now() - started, event: "pipeline.done" },
+    "pipeline selesai",
+  );
+
   return { ok: true as const, journalId: journal.id, status, confidence: draft.confidence };
 }
 
 async function logActivity(firmId: string, action: string, detail: Record<string, unknown>) {
-  await prisma.activityLog.create({
-    data: { firmId, action, detail: detail as object },
-  });
+  await prisma.activityLog.create({ data: { firmId, action, detail: detail as object } });
 }

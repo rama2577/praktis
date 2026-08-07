@@ -154,6 +154,8 @@ export const ACTION_LABELS: Record<string, string> = {
   REVIEW_APPROVED: "menyetujui jurnal",
   REVIEW_REJECTED: "menolak jurnal",
   REVIEW_RETURNED: "mengembalikan jurnal ke tahap sebelumnya",
+  SLA_BREACHED: "melanggar tenggat SLA (alert)",
+  EXCEPTION_RESOLVED: "meresolusi exception — jurnal kembali ke pipeline",
   CLIENT_CREATED: "menambahkan klien baru",
   CLIENT_UPDATED: "memperbarui data klien",
   DOCUMENT_UPLOADED: "mengunggah dokumen",

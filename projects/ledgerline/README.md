@@ -15,6 +15,12 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
+**Security & Observability (Task 13):**
+- Enkripsi at-rest dokumen: AES-256-GCM (`STORAGE_ENCRYPTION_KEY`, hex 64 — `openssl rand -hex 32`); file terenkripsi di disk, didekripsi saat pipeline memproses.
+- Rate limit upload: 10/menit per user (Redis) → 429; semua API route RBAC; security headers via next.config.
+- Logging terstruktur pino (JSON) dengan `traceId` per dokumen (enqueue → worker → pipeline); alert SLA breach in-app (`SLA_BREACHED` di activity feed).
+- Healthcheck: `GET /api/health` (status DB + Redis + uptime).
+
 **Quality, Knowledge Base & Exception (Task 11):**
 - `/dashboard/quality` — Lolos Tanpa Revisi, Exception Rate, Confidence vs Status (korelasi skor AI vs hasil review), SLA Breach Rate per stage.
 - `/dashboard/knowledge` — 13 referensi (business events, template jurnal, COA retail/jasa/F&B, PPN/PPh, PSAK) dari `src/ai/knowledge/`, bisa dicari.

@@ -87,6 +87,7 @@ export async function transitionJournal(to: JournalStatus, action: ReviewAction,
   // SLA final untuk task yang diselesaikan
   const target = SLA_TARGETS_MIN[task.stage];
   const actualMinutes = (now.getTime() - task.createdAt.getTime()) / 60_000;
+  const slaStatus = computeFinalSlaStatus(actualMinutes, target);
   await prisma.slaEvent.create({
     data: {
       firmId: ctx.firmId,
@@ -94,9 +95,25 @@ export async function transitionJournal(to: JournalStatus, action: ReviewAction,
       stage: task.stage,
       targetMinutes: target,
       actualMinutes: Math.round(actualMinutes),
-      status: computeFinalSlaStatus(actualMinutes, target),
+      status: slaStatus,
     },
   });
+
+  // Alert in-app saat SLA breach
+  if (slaStatus === "BREACHED") {
+    await prisma.activityLog.create({
+      data: {
+        firmId: ctx.firmId,
+        journalEntryId: entry.id,
+        action: "SLA_BREACHED",
+        detail: {
+          stage: task.stage,
+          targetMinutes: target,
+          actualMinutes: Math.round(actualMinutes),
+        },
+      },
+    });
+  }
 
   // Update status jurnal
   await prisma.journalEntry.update({

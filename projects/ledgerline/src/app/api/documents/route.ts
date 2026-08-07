@@ -6,6 +6,9 @@ import { prisma } from "@/lib/db";
 import { saveUpload } from "@/lib/storage";
 import { enqueueDocumentProcessing } from "@/lib/queue";
 import { validateUploadFile, sha256Hex } from "@/server/documents";
+import { isRateLimited, MAX_UPLOADS_PER_MINUTE, rateLimitKey } from "@/lib/rate-limit";
+import { getRedis } from "@/lib/redis";
+import { logger } from "@/lib/logger";
 import type { DocumentType } from "@prisma/client";
 
 const DOC_TYPES: DocumentType[] = ["INVOICE", "BANK_STATEMENT", "RECEIPT"];
@@ -13,11 +16,30 @@ const DOC_TYPES: DocumentType[] = ["INVOICE", "BANK_STATEMENT", "RECEIPT"];
 /**
  * POST /api/documents — upload dokumen klien (multipart/form-data).
  * Field: clientId, docType (INVOICE|BANK_STATEMENT|RECEIPT), file.
+ * Rate limit: MAX_UPLOADS_PER_MINUTE per user (Redis fixed window).
  */
 export async function POST(request: Request) {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) {
     return NextResponse.json({ error: guard.message }, { status: guard.status });
+  }
+
+  // Rate limit per user (window 60 detik, Redis)
+  const redis = getRedis();
+  const rlKey = rateLimitKey("upload", guard.session.user.id);
+  const hits = await redis.incr(rlKey);
+  if (hits === 1) {
+    await redis.expire(rlKey, 60);
+  }
+  if (isRateLimited(hits, MAX_UPLOADS_PER_MINUTE)) {
+    logger.warn(
+      { userId: guard.session.user.id, hits, event: "upload.rate_limited" },
+      "upload diblokir rate limit",
+    );
+    return NextResponse.json(
+      { error: `Terlalu banyak upload (maks ${MAX_UPLOADS_PER_MINUTE}/menit). Coba lagi nanti.` },
+      { status: 429 },
+    );
   }
 
   const form = await request.formData().catch(() => null);

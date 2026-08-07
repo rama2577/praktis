@@ -1,30 +1,32 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { PDFParse } from "pdf-parse";
 import * as XLSX from "xlsx";
+import path from "node:path";
 import { chatCompletion, isLLMConfigured } from "@/ai/llm";
+import { readStoredFile } from "@/lib/storage";
 import type { Document } from "@prisma/client";
 
-/** Ekstrak teks dari dokumen sesuai ekstensi. Lempar error jika gagal. */
+/**
+ * Ekstrak teks dari dokumen sesuai ekstensi. File dibaca dari storage
+ * (dekripsi AES-256-GCM otomatis di `readStoredFile`). Lempar error jika gagal.
+ */
 export async function parseDocument(doc: Document): Promise<string> {
-  const fullPath = path.join(process.cwd(), doc.filePath);
   const ext = path.extname(doc.fileName).toLowerCase();
+  const buffer = await readStoredFile(doc.filePath);
 
   switch (ext) {
     case ".pdf":
-      return parsePdf(fullPath);
+      return parsePdf(buffer);
     case ".xlsx":
-      return parseXlsx(fullPath);
+      return parseXlsx(buffer);
     case ".jpg":
     case ".jpeg":
-      return parseImage(fullPath);
+      return parseImage(buffer);
     default:
       throw new Error(`Format tidak didukung: ${ext}`);
   }
 }
 
-async function parsePdf(filePath: string): Promise<string> {
-  const buffer = await readFile(filePath);
+async function parsePdf(buffer: Buffer): Promise<string> {
   const parser = new PDFParse({ data: buffer });
   const result = await parser.getText();
   const text = result.text?.trim() ?? "";
@@ -32,8 +34,8 @@ async function parsePdf(filePath: string): Promise<string> {
   return text;
 }
 
-async function parseXlsx(filePath: string): Promise<string> {
-  const workbook = XLSX.readFile(filePath, { cellDates: true });
+async function parseXlsx(buffer: Buffer): Promise<string> {
+  const workbook = XLSX.read(buffer, { cellDates: true, type: "buffer" });
   const lines: string[] = [];
   for (const sheetName of workbook.SheetNames) {
     const sheet = workbook.Sheets[sheetName];
@@ -51,11 +53,10 @@ async function parseXlsx(filePath: string): Promise<string> {
   return text;
 }
 
-async function parseImage(filePath: string): Promise<string> {
+async function parseImage(buffer: Buffer): Promise<string> {
   if (!isLLMConfigured()) {
     throw new Error("Dokumen gambar memerlukan LLM vision — atur LLM_API_KEY terlebih dahulu");
   }
-  const buffer = await readFile(filePath);
   const base64 = buffer.toString("base64");
   const mime = "image/jpeg";
 

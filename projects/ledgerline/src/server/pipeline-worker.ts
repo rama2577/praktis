@@ -1,5 +1,7 @@
 import { Worker } from "bullmq";
+import { randomUUID } from "node:crypto";
 import { processDocument } from "@/server/pipeline";
+import { logger } from "@/lib/logger";
 
 /**
  * Worker pipeline (proses terpisah dari Next.js).
@@ -10,8 +12,8 @@ const connection = { url: process.env.REDIS_URL ?? "redis://localhost:6379" };
 const worker = new Worker(
   "pipeline",
   async (job) => {
-    const { documentId } = job.data as { documentId: string };
-    const result = await processDocument(documentId);
+    const { documentId, traceId } = job.data as { documentId: string; traceId?: string };
+    const result = await processDocument(documentId, traceId ?? randomUUID());
     if (!result.ok) {
       throw new Error(`${result.reason}${result.message ? `: ${result.message}` : ""}`);
     }
@@ -21,13 +23,13 @@ const worker = new Worker(
 );
 
 worker.on("completed", (job) => {
-  console.log(`[pipeline] job ${job.id} selesai → ${JSON.stringify(job.returnvalue)}`);
+  logger.info({ jobId: job.id, event: "worker.job_completed", result: job.returnvalue }, "job pipeline selesai");
 });
 worker.on("failed", (job, err) => {
-  console.error(`[pipeline] job ${job?.id} gagal: ${err.message}`);
+  logger.error({ jobId: job?.id, event: "worker.job_failed", error: err.message }, "job pipeline gagal");
 });
 worker.on("error", (err) => {
-  console.error("[pipeline] worker error:", err.message);
+  logger.error({ event: "worker.error", error: err.message }, "error worker");
 });
 
-console.log("[pipeline] Worker aktif — menunggu dokumen (Redis:", connection.url, ")");
+logger.info({ event: "worker.started", redis: connection.url }, "Worker aktif — menunggu dokumen");
