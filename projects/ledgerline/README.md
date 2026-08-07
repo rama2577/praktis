@@ -15,6 +15,15 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
+**Review queue engine (Task 7):**
+```bash
+npm run dev   # atau build + start, lalu buka /dashboard/queues
+```
+- State machine terpusat (`src/server/journal-machine.ts`): semua transisi status jurnal lewat `transitionJournal` — tidak ada jalur langsung lain.
+- Antrian per role: JUNIOR → SENIOR → TAX → PARTNER; urgent tampil pertama; admin melihat semua stage.
+- Aksi: Setujui (maju ke stage berikutnya), Kembalikan (mundur satu stage), Tolak (wajib catatan) → semua tercatat di ActivityLog + SlaEvent.
+- SLA: target Junior 120m / Senior 240m / Tax 240m / Partner 120m; status MET / AT_RISK / BREACHED.
+
 **Pipeline AI (Task 6):**
 ```bash
 brew services start redis          # Redis 8 (sudah diinstall via Homebrew)

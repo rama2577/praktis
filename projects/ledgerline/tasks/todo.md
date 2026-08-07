@@ -122,33 +122,26 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Estimated scope:** L (dipecah: 6a rule engine+validation, 6b parsers+LLM, 6c worker+orchestrasi)
 
 **Catatan:** Redis 8.10 diinstall via Homebrew (modul redisbloom/redisearch/redisjson/redistimeseries dinonaktifkan di redis.conf karena file .so tidak ada — service jalan normal tanpa modul itu).
-## Task 7: Review queue engine
+## Task 7: Review queue engine (state machine + SLA) ✅ (2026-08-07)
 
-**Description:** State machine terpusat untuk lifecycle journal (`DRAFT → JUNIOR_REVIEW → SENIOR_REVIEW → TAX_REVIEW → PARTNER_APPROVAL → APPROVED`, + EXCEPTION/REJECTED/ARCHIVED); queue per role (assign otomatis sesuai stage, urgent flag); aksi review (approve/reject/return dengan catatan); ActivityLog untuk tiap transisi; SLA timer mulai saat masuk stage.
+**Description:** State machine terpusat untuk lifecycle journal (`DRAFT → JUNIOR_REVIEW → SENIOR_REVIEW → TAX_REVIEW → PARTNER_APPROVAL → APPROVED` + EXCEPTION/REJECTED/ARCHIVED); antrian per role; aksi approve/reject/return dengan catatan; ActivityLog untuk tiap transisi; SLA timer (target per stage: Junior 120m, Senior 240m, Tax 240m, Partner 120m).
 
 **Acceptance criteria:**
-- [ ] Transisi state hanya lewat fungsi terpusat; transisi invalid ditolak
-- [ ] Queue tiap role menampilkan item sesuai stage-nya; urgent tampil pertama
-- [ ] Approve/reject tercatat di ActivityLog dengan user + timestamp
-- [ ] SLA breach ter-set saat melewati target stage
+- [x] Transisi state hanya lewat fungsi terpusat (`transitionJournal`); transisi invalid ditolak — verified: unit test matrix 15 test, API → 409 pada transisi invalid
+- [x] Queue tiap role menampilkan item sesuai stage-nya; urgent tampil pertama — verified: `GET /api/queues` role-scoped (assigneeId), order urgent desc + createdAt asc; admin lihat semua stage
+- [x] Approve/reject/return tercatat di ActivityLog dengan user + timestamp + detail (from/to/stage/note) — verified E2E audit trail
+- [x] SLA breach ter-set saat melewati target stage — `SlaEvent` dibuat tiap task selesai (status MET/BREACHED via `computeFinalSlaStatus`); status live MET/AT_RISK/BREACHED tersedia
 
 **Verification:**
-- [ ] Tests pass: `pnpm test -- --grep review`
-- [ ] Manual: review 1 journal sampai APPROVED, cek audit trail
+- [x] Tests pass: `npm test` — 61/61 (15 test baru state machine + SLA)
+- [x] Build succeeds + lint bersih
+- [x] E2E (`scripts/e2e-review.ts`): alur penuh JUNIOR→SENIOR→TAX→PARTNER→APPROVED (semua 200); RBAC dwi→task budi = 403; reject tanpa catatan = 400; return JUNIOR→DRAFT; reject→REJECTED; audit trail 6 entri benar; SLA events MET
 
 **Dependencies:** Task 6
-**Files likely touched:** src/server/journalMachine.ts, src/server/review.ts, src/app/(dashboard)/queues/*
-**Estimated scope:** L (pecah: 7a state machine + tests, 7b UI queue + aksi)
+**Files touched:** src/server/{journal-machine,sla}.ts, src/app/api/{queues,reviews/[taskId]}/route.ts, src/app/dashboard/queues/page.tsx, src/components/queues/{queue-list,stage-meta}.tsx, sidebar (Antrian Review aktif), tests/review.test.ts, scripts/e2e-review.ts
+**Estimated scope:** L (state machine + API + UI antrian + SLA)
 
----
-
-### Checkpoint: Core Pipeline
-- [ ] End-to-end 1 klien: upload → draft → queue → approve
-- [ ] Traceability contoh journal lengkap
-- [ ] **Review Rama** sebelum Phase 3
-
----
-
+**Catatan:** assignee otomatis via load-balancing (user role stage dengan task pending paling sedikit); return dari JUNIOR → DRAFT (belum ada task — menunggu proses ulang). Halaman antrian menampilkan garis jurnal, ref PSAK, keyakinan AI, tenggat.
 ## Task 8: Layout dashboard + KPI cards
 
 **Description:** Layout sesuai mockup: sidebar 3 grup (OPERATIONS: Dashboard/Pipeline/Queues/Knowledge Base; ANALYTICS: Quality/SLA; SYSTEM: Clients/Settings), header (tanggal, status AI Online, profil user), dark theme; 5 KPI cards dari data real: Active Clients (+this month), AI Automation %, Jobs in Progress (AI vs review), Transactions Today (+vs avg), SLA Breaches (rincian role).

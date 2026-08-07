@@ -19,7 +19,7 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
     items: [
       { label: "Dashboard", href: "/dashboard", ready: true },
       { label: "Pipeline Produksi", href: "/dashboard/pipeline", ready: false, task: "Task 9" },
-      { label: "Antrian Review", href: "/dashboard/queues", ready: false, task: "Task 7" },
+      { label: "Antrian Review", href: "/dashboard/queues", ready: true },
       { label: "Knowledge Base", href: "/dashboard/knowledge", ready: false, task: "Task 11" },
     ],
   },
