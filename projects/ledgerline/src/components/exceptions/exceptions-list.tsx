@@ -39,7 +39,10 @@ export function ExceptionsList() {
   }, []);
 
   useEffect(() => {
-    void load();
+    async function start() {
+      await load();
+    }
+    void start();
   }, [load]);
 
   const resolve = useCallback(

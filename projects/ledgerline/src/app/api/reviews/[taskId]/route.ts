@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
@@ -15,7 +14,6 @@ const ACTIONS: ReviewAction[] = ["approve", "reject", "return"];
  * terpusat (transitionJournal) — tidak ada jalur langsung lain.
  */
 export async function POST(req: Request, { params }: { params: Promise<{ taskId: string }> }) {
-  const session = await auth();
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const user = guard.session.user;

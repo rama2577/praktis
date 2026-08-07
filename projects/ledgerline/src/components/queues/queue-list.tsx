@@ -55,7 +55,7 @@ export function QueueList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
-  const [action, setAction] = useState<string | null>(null);
+  const [, setAction] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
@@ -75,7 +75,10 @@ export function QueueList() {
   }, []);
 
   useEffect(() => {
-    void load();
+    async function start() {
+      await load();
+    }
+    void start();
   }, [load]);
 
   const grouped = useMemo(() => {

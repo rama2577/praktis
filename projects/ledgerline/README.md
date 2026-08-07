@@ -1,105 +1,93 @@
-# LedgerLine — AI Bookkeeping Operations Platform
+# LedgerLine — AI Bookkeeping Platform
 
-Platform AI bookkeeping untuk kantor akuntan Indonesia: dokumen mentah klien → draft journal entries (PSAK/PPN/PPh-aware) → review manusia berjenjang → dashboard operasional real-time.
+Platform operasional untuk kantor akuntan Indonesia: dokumen klien (PDF/JPG/XLSX) → AI pipeline menghasilkan **draft jurnal** (PSAK/PPN/PPh-aware, confidence score) → **review manusia 4 lapis** (Junior → Senior → Tax → Partner) → jurnal final, dengan dashboard operasional real-time. UI Bahasa Indonesia, tema dark navy.
 
-> **Status proyek: FOUNDATION (Task 1 ✅ + Task 2 ✅ — 2026-08-07)** — scaffold + data model + seed jalan. Berikutnya: Task 3 (auth + RBAC). Lihat `docs/spec.md` & `tasks/plan.md`.
+## Quickstart (≤ 15 menit)
 
-## Cara Menjalankan (lokal)
+**Prasyarat:** Node ≥ 20 (npm), PostgreSQL 16, Redis 7+ (macOS: `brew install postgresql@16 redis`).
 
 ```bash
-npm install        # install dependencies
-npm run dev        # dev server → http://localhost:3000
-npm run lint       # ESLint
-npm test           # unit + component tests (Vitest)
-npm run build      # production build
-npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
+# 1. Install & siapkan DB
+npm ci
+cp .env.example .env            # isi DATABASE_URL, AUTH_SECRET, dsb.
+createdb ledgerline             # atau buat DB sesuai .env
+npx prisma migrate deploy
+npx prisma db seed              # 1 firma, 6 user, 3 klien, 22 jurnal, antrian per role
+
+# 2. Jalankan (3 terminal)
+npm run dev                     # web: http://localhost:3000
+npm run worker                  # pipeline AI (butuh Redis berjalan)
+redis-cli ping                  # pastikan Redis aktif
 ```
 
-**Security & Observability (Task 13):**
-- Enkripsi at-rest dokumen: AES-256-GCM (`STORAGE_ENCRYPTION_KEY`, hex 64 — `openssl rand -hex 32`); file terenkripsi di disk, didekripsi saat pipeline memproses.
-- Rate limit upload: 10/menit per user (Redis) → 429; semua API route RBAC; security headers via next.config.
-- Logging terstruktur pino (JSON) dengan `traceId` per dokumen (enqueue → worker → pipeline); alert SLA breach in-app (`SLA_BREACHED` di activity feed).
-- Healthcheck: `GET /api/health` (status DB + Redis + uptime).
+**Login demo** (password `password123`):
+`admin@ledgerline.dev` (ADMIN dev — akses semua modul) · `budi@` / `dwi@` (JUNIOR) · `rina@` (SENIOR) · `sari@` (TAX) · `andi@` (PARTNER)
 
-**Quality, Knowledge Base & Exception (Task 11):**
-- `/dashboard/quality` — Lolos Tanpa Revisi, Exception Rate, Confidence vs Status (korelasi skor AI vs hasil review), SLA Breach Rate per stage.
-- `/dashboard/knowledge` — 13 referensi (business events, template jurnal, COA retail/jasa/F&B, PPN/PPh, PSAK) dari `src/ai/knowledge/`, bisa dicari.
-- `/dashboard/exceptions` — jurnal ber-exception; resolusi dengan catatan → jurnal kembali ke antrian Junior (EXCEPTION → JUNIOR_REVIEW via state machine), riwayat di Activity Log.
+**Coba alur utama:** login admin → *Klien* → pilih klien → upload PDF/XLSX → ~2 detik kemudian jurnal draft muncul di *Antrian Review* → setujui berlapis hingga APPROVED. Exception (dokumen tak jelas) muncul di *Pengecualian*.
 
-**SLA, Confidence & Activity (Task 10):**
-- Monitoring SLA per stage review: progress bar vs target (Junior ≤2 jam, Senior ≤4 jam, Pajak ≤4 jam, Partner ≤2 jam), warna hijau/kuning/merah, rincian antre/terlambat/selesai (OK/breach).
-- Chart Distribusi Keyakinan AI (Recharts): bucket <50%, 50–70%, 70–85%, ≥85% dari skor confidence aktual.
-- Feed Aktivitas Terbaru: aksi nyata (AI drafting, review, exception, dll) dengan timestamp relatif ("5 mnt lalu").
-- Semua section auto-refresh tiap 30 detik via `GET /api/dashboard`.
+## Environment Variables
 
-**Pipeline & Antrian (Task 9):**
-- Visualisasi 5 stage produksi: Draft Jurnal → Rule Engine → Junior → Senior → Pajak (termasuk partner), count real dari DB.
-- Panel Antrian Review per role dengan badge urgent merah; klik stage/queue → halaman antrian.
-- Auto-refresh ringan: polling `GET /api/dashboard` setiap 30 detik.
+| Variabel | Wajib | Keterangan |
+|---|---|---|
+| `DATABASE_URL` | ✅ | PostgreSQL, contoh `postgresql://staff@localhost:5432/ledgerline` |
+| `AUTH_SECRET` | ✅ | Rahasia sesi NextAuth (`openssl rand -base64 32`) |
+| `AUTH_TRUST_HOST` | dev | `true` untuk localhost |
+| `REDIS_URL` | ⚠️ | BullMQ/rate limit; default `redis://localhost:6379` |
+| `STORAGE_ENCRYPTION_KEY` | ⚠️ prod | Kunci enkripsi at-rest dokumen, hex 64 (`openssl rand -hex 32`); tanpa ini memakai kunci DEV |
+| `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL` | opsional | LLM OpenAI-compatible (default GLM `https://api.z.ai/api/paas/v4`, `glm-4.6`); pipeline jalan tanpa key via rule engine |
 
-**Dashboard KPI (Task 8):**
-- 5 KPI real-time dari DB: Klien Aktif (+bulan ini), AI Automation % (jurnal AI tanpa pengecualian), Jobs in Progress (draft AI vs menunggu review), Transactions Hari Ini (vs rata-rata harian), SLA Breaches (rincian per role).
-- Responsive: sidebar jadi drawer (hamburger) di layar mobile; header menampilkan tanggal + status AI Online.
+## Arsitektur
 
-**Review queue engine (Task 7):**
+```
+[Upload dokumen] → [BullMQ worker: parse PDF/XLSX/JPG] → [Rule engine + LLM (opsional)]
+      → [Validasi: balance=0, psakRef+COA] → [JournalEntry DRAFT/EXCEPTION + confidence]
+      → [Review: JUNIOR → SENIOR → TAX → PARTNER] → [APPROVED]
+```
+
+- **Monolith Next.js** (App Router) — halaman + API + server logic; worker proses terpisah. *(ADR-001)*
+- **State machine terpusat** `src/server/journal-machine.ts` — semua transisi status jurnal + audit trail + SLA. *(ADR-002)*
+- **Tenant-aware** (`firmId` di semua tabel), MVP single-firm. *(ADR-003)*
+- **AI modular** `src/ai/`: rule engine deterministik (knowledge base `src/ai/knowledge/`) primer, LLM swappable via env. *(ADR-004)*
+- **Enkripsi at-rest** AES-256-GCM untuk dokumen. *(ADR-005)*
+- Teknologi: Next.js 16, TypeScript strict, Tailwind v4, Prisma 6 + PostgreSQL, BullMQ + Redis, NextAuth v5 (Credentials + bcrypt), Vitest, pino, Recharts.
+
+### Struktur penting
+- `src/ai/` — pipeline AI (parsers, rule-engine, drafting, validation, llm) + `knowledge/` (13 referensi: PSAK, PPN/PPh, COA, template)
+- `src/server/` — pipeline, worker, state machine, SLA, dashboard metrics, knowledge listing
+- `src/app/dashboard/` — halaman: dashboard (KPI+pipeline+SLA+confidence+activity), antrian review, pengecualian, metrik kualitas, knowledge base, klien
+- `src/app/api/` — route API (clients, documents, queues, reviews, exceptions, dashboard, health)
+- `scripts/` — generate fixtures, E2E (e2e-upload, e2e-review)
+- `docs/` — spec, ADR, DoD, task log
+
+## Perintah
+
 ```bash
-npm run dev   # atau build + start, lalu buka /dashboard/queues
-```
-- State machine terpusat (`src/server/journal-machine.ts`): semua transisi status jurnal lewat `transitionJournal` — tidak ada jalur langsung lain.
-- Antrian per role: JUNIOR → SENIOR → TAX → PARTNER; urgent tampil pertama; admin melihat semua stage.
-- Aksi: Setujui (maju ke stage berikutnya), Kembalikan (mundur satu stage), Tolak (wajib catatan) → semua tercatat di ActivityLog + SlaEvent.
-- SLA: target Junior 120m / Senior 240m / Tax 240m / Partner 120m; status MET / AT_RISK / BREACHED.
-
-**Pipeline AI (Task 6):**
-```bash
-brew services start redis          # Redis 8 (sudah diinstall via Homebrew)
-npm run worker                     # jalankan worker pipeline (terminal terpisah)
-```
-- Pipeline berjalan tanpa API key (rule engine deterministik dari knowledge base). Aktifkan LLM (GLM default) dengan mengisi `LLM_API_KEY` di `.env` → drafting yang lebih baik untuk dokumen kompleks.
-- JPG/scan memerlukan LLM vision (`LLM_API_KEY`); tanpa key akan masuk status EXCEPTION/FAILED (tidak mengarang hasil).
-- Knowledge base: `src/ai/knowledge/` (salinan referensi skill ledgerline: PSAK, PPN/PPh, COA, template jurnal).
-
-**Database (PostgreSQL 16 via Homebrew):**
-```bash
-brew services start postgresql@16   # pastikan service jalan
-cp .env.example .env                # sesuaikan DATABASE_URL
-npx prisma migrate dev              # terapkan migrasi
-npx prisma db seed                  # data demo (akun: password123)
+npm run dev        # web (dev)
+npm run build      # build produksi
+npm start          # serve hasil build
+npm run worker     # worker pipeline AI (terminal terpisah)
+npm run lint       # eslint
+npm test           # unit test (vitest, 89 test)
+npm run test:e2e   # playwright (opsional)
+npx prisma studio  # inspeksi DB
 ```
 
-Akun demo: `admin@ledgerline.dev` (ADMIN), `budi@`/`dwi@` (JUNIOR), `rina@` (SENIOR), `sari@` (TAX), `andi@` (PARTNER) — password `password123`. Redis belum dibutuhkan sampai Task 6 (queue pipeline).
+## Deploy (path terdokumentasi)
 
-## Struktur
+1. **DB**: PostgreSQL + Redis terkelola (mis. Neon/Supabase + Upstash), jalankan `prisma migrate deploy` + seed.
+2. **Web**: build Next.js → serve (`next start`) di Vercel / Node host; set semua env.
+3. **Worker**: proses terpisah menjalankan `npm run worker` (harus punya akses Redis + DB + storage `uploads/` persisten).
+4. **Storage**: `uploads/` (terenkripsi) — mount volume persisten; backup kunci `STORAGE_ENCRYPTION_KEY`.
+5. **CI**: `.github/workflows/ci.yml` — lint → test → build → migration → E2E integration (PostgreSQL+Redis services).
+6. **Healthcheck**: `GET /api/health` (DB + Redis + uptime).
 
-| Path | Isi |
-|---|---|
-| `src/app/` | Halaman & routing (App Router); saat ini: landing placeholder |
-| `src/components/` | `ui/` (StatusBadge, dll), `dashboard/`, `pipeline/`, `queues/`, `layout/` |
-| `src/lib/` | Utilitas shared (format Rupiah, dll) |
-| `src/server/` | Logic server: pipeline, rule engine, queue engine (Task 6–7) |
-| `src/ai/` | AI pipeline: parse dokumen, drafting, scoring (Task 6) |
-| `tests/` | Unit & component tests (Vitest) |
-| `e2e/` | End-to-end tests (Playwright) |
-| `docs/spec.md` | Spesifikasi produk |
-| `tasks/` | Rencana & checklist (plan.md, todo.md) |
+## Roadmap task
 
-## Cara Kerja Proyek Ini
+| Fase | Task | Status |
+|---|---|---|
+| Foundation | 1 scaffold · 2 data model+seed · 3 auth+RBAC | ✅ |
+| Core Pipeline | 4 klien · 5 upload · 6 AI pipeline · 7 review engine | ✅ |
+| Dashboard | 8 KPI · 9 pipeline+queue · 10 SLA+confidence+activity | ✅ |
+| Ops & Launch | 11 quality+KB+exception · 12 states+a11y · 13 security+observability · 14 DoD+CI | ✅ |
 
-Proyek ini dibangun mengikuti **agent-skills** (engineering workflow skills):
-1. Setiap fase diawali spec/plan → **review Rama** (gate) → baru implementasi.
-2. Implementasi per **vertical slice** (satu fitur utuh per task, maks ±5 file).
-3. Setiap task punya acceptance criteria + verification; selesai satu, lanjut satu.
-4. Domain accounting memakai knowledge base skill `ledgerline-ai-bookkeeper` (PSAK, PPN/PPh, COA, journal templates) — jangan invent treatment.
-
-## Alur Produk (dari mockup)
-
-```
-Dokumen klien (invoice, rekening koran)
-   → Upload + validasi (SLA 5 menit)
-   → AI pipeline: OCR → deteksi business event → draft journal + confidence score (SLA 3 menit)
-   → Rule Engine & validation (PSAK, PPN/PPh)
-   → Review: Junior (2 jam) → Senior (4 jam) → Tax (4 jam) → Partner (2 jam)
-   → APPROVED → Delivery same-day
-```
-
-Setiap stage di-track: SLA status, traceability (business event → referensi PSAK → COA → reviewer), activity log.
+Checkpoint manusia: Foundation ✅ · Core Pipeline ✅ · Dashboard ✅ (menunggu review Rama) · Complete ⏳

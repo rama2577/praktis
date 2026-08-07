@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /**
  * E2E Task 7 — review queue engine.
  * Alur: JUNIOR approve → SENIOR approve → TAX approve → PARTNER approve → APPROVED,
@@ -103,8 +104,7 @@ async function main() {
   console.log("reject tanpa catatan:", noNote.status === 400 ? "400 OK" : `GAGAL (${noNote.status})`);
 
   // 4. Alur lengkap: JUNIOR → SENIOR → TAX → PARTNER → APPROVED
-  let journalId = target.journalEntry.id;
-  const approveAt = async (s: Session, expectStage: string, label: string) => {
+  const journalId = target.journalEntry.id;  const approveAt = async (s: Session, expectStage: string, label: string) => {
     const q = await s.queues();
     const item = q.find((t) => t.journalEntry.id === journalId);
     if (!item) throw new Error(`${label}: jurnal ${journalId.slice(0, 8)} tidak ada di antrian`);

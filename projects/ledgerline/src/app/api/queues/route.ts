@@ -1,5 +1,4 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
@@ -11,7 +10,6 @@ import { OPERATIONAL_ROLES } from "@/lib/roles";
  * Urutan: urgent dulu, lalu createdAt terlama.
  */
 export async function GET() {
-  const session = await auth();
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 

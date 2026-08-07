@@ -12,6 +12,11 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Artefak lokal & alat dev:
+    "coverage/**",
+    "uploads/**",
+    "playwright-report/**",
+    "test-results/**",
   ]),
 ]);
 
