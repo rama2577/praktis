@@ -159,24 +159,23 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 **Dependencies:** Task 7
 **Files touched:** src/server/dashboard.ts, src/components/dashboard/kpi-cards.tsx, src/components/layout/{dashboard-shell,sidebar}.tsx, src/app/dashboard/{layout,page}.tsx, tests/dashboard.test.ts
 **Estimated scope:** M
-## Task 9: Pipeline visualization + Review Queues panel
+## Task 9: Pipeline visualization + Review Queues panel ✅ (2026-08-07)
 
-**Description:** Diagram alur 5 stage (Draft Journals → Rule Engine → Junior → Senior → Tax) dengan count item per stage; panel Review Queues 4 role dengan count + badge urgent (merah), sesuai mockup.
+**Description:** Diagram alur 5 stage (Draft Jurnal → Rule Engine → Review Junior → Review Senior → Review Pajak) dengan count item per stage; panel Antrian Review 4 role dengan count + badge urgent (merah), sesuai mockup.
 
 **Acceptance criteria:**
-- [ ] Count per stage akurat dari DB & auto-refresh (polling/SSE ringan)
-- [ ] Klik stage/queue → navigasi ke halaman queue terkait
-- [ ] Urgent badge tampil untuk item bertanda urgent
+- [x] Count per stage akurat dari DB & auto-refresh — `getPipelineData` (statusCounts + dokumen PENDING/PROCESSING + task PENDING); client polling `GET /api/dashboard` tiap 30 dtk (label waktu sinkronisasi + fallback error)
+- [x] Klik stage/queue → navigasi ke halaman antrian — semua stage & baris queue adalah Link ke `/dashboard/queues`
+- [x] Urgent badge tampil untuk item bertanda urgent — badge merah "N urgent" per stage (seed: JUNIOR 1 urgent)
 
 **Verification:**
-- [ ] Manual: tambah dokumen → count stage berubah
+- [x] Tests pass: `npm test` — 61 + 4 baru = 65/65 (buildPipelineStages, buildQueueSummary)
+- [x] E2E: upload dokumen → Rule Engine naik 1 (1→2) ✓; seed bersih → draft=8, ruleEngine=1, junior=5, senior=3, tax=3 (TAX+PARTNER); queues JUNIOR 5/1 urgent, SENIOR 3, TAX 2, PARTNER 1 (sesuai mockup); badge urgent & link antrian ada di HTML
+- [x] Build + lint bersih
 
 **Dependencies:** Task 8
-**Files likely touched:** src/components/pipeline/*, src/components/queues/*, src/server/dashboard.ts
+**Files touched:** src/server/dashboard.ts (pipeline builders), src/components/dashboard/pipeline-queues-panel.tsx, src/app/api/dashboard/route.ts, src/app/dashboard/page.tsx, tests/dashboard.test.ts
 **Estimated scope:** M
-
----
-
 ## Task 10: SLA monitoring + AI confidence + Activity feed
 
 **Description:** SLA section 7 metrik dengan progress bar vs target (Upload Validation 5m, AI Draft 3m, Junior 2h, Senior 4h, Tax 4h, Partner 2h, Delivery same-day) + status warna (hijau/kuning/merah); chart AI Confidence Distribution (Recharts); Recent Activity feed real-time.

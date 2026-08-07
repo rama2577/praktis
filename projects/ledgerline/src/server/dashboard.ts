@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import type { JournalStatus, ReviewStage } from "@prisma/client";
+import type { DocumentStatus, JournalStatus, ReviewStage } from "@prisma/client";
 
 /** Status jurnal yang sedang "dalam proses" (belum final). */
 export const IN_PROCESS_STATUSES: JournalStatus[] = [
@@ -36,6 +36,89 @@ export function daysSince(from: Date, now: Date): number {
   const diff = now.getTime() - from.getTime();
   if (diff <= 0) return 1;
   return Math.max(1, Math.ceil(diff / 86_400_000));
+}
+
+/** Dokumen yang sedang diproses pipeline AI (belum selesai). */
+export const PROCESSING_DOC_STATUSES: DocumentStatus[] = ["PENDING", "PROCESSING"];
+
+// ── Pipeline & antrian: pure builders (unit-testable) ────────────────────
+
+export type PipelineStageData = {
+  key: "draft" | "ruleEngine" | "junior" | "senior" | "tax";
+  label: string;
+  count: number;
+  hint: string;
+};
+
+export type QueueSummaryItem = {
+  stage: ReviewStage;
+  pending: number;
+  urgent: number;
+};
+
+export type PipelineData = {
+  stages: PipelineStageData[];
+  queues: QueueSummaryItem[];
+  totalInPipeline: number;
+};
+
+/** Susun 5 stage pipeline dari hitungan status jurnal + dokumen diproses. */
+export function buildPipelineStages(
+  statusCounts: Array<{ status: JournalStatus; count: number }>,
+  docsProcessing: number,
+): PipelineStageData[] {
+  const by = new Map(statusCounts.map((s) => [s.status, s.count]));
+  const draft = by.get("DRAFT") ?? 0;
+  const junior = by.get("JUNIOR_REVIEW") ?? 0;
+  const senior = by.get("SENIOR_REVIEW") ?? 0;
+  const tax = by.get("TAX_REVIEW") ?? 0;
+  const partner = by.get("PARTNER_APPROVAL") ?? 0;
+  return [
+    { key: "draft", label: "Draft Jurnal", count: draft, hint: "hasil AI menunggu masuk antrian" },
+    { key: "ruleEngine", label: "Rule Engine", count: docsProcessing, hint: "dokumen sedang diproses AI" },
+    { key: "junior", label: "Review Junior", count: junior, hint: "verifikasi awal" },
+    { key: "senior", label: "Review Senior", count: senior, hint: "pemeriksaan lanjutan" },
+    { key: "tax", label: "Review Pajak", count: tax + partner, hint: "tax & persetujuan partner" },
+  ];
+}
+
+/** Ringkas task pending per stage: jumlah total + jumlah urgent. */
+export function buildQueueSummary(
+  tasks: Array<{ stage: ReviewStage; urgent: boolean }>,
+): QueueSummaryItem[] {
+  const map = new Map<ReviewStage, { pending: number; urgent: number }>();
+  for (const t of tasks) {
+    const cur = map.get(t.stage) ?? { pending: 0, urgent: 0 };
+    cur.pending += 1;
+    if (t.urgent) cur.urgent += 1;
+    map.set(t.stage, cur);
+  }
+  const order: ReviewStage[] = ["JUNIOR", "SENIOR", "TAX", "PARTNER"];
+  return order
+    .filter((s) => map.has(s))
+    .map((s) => ({ stage: s, pending: map.get(s)!.pending, urgent: map.get(s)!.urgent }));
+}
+
+export async function getPipelineData(firmId: string): Promise<PipelineData> {
+  const [statusCounts, docsProcessing, tasks] = await Promise.all([
+    prisma.journalEntry.groupBy({ by: ["status"], where: { firmId }, _count: true }),
+    prisma.document.count({ where: { firmId, status: { in: PROCESSING_DOC_STATUSES } } }),
+    prisma.reviewTask.findMany({
+      where: { status: "PENDING", journalEntry: { firmId } },
+      select: { stage: true, urgent: true },
+    }),
+  ]);
+
+  const stages = buildPipelineStages(
+    statusCounts.map((s) => ({ status: s.status as JournalStatus, count: s._count })),
+    docsProcessing,
+  );
+  const queues = buildQueueSummary(tasks.map((t) => ({ stage: t.stage as ReviewStage, urgent: t.urgent })));
+  return {
+    stages,
+    queues,
+    totalInPipeline: stages.reduce((acc, s) => acc + s.count, 0),
+  };
 }
 
 // ── Agregasi data dashboard dari DB ──────────────────────────────────────

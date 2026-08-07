@@ -15,6 +15,11 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
+**Pipeline & Antrian (Task 9):**
+- Visualisasi 5 stage produksi: Draft Jurnal → Rule Engine → Junior → Senior → Pajak (termasuk partner), count real dari DB.
+- Panel Antrian Review per role dengan badge urgent merah; klik stage/queue → halaman antrian.
+- Auto-refresh ringan: polling `GET /api/dashboard` setiap 30 detik.
+
 **Dashboard KPI (Task 8):**
 - 5 KPI real-time dari DB: Klien Aktif (+bulan ini), AI Automation % (jurnal AI tanpa pengecualian), Jobs in Progress (draft AI vs menunggu review), Transactions Hari Ini (vs rata-rata harian), SLA Breaches (rincian per role).
 - Responsive: sidebar jadi drawer (hamburger) di layar mobile; header menampilkan tanggal + status AI Online.
