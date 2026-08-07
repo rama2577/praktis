@@ -9,7 +9,6 @@ import {
   PrismaClient,
   Role,
   Industry,
-  ClientStatus,
   DocumentType,
   DocumentStatus,
   JournalStatus,
