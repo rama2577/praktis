@@ -2,7 +2,7 @@
 
 Platform AI bookkeeping untuk kantor akuntan Indonesia: dokumen mentah klien → draft journal entries (PSAK/PPN/PPh-aware) → review manusia berjenjang → dashboard operasional real-time.
 
-> **Status proyek: FOUNDATION (Task 1 selesai ✅ 2026-08-07)** — scaffold Next.js + tooling test jalan. Lihat `docs/spec.md` & `tasks/plan.md`.
+> **Status proyek: FOUNDATION (Task 1 ✅ + Task 2 ✅ — 2026-08-07)** — scaffold + data model + seed jalan. Berikutnya: Task 3 (auth + RBAC). Lihat `docs/spec.md` & `tasks/plan.md`.
 
 ## Cara Menjalankan (lokal)
 
@@ -15,7 +15,15 @@ npm run build      # production build
 npx playwright install   # hanya saat mau jalankan E2E (Task fase verify)
 ```
 
-Salin `.env.example` → `.env` saat masuk Task 2–3 (DB, Redis, AUTH_SECRET).
+**Database (PostgreSQL 16 via Homebrew):**
+```bash
+brew services start postgresql@16   # pastikan service jalan
+cp .env.example .env                # sesuaikan DATABASE_URL
+npx prisma migrate dev              # terapkan migrasi
+npx prisma db seed                  # data demo (akun: password123)
+```
+
+Akun demo: `admin@ledgerline.dev` (ADMIN), `budi@`/`dwi@` (JUNIOR), `rina@` (SENIOR), `sari@` (TAX), `andi@` (PARTNER) — password `password123`. Redis belum dibutuhkan sampai Task 6 (queue pipeline).
 
 ## Struktur
 

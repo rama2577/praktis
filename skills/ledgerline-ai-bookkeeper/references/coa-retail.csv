@@ -1,0 +1,146 @@
+kode,nama,tipe,nature,sub_nature,laporan,psak_ref,keterangan
+1000,KAS & SETARA KAS,Aset,Lancar,Kas,Neraca,PSAK 1,Group kas
+1100,Kas di Tangan,Aset,Lancar,Kas,Neraca,,Kas fisik
+1110,Kas Kecil/Anggaran,Aset,Lancar,Kas,Neraca,,Petty cash
+1200,Kas di Bank,Aset,Lancar,Kas,Neraca,,Group bank
+1210,Kas Bank BCA,Aset,Lancar,Kas,Neraca,,Rekening operasional
+1220,Kas Bank Mandiri,Aset,Lancar,Kas,Neraca,,Rekening payroll
+1230,Kas Bank BRI,Aset,Lancar,Kas,Neraca,,Rekening cadangan
+1300,PIUTANG USAHA,Aset,Lancar,Piutang,Neraca,PSAK 71,Gross piutang
+1310,Piutang Usaha - Trade,Aset,Lancar,Piutang,Neraca,,Piutang dari penjualan
+1320,Piutang Usaha - PPN,Aset,Lancar,Piutang,Neraca,,PPN dalam piutang
+1400,PIUTANG LAIN-LAIN,Aset,Lancar,Piutang,Neraca,,Non-trade
+1410,Piutang Karyawan,Aset,Lancar,Piutang,Neraca,,Kasbon/advance
+1420,Piutang PPh Dibayar Lebih,Aset,Lancar,Piutang,Neraca,,Overpaid tax
+1500,PAJAK DIBAYAR DIMUKA,Aset,Lancar,Pajak,Neraca,,Tax prepaid
+1510,PPN Masukan,Aset,Lancar,Pajak,Neraca,,VAT input
+1520,PPh 23/26 Dibayar Dimuka,Aset,Lancar,Pajak,Neraca,,Income tax prepaid
+1530,PPh 25 Angsuran,Aset,Lancar,Pajak,Neraca,,Monthly corporate tax installment
+1600,BIAYA DIBAYAR DIMUKA,Aset,Lancar,Prepaid,Neraca,,Deferred expenses
+1610,Sewa Dibayar Dimuka,Aset,Lancar,Prepaid,Neraca,PSAK 73,Operating lease prepaid
+1620,Asuransi Dibayar Dimuka,Aset,Lancar,Prepaid,Neraca,,Insurance prepaid
+1630,Iklan Dibayar Dimuka,Aset,Lancar,Prepaid,Neraca,,Advertising prepaid
+1700,PERSEDIAAN,Aset,Lancar,Persediaan,Neraca,PSAK 14,Inventory group
+1710,Persediaan Barang Dagangan,Aset,Lancar,Persediaan,Neraca,,Merchandise
+1720,Persediaan Bahan Baku,Aset,Lancar,Persediaan,Neraca,,Raw materials
+1730,Persediaan Bahan Pembantu,Aset,Lancar,Persediaan,Neraca,,Supplies
+1740,Persediaan Barang Dalam Perjalanan,Aset,Lancar,Persediaan,Neraca,,In-transit
+1750,Persediaan Bahan Baku Dalam Proses,Aset,Lancar,Persediaan,Neraca,,WIP
+1800,ASET TETAP,Aset,Tidak Lancar,Aset Tetap,Neraca,PSAK 16,PPE group
+1810,Tanah,Aset,Tidak Lancar,Aset Tetap,Neraca,,Not depreciated
+1820,Bangunan,Aset,Tidak Lancar,Aset Tetap,Neraca,,Useful life: 20-40 years
+1830,Kendaraan,Aset,Tidak Lancar,Aset Tetap,Neraca,,Useful life: 5-8 years
+1840,Peralatan Produksi,Aset,Tidak Lancar,Aset Tetap,Neraca,,Useful life: 5-10 years
+1850,Peralatan Kantor,Aset,Tidak Lancar,Aset Tetap,Neraca,,Useful life: 3-5 years
+1860,Mesin,Aset,Tidak Lancar,Aset Tetap,Neraca,,Useful life: 5-15 years
+1870,Furniture & Fixture,Aset,Tidak Lancar,Aset Tetap,Neraca,,Useful life: 5 years
+1900,AKUMULASI PENYUSUTAN,Aset,Tidak Lancar,Akum Penyusutan,Neraca,PSAK 16,Contra-asset
+1910,Akum Penyusutan Bangunan,Aset,Tidak Lancar,Akum Penyusutan,Neraca,,Credit balance
+1920,Akum Penyusutan Kendaraan,Aset,Tidak Lancar,Akum Penyusutan,Neraca,,Credit balance
+1930,Akum Penyusutan Peralatan Produksi,Aset,Tidak Lancar,Akum Penyusutan,Neraca,,Credit balance
+1940,Akum Penyusutan Peralatan Kantor,Aset,Tidak Lancar,Akum Penyusutan,Neraca,,Credit balance
+1950,Akum Penyusutan Mesin,Aset,Tidak Lancar,Akum Penyusutan,Neraca,,Credit balance
+1960,Akum Penyusutan Furniture,Aset,Tidak Lancar,Akum Penyusutan,Neraca,,Credit balance
+2000,ASET TIDAK BERWUJUD,Aset,Tidak Lancar,Aset Tdk Berwujud,Neraca,ISAK 35,Intangible group
+2010,Software/Aplikasi,Aset,Tidak Lancar,Aset Tdk Berwujud,Neraca,,Useful life: 3-5 years
+2020,Lisensi,Aset,Tidak Lancar,Aset Tdk Berwujud,Neraca,,Useful life: per kontrak
+2030,Akum Amortisasi Software,Aset,Tidak Lancar,Akum Amortisasi,Neraca,,Contra-asset
+2100,GUANG ASET TETAP,Aset,Tidak Lancar,Guarantee,Neraca,PSAK 73,ROU asset
+2110,Guang Aset Tetap - Bangunan,Aset,Tidak Lancar,Guarantee,Neraca,,Lease ROU building
+2120,Guang Aset Tetap - Kendaraan,Aset,Tidak Lancar,Guarantee,Neraca,,Lease ROU vehicle
+2130,Guang Aset Tetap - Peralatan,Aset,Tidak Lancar,Guarantee,Neraca,,Lease ROU equipment
+3000,KEWAJIBAN JANGKA PENDEK,Kewajiban,Lancar,Kewajiban JP,Neraca,,Current liabilities
+3100,Utang Usaha,Kewajiban,Lancar,Kewajiban JP,Neraca,,Trade payables
+3110,Utang Usaha - PPN,Kewajiban,Lancar,Kewajiban JP,Neraca,,VAT in AP
+3200,Utang PPN,Kewajiban,Lancar,Kewajiban JP,Neraca,,VAT payable
+3210,PPN Keluaran,Kewajiban,Lancar,Kewajiban JP,Neraca,,VAT output
+3300,Utang PPh,Kewajiban,Lancar,Kewajiban JP,Neraca,,Income tax payable
+3310,Utang PPh 21,Kewajiban,Lancar,Kewajiban JP,Neraca,,Employee income tax
+3320,Utang PPh 23,Kewajiban,Lancar,Kewajiban JP,Neraca,,Service income tax
+3330,Utang PPh 25,Kewajiban,Lancar,Kewajiban JP,Neraca,,Corporate monthly installment
+3340,Utang PPh 26,Kewajiban,Lancar,Kewajiban JP,Neraca,,Non-resident income tax
+3400,Utang Gaji & Tunjangan,Kewajiban,Lancar,Kewajiban JP,Neraca,PSAK 68,Accrued payroll
+3410,Utang Gaji,Kewajiban,Lancar,Kewajiban JP,Neraca,,Salary payable
+3420,Utang Tunjangan,Kewajiban,Lancar,Kewajiban JP,Neraca,,Allowance payable
+3500,Utang BPJS,Kewajiban,Lancar,Kewajiban JP,Neraca,,Social security
+3510,Utang BPJS Kesehatan,Kewajiban,Lancar,Kewajiban JP,Neraca,,Health insurance
+3520,Utang BPJS Ketenagakerjaan,Kewajiban,Lancar,Kewajiban JP,Neraca,,Employment insurance
+3600,Pendapatan Diterima Dimuka,Kewajiban,Lancar,Kewajiban JP,Neraca,PSAK 72,Deferred revenue
+3610,Pendapatan Penjualan Diterima Dimuka,Kewajiban,Lancar,Kewajiban JP,Neraca,,Unearned sales
+3700,Kewajiban Sewa Jangka Pendek,Kewajiban,Lancar,Kewajiban JP,Neraca,PSAK 73,Short-term lease
+3800,Utang Lain-lain Jangka Pendek,Kewajiban,Lancar,Kewajiban JP,Neraca,,Other current liabilities
+4000,KEWAJIBAN JANGKA PANJANG,Kewajiban,Tidak Lancar,Kewajiban JLP,Neraca,,Non-current liabilities
+4100,Utang Bank,Kewajiban,Tidak Lancar,Kewajiban JLP,Neraca,PSAK 71,Bank loan
+4110,Utang Bank - Pokok,Kewajiban,Tidak Lancar,Kewajiban JLP,Neraca,,Principal
+4200,Kewajiban Sewa Jangka Panjang,Kewajiban,Tidak Lancar,Kewajiban JLP,Neraca,PSAK 73,Long-term lease
+4300,Utang Lain-lain Jangka Panjang,Kewajiban,Tidak Lancar,Kewajiban JLP,Neraca,,Other non-current
+5000,MODAL,Ekuitas,Modal,Modal,Neraca,,Equity group
+5100,Modal Disetor,Ekuitas,Modal,Modal,Neraca,,Paid-in capital
+5110,Modal Disetor - Pemilik,Ekuitas,Modal,Modal,Neraca,,Owner capital
+5200,Prive,Ekuitas,Modal,Modal,Neraca,,Owner drawing (debit balance)
+5300,Laba (Rugi) Ditahan,Ekuitas,Modal,Modal,Neraca,,Retained earnings
+5400,Laba (Rugi) Berjalan,Ekuitas,Modal,Modal,Neraca,,Current year P&L
+6000,PENDAPATAN,Pendapatan,Operasional,Pendapatan,Laba Rugi,PSAK 72,Revenue group
+6100,Pendapatan Penjualan,Pendapatan,Operasional,Pendapatan,Laba Rugi,,Sales revenue
+6110,Pendapatan Penjualan Tunai,Pendapatan,Operasional,Pendapatan,Laba Rugi,,Cash sales
+6120,Pendapatan Penjualan Kredit,Pendapatan,Operasional,Pendapatan,Laba Rugi,,Credit sales
+6200,Pendapatan Jasa,Pendapatan,Operasional,Pendapatan,Laba Rugi,,Service revenue
+6300,Pendapatan Lain-lain,Pendapatan,Operasional,Pendapatan,Laba Rugi,,Other income
+6310,Pendapatan Bunga,Pendapatan,Operasional,Pendapatan,Laba Rugi,,Interest income
+6320,Pendapatan Diskon,Pendapatan,Operasional,Pendapatan,Laba Rugi,,Discount received
+6400,Pendapatan Diluar Biasa,Pendapatan,Diluar Biasa,Pendapatan,Laba Rugi,,Extraordinary income
+6410,Pendapatan Selisih Kurs,Pendapatan,Diluar Biasa,Pendapatan,Laba Rugi,,FX gain
+6420,Laba Penjualan Aset,Pendapatan,Diluar Biasa,Pendapatan,Laba Rugi,,Gain on asset disposal
+7000,HARGA POKOK PENJUALAN,Beban,Operasional,HPP,Laba Rugi,,COGS group
+7100,HPP Barang Dagangan,Beban,Operasional,HPP,Laba Rugi,,Merchandise COGS
+8000,BEBAN OPERASIONAL,Beban,Operasional,Beban,Laba Rugi,,Opex group
+8100,Beban Gaji & Tunjangan,Beban,Operasional,Beban,Laba Rugi,PSAK 68,Compensation
+8110,Beban Gaji,Beban,Operasional,Beban,Laba Rugi,,Salary expense
+8120,Beban Tunjangan Makan,Beban,Operasional,Beban,Laba Rugi,,Meal allowance
+8130,Beban Tunjangan Transport,Beban,Operasional,Beban,Laba Rugi,,Transport allowance
+8200,Beban Sewa,Beban,Operasional,Beban,Laba Rugi,PSAK 73,Rent/lease expense
+8210,Beban Sewa Bangunan,Beban,Operasional,Beban,Laba Rugi,,Building rent
+8220,Beban Sewa Kendaraan,Beban,Operasional,Beban,Laba Rugi,,Vehicle lease
+8300,Beban Utilitas,Beban,Operasional,Beban,Laba Rugi,,Utilities
+8310,Beban Listrik,Beban,Operasional,Beban,Laba Rugi,,Electricity
+8320,Beban Air,Beban,Operasional,Beban,Laba Rugi,,Water
+8330,Beban Telepon & Internet,Beban,Operasional,Beban,Laba Rugi,,Communication
+8400,Beban Transportasi & Perjalanan Dinas,Beban,Operasional,Beban,Laba Rugi,,Travel & transport
+8410,Beban BBM,Beban,Operasional,Beban,Laba Rugi,,Fuel
+8420,Beban Parkir & Tol,Beban,Operasional,Beban,Laba Rugi,,Parking & toll
+8430,Beban Perjalanan Dinas,Beban,Operasional,Beban,Laba Rugi,,Business travel
+8500,Beban Perlengkapan Kantor,Beban,Operasional,Beban,Laba Rugi,,Office supplies
+8600,Beban Pemasaran,Beban,Operasional,Beban,Laba Rugi,,Marketing
+8610,Beban Iklan & Promosi,Beban,Operasional,Beban,Laba Rugi,,Advertising
+8620,Beban Komisi Marketplace,Beban,Operasional,Beban,Laba Rugi,,Marketplace fee
+8630,Beban Diskon Penjualan,Beban,Operasional,Beban,Laba Rugi,,Sales discount
+8700,Beban Penyusutan,Beban,Operasional,Beban,Laba Rugi,PSAK 16,Depreciation
+8710,Beban Penyusutan Bangunan,Beban,Operasional,Beban,Laba Rugi,,
+8720,Beban Penyusutan Kendaraan,Beban,Operasional,Beban,Laba Rugi,,
+8730,Beban Penyusutan Peralatan Produksi,Beban,Operasional,Beban,Laba Rugi,,
+8740,Beban Penyusutan Peralatan Kantor,Beban,Operasional,Beban,Laba Rugi,,
+8750,Beban Penyusutan Mesin,Beban,Operasional,Beban,Laba Rugi,,
+8760,Beban Penyusutan Furniture,Beban,Operasional,Beban,Laba Rugi,,
+8800,Beban Amortisasi,Beban,Operasional,Beban,Laba Rugi,ISAK 35,Amortization
+8810,Beban Amortisasi Software,Beban,Operasional,Beban,Laba Rugi,,
+8900,Beban Asuransi,Beban,Operasional,Beban,Laba Rugi,,Insurance
+8910,Beban Asuransi Kendaraan,Beban,Operasional,Beban,Laba Rugi,,
+8920,Beban Asuransi Kebakaran,Beban,Operasional,Beban,Laba Rugi,,
+9000,Beban Jasa Profesional,Beban,Operasional,Beban,Laba Rugi,,Professional fees
+9010,Beban Konsultan,Beban,Operasional,Beban,Laba Rugi,,Consulting
+9020,Beban Akuntan,Beban,Operasional,Beban,Laba Rugi,,Accounting fees
+9030,Beban Notaris/Legal,Beban,Operasional,Beban,Laba Rugi,,Legal fees
+9100,Beban Pemeliharaan,Beban,Operasional,Beban,Laba Rugi,,Maintenance
+9110,Beban Pemeliharaan Kendaraan,Beban,Operasional,Beban,Laba Rugi,,
+9120,Beban Pemeliharaan Gedung,Beban,Operasional,Beban,Laba Rugi,,
+9130,Beban Pemeliharaan Peralatan,Beban,Operasional,Beban,Laba Rugi,,
+9200,Beban Bunga,Beban,Operasional,Beban,Laba Rugi,PSAK 73,Interest
+9300,Beban Pajak,Beban,Operasional,Beban,Laba Rugi,,Tax expense
+9310,Beban PPh,Beban,Operasional,Beban,Laba Rugi,,Income tax expense
+9320,Beban PPN Tidak Dapat Dikredit,Beban,Operasional,Beban,Laba Rugi,,Non-deductible VAT
+9330,Beban Pajak Daerah,Beban,Operasional,Beban,Laba Rugi,,Local tax
+9400,Beban Lain-lain,Beban,Operasional,Beban,Laba Rugi,,Misc expense
+9500,Beban Rugi Diluar Biasa,Beban,Diluar Biasa,Beban,Laba Rugi,,Extraordinary loss
+9510,Beban Selisih Kurs,Beban,Diluar Biasa,Beban,Laba Rugi,,FX loss
+9520,Rugi Penjualan Aset,Beban,Diluar Biasa,Beban,Laba Rugi,,Loss on asset disposal
+9530,Beban Penurunan Nilai Aset,Beban,Diluar Biasa,Beban,Laba Rugi,PSAK 36,Impairment loss

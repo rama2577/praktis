@@ -25,19 +25,19 @@ Checklist eksekusi. Format mengikuti `planning-and-task-breakdown`: tiap task pu
 
 ---
 
-## Task 2: Data model Prisma + migration + seed
+## Task 2: Data model Prisma + migration + seed ✅ (2026-08-07)
 
 **Description:** Rancang & migrasi schema: `Firm`, `User` (role: ADMIN/JUNIOR/SENIOR/TAX/PARTNER), `Client`, `Document` (file + metadata + status OCR), `JournalEntry` (header: status state machine, confidence, exception flags) + `JournalLine` (debit/kredit), `ReviewTask` (assignee, stage, due SLA, urgent), `ActivityLog` (audit trail), `SlaEvent`. Seed demo: 1 firm, 6 user (admin dev + 4 role), 3 klien, contoh dokumen & journal.
 
 **Acceptance criteria:**
-- [ ] `prisma migrate dev` sukses; schema ter-versioning
-- [ ] Semua tabel punya `firmId` (tenant-aware) dan `createdAt/updatedAt`
-- [ ] Seed berjalan: `prisma db seed` menghasilkan data demo lengkap
-- [ ] Enum state machine journal & role terdefinisi di schema
+- [x] `npx prisma migrate dev` sukses; schema ter-versioning — migration `20260807045922_init`
+- [x] Semua tabel punya `firmId` (tenant-aware) dan `createdAt/updatedAt` — verified: 0 orphan
+- [x] Seed berjalan: `npx prisma db seed` — 1 firm, 6 user, 3 klien, 3 dokumen, 22 jurnal, 65 baris, 29 review task, 5 activity, 6 SLA event
+- [x] Enum state machine journal & role terdefinisi di schema — 9 enum
 
 **Verification:**
-- [ ] npx prisma migrate dev` + npx prisma db seed` sukses
-- [ ] Query test: ambil queue per role mengembalikan data seed
+- [x] `npx prisma migrate dev` + `npx prisma db seed` sukses
+- [x] Query test: queue per role = JUNIOR 5 / SENIOR 3 / TAX 2 / PARTNER 1 pending (sesuai mockup); urgent 1; SLA breach 2 (Junior + Tax); 0 jurnal tidak balance; 0 orphan
 
 **Dependencies:** Task 1
 **Files likely touched:** prisma/schema.prisma, prisma/seed.ts, src/lib/db.ts
