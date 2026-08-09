@@ -7,7 +7,7 @@ import { readFileSync } from "node:fs";
 
 const BASE = "http://localhost:3000";
 const EMAIL = "admin@ledgerline.dev";
-const PASSWORD = "password123";
+const PASSWORD = process.env.TEST_PASSWORD ?? "password123";
 
 const jar = new Map<string, string>();
 

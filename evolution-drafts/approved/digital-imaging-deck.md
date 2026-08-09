@@ -1,3 +1,30 @@
+# Evolution Proposal: Catat aturan workflow produksi: sebelum produksi harus disiapkan digital imaging per proses (seperti mockup) yang nantinya di-embed ke deck — supaya kebutuhan ini tidak terlewat di fase produksi proyek ini.
+
+- Proposal-ID: evo-2026-08-09-digital-imaging-deck
+- Status: approved
+- Signature: digital-imaging-deck
+- Created-At: 2026-08-09 14:28
+- Last-Seen-At: 2026-08-09 14:28
+- Target-File: MEMORY.md
+- Trigger-Type: preference
+- Confidence: medium
+
+## Why This Matters
+- Catat aturan workflow produksi: sebelum produksi harus disiapkan digital imaging per proses (seperti mockup) yang nantinya di-embed ke deck — supaya kebutuhan ini tidak terlewat di fase produksi proyek ini.
+
+## Evidence
+- Interactive proposal card was present in the session UI.
+- The original pending draft file was unavailable at approval time.
+- AutoClaw reconstructed this draft from the proposal payload so the review result can still be recorded.
+
+## Duplicate Check
+- Checked: pending draft path + signature/proposal fallback
+- Result: original draft file missing
+- Decision: create surrogate draft from proposal payload
+
+## Proposed Change
+### MEMORY.md — aturan produksi digital imaging
+
 ---
 summary: "Long-term memory record"
 autoclaw.schema: "agent-profile/v1"
@@ -47,7 +74,6 @@ lessons:
 - **Proyek aktif: build aplikasi dari mockup (chat.z.ai/space/m1ak5692s8r1-art) — Phase 2 dimulai 2026-08-07**
 - **Keputusan produk (2026-08-07): single-firm first, schema tenant-aware; dokumen: invoice + rekening koran; format: PDF, JPG, XLSX**
 - **Workflow produksi (2026-08-09): sebelum produksi, siapkan digital imaging yang menggambarkan app bekerja di masing-masing proses (seperti mockup); semua imaging ini nanti di-embed ke deck**
-- **Ambil alih proyek Mio ERP dari Claude (2026-08-09): Mio FnB, POS, Accounting App, dll — rangkuman handoff diterima dan disimpan di workspace**
 - **代码仓库**: _(待补充)_
 - **主要分支**: _(待补充)_
 
@@ -78,3 +104,14 @@ OpenClaw 三层记忆：
 
 ## 技能索引
 见 workspace/.agents/skills/ 目录下的 SKILL.md 文件
+
+## Apply Plan
+1. Keep this reconstructed draft as the approval artifact.
+2. Record the proposal content exactly as shown in the interactive card.
+3. Append an audit note after approval or rejection.
+
+## User Approval
+- Approve: 批准 evo-2026-08-09-digital-imaging-deck
+- Reject: 拒绝 evo-2026-08-09-digital-imaging-deck
+## Audit
+- 2026-08-09 14:28 — Disetujui user (批准 evo-2026-08-09-digital-imaging-deck). Perubahan diterapkan ke MEMORY.md (section 当前项目: baris "Workflow produksi (2026-08-09)"). Draft surrogat dipertahankan sebagai artifact persetujuan.

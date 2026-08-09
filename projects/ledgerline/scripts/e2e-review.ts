@@ -7,7 +7,7 @@
  * Jalankan: npx tsx scripts/e2e-review.ts
  */
 const BASE = "http://localhost:3000";
-const PASSWORD = "password123";
+const PASSWORD = process.env.TEST_PASSWORD ?? "password123";
 
 type QueueItem = {
   id: string;

@@ -1,0 +1,83 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#0b1120; color:#e5e9f2; min-height:100vh; display:flex; flex-direction:column; }
+/* topbar */
+.top { display:flex; align-items:center; gap:14px; padding:12px 28px; border-bottom:1px solid #1e2a45; background:#0d1526; }
+.logo { display:flex; align-items:center; gap:10px; }
+.logo .badge { width:32px; height:32px; border-radius:9px; background:#f5c518; color:#0b1120; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.logo b { font-size:14px; } .logo small { display:block; color:#64748b; font-size:10px; }
+.div { width:1px; height:26px; background:#1e2a45; }
+.client { display:flex; align-items:center; gap:9px; }
+.client .av { width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,.18); color:#f5c518; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:12px; }
+.client b { font-size:13px; } .client small { display:block; color:#64748b; font-size:10px; }
+.sp { flex:1; }
+.pill { display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(16,185,129,.35); background:rgba(16,185,129,.1); color:#34d399; padding:3px 10px; border-radius:99px; font-weight:600; font-size:10px; }
+.dot { width:6px; height:6px; border-radius:50%; background:#34d399; }
+/* nav */
+.nav { display:flex; gap:4px; padding:0 28px; background:#0d1526; border-bottom:1px solid #1e2a45; }
+.nav a { padding:11px 16px; font-size:13px; color:#94a3b8; text-decoration:none; border-bottom:2px solid transparent; }
+.nav a.on { color:#f5c518; border-bottom-color:#f5c518; font-weight:600; }
+/* content */
+.content { padding:24px 28px; display:flex; flex-direction:column; gap:18px; flex:1; }
+.h1 { font-size:21px; font-weight:700; } .sub { font-size:12px; color:#64748b; margin-top:3px; }
+.grid { display:grid; gap:14px; } .g2 { grid-template-columns:repeat(2,1fr); } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.card { background:#101a30; border:1px solid #1e2a45; border-radius:14px; padding:16px; }
+.card .ct { font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:#64748b; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.kpi .v { font-size:26px; font-weight:700; margin-top:8px; } .kpi .h { font-size:10px; color:#64748b; margin-top:4px; }
+.grn{color:#34d399} .ylw{color:#f5c518} .red{color:#f87171} .sky{color:#38bdf8} .slt{color:#e5e9f2}
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { text-align:left; color:#64748b; font-weight:500; font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:8px 10px; border-bottom:1px solid #1e2a45; }
+td { padding:10px; border-bottom:1px solid #141f38; color:#cbd5e1; }
+.mono { font-family:'SF Mono',Menlo,monospace; font-size:11px; }
+.btn { border-radius:9px; padding:9px 16px; font-size:12px; font-weight:600; border:none; cursor:pointer; text-decoration:none; display:inline-block; }
+.b-gold{background:#f5c518;color:#0b1120} .b-out{background:transparent;color:#f5c518;border:1px solid rgba(245,197,24,.45)}
+.b-slate{background:#1e293b;color:#cbd5e1;border:1px solid #334155}
+.chip { font-size:10px; padding:2px 9px; border-radius:99px; font-weight:600; }
+.c-ok{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.35)}
+.c-wait{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.4)}
+.c-red{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.4)}
+.drop { border:2px dashed #334155; border-radius:14px; padding:46px; text-align:center; color:#64748b; background:rgba(13,21,38,.5); }
+.drop .ic { font-size:34px; margin-bottom:10px; } .drop b { color:#cbd5e1; font-size:15px; }
+.row { display:flex; align-items:center; gap:10px; } .mt { margin-top:12px; } .small { font-size:11px; color:#64748b; }
+.insight { border-left:3px solid #f5c518; background:#101a30; border:1px solid #1e2a45; border-radius:12px; padding:14px 16px; }
+.insight .tag { font-size:10px; color:#f5c518; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.bar-h { height:10px; border-radius:99px; background:#1e2a45; overflow:hidden; margin-top:6px; }
+.bar-h > i { display:block; height:100%; border-radius:99px; }
+.alert { border:1px solid rgba(248,113,113,.4); background:rgba(248,113,113,.08); color:#fca5a5; border-radius:10px; padding:10px 14px; font-size:12px; }
+.foot { padding:14px 28px; border-top:1px solid #1e2a45; font-size:11px; color:#475569; display:flex; justify-content:space-between; }
+</style></head><body>
+<div class="top">
+  <div class="logo"><div class="badge">P</div><div><b>Praktis</b><small>Portal Klien</small></div></div>
+  <div class="div"></div><div class="client"><div class="av">SR</div><div><b>PT Sentosa Raya</b><small>Retail · Jakarta</small></div></div>
+  <div class="sp"></div>
+  <span class="pill"><span class="dot"></span>Semua sistem normal</span>
+</div>
+<div class="nav"><a class="" href="#">Beranda</a><a class="" href="#">Dokumen</a><a class="" href="#">Laporan</a><a class="" href="#">Analisa</a><a class="on" href="#">Wawasan AI</a></div>
+<div class="content">
+<div class="row"><div><div class="h1">Wawasan AI</div><div class="sub">Temuan otomatis dari data keuangan Anda — tiap bulan setelah laporan final</div></div>
+<div class="sp"></div><a href="#" class="btn b-gold">Unduh ringkasan</a></div>
+<div class="card"><div class="ct">Ringkasan · Juli 2026</div>
+  <p style="font-size:13px;color:#cbd5e1;line-height:1.7">Pendapatan naik <b class="grn">9,5%</b> ke Rp 385,4 jt — bulan terbaik dalam 6 bulan. Namun <b class="red">margin kotor turun ke 23,0%</b> karena HPP naik 8% lebih cepat dari penjualan. Arus kas operasional tetap positif; PPN terutang Rp 7,34 jt jatuh tempo 31 Agustus. Perhatikan 1 piutang yang sudah lewat 45 hari.</p>
+</div>
+<div class="grid g2">
+  <div class="insight"><div class="tag">📉 Margin kotor</div>
+    <p style="font-size:13px;color:#cbd5e1;margin-top:6px;line-height:1.6">HPP naik <b>8,2%</b> (Rp 274,3 → 296,8 jt) sementara penjualan naik 9,5% — sebagian besar dari kenaikan harga distributor. <b>Rekomendasi:</b> tinjau ulang 3 pemasok teratas atau pertimbangkan harga jual ulang.</p>
+    <p class="small mt">Sumber: pembelian Juli vs Juni · akurasi 92%</p>
+  </div>
+  <div class="insight"><div class="tag">💰 Piutang</div>
+    <p style="font-size:13px;color:#cbd5e1;margin-top:6px;line-height:1.6"><b>INV-2026-0795 Rp 3,25 jt</b> sudah lewat 45 hari (PT Maju Jaya). Piutang total Rp 12,7 jt = 21 hari penjualan. <b>Rekomendasi:</b> kirim pengingat otomatis ke PT Maju Jaya sebelum tutup buku Agustus.</p>
+    <p class="small mt">Sumber: aging piutang · akurasi 95%</p>
+  </div>
+  <div class="insight"><div class="tag">🧾 PPN</div>
+    <p style="font-size:13px;color:#cbd5e1;margin-top:6px;line-height:1.6">PPN keluaran Rp 38,5 jt · PPN masukan Rp 31,2 jt → <b>terutang Rp 7,34 jt</b>, jatuh tempo 31 Agustus. Semua faktur sudah punya nomor seri yang valid. <b>Rekomendasi:</b> setor sebelum tanggal 31 untuk hindari denda 2%.</p>
+    <p class="small mt">Sumber: rekap PPN masa Juli · akurasi 97%</p>
+  </div>
+  <div class="insight"><div class="tag">📊 Efisiensi</div>
+    <p style="font-size:13px;color:#cbd5e1;margin-top:6px;line-height:1.6">Rasio beban/pendapatan stabil di <b>12,0%</b> (bawah tolok ukur 15%). Sewa 12 jt/bln = 3,1% dari penjualan — wajar untuk ritel. <b>Rekomendasi:</b> pertahankan struktur biaya; potensi ekspansi toko ke-2 mulai terlihat sehat.</p>
+    <p class="small mt">Sumber: analisa tren 6 bulan · akurasi 90%</p>
+  </div>
+</div>
+<div class="alert">ℹ️ Wawasan AI bersifat informatif dan disusun otomatis — keputusan akhir tetap dengan konsultan akuntan Anda.</div>
+</div>
+<div class="foot"><span>Praktis Portal Klien · PT Sentosa Raya</span><span>Wawasan AI bersifat informatif — keputusan dengan konsultan Anda</span></div>
+</body></html>

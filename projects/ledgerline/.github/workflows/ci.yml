@@ -14,6 +14,7 @@ jobs:
       AUTH_TRUST_HOST: "true"
       DATABASE_URL: postgresql://ledgerline:ledgerline@localhost:5432/ledgerline
       REDIS_URL: redis://localhost:6379
+      TEST_PASSWORD: password123
     services:
       postgres:
         image: postgres:16
@@ -49,6 +50,10 @@ jobs:
       - name: Generate Prisma client
         run: npx prisma generate
 
+      - name: Dependency audit (SE-06)
+        run: npm run security:audit
+        continue-on-error: true # naikkan jadi gate setelah daftar vuln bersih
+
       - name: Lint
         run: npm run lint
 
@@ -70,3 +75,4 @@ jobs:
           npx wait-on http://localhost:3000/login -t 60000
           npx tsx scripts/e2e-review.ts
           npx tsx scripts/e2e-upload.ts
+          npx tsx scripts/e2e-isolation.ts

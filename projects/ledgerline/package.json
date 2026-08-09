@@ -11,7 +11,8 @@
     "test:watch": "vitest",
     "test:e2e": "playwright test",
     "worker": "tsx src/server/pipeline-worker.ts",
-    "check": "npm run lint && npm test && npm run build"
+    "check": "npm run lint && npm test && npm run build",
+    "security:audit": "npm audit --audit-level=high"
   },
   "dependencies": {
     "@prisma/client": "^6.19.3",

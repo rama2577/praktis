@@ -1,3 +1,30 @@
+# Evolution Proposal: Catat pergantian kepemilikan proyek: kita mengambil alih proyek Mio ERP (Mio FnB, POS, Accounting App, dll) dari Claude — supaya konteks proyek aktif di masa depan selalu merujuk ke proyek yang benar.
+
+- Proposal-ID: evo-2026-08-09-mio-erp-handoff
+- Status: approved
+- Signature: mio-erp-handoff
+- Created-At: 2026-08-09 18:19
+- Last-Seen-At: 2026-08-09 18:19
+- Target-File: MEMORY.md
+- Trigger-Type: preference
+- Confidence: medium
+
+## Why This Matters
+- Catat pergantian kepemilikan proyek: kita mengambil alih proyek Mio ERP (Mio FnB, POS, Accounting App, dll) dari Claude — supaya konteks proyek aktif di masa depan selalu merujuk ke proyek yang benar.
+
+## Evidence
+- Interactive proposal card was present in the session UI.
+- The original pending draft file was unavailable at approval time.
+- AutoClaw reconstructed this draft from the proposal payload so the review result can still be recorded.
+
+## Duplicate Check
+- Checked: pending draft path + signature/proposal fallback
+- Result: original draft file missing
+- Decision: create surrogate draft from proposal payload
+
+## Proposed Change
+### MEMORY.md — ambil alih proyek Mio ERP
+
 ---
 summary: "Long-term memory record"
 autoclaw.schema: "agent-profile/v1"
@@ -78,3 +105,12 @@ OpenClaw 三层记忆：
 
 ## 技能索引
 见 workspace/.agents/skills/ 目录下的 SKILL.md 文件
+
+## Apply Plan
+1. Keep this reconstructed draft as the approval artifact.
+2. Record the proposal content exactly as shown in the interactive card.
+3. Append an audit note after approval or rejection.
+
+## User Approval
+- Approve: 批准 evo-2026-08-09-mio-erp-handoff
+- Reject: 拒绝 evo-2026-08-09-mio-erp-handoff
