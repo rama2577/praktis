@@ -1,0 +1,22 @@
+# macOS
+.DS_Store
+
+# Node
+node_modules/
+*.tsbuildinfo
+.next/
+coverage/
+dist/
+
+# Env & secrets
+.env
+.env.local
+.env.*.local
+
+# Logs
+*.log
+npm-debug.log*
+
+# Internal runtime state (bukan deliverable)
+.openclaw-attachments/
+.autoclaw/
