@@ -13,6 +13,13 @@ export default defineConfig({
       provider: "v8",
       include: ["src/lib/**", "src/server/**", "src/ai/**", "src/components/**"],
       exclude: ["src/ai/knowledge/**", "src/ai/**/*.d.ts"],
+      thresholds: {
+        // SQ-01: quality gate — naikkan bertahap di F2 (baseline 2026-08-09)
+        statements: 31,
+        branches: 30,
+        functions: 20,
+        lines: 30,
+      },
     },
   },
   resolve: {

@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db";
+import { emit } from "@/lib/events";
 import { SLA_TARGETS_MIN, computeFinalSlaStatus } from "@/server/sla";
 import type { JournalStatus, ReviewStage, ReviewTask, Role, User } from "@prisma/client";
 
@@ -113,6 +114,12 @@ export async function transitionJournal(to: JournalStatus, action: ReviewAction,
         },
       },
     });
+    emit("slaBreach", {
+      firmId: ctx.firmId,
+      stage: task.stage,
+      journalId: entry.id,
+      actualMinutes: Math.round(actualMinutes),
+    });
   }
 
   // Update status jurnal
@@ -120,6 +127,23 @@ export async function transitionJournal(to: JournalStatus, action: ReviewAction,
     where: { id: entry.id },
     data: { status: to },
   });
+
+  // EN-05: event domain — dasar untuk notifikasi/webhook (F2: outbox)
+  if (to === "APPROVED") {
+    emit("journalApproved", {
+      journalId: entry.id,
+      firmId: ctx.firmId,
+      clientId: entry.clientId,
+      description: entry.description,
+    });
+  } else if (to === "EXCEPTION") {
+    emit("journalException", {
+      journalId: entry.id,
+      firmId: ctx.firmId,
+      clientId: entry.clientId,
+      flag: entry.exceptionFlag,
+    });
+  }
 
   // Buat task stage berikutnya
   const nextStage = reviewStageForStatus(to);

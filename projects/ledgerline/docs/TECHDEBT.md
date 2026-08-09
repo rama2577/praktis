@@ -51,7 +51,7 @@
 - **TD-10 · CI belum pernah benar-benar jalan** (belum push ke GitHub) → workflow diperbarui (TEST_PASSWORD env, step audit, step e2e-isolation) & semua langkah terverifikasi lokal; **butuh push ke GitHub** untuk eksekusi nyata. [x] verifikasi lokal · [ ] push & hijau di GitHub
 - **TD-11 · Tooling deck nyasar di repo app** (`screenshot-mockups.ts`, `playwright.config.ts`) → pindah ke `projects/praktis-deck`. [ ]
 - **TD-12 · Playwright hardcode `channel: "chrome"`** → dokumentasikan/pinned headless shell. [ ]
-- **TD-13 · Coverage UI = 0** → component test + e2e otomatis di CI. [ ]
+- **TD-13 · Coverage UI = 0** → **component tests mulai (F1)**: `tests/status-badge.test.tsx` (5) + `tests/empty-state.test.tsx` (5) — total test 89 → **112**. Lanjutan: queue-list, kpi-cards, dashboard-panels → F2. [x] status-badge · [x] empty-state · [ ] queue-list/kpi-cards (F2)
 - **TD-14 · Alert SLA breach internal saja** → email/SMTP/Telegram (post-launch DoD). [ ]
 - **TD-15 · Tidak ada backup/restore strategy** (lihat TD-04). [ ]
 - **TD-16 · Seed akun demo `password123`** → ganti/disable sebelum produksi. [ ]
@@ -80,13 +80,17 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 - Explainability: "kenapa confidence rendah?" — alasan user tersimpan sebagai data.
 - [ ] Record koreksi user · [ ] Dashboard insight dari koreksi · [ ] Pipeline update rule dari pola
 
-## EN-04 · Multi-tenancy via middleware (Full Stack)
+## EN-04 · Multi-tenancy via middleware (Full Stack)  ✅ fase 1 (F1)
 - Tenant context (Prisma extension) menggantikan `firmId` manual per query → hilangkan kelas bug "lupa filter". Menyelesaikan TD-09 secara struktural.
-- [ ] Prisma extension tenant · [ ] Refactor query · [ ] Test isolasi penuh
+- **F1 ✅:** `src/lib/tenant.ts` (AsyncLocalStorage + `applyTenantFilter` murni) + extension di `src/lib/db.ts` — query di dalam `withTenant()` otomatis di-scope (model ber-firmId + ReviewTask via relasi; User/Firm tidak). Unit test `tests/tenant.test.ts` (8 kasus). E2E isolasi tetap 8/8 dengan extension aktif.
+- **Fase 2 (F2):** wrap semua route/server module dengan `withTenant` — bersamaan portal klien.
+- [x] extension + ALS · [x] unit test · [ ] wrap route (F2)
 
-## EN-05 · Event-driven + outbox (Full Stack)
+## EN-05 · Event-driven + outbox (Full Stack)  ✅ fase 1 (F1)
 - Event jurnal (APPROVED, EXCEPTION, SLA_BREACH, REPORT_READY) → notifikasi klien/firma; outbox pattern untuk reliabilitas; dasar webhook & email (TD-14).
-- [ ] Event bus + outbox · [ ] Notifikasi email/in-app · [ ] Webhook keluar
+- **F1 ✅:** `src/lib/events.ts` (typed event bus; error listener tidak memblokir) + hook di `journal-machine.ts` → emit `journalApproved`, `journalException`, `slaBreach`. Unit test `tests/events.test.ts`.
+- **Fase 2 (F2):** outbox persisten (tabel DB) + consumer + webhook/email (menyambung TD-14).
+- [x] event bus · [x] hook transisi · [ ] outbox + notifikasi (F2)
 
 ## EN-06 · Review UX < 3 klik (UX Engineer)
 - Keyboard-first approve/reject, batch approve hanya confidence tinggi, exception satu layar (dokumen + draft + aturan), shortcut untuk power user — mendukung klaim "5 dtk/jurnal".
@@ -126,13 +130,13 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 
 # Bagian 4 · Kualitas Kode (SonarQube Engineer — SQ)
 
-- **SQ-01 · Quality gate di CI:** coverage ≥80% file baru, 0 blocker/critical, duplikasi <3%, maintainability rating A — gagal = merah. [ ]
+- **SQ-01 · Quality gate di CI** → **threshold coverage aktif (F1)** di vitest: statements 31 / branches 30 / functions 20 / lines 30 (baseline 2026-08-09, naikkan bertahap). Terukur: 32,97 / 35,23 / 25 / 32,3. Target ≥80% file baru → F2. [x] thresholds · [ ] naikkan (F2)
 - **SQ-02 · SAST & security hotspots** tiap PR (linter keamanan + review hotspot). [ ]
-- **SQ-03 · TypeScript strict penuh:** audit sisa `any`/`as unknown`, no-explicit-any di codebase. [ ]
+- **SQ-03 · TypeScript strict penuh:** tsconfig sudah `strict: true`; sisa cast minimal (1× di db.ts) + audit `any` di src → F2. [x] strict aktif · [ ] audit any (F2)
 - **SQ-04 · Cognitive complexity:** refactor service panjang (pipeline/worker) jadi modul kecil; batas complexity per fungsi. [ ]
-- **SQ-05 · Dependency governance:** npm audit otomatis + pin versi + renovate; jangan pakai versi `^` tanpa kontrol. [ ]
-- **SQ-06 · Lint/format enforce + coverage report di CI** (badge repo). [ ]
-- **SQ-07 · Test pyramid lengkap:** unit (89 ✅) → integration (Redis+Postgres nyata) → e2e otomatis (login→upload→review→approve→laporan). [ ]
+- **SQ-05 · Dependency governance:** step `npm run security:audit` di CI (F0, continue-on-error); renovate & pinning → F2. [x] audit step · [ ] renovate (F2)
+- **SQ-06 · Lint/format enforce + coverage report di CI** (badge repo). [x] eslint + threshold lokal · [ ] badge (setelah push GitHub)
+- **SQ-07 · Test pyramid lengkap:** unit 112 ✅ (naik dari 89 via component tests F1) → integration/E2E via scripts (review/upload/isolation di CI) → Playwright penuh otomatis → F2. [x] unit · [x] e2e scripts · [ ] Playwright CI (F2)
 
 ---
 
@@ -141,7 +145,7 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 | Fase | Isi | Item terkait | Kriteria selesai |
 |---|---|---|---|
 | **F0 · Security & CI quick wins** ✅ (2026-08-09) | Guard/hapus debug-login, kredensial ke env, CI diperbarui + verifikasi lokal, isolasi tenant test (8/8), headers HSTS | TD-01, TD-02, TD-10, TD-17, TD-09(test), SE-01(awal), SE-06(awal) | ✅ Centang: TD-01, TD-02, TD-09-test, TD-17(sebagian), SE-01(awal), SE-06(awal) · ⏳ tersisa: push ke GitHub (TD-10) |
-| **F1 · Engineering foundation** | Quality gate Sonar (SQ), integration & e2e test, multi-tenant middleware (EN-04), event/outbox (EN-05), monitoring & backup (TD-04/15, SE-04/05), storage object | TD-03..05, TD-13, EN-04, EN-05, SQ-01..07, SE-02 | Quality gate hijau; tenant-scoped; backup teruji restore |
+| **F1 · Engineering foundation** 🔄 (2026-08-09) | Tenant extension + ALS (EN-04 f1), event bus + hook (EN-05 f1), component tests (TD-13), coverage gate (SQ-01), docs infrastruktur (TD-03/04/05/15) | TD-03..05, TD-13, EN-04, EN-05, SQ-01..07, SE-02 | ✅ EN-04 f1, EN-05 f1, TD-13 (mulai), SQ-01, SQ-03 (strict), SE-02 (sudah kuat) · ⏳ wrap route tenant (F2), outbox (F2), keputusan provider infra (Rama), push GitHub |
 | **F2 · Knowledge Platform** | KB versioned + approval (EN-01), pengenalan profil klien (EN-02), feedback loop AI (EN-03), test LLM + OCR | TD-06, TD-07→EN-01, TD-08, EN-01..03 | KB bisa di-update via UI + audit; klien lama langsung dikenali; first-pass naik |
 | **F3 · Portal Klien** | Persona klien, auth klien, upload mandiri, laporan self-service, wawasan AI | EN-08, EN-06, EN-07, EN-10 | Pilot 1 firma: overhead −77%, onboarding <2 mnt |
 | **F4 · Scale & monetisasi** | Konektor pajak DJP & bank, template usaha, pricing premium, case study | EN-09, EN-11, TD-14 | Case study terbit; 3+ firma pilot |
