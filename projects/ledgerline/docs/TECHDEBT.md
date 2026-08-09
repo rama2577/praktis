@@ -41,7 +41,7 @@
 
 ## 🟠 Sedang
 
-- **TD-06 · Path LLM belum teruji end-to-end** (vision JPG belum pernah dengan key nyata) → integration test mock + smoke test asli. [ ]
+- **TD-06 · Path LLM belum teruji end-to-end** → **engine GLM dipasang (F1)**: default **GLM-4-Flash** (teks, gratis) + **GLM-4V-Flash** (OCR, gratis) + glm-4.6 retry; fallback ganda di `chatJsonWithFallback`; unit test `tests/llm.test.ts` (11 kasus, fetch di-mock). Sisa: integration test dengan key nyata + smoke vision JPG (F2). [x] model routing · [x] fallback · [x] unit test · [ ] test key nyata (F2)
 - **TD-07 · Knowledge base statis** (13 referensi hardcoded) → **digantikan EN-01** (KB versioned & updatable). [ ]
 - **TD-08 · Parsing dokumen terbatas** (pdf-parse teks-only, belum OCR) → evaluasi OCR layer. [ ]
 - **TD-09 · Isolasi tenant belum teruji E2E** → **test dibuat & LULUS (F0)**: `scripts/e2e-isolation.ts` (8/8 asersi — clients, queues, dashboard, upload lintas-firma ditolak 400, exceptions, PATCH langsung 404). Middleware tenant-scoped (EN-04) tetap di F1. [x] test isolasi · [ ] middleware EN-04 · [ ] masuk CI (step sudah ditambahkan di ci.yml)

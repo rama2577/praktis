@@ -1,18 +1,40 @@
 /**
- * Klien LLM OpenAI-compatible — primary GLM (Z.ai), fallback OpenAI/Ollama.
- * Provider diganti cukup lewat env: LLM_BASE_URL + LLM_MODEL + LLM_API_KEY.
+ * LLM Engine — primary GLM (Zhipu AI). OpenAI-compatible endpoint.
+ *
+ * Model routing (semua bisa di-override env):
+ * - `model`        : teks/draft  → **glm-4-flash**  (GRATIS, default)
+ * - `visionModel`  : OCR gambar  → **glm-4v-flash** (GRATIS, default)
+ * - `strongModel`  : retry kualitas → **glm-4.6**    (berbayar, dipakai hemat)
+ *
+ * Strategi biaya: flash dulu untuk semua dokumen rutin; strong model hanya
+ * dipakai otomatis saat flash gagal (network/parse) — lihat chatJsonWithFallback.
+ * Fallback terakhir tetap rule engine (src/ai/rule-engine.ts) — tanpa API key,
+ * app tetap berfungsi dengan akurasi deterministik.
  */
+
 export type LlmConfig = {
   apiKey: string;
   baseUrl: string;
+  /** Model teks default (gratis): glm-4-flash */
   model: string;
+  /** Model vision/OCR default (gratis): glm-4v-flash */
+  visionModel: string;
+  /** Model kuat untuk retry: glm-4.6 */
+  strongModel: string;
 };
 
 export function getLlmConfig(): LlmConfig {
   return {
-    apiKey: process.env.LLM_API_KEY ?? "",
-    baseUrl: (process.env.LLM_BASE_URL ?? "https://api.z.ai/api/paas/v4").replace(/\/$/, ""),
-    model: process.env.LLM_MODEL ?? "glm-4.6",
+    // GLM_API_KEY adalah var utama; LLM_API_KEY dipertahankan untuk backward-compat.
+    apiKey: process.env.GLM_API_KEY ?? process.env.LLM_API_KEY ?? "",
+    baseUrl: (
+      process.env.GLM_BASE_URL ??
+      process.env.LLM_BASE_URL ??
+      "https://api.z.ai/api/paas/v4"
+    ).replace(/\/$/, ""),
+    model: process.env.LLM_MODEL ?? "glm-4-flash",
+    visionModel: process.env.LLM_VISION_MODEL ?? "glm-4v-flash",
+    strongModel: process.env.LLM_STRONG_MODEL ?? "glm-4.6",
   };
 }
 
@@ -20,24 +42,29 @@ export function isLLMConfigured(): boolean {
   return Boolean(getLlmConfig().apiKey);
 }
 
-export async function chatCompletion(opts: {
+export type ChatOptions = {
   system: string;
   user: string;
   json?: boolean;
+  /** Override model — biasanya tidak perlu; default = glm-4-flash. */
+  model?: string;
   timeoutMs?: number;
-}): Promise<string> {
-  const { apiKey, baseUrl, model } = getLlmConfig();
-  if (!apiKey) throw new Error("LLM_API_KEY belum diatur");
+};
+
+export async function chatCompletion(opts: ChatOptions): Promise<string> {
+  const cfg = getLlmConfig();
+  if (!cfg.apiKey) throw new Error("GLM_API_KEY (atau LLM_API_KEY) belum diatur");
+  const model = opts.model ?? cfg.model;
 
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), opts.timeoutMs ?? 60_000);
 
   try {
-    const res = await fetch(`${baseUrl}/chat/completions`, {
+    const res = await fetch(`${cfg.baseUrl}/chat/completions`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${apiKey}`,
+        Authorization: `Bearer ${cfg.apiKey}`,
       },
       body: JSON.stringify({
         model,
@@ -64,6 +91,58 @@ export async function chatCompletion(opts: {
     return content;
   } finally {
     clearTimeout(timer);
+  }
+}
+
+/**
+ * Vision OCR — default `glm-4v-flash` (gratis). Gambar dikirim base64 inline
+ * (format OpenAI-compatible, didukung GLM API).
+ */
+export async function visionCompletion(opts: {
+  imageBase64: string;
+  mime: string;
+  system?: string;
+  timeoutMs?: number;
+}): Promise<string> {
+  return chatCompletion({
+    system:
+      opts.system ??
+      "Kamu adalah ekstraktor dokumen akuntansi. Ekstrak SEMUA teks dari gambar dokumen ini secara lengkap dan rapi, termasuk angka nominal, tanggal, nama pihak, dan keterangan PPN. Jawab hanya dengan teks hasil ekstraksi.",
+    user: `[gambar:${opts.mime};base64:${opts.imageBase64}]`,
+    model: getLlmConfig().visionModel,
+    timeoutMs: opts.timeoutMs ?? 90_000,
+  });
+}
+
+/**
+ * Chat JSON dengan fallback ganda:
+ * 1) coba model default (glm-4-flash — gratis)
+ * 2) jika gagal (network / HTTP / JSON parse) → retry sekali dengan strong model
+ * Return JSON hasil parse + model yang berhasil dipakai (untuk observability).
+ */
+export async function chatJsonWithFallback(opts: {
+  system: string;
+  user: string;
+  timeoutMs?: number;
+}): Promise<{ json: unknown; model: string }> {
+  const cfg = getLlmConfig();
+
+  const attempt = async (model: string): Promise<unknown> => {
+    const content = await chatCompletion({ ...opts, json: true, model });
+    return JSON.parse(stripCodeFence(content)) as unknown;
+  };
+
+  try {
+    return { json: await attempt(cfg.model), model: cfg.model };
+  } catch (firstErr) {
+    if (cfg.strongModel && cfg.strongModel !== cfg.model) {
+      try {
+        return { json: await attempt(cfg.strongModel), model: cfg.strongModel };
+      } catch {
+        throw firstErr;
+      }
+    }
+    throw firstErr;
   }
 }
 

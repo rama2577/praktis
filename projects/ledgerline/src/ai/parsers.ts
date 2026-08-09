@@ -1,7 +1,7 @@
 import { PDFParse } from "pdf-parse";
 import * as XLSX from "xlsx";
 import path from "node:path";
-import { chatCompletion, isLLMConfigured } from "@/ai/llm";
+import { isLLMConfigured, visionCompletion } from "@/ai/llm";
 import { readStoredFile } from "@/lib/storage";
 import type { Document } from "@prisma/client";
 
@@ -60,10 +60,9 @@ async function parseImage(buffer: Buffer): Promise<string> {
   const base64 = buffer.toString("base64");
   const mime = "image/jpeg";
 
-  const content = await chatCompletion({
-    system:
-      "Kamu adalah ekstraktor dokumen akuntansi. Ekstrak SEMUA teks dari gambar dokumen ini secara lengkap dan rapi, termasuk angka nominal, tanggal, nama pihak, dan keterangan PPN. Jawab hanya dengan teks hasil ekstraksi.",
-    user: `[gambar:${mime};base64:${base64}]`,
+  const content = await visionCompletion({
+    imageBase64: base64,
+    mime,
     timeoutMs: 90_000,
   });
   const text = content.trim();
