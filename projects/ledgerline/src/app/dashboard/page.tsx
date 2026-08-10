@@ -3,9 +3,12 @@ import { OPERATIONAL_ROLES } from "@/lib/roles";
 import {
   getConfidenceDistribution,
   getDashboardData,
+  getExceptionInsights,
+  getIndustryBreakdown,
   getPipelineData,
   getRecentActivity,
   getSlaSummary,
+  getWeeklyTrend,
 } from "@/server/dashboard";
 import { KpiCards } from "@/components/dashboard/kpi-cards";
 import { DashboardPanels } from "@/components/dashboard/dashboard-panels";
@@ -15,12 +18,15 @@ export const dynamic = "force-dynamic";
 export default async function DashboardPage() {
   const session = await requireRole(OPERATIONAL_ROLES);
   const firmId = session.user.firmId;
-  const [kpi, pipeline, sla, confidence, activity] = await Promise.all([
+  const [kpi, pipeline, sla, confidence, activity, industry, trend, insights] = await Promise.all([
     getDashboardData(firmId),
     getPipelineData(firmId),
     getSlaSummary(firmId),
     getConfidenceDistribution(firmId),
     getRecentActivity(firmId),
+    getIndustryBreakdown(firmId),
+    getWeeklyTrend(firmId),
+    getExceptionInsights(firmId),
   ]);
 
   return (
@@ -34,7 +40,7 @@ export default async function DashboardPage() {
 
       <KpiCards data={kpi} />
 
-      <DashboardPanels initial={{ pipeline, sla, confidence, activity }} />
+      <DashboardPanels initial={{ pipeline, sla, confidence, activity, industry, trend, insights }} />
     </div>
   );
 }

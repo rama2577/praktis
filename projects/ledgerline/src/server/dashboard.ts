@@ -272,6 +272,125 @@ export async function getRecentActivity(firmId: string, limit = 12): Promise<Act
   }));
 }
 
+
+// ══════════ EN-03 — Feedback loop & quality insights ══════════
+
+export type IndustryBreakdownItem = {
+  industry: string;
+  totalJournals: number;
+  exceptionCount: number;
+  exceptionRate: number;
+  avgConfidence: number | null;
+  firstPassRate: number;
+};
+
+export type WeeklyTrendPoint = {
+  weekLabel: string;
+  totalJournals: number;
+  exceptionRate: number;
+  firstPassRate: number;
+};
+
+export type ExceptionInsight = {
+  flag: string;
+  count: number;
+  lastSeen: string;
+};
+
+/** First-pass rate: % jurnal langsung APPROVED tanpa exception/reject. */
+function firstPassPct(approved: number, total: number): number {
+  if (total <= 0) return 0;
+  return Math.round((approved / total) * 1000) / 10;
+}
+
+/** Per industri: firstPassRate, exceptionRate, avgConfidence. */
+export async function getIndustryBreakdown(firmId: string): Promise<IndustryBreakdownItem[]> {
+  const rows = await prisma.journalEntry.findMany({
+    where: { firmId },
+    select: {
+      status: true,
+      exceptionFlag: true,
+      confidence: true,
+      client: { select: { industry: true } },
+    },
+  });
+  const byIndustry = new Map<string, { total: number; exceptions: number; confidences: number[]; approved: number; nonFinal: number }>();
+  for (const r of rows) {
+    const ind = r.client.industry;
+    const cur = byIndustry.get(ind) ?? { total: 0, exceptions: 0, confidences: [], approved: 0, nonFinal: 0 };
+    cur.total += 1;
+    if (r.exceptionFlag) cur.exceptions += 1;
+    if (r.confidence !== null) cur.confidences.push(r.confidence);
+    if (r.status === "APPROVED") cur.approved += 1;
+    byIndustry.set(ind, cur);
+  }
+  return [...byIndustry.entries()]
+    .map(([industry, data]) => ({
+      industry,
+      totalJournals: data.total,
+      exceptionCount: data.exceptions,
+      exceptionRate: data.total > 0 ? Math.round((data.exceptions / data.total) * 1000) / 10 : 0,
+      avgConfidence: data.confidences.length === 0 ? null
+        : Math.round((data.confidences.reduce((a, b) => a + b, 0) / data.confidences.length) * 10_000) / 10_000,
+      firstPassRate: firstPassPct(data.approved, data.total),
+    }))
+    .sort((a, b) => b.totalJournals - a.totalJournals);
+}
+
+/** Trend mingguan: exception rate & first-pass rate per 7 hari. */
+export async function getWeeklyTrend(firmId: string, weeks = 4): Promise<WeeklyTrendPoint[]> {
+  const now = new Date();
+  const results: WeeklyTrendPoint[] = [];
+  for (let w = weeks - 1; w >= 0; w--) {
+    const end = new Date(now);
+    end.setDate(end.getDate() - w * 7);
+    end.setHours(23, 59, 59, 999);
+    const start = new Date(end);
+    start.setDate(start.getDate() - 6);
+    start.setHours(0, 0, 0, 0);
+
+    const journals = await prisma.journalEntry.findMany({
+      where: { firmId, createdAt: { gte: start, lte: end } },
+      select: { status: true, exceptionFlag: true },
+    });
+    const total = journals.length;
+    const exceptions = journals.filter((j) => j.exceptionFlag).length;
+    const approved = journals.filter((j) => j.status === "APPROVED").length;
+    results.push({
+      weekLabel: `${start.getDate()}/${start.getMonth() + 1}`,
+      totalJournals: total,
+      exceptionRate: total > 0 ? Math.round((exceptions / total) * 1000) / 10 : 0,
+      firstPassRate: firstPassPct(approved, total),
+    });
+  }
+  return results;
+}
+
+/** Top exception flags → insight alasan kenapa confidence rendah. */
+export async function getExceptionInsights(firmId: string, limit = 5): Promise<ExceptionInsight[]> {
+  const rows = await prisma.journalEntry.findMany({
+    where: { firmId, exceptionFlag: { not: null } },
+    select: { exceptionFlag: true, createdAt: true },
+    orderBy: { createdAt: "desc" },
+  });
+  const byFlag = new Map<string, { count: number; lastSeen: Date }>();
+  for (const r of rows) {
+    const flag = r.exceptionFlag ?? "Tanpa Keterangan";
+    const cur = byFlag.get(flag) ?? { count: 0, lastSeen: new Date(0) };
+    cur.count += 1;
+    if (r.createdAt > cur.lastSeen) cur.lastSeen = r.createdAt;
+    byFlag.set(flag, cur);
+  }
+  return [...byFlag.entries()]
+    .sort((a, b) => b[1].count - a[1].count)
+    .slice(0, limit)
+    .map(([flag, data]) => ({
+      flag,
+      count: data.count,
+      lastSeen: data.lastSeen.toISOString(),
+    }));
+}
+
 // ── Agregasi data dashboard dari DB ──────────────────────────────────────
 
 export type DashboardData = {

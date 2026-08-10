@@ -11,15 +11,28 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import type { ActivityItem, ConfidenceBucket, PipelineData, SlaStageSummary } from "@/server/dashboard";
+import type {
+  ActivityItem,
+  ConfidenceBucket,
+  ExceptionInsight,
+  IndustryBreakdownItem,
+  PipelineData,
+  SlaStageSummary,
+  WeeklyTrendPoint,
+} from "@/server/dashboard";
 import { StatusBadge } from "@/components/ui/status-badge";
-import { formatRelativeTime } from "@/lib/format";const POLL_MS = 30_000;
+import { formatRelativeTime } from "@/lib/format";
+
+const POLL_MS = 30_000;
 
 type OpsData = {
   pipeline: PipelineData;
   sla: SlaStageSummary[];
   confidence: ConfidenceBucket[];
   activity: ActivityItem[];
+  industry: IndustryBreakdownItem[];
+  trend: WeeklyTrendPoint[];
+  insights: ExceptionInsight[];
 };
 
 // ── Pipeline 5 stage ─────────────────────────────────────────────────────
@@ -190,6 +203,88 @@ function ActivityFeed({ data }: { data: ActivityItem[] }) {
   );
 }
 
+// ── EN-03: Quality Insights ──────────────────────────────────────────────
+
+function QualityTrend({ data }: { data: WeeklyTrendPoint[] }) {
+  if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada data tren.</p>;
+  return (
+    <div>
+      <h3 className="mb-2 text-sm font-medium text-slate-200">Tren Mingguan</h3>
+      <ResponsiveContainer width="100%" height={160}>
+        <BarChart data={data}>
+          <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
+          <XAxis dataKey="weekLabel" tick={{ fill: "#94a3b8", fontSize: 11 }} />
+          <YAxis tick={{ fill: "#94a3b8", fontSize: 11 }} unit="%" />
+          <Tooltip
+            contentStyle={{ background: "#0f172a", border: "1px solid #334155", borderRadius: 8, fontSize: 12 }}
+            labelStyle={{ color: "#cbd5e1" }}
+          />
+          <Bar dataKey="exceptionRate" name="Exception %" fill="#f59e0b" radius={[3, 3, 0, 0]} />
+          <Bar dataKey="firstPassRate" name="First-Pass %" fill="#10b981" radius={[3, 3, 0, 0]} />
+        </BarChart>
+      </ResponsiveContainer>
+    </div>
+  );
+}
+
+function QualityByIndustry({ data }: { data: IndustryBreakdownItem[] }) {
+  if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada data per industri.</p>;
+  return (
+    <div>
+      <h3 className="mb-2 text-sm font-medium text-slate-200">Per Industri</h3>
+      <div className="max-h-44 overflow-auto">
+        <table className="w-full text-left text-xs">
+          <thead>
+            <tr className="border-b border-slate-700 text-slate-500">
+              <th className="py-1.5 pr-2 font-medium">Industri</th>
+              <th className="py-1.5 pr-2 font-medium text-right">Jurnal</th>
+              <th className="py-1.5 pr-2 font-medium text-right">Exc %</th>
+              <th className="py-1.5 font-medium text-right">FP %</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data.map((d) => (
+              <tr key={d.industry} className="border-b border-slate-800/60 last:border-0">
+                <td className="py-1.5 pr-2 text-slate-200">{d.industry}</td>
+                <td className="py-1.5 pr-2 text-right tabular-nums text-slate-300">{d.totalJournals}</td>
+                <td className={`py-1.5 pr-2 text-right tabular-nums ${d.exceptionRate > 30 ? "text-amber-300" : "text-slate-300"}`}>{d.exceptionRate}%</td>
+                <td className={`py-1.5 text-right tabular-nums ${d.firstPassRate < 50 ? "text-red-300" : "text-emerald-300"}`}>{d.firstPassRate}%</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  );
+}
+
+function QualityExceptionInsights({ data }: { data: ExceptionInsight[] }) {
+  if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada pengecualian.</p>;
+  return (
+    <div>
+      <h3 className="mb-2 text-sm font-medium text-slate-200">Alasan Pengecualian</h3>
+      <div className="space-y-2">
+        {data.map((d) => (
+          <div
+            key={d.flag}
+            className="flex items-start justify-between gap-2 rounded-lg border border-slate-700/50 bg-slate-900/30 px-3 py-2"
+          >
+            <div className="min-w-0">
+              <p className="text-xs text-slate-300 truncate">{d.flag}</p>
+              <p className="text-[10px] text-slate-500">
+                terakhir {new Date(d.lastSeen).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
+              </p>
+            </div>
+            <span className="shrink-0 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium tabular-nums text-amber-300">
+              {d.count}x
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
 // ── Panel gabungan dengan polling ────────────────────────────────────────
 
 export function DashboardPanels({ initial }: { initial: OpsData }) {
@@ -262,6 +357,19 @@ export function DashboardPanels({ initial }: { initial: OpsData }) {
       <section className="rounded-xl border border-line bg-card/40 p-5">
         <h2 className="mb-1 font-medium text-slate-100">Aktivitas Terbaru</h2>
         <ActivityFeed data={data.activity} />
+      </section>
+
+      {/* EN-03: Feedback Loop — Quality Insights */}
+      <section className="rounded-xl border border-emerald-500/20 bg-card/40 p-5">
+        <h2 className="mb-1 font-medium text-slate-100">Insight Kualitas (Feedback Loop)</h2>
+        <p className="mb-4 text-xs text-slate-500">
+          Metrik real-time dari data operasional: exception rate, first-pass, tren mingguan, & alasan pengecualian.
+        </p>
+        <div className="grid gap-4 lg:grid-cols-3">
+          <QualityTrend data={data.trend} />
+          <QualityByIndustry data={data.industry} />
+          <QualityExceptionInsights data={data.insights} />
+        </div>
       </section>
     </div>
   );
