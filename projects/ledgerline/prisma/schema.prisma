@@ -124,6 +124,7 @@ model Client {
   documents Document[]
   journals  JournalEntry[]
   profile   ClientProfile?
+  portalToken ClientPortalToken?
 
   @@index([firmId, status])
 }
@@ -304,4 +305,20 @@ model ClientProfile {
   client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@index([firmId])
+}
+
+// ══════════ EN-08 — Portal Klien (F2) ══════════
+// Klien mengakses lewat token unik (tanpa login), upload mandiri,
+// lihat laporan & status dokumen. Token bisa di-reset oleh firma.
+
+model ClientPortalToken {
+  id        String   @id @default(cuid())
+  clientId  String   @unique
+  token     String   @unique @default(uuid())
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([token])
 }
