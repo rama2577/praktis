@@ -3,9 +3,12 @@ import { SYSTEM_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { UploadForm } from "@/components/documents/upload-form";
+import { ClientProfilePanel } from "@/components/clients/client-profile-panel";
 import { formatBytes } from "@/lib/format";
 import Link from "next/link";
-import type { DocumentStatus, DocumentType } from "@prisma/client";
+import { Role, type DocumentStatus, type DocumentType } from "@prisma/client";
+
+const PROFILE_EDITORS: Role[] = [Role.ADMIN, Role.PARTNER, Role.SENIOR];
 
 const DOC_TYPE_LABELS: Record<DocumentType, string> = {
   INVOICE: "Invoice",
@@ -80,6 +83,11 @@ export default async function ClientDetailPage({
       <div className="mt-6">
         <UploadForm clientId={client.id} />
       </div>
+
+      <ClientProfilePanel
+        clientId={client.id}
+        canEdit={PROFILE_EDITORS.includes(session.user.role)}
+      />
 
       <div className="mt-6">
         <h2 className="text-sm font-semibold">Dokumen</h2>
