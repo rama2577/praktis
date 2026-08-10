@@ -404,6 +404,7 @@ export type DashboardData = {
   avgDailyTransactions: number;
   transactionsDeltaPct: number | null;
   slaBreachCount: number;
+  firstPassRate: number;
   breachesByStage: Array<{ stage: ReviewStage; count: number }>;
 };
 
@@ -430,6 +431,13 @@ export async function getDashboardData(firmId: string): Promise<DashboardData> {
   const aiDraftJobs = byStatus["DRAFT"] ?? 0;
   const jobsInProgress = IN_PROCESS_STATUSES.reduce((acc, s) => acc + (byStatus[s] ?? 0), 0);
 
+  // EN-03: first-pass rate
+  const fpApproved = byStatus["APPROVED"] ?? 0;
+  const fpRejected = byStatus["REJECTED"] ?? 0;
+  const fpException = byStatus["EXCEPTION"] ?? 0;
+  const fpTotal = fpApproved + fpRejected + fpException;
+  const firstPassRate = fpTotal > 0 ? Math.round((fpApproved / fpTotal) * 1000) / 10 : 0;
+
   const days = minCreated._min.createdAt ? daysSince(minCreated._min.createdAt, now) : 1;
   const avgDailyTransactions = Math.round((totalJournals / days) * 10) / 10;
 
@@ -444,6 +452,7 @@ export async function getDashboardData(firmId: string): Promise<DashboardData> {
     avgDailyTransactions,
     transactionsDeltaPct: deltaVsAverage(todayJournals, avgDailyTransactions),
     slaBreachCount,
+    firstPassRate,
     breachesByStage: breachesByStage
       .map((b) => ({ stage: b.stage as ReviewStage, count: b._count }))
       .sort((a, b) => b.count - a.count),

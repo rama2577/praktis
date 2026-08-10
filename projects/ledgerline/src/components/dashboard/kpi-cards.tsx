@@ -33,6 +33,13 @@ export function KpiCards({ data }: { data: DashboardData }) {
 
   const cards: CardDef[] = [
     {
+      label: "First-Pass Rate",
+      value: fmtPct(data.firstPassRate),
+      valueTone: data.firstPassRate >= 70 ? "text-emerald-400" : data.firstPassRate >= 40 ? "text-amber-400" : "text-red-400",
+      hint: "jurnal langsung disetujui tanpa exception",
+      icon: "🎯",
+    },
+    {
       label: "Klien Aktif",
       value: fmt(data.activeClients),
       valueTone: "text-slate-100",
@@ -75,7 +82,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5">
+    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
       {cards.map((card) => (
         <div
           key={card.label}
