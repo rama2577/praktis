@@ -11,6 +11,10 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // PDFKit font data perlu disertakan di standalone output
+  outputFileTracingIncludes: {
+    "/api/portal/*": ["./node_modules/pdfkit/js/data/*.afm"],
+  },
   async headers() {
     const headers = [...securityHeaders];
     // HSTS hanya di produksi — jangan aktif di localhost (browser meng-cache-nya).
