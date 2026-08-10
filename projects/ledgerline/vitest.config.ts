@@ -15,10 +15,10 @@ export default defineConfig({
       exclude: ["src/ai/knowledge/**", "src/ai/**/*.d.ts"],
       thresholds: {
         // SQ-01: quality gate — naikkan bertahap di F2 (baseline 2026-08-09)
-        statements: 31,
-        branches: 30,
-        functions: 20,
-        lines: 30,
+        statements: 33,
+        branches: 32,
+        functions: 25,
+        lines: 33,
       },
     },
   },
