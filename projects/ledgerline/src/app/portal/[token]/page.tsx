@@ -2,6 +2,7 @@ import { notFound } from "next/navigation";
 import { validatePortalToken, getPortalDocuments } from "@/server/portal";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatBytes } from "@/lib/format";
+import { ExportButtons } from "./export-buttons";
 import type { DocumentStatus, DocumentType } from "@prisma/client";
 
 const DOC_TYPE_LABELS: Record<DocumentType, string> = {
@@ -127,7 +128,12 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
         )}
       </div>
 
-      <footer className="mt-8 border-t border-slate-800 pt-4 text-center text-xs text-slate-600">
+      {/* Export */}
+      <div className="mt-6">
+        <ExportButtons token={token} />
+      </div>
+
+            <footer className="mt-8 border-t border-slate-800 pt-4 text-center text-xs text-slate-600">
         Portal Praktis — dokumen diproses otomatis oleh AI, diverifikasi oleh akuntan.
       </footer>
     </div>
