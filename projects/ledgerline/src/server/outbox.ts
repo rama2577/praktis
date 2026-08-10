@@ -4,12 +4,13 @@
  * Setiap event domain (journalApproved, journalException, slaBreach)
  * ditulis ke tabel OutboxEvent untuk menjamin at-least-once delivery.
  *
- * Consumer (`processOutbox`) dibaca oleh worker terpisah atau job cron,
- * memproses event PENDING dengan retry eksponensial.
+ * Consumer (`processOutbox`) dibaca oleh worker terpisah, mendispatch
+ * webhook ke firm-subscribed endpoint, lalu emit in-process.
  */
 
 import { prisma } from "@/lib/db";
 import { emit, type PraktisEvents } from "@/lib/events";
+import { dispatchWebhooks } from "@/server/notifications";
 
 /** Tulis event ke outbox + emit in-process. */
 export async function enqueueOutbox<K extends keyof PraktisEvents>(
@@ -53,8 +54,14 @@ export async function processOutbox(): Promise<{ processed: number; failed: numb
 
   for (const event of events) {
     try {
-      // Proses event (di masa depan: webhook, email, push notification)
-      // Untuk sekarang: emit ulang ke in-process bus supaya listener jalan
+      // 1. Dispatch webhook ke semua subscriber
+      await dispatchWebhooks(
+        event.id,
+        event.eventType,
+        event.payload as Record<string, unknown>,
+      );
+
+      // 2. Emit in-process (listener real-time)
       emit(
         event.eventType as keyof PraktisEvents,
         event.payload as Record<string, unknown> as never,

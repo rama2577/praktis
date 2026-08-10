@@ -15,23 +15,11 @@ const baseData: DashboardData = {
   transactionsDeltaPct: 12.3,
   avgDailyTransactions: 15,
   slaBreachCount: 2,
+  firstPassRate: 77.3,
   breachesByStage: [
     { stage: "JUNIOR", count: 1 },
     { stage: "TAX", count: 1 },
   ],
-  pipeline: {
-    statusCounts: { DRAFT: 8, JUNIOR_REVIEW: 5, SENIOR_REVIEW: 3, TAX_REVIEW: 3, APPROVED: 1, EXCEPTION: 1, REJECTED: 1, ARCHIVED: 0 },
-    documentsPending: 0,
-    documentsProcessing: 0,
-    tasksPending: 12,
-  },
-  sla: [],
-  confidence: [],
-  activity: [],
-  firstPassRate: 77.3,
-  industry: [],
-  trend: [],
-  insights: [],
 };
 
 describe("KpiCards", () => {

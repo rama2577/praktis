@@ -345,6 +345,44 @@ model OutboxEvent {
   processedAt DateTime?
   createdAt   DateTime      @default(now())
 
+  notifications NotificationLog[]
+
   @@index([status, processAfter])
   @@index([eventType])
+}
+
+// ══════════ EN-05 — Webhook & Notification (F2) ══════════
+// Firma mendaftarkan URL webhook untuk menerima notifikasi event.
+// Event diproses via consumer worker → POST ke webhook URL.
+
+model WebhookSubscription {
+  id        String   @id @default(cuid())
+  firmId    String
+  url       String // endpoint webhook firma
+  secret    String? // HMAC secret untuk verifikasi signature
+  eventTypes String[] // ["journalApproved", "slaBreach", ...]
+  enabled   Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  notifications NotificationLog[]
+
+  @@index([firmId, enabled])
+}
+
+model NotificationLog {
+  id         String   @id @default(cuid())
+  outboxId   String?  // relasi ke OutboxEvent
+  webhookId  String?
+  status     String   @default("SENT") // SENT | FAILED
+  statusCode Int?     // HTTP response code
+  response   String?  // body response
+  error      String?
+  sentAt     DateTime @default(now())
+
+  outboxEvent OutboxEvent?          @relation(fields: [outboxId], references: [id], onDelete: SetNull)
+  webhook     WebhookSubscription?  @relation(fields: [webhookId], references: [id], onDelete: SetNull)
+
+  @@index([outboxId])
+  @@index([sentAt])
 }
