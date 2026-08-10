@@ -41,17 +41,17 @@
 
 ## 🟠 Sedang
 
-- **TD-06 · Path LLM belum teruji end-to-end** → **engine GLM dipasang (F1)**: default **GLM-4-Flash** (teks, gratis) + **GLM-4V-Flash** (OCR, gratis) + glm-4.6 retry; fallback ganda di `chatJsonWithFallback`; unit test `tests/llm.test.ts` (11 kasus, fetch di-mock). Sisa: integration test dengan key nyata + smoke vision JPG (F2). [x] model routing · [x] fallback · [x] unit test · [ ] test key nyata (F2)
-- **TD-07 · Knowledge base statis** (13 referensi hardcoded) → **digantikan EN-01** (KB versioned & updatable). [ ]
+- **TD-06 · Path LLM belum teruji end-to-end** → **engine GLM dipasang (F1)**: default **GLM-4-Flash** (teks, gratis) + **GLM-4V-Flash** (OCR, gratis) + glm-4.6 retry; fallback ganda di `chatJsonWithFallback`; unit test `tests/llm.test.ts` (11 kasus, fetch di-mock). Sisa: integration test dengan key nyata + smoke vision JPG. [x] model routing · [x] fallback · [x] unit test · [ ] test key nyata 🔒 (saldo Z.ai)
+- **TD-07 · Knowledge base statis** (13 referensi hardcoded) → **digantikan EN-01** (KB versioned & updatable). ✅
 - **TD-08 · Parsing dokumen terbatas** (pdf-parse teks-only, belum OCR) → evaluasi OCR layer. [ ]
-- **TD-09 · Isolasi tenant belum teruji E2E** → **test dibuat & LULUS (F0)**: `scripts/e2e-isolation.ts` (8/8 asersi — clients, queues, dashboard, upload lintas-firma ditolak 400, exceptions, PATCH langsung 404). Middleware tenant-scoped (EN-04) tetap di F1. [x] test isolasi · [ ] middleware EN-04 · [ ] masuk CI (step sudah ditambahkan di ci.yml)
+- **TD-09 · Isolasi tenant belum teruji E2E** → **test dibuat & LULUS (F0)**: `scripts/e2e-isolation.ts` (8/8 asersi — clients, queues, dashboard, upload lintas-firma ditolak 400, exceptions, PATCH langsung 404). Middleware tenant-scoped (EN-04) framework siap (`withTenantApi` di `src/lib/tenant-api.ts`), wrap route saat multi-firm. [x] test isolasi · [x] withTenantApi siap · [ ] wrap route (saat multi-firm)
 
 ## 🟡 Ringan
 
 - **TD-10 · CI belum pernah benar-benar jalan** (belum push ke GitHub) → workflow diperbarui (TEST_PASSWORD env, step audit, step e2e-isolation) & semua langkah terverifikasi lokal; **butuh push ke GitHub** untuk eksekusi nyata. [x] verifikasi lokal · [ ] push & hijau di GitHub
 - **TD-11 · Tooling deck nyasar di repo app** (`screenshot-mockups.ts`, `playwright.config.ts`) → pindah ke `projects/praktis-deck`. [ ]
 - **TD-12 · Playwright hardcode `channel: "chrome"`** → dokumentasikan/pinned headless shell. [ ]
-- **TD-13 · Coverage UI = 0** → **component tests mulai (F1)**: `tests/status-badge.test.tsx` (5) + `tests/empty-state.test.tsx` (5) — total test 89 → **112**. Lanjutan: queue-list, kpi-cards, dashboard-panels → F2. [x] status-badge · [x] empty-state · [ ] queue-list/kpi-cards (F2)
+- **TD-13 · Coverage UI = 0** → **component tests ✅**: `tests/status-badge.test.tsx` (5 + 5) + `tests/empty-state.test.tsx` (5) + `tests/queue-list.test.tsx` (3) + `tests/kpi-cards.test.tsx` (9) = **22 component tests**, total 151/151. Lanjutan: dashboard-panels → post-launch. [x] status-badge · [x] empty-state · [x] queue-list · [x] kpi-cards · [ ] dashboard-panels
 - **TD-14 · Alert SLA breach internal saja** → email/SMTP/Telegram (post-launch DoD). [ ]
 - **TD-15 · Tidak ada backup/restore strategy** (lihat TD-04). [ ]
 - **TD-16 · Seed akun demo `password123`** → ganti/disable sebelum produksi. [ ]
