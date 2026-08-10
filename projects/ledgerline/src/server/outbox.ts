@@ -11,6 +11,7 @@
 import { prisma } from "@/lib/db";
 import { emit, type PraktisEvents } from "@/lib/events";
 import { dispatchWebhooks } from "@/server/notifications";
+import { sendEmail, slaBreachEmailTemplate } from "@/server/email";
 
 /** Tulis event ke outbox + emit in-process. */
 export async function enqueueOutbox<K extends keyof PraktisEvents>(
@@ -27,6 +28,39 @@ export async function enqueueOutbox<K extends keyof PraktisEvents>(
       payload: payload as Record<string, unknown>,
     },
   });
+}
+
+/** Kirim email SLA breach ke semua user Admin firma. */
+async function sendSlaBreachEmail(payload: {
+  firmId: string;
+  stage: string;
+  journalId?: string | null;
+  actualMinutes?: number | null;
+}) {
+  try {
+    const admins = await prisma.user.findMany({
+      where: { firmId: payload.firmId, role: { in: ["ADMIN", "PARTNER"] } },
+      select: { email: true, name: true },
+    });
+    const firm = await prisma.firm.findUnique({
+      where: { id: payload.firmId },
+      select: { name: true },
+    });
+    const template = slaBreachEmailTemplate({
+      firmName: firm?.name ?? "Praktis",
+      stage: payload.stage,
+      journalId: payload.journalId ?? "-",
+      actualMinutes: payload.actualMinutes ?? 0,
+      targetMinutes: 120,
+      dashboardUrl: process.env.APP_URL ?? "http://localhost:3000/dashboard",
+    });
+    for (const admin of admins) {
+      await sendEmail({ to: admin.email, subject: template.subject, html: template.html });
+    }
+  } catch (err) {
+    console.error("[outbox] SLA email failed:", err);
+    // Don't block outbox processing
+  }
 }
 
 /** Hitung delay retry eksponensial: 1m, 2m, 4m, 8m... */
@@ -61,7 +95,12 @@ export async function processOutbox(): Promise<{ processed: number; failed: numb
         event.payload as Record<string, unknown>,
       );
 
-      // 2. Emit in-process (listener real-time)
+      // 2. SLA breach → kirim email ke admin firma
+      if (event.eventType === "slaBreach") {
+        await sendSlaBreachEmail(event.payload as { firmId: string; stage: string; journalId?: string | null; actualMinutes?: number | null });
+      }
+
+      // 3. Emit in-process (listener real-time)
       emit(
         event.eventType as keyof PraktisEvents,
         event.payload as Record<string, unknown> as never,
