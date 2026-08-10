@@ -70,11 +70,16 @@ Upload (PDF/JPG/XLSX)
 
 **Model routing (`src/ai/llm.ts`):**
 
-| Fungsi | Model default | Biaya | Env override |
+| Fungsi | Model default (z.ai) | Model (bigmodel.cn) | Env override |
 |---|---|---|---|
-| Draft jurnal (teks) | `glm-4-flash` | **gratis** | `LLM_MODEL` |
-| OCR gambar (JPG) | `glm-4v-flash` | **gratis** | `LLM_VISION_MODEL` |
-| Retry kualitas | `glm-4.6` | berbayar (hemat) | `LLM_STRONG_MODEL` |
+| Draft jurnal (teks) | `glm-4.5-air` (murah) | `glm-4-flash` **gratis** | `LLM_MODEL` |
+| OCR gambar (JPG) | `glm-4.5` (multimodal) | `glm-4v-flash` **gratis** | `LLM_VISION_MODEL` |
+| Retry kualitas | `glm-4.6` | `glm-4.6` | `LLM_STRONG_MODEL` |
+
+> **Catatan platform (2026-08-10):** model `-flash` gratis hanya di bigmodel.cn (portal China,
+> butuh pendaftaran lokal). Z.ai internasional: `glm-4.5-air` paling hemat; butuh saldo
+> (429 `Insufficient balance` jika kosong). Model apa pun bisa diganti lewat env — tanpa
+> API key sama sekali, app tetap berfungsi penuh via rule engine (fallback deterministik).
 
 **Strategi biaya:** flash untuk semua dokumen rutin → cost AI per dokumen mendekati nol (GLM-4-Flash free tier). Strong model hanya terpakai saat flash gagal. Tanpa API key sama sekali, app tetap berfungsi penuh via rule engine (fallback terakhir) — tidak ada single point of failure ke vendor.
 
