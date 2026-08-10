@@ -23,6 +23,7 @@ export async function GET() {
       journalEntry: { firmId: user.firmId },
     },
     orderBy: [{ urgent: "desc" }, { createdAt: "asc" }],
+    take: 100,
     include: {
       journalEntry: {
         include: {

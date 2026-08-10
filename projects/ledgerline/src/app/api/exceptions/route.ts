@@ -10,6 +10,7 @@ export async function GET() {
 
   const rows = await prisma.journalEntry.findMany({
     where: { firmId: guard.session.user.firmId, status: "EXCEPTION" },
+    take: 50,
     orderBy: { createdAt: "desc" },
     include: {
       client: { select: { id: true, name: true } },
