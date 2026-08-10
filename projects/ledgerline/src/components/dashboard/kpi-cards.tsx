@@ -82,22 +82,29 @@ export function KpiCards({ data }: { data: DashboardData }) {
   ];
 
   return (
-    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
-      {cards.map((card) => (
-        <div
-          key={card.label}
-          className="rounded-xl border border-line bg-card p-5 transition-colors hover:border-slate-600"
-        >
-          <div className="flex items-center justify-between">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
-            <span aria-hidden className="text-base opacity-80">
-              {card.icon}
-            </span>
+    <div className="animate-stagger grid gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6">
+      {cards.map((card) => {
+        const isHero = card.label === "First-Pass Rate";
+        return (
+          <div
+            key={card.label}
+            className={`card-hover rounded-xl border bg-card p-5 ${
+              isHero
+                ? "border-accent/30 shadow-[0_0_20px_rgba(245,197,24,0.08)]"
+                : "border-line"
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
+              <span aria-hidden className="text-base opacity-80">
+                {card.icon}
+              </span>
+            </div>
+            <p className={`mt-2 text-3xl font-semibold tabular-nums ${card.valueTone}`}>{card.value}</p>
+            <p className={`mt-1 text-xs ${card.hintTone ?? "text-slate-500"}`}>{card.hint}</p>
           </div>
-          <p className={`mt-2 text-3xl font-semibold tabular-nums ${card.valueTone}`}>{card.value}</p>
-          <p className={`mt-1 text-xs ${card.hintTone ?? "text-slate-500"}`}>{card.hint}</p>
-        </div>
-      ))}
+        );
+      })}
     </div>
   );
 }

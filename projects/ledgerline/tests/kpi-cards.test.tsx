@@ -25,9 +25,8 @@ const baseData: DashboardData = {
 describe("KpiCards", () => {
   it("menampilkan 6 kartu KPI", () => {
     render(<KpiCards data={baseData} />);
-    const cards = screen.getAllByRole("generic").filter(
-      el => el.className.includes("rounded-xl") && el.className.includes("border-line")
-    );
+    // All 6 cards have rounded-xl + p-5 + card-hover class
+    const cards = document.querySelectorAll(".card-hover");
     expect(cards.length).toBe(6);
   });
 

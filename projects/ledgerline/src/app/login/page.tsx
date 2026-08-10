@@ -14,7 +14,7 @@ export default async function LoginPage() {
             LL
           </div>
           <div>
-            <h1 className="text-xl font-semibold tracking-tight">LedgerLine</h1>
+            <h1 className="text-xl font-semibold tracking-tight">Praktis</h1>
             <p className="text-sm text-slate-400">
               Masuk untuk melanjutkan
             </p>

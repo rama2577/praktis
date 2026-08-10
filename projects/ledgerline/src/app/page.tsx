@@ -20,7 +20,7 @@ export default function Home() {
             </div>
             <div>
               <h1 className="text-2xl font-semibold tracking-tight">
-                LedgerLine
+                Praktis
               </h1>
               <p className="text-sm text-slate-400">AI Bookkeeping Platform</p>
             </div>

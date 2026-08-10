@@ -3,7 +3,7 @@ import { requireRole } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { QueueList } from "@/components/queues/queue-list";
 
-export const metadata: Metadata = { title: "Antrian Review — LedgerLine" };
+export const metadata: Metadata = { title: "Antrian Review — Praktis" };
 
 export default async function QueuesPage() {
   await requireRole(OPERATIONAL_ROLES);

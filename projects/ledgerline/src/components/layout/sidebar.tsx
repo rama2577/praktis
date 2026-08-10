@@ -59,7 +59,7 @@ export function Sidebar({
           LL
         </div>
         <div>
-          <p className="text-sm font-semibold leading-tight">LedgerLine</p>
+          <p className="font-heading text-sm font-semibold leading-tight">Praktis</p>
           <p className="text-[11px] text-slate-400">AI Bookkeeping</p>
         </div>
       </div>
@@ -109,6 +109,17 @@ export function Sidebar({
           </div>
         ))}
       </nav>
+
+      {/* ── Security badge strip ── */}
+      <div className="border-t border-line px-4 py-2.5">
+        <div className="flex items-center justify-center gap-3 text-[10px] text-slate-500">
+          <span title="Enkripsi AES-256-GCM">🔒 AES-256</span>
+          <span className="text-slate-600">·</span>
+          <span title="Transport Layer Security">🔐 TLS 1.3</span>
+          <span className="text-slate-600">·</span>
+          <span title="ISO 27001 ready">🛡️ SOC2-ready</span>
+        </div>
+      </div>
 
       <div className="border-t border-line px-4 py-3">
         <div className="flex items-center gap-3">

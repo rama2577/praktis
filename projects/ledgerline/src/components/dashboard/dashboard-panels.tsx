@@ -148,7 +148,7 @@ function SlaPanel({ data }: { data: SlaStageSummary[] }) {
               </span>
             </div>
             <div className="h-2 overflow-hidden rounded-full bg-slate-800">
-              <div className={`h-full rounded-full ${tone}`} style={{ width: `${pct}%` }} />
+              <div className={`animate-progress h-full rounded-full ${tone}`} style={{ width: `${pct}%` }} />
             </div>
           </div>
         );
@@ -168,12 +168,12 @@ function ConfidenceChart({ data }: { data: ConfidenceBucket[] }) {
           <XAxis dataKey="label" tick={{ fill: "#94a3b8", fontSize: 12 }} axisLine={{ stroke: "#1e2a45" }} tickLine={false} />
           <YAxis allowDecimals={false} tick={{ fill: "#64748b", fontSize: 11 }} axisLine={false} tickLine={false} />
           <Tooltip
-            cursor={{ fill: "rgba(245,197,24,0.06)" }}
+            cursor={{ fill: "rgba(59,130,246,0.06)" }}
             contentStyle={{ background: "#0f172a", border: "1px solid #1e2a45", borderRadius: 8, fontSize: 12 }}
             labelStyle={{ color: "#e2e8f0" }}
             formatter={(value) => [`${value} jurnal`, "Jumlah"]}
           />
-          <Bar dataKey="count" fill="#f5c518" radius={[6, 6, 0, 0]} maxBarSize={48} />
+          <Bar dataKey="count" fill="#3b82f6" radius={[6, 6, 0, 0]} maxBarSize={48} />
         </BarChart>
       </ResponsiveContainer>
     </div>
