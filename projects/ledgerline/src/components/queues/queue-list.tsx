@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { stageBadge, stageLabel, STAGE_ORDER } from "@/components/queues/stage-meta";
 import { formatCurrencyRp } from "@/lib/format";
@@ -59,6 +59,14 @@ export function QueueList() {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
+  const noteRef = useRef<HTMLTextAreaElement>(null);
+
+  // Auto-focus note textarea saat panel review terbuka
+  useEffect(() => {
+    if (openTaskId && noteRef.current) {
+      noteRef.current.focus();
+    }
+  }, [openTaskId]);
 
   const load = useCallback(async () => {
     try {
@@ -116,6 +124,23 @@ export function QueueList() {
     },
     [load, note],
   );
+
+  // EN-06: Keyboard shortcuts — review jurnal tanpa mouse
+  useEffect(() => {
+    if (!openTaskId || busy) return;
+    const handler = (e: KeyboardEvent) => {
+      const isTextarea = e.target instanceof HTMLTextAreaElement;
+      if (isTextarea && e.key !== "Escape") return;
+      switch (e.key) {
+        case "a": case "A": e.preventDefault(); void submitAction(openTaskId, "approve"); break;
+        case "r": case "R": e.preventDefault(); void submitAction(openTaskId, "return"); break;
+        case "x": case "X": e.preventDefault(); void submitAction(openTaskId, "reject"); break;
+        case "Escape": e.preventDefault(); setOpenTaskId(null); setNote(""); break;
+      }
+    };
+    window.addEventListener("keydown", handler);
+    return () => window.removeEventListener("keydown", handler);
+  }, [openTaskId, busy, submitAction]);
 
   if (loading) {
     return <SkeletonList rows={3} />;
@@ -217,8 +242,21 @@ export function QueueList() {
                       </table>
                     </div>
 
+                    {/* EN-06: Shortcut bar */}
+                    <div className="flex items-center gap-3 rounded-lg border border-slate-700/50 bg-slate-800/40 px-3 py-1.5 text-[11px] text-slate-400">
+                      <span className="text-slate-500">⌨️</span>
+                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">A</kbd> Setujui</span>
+                      <span className="text-slate-600">·</span>
+                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">R</kbd> Kembalikan</span>
+                      <span className="text-slate-600">·</span>
+                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">X</kbd> Tolak</span>
+                      <span className="text-slate-600">·</span>
+                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">Esc</kbd> Tutup</span>
+                    </div>
+
                     <div className="space-y-3">
                       <textarea
+                        ref={noteRef}
                         value={note}
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="Catatan review (wajib untuk Tolak)…"
@@ -231,21 +269,21 @@ export function QueueList() {
                           onClick={() => submitAction(task.id, "approve")}
                           className="rounded-lg bg-emerald-600 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-500 disabled:opacity-50"
                         >
-                          Setujui ✓
+                          Setujui <kbd className="ml-1 rounded bg-emerald-700 px-1 py-0.5 text-[10px]">A</kbd>
                         </button>
                         <button
                           disabled={busy}
                           onClick={() => submitAction(task.id, "return")}
                           className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-300 hover:bg-amber-500/20 disabled:opacity-50"
                         >
-                          Kembalikan ↩
+                          Kembalikan <kbd className="ml-1 rounded border border-amber-500/30 bg-amber-500/10 px-1 py-0.5 text-[10px]">R</kbd>
                         </button>
                         <button
                           disabled={busy}
                           onClick={() => submitAction(task.id, "reject")}
                           className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 hover:bg-red-500/20 disabled:opacity-50"
                         >
-                          Tolak ✕
+                          Tolak <kbd className="ml-1 rounded border border-red-500/30 bg-red-500/10 px-1 py-0.5 text-[10px]">X</kbd>
                         </button>
                       </div>
                     </div>
