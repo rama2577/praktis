@@ -66,14 +66,16 @@ Knowledge base bukan sekadar referensi statis — harus jadi **sistem pengetahua
 - **Konten versioned & tanggal efektif:** COA standar Indonesia, accounting treatment (PSAK 71/72/73, PPN 11%, PPh 21/23/4(2)), report modeling (template laba rugi/neraca/arus kas), analyst modeling (rasio & analisa otomatis).
 - **Workflow approval:** perubahan KB oleh Senior/Partner dengan audit trail; tarif pajak berubah → update terjadwal dengan effective date (jurnal lama tetap valid, jurnal baru pakai aturan baru).
 - **Bukan hardcoded:** KB sebagai data ter-versioning + API/UI admin untuk update (menggantikan TD-07).
-- [ ] Model data KB (version, effectiveDate, category, content, approvedBy) · [ ] UI admin KB · [ ] Audit trail perubahan · [ ] Migrasi 13 referensi
+- **Backend ✅ (F2, 2026-08-10):** model `KnowledgeItem` (version, effectiveDate, category, content, status, approvedBy/At, supersedesId — rantai versi = audit trail) + migrasi + seed 13 referensi (idempotent, nama tanpa ekstensi) + API: GET/POST `/api/knowledge`, POST `[id]/approve`, PATCH `[id]` (reject). Workflow terverifikasi: v1 ACTIVE → draf v2 → approve → v2 ACTIVE, v1 otomatis SUPERSEDED. Draf hanya bisa di-approve/reject oleh Senior/Partner/Admin.
+- [x] Model data KB · [x] Migrasi 13 referensi · [x] API approval + audit trail · [ ] UI admin KB (F2 lanjutan)
 
 ## EN-02 · Pengenalan Profil Klien (masukan pemilik produk — PRIORITAS)
 Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung dikenali AI saat upload:
 - **Client Profile sebagai entitas:** mapping COA klien → COA standar, format laporan klien, aturan spesifik klien (kebijakan akun, penyusutan, dll).
 - **Onboarding cepat:** upload 1–2 periode historis → AI belajar mapping → transaksi baru langsung terklasifikasi benar.
 - **Dampak:** exception rate turun, first-pass rate naik, setup klien baru < 15 menit.
-- [ ] Model ClientProfile (coaMapping, reportTemplates, rules) · [ ] Flow "upload historis → belajar mapping" · [ ] Review mapping oleh senior · [ ] Metrik: first-pass rate naik
+- **Backend ✅ (F2, 2026-08-10):** model `ClientProfile` (coaMapping, reportTemplates, rules, mappingStatus NONE/LEARNING/REVIEW/READY, sourcePeriod) + `learnMappingFromText` (GLM-4-Flash gratis → REVIEW) + API: GET/PUT `/api/clients/[id]/profile`, POST `.../profile/learn`, PATCH approve. Pipeline membaca profile READY → prompt drafting mendapat hint COA klien (coaMappingHint). Terverifikasi end-to-end via API (PUT REVIEW → PATCH READY → hint keluar).
+- [x] Model ClientProfile · [x] Flow belajar mapping (GLM → REVIEW) · [x] Review mapping senior (approve) · [x] Integrasi pipeline (hint COA) · [ ] UI onboarding mapping · [ ] Metrik first-pass rate (F2 lanjutan)
 
 ## EN-03 · Feedback loop AI (Senior Accountant & Data Engineering)
 - Rekam approve/reject/exception + koreksi user → dataset latih rule/LLM ("human-in-the-loop = data flywheel").

@@ -26,6 +26,8 @@ export async function draftJournalFromText(opts: {
   text: string;
   industry: string;
   docType: string;
+  /** EN-02: hint COA klien (dari ClientProfile READY) — override akun klien. */
+  coaMappingHint?: string | null;
 }): Promise<DraftResult> {
   const ruleResult = buildDraftJournal(opts.text, opts);
 
@@ -47,6 +49,7 @@ async function draftWithLLM(opts: {
   text: string;
   industry: string;
   docType: string;
+  coaMappingHint?: string | null;
 }): Promise<DraftResult | null> {
   const [templates, businessEvents, taxPpn, coa] = await Promise.all([
     loadKnowledgeFile("journal-templates.md"),
@@ -77,6 +80,9 @@ ${taxPpn.slice(0, 2000)}
 
 COA (industri ${opts.industry}):
 ${coa.slice(0, 3000)}
+
+${opts.coaMappingHint ? `${opts.coaMappingHint}
+Gunakan pemetaan di atas: kode akun di jurnal WAJIB memakai accountCode standar yang sudah dipetakan dari COA klien.` : ""}
 
 RESPONS (JSON saja):
 {

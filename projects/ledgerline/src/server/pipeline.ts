@@ -3,6 +3,7 @@ import { logger } from "@/lib/logger";
 import { parseDocument } from "@/ai/parsers";
 import { draftJournalFromText } from "@/ai/drafting";
 import { validateDraftLines } from "@/ai/validation";
+import { getClientProfile, coaMappingHint } from "@/server/client-profile";
 import type { JournalStatus } from "@prisma/client";
 
 /**
@@ -50,6 +51,8 @@ export async function processDocument(documentId: string, traceId?: string) {
     text,
     industry: doc.client.industry,
     docType: doc.type,
+    // EN-02: klien dengan ClientProfile READY → drafting pakai mapping COA klien
+    coaMappingHint: coaMappingHint(await getClientProfile(doc.clientId)),
   });
   const validation = validateDraftLines(draft.lines);
 

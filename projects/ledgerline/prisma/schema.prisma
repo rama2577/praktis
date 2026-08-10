@@ -120,9 +120,10 @@ model Client {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  firm      Firm        @relation(fields: [firmId], references: [id])
+  firm      Firm          @relation(fields: [firmId], references: [id])
   documents Document[]
   journals  JournalEntry[]
+  profile   ClientProfile?
 
   @@index([firmId, status])
 }
@@ -237,4 +238,70 @@ model SlaEvent {
   journalEntry JournalEntry? @relation(fields: [journalEntryId], references: [id])
 
   @@index([firmId, status])
+}
+
+// ══════════ EN-01 — Knowledge Platform (F2) ══════════
+// KB hidup: versioned, tanggal efektif, workflow approval Senior/Partner.
+// Menggantikan referensi statis di src/ai/knowledge/ (TD-07).
+
+enum KnowledgeStatus {
+  DRAFT
+  ACTIVE
+  SUPERSEDED
+  REJECTED
+}
+
+model KnowledgeItem {
+  id            String          @id @default(cuid())
+  category      String // "COA" | "Peraturan Pajak" | "Template Jurnal" | ...
+  name          String // slug unik per kategori, mis. "coa-retail"
+  title         String
+  content       String
+  version       Int             @default(1)
+  effectiveDate DateTime // aturan berlaku sejak kapan (jurnal lama tetap valid)
+  status        KnowledgeStatus @default(DRAFT)
+  changeNote    String? // alasan perubahan (audit trail)
+  approvedById  String?
+  approvedAt    DateTime?
+  supersedesId  String?         @unique
+  supersedes    KnowledgeItem?  @relation("VersionChain", fields: [supersedesId], references: [id], onDelete: SetNull)
+  revisions     KnowledgeItem[] @relation("VersionChain")
+  createdById   String?
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  @@unique([category, name, version])
+  @@index([category, name, status])
+  @@index([effectiveDate])
+}
+
+// ══════════ EN-02 — Client Profile (F2) ══════════
+// Klien dengan COA/laporan baku langsung dikenali AI saat upload.
+
+enum ProfileStatus {
+  NONE
+  LEARNING
+  REVIEW
+  READY
+}
+
+model ClientProfile {
+  id              String        @id @default(cuid())
+  clientId        String        @unique
+  firmId          String
+  // Mapping COA klien → COA standar: { "kodeKlien": { "accountCode": "1101", "accountName": "Kas" } }
+  coaMapping      Json          @default("{}")
+  // Template laporan klien: { "labarugi": "...", "neraca": "..." }
+  reportTemplates Json          @default("{}")
+  // Aturan spesifik klien: { "penyusutan": "...", "kebijakan": "..." }
+  rules           Json          @default("{}")
+  mappingStatus   ProfileStatus @default(NONE)
+  sourcePeriod    String? // periode historis yang dipelajari, mis. "2026-01"
+  updatedById     String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@index([firmId])
 }

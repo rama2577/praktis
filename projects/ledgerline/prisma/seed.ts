@@ -17,6 +17,7 @@ import {
   SlaStatus,
 } from "@prisma/client";
 import bcrypt from "bcryptjs";
+import { seedKnowledgeFromFiles } from "../src/server/knowledge";
 
 const prisma = new PrismaClient();
 
@@ -312,6 +313,12 @@ async function main() {
       { firmId: firm.id, stage: ReviewStage.TAX, targetMinutes: 240, actualMinutes: 262, status: SlaStatus.BREACHED, journalEntryId: null },
     ],
   });
+
+  // EN-01: impor 13 file knowledge → KnowledgeItem ACTIVE v1 (idempotent)
+  const kbCreated = await seedKnowledgeFromFiles();
+  if (kbCreated > 0) {
+    console.log(`Knowledge Platform: ${kbCreated} item di-seed dari file.`);
+  }
 
   console.log("✅ Seed selesai.");
   console.log(`Firm: ${firm.name} (${firm.slug})`);
