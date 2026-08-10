@@ -322,3 +322,29 @@ model ClientPortalToken {
 
   @@index([token])
 }
+
+// ══════════ EN-05 — Outbox Persistence (F2) ══════════
+// Outbox pattern: event domain ditulis ke tabel, consumer baca & proses.
+// Menjamin at-least-once delivery; webhook/email dibangun di atas ini.
+
+enum OutboxStatus {
+  PENDING
+  PROCESSED
+  FAILED
+}
+
+model OutboxEvent {
+  id          String        @id @default(cuid())
+  eventType   String // "journalApproved" | "journalException" | "slaBreach"
+  payload     Json
+  status      OutboxStatus  @default(PENDING)
+  retryCount  Int           @default(0)
+  maxRetries  Int           @default(3)
+  lastError   String?
+  processAfter DateTime     @default(now()) // delay retry eksponensial
+  processedAt DateTime?
+  createdAt   DateTime      @default(now())
+
+  @@index([status, processAfter])
+  @@index([eventType])
+}

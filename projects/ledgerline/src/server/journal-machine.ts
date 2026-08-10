@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/db";
-import { emit } from "@/lib/events";
+import { enqueueOutbox } from "@/server/outbox";
 import { SLA_TARGETS_MIN, computeFinalSlaStatus } from "@/server/sla";
 import type { JournalStatus, ReviewStage, ReviewTask, Role, User } from "@prisma/client";
 
@@ -114,7 +114,7 @@ export async function transitionJournal(to: JournalStatus, action: ReviewAction,
         },
       },
     });
-    emit("slaBreach", {
+    enqueueOutbox("slaBreach", {
       firmId: ctx.firmId,
       stage: task.stage,
       journalId: entry.id,
@@ -130,14 +130,14 @@ export async function transitionJournal(to: JournalStatus, action: ReviewAction,
 
   // EN-05: event domain — dasar untuk notifikasi/webhook (F2: outbox)
   if (to === "APPROVED") {
-    emit("journalApproved", {
+    enqueueOutbox("journalApproved", {
       journalId: entry.id,
       firmId: ctx.firmId,
       clientId: entry.clientId,
       description: entry.description,
     });
   } else if (to === "EXCEPTION") {
-    emit("journalException", {
+    enqueueOutbox("journalException", {
       journalId: entry.id,
       firmId: ctx.firmId,
       clientId: entry.clientId,

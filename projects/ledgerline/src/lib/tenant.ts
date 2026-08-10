@@ -1,7 +1,7 @@
 import { AsyncLocalStorage } from "node:async_hooks";
 
 /**
- * EN-04 (F1) — Tenant context & filter otomatis.
+ * EN-04 — Tenant context & filter otomatis.
  *
  * Prisma Client extension membaca firmId dari AsyncLocalStorage dan
  * menyuntikkannya ke query secara otomatis — menghilangkan kelas bug

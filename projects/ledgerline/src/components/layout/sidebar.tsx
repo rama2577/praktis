@@ -35,6 +35,7 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
     group: "Sistem",
     items: [
       { label: "Klien", href: "/dashboard/clients", ready: true },
+      { label: "Outbox Event", href: "/dashboard/outbox", ready: false, task: "F2" },
       { label: "Pengaturan", href: "/dashboard/settings", ready: false, task: "Task 8" },
     ],
   },
