@@ -18,7 +18,7 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
     group: "Operasional",
     items: [
       { label: "Dashboard", href: "/dashboard", ready: true },
-      { label: "Pipeline Produksi", href: "/dashboard/pipeline", ready: false, task: "Task 9" },
+      { label: "Pipeline Produksi", href: "/dashboard/pipeline", ready: true },
       { label: "Antrian Review", href: "/dashboard/queues", ready: true },
       { label: "Jurnal Manual", href: "/dashboard/journals", ready: true },
       { label: "Pengecualian", href: "/dashboard/exceptions", ready: true },
@@ -35,15 +35,15 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
       { label: "Aset Tetap", href: "/dashboard/assets", ready: true },
       { label: "Core Tax", href: "/dashboard/tax", ready: true },
       { label: "Rekonsiliasi Bank", href: "/dashboard/recon", ready: true },
-      { label: "Monitoring SLA", href: "/dashboard/sla", ready: false, task: "Task 10" },
+      { label: "Monitoring SLA", href: "/dashboard/sla", ready: true },
     ],
   },
   {
     group: "Sistem",
     items: [
       { label: "Klien", href: "/dashboard/clients", ready: true },
-      { label: "Outbox Event", href: "/dashboard/outbox", ready: false, task: "F2" },
-      { label: "Pengaturan", href: "/dashboard/settings", ready: false, task: "Task 8" },
+      { label: "Outbox Event", href: "/dashboard/outbox", ready: true },
+      { label: "Pengaturan", href: "/dashboard/settings", ready: true },
     ],
   },
 ];
