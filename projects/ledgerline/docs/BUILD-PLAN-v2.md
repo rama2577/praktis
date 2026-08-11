@@ -114,6 +114,27 @@ lanjutan. Milestone 6 bisa jalan paralel dengan 1–5.
   & kelompok fiskal (Pasal 11: 4/8/16/20 th), jurnal penyusutan otomatis per periode (ADJUSTING),
   laporan register/jadwal/nilai buku, rekonsiliasi fiskal.
 
+**Status: ✅ SELESAI (2026-08-11, commit f5a-assets)** — cakupan yang terpasang:
+- Schema: `FixedAsset` (metode STRAIGHT_LINE/DECLINING_BALANCE, umur komersial bulan, kelompok fiskal
+  K1/K2/K3/K4/BP/BNP, status ACTIVE/DISPOSED) + `DepreciationSchedule` (@@unique assetId+period,
+  komersial & fiskal, akumulasi, nilai buku, journalEntryId) + JournalEntry.assetId.
+- `src/server/assets.ts` (pure core): parsePeriod/monthsElapsed, FISCAL_GROUPS Pasal 11 (4/8/16/20 th,
+  bangunan permanen 20 th / non-permanen 10 th), computeDepreciation (GL: (cost−residual)/umur;
+  DB: 2× tarif; fiskal garis lurus tanpa nilai sisa; batas nilai sisa & umur), depreciationJournalLines
+  (5-1500 Beban / 1-1500 Akumulasi), createFixedAsset (validasi Indonesia), depreciateClientPeriod
+  ($transaction: schedule + jurnal ADJUSTING APPROVED + ActivityLog, idempotent per aset+periode),
+  getAssetRegister/getAssetDetail/getAssetReconciliation (beda temporer komersial vs fiskal) + CSV.
+- API (OPERATIONAL_ROLES, tenant-scoped): GET/POST `/api/clients/[id]/assets`, GET
+  `.../assets/[assetId]`, POST `.../assets/depreciate` {period}, GET `.../assets/report?period=&format=`.
+- UI: sidebar + "Aset Tetap"; `/dashboard/assets` — filter klien, periode, tombol "Hitung & Catat
+  Penyusutan", form "+ Daftarkan Aset" (metode, umur, kelompok fiskal), register nilai buku, expand
+  jadwal per aset, rekonsiliasi fiskal + ↓ CSV.
+- Migrasi `f5a_fixed_assets`; seed `scripts/seed-f5a-assets.ts` (2 aset Maju Jaya, idempotent);
+  test `tests/assets.test.ts` +11 → **269/269**; tsc 0; lint 0; build OK.
+- Live: Mobil Operasional (GL 96 bln, K2) — komersial 3.125.000 vs fiskal 3.333.333,33/bulan; Komputer
+  (DB 48 bln, K1) — 2.000.000 vs 1.000.000; 2 jurnal ADJUSTING APPROVED masuk TB (seimbang); rekonsiliasi
+  beda temporer −791.667; idempotensi skip; validasi create (biaya ≤ 0, kelompok invalid) tertolak.
+
 ### F5B · Core Tax (M9)
 - `JournalLine.taxCode` (PPN-IN/OUT, PPh 21/23/4(2)/25, KAP/KJS); generator SPT (1111, PPh 21,
   23/4(2), 1771 + rekonsiliasi fiskal) → CSV/XML skema DJP; review tax specialist; export

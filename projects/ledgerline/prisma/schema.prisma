@@ -112,6 +112,7 @@ model Firm {
   outboxEvents        OutboxEvent[]
   reportSnapshots     ReportSnapshot[]
   clientNotifications ClientNotification[]
+  fixedAssets         FixedAsset[]
 }
 
 model User {
@@ -152,6 +153,7 @@ model Client {
   portalToken         ClientPortalToken?
   reportSnapshots     ReportSnapshot[]
   clientNotifications ClientNotification[]
+  fixedAssets         FixedAsset[]
 
   @@index([firmId, status])
 }
@@ -183,6 +185,7 @@ model JournalEntry {
   firmId        String
   clientId      String
   documentId    String?
+  assetId       String?
   status        JournalStatus @default(DRAFT)
   confidence    Float? // 0..1 — skor keyakinan AI
   description   String? // ringkasan transaksi
@@ -193,14 +196,16 @@ model JournalEntry {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  firm        Firm                @relation(fields: [firmId], references: [id])
-  client      Client              @relation(fields: [clientId], references: [id])
-  document    Document?           @relation(fields: [documentId], references: [id])
-  lines       JournalLine[]
-  reviewTask  ReviewTask[]
-  activities  ActivityLog[]
-  slaEvents   SlaEvent[]
-  corrections JournalCorrection[]
+  firm                  Firm                   @relation(fields: [firmId], references: [id])
+  client                Client                 @relation(fields: [clientId], references: [id])
+  document              Document?              @relation(fields: [documentId], references: [id])
+  asset                 FixedAsset?            @relation(fields: [assetId], references: [id])
+  lines                 JournalLine[]
+  reviewTask            ReviewTask[]
+  activities            ActivityLog[]
+  slaEvents             SlaEvent[]
+  corrections           JournalCorrection[]
+  depreciationSchedules DepreciationSchedule[]
 
   @@index([firmId, status])
   @@index([firmId, clientId])
@@ -438,6 +443,63 @@ model ClientNotification {
   client Client @relation(fields: [clientId], references: [id])
 
   @@index([clientId, readAt])
+}
+
+// ══════════ F5A — Aset Tetap (M8) ══════════
+enum DepreciationMethod {
+  STRAIGHT_LINE
+  DECLINING_BALANCE
+}
+
+enum FixedAssetStatus {
+  ACTIVE
+  DISPOSED
+}
+
+model FixedAsset {
+  id                   String             @id @default(cuid())
+  firmId               String
+  clientId             String
+  name                 String
+  category             String // "Kendaraan", "Peralatan", "Bangunan", dst.
+  purchaseDate         DateTime // tanggal perolehan
+  purchaseCost         Decimal // biaya perolehan (rupiah)
+  residualValue        Decimal // nilai sisa komersial
+  method               DepreciationMethod @default(STRAIGHT_LINE)
+  commercialLifeMonths Int // umur komersial (PSAK 216)
+  fiscalGroup          String // Pasal 11: "K1"|"K2"|"K3"|"K4"|"BP"|"BNP"
+  notes                String?
+  status               FixedAssetStatus   @default(ACTIVE)
+  disposedAt           DateTime?
+  createdAt            DateTime           @default(now())
+  updatedAt            DateTime           @updatedAt
+
+  firm      Firm                   @relation(fields: [firmId], references: [id])
+  client    Client                 @relation(fields: [clientId], references: [id])
+  schedules DepreciationSchedule[]
+  journals  JournalEntry[]
+
+  @@index([firmId, clientId])
+}
+
+model DepreciationSchedule {
+  id                    String   @id @default(cuid())
+  assetId               String
+  period                String // "2026-08"
+  commercialAmount      Decimal // penyusutan komersial bulan ini
+  fiscalAmount          Decimal // penyusutan fiskal bulan ini
+  accumulatedCommercial Decimal // akumulasi komersial s.d. periode
+  accumulatedFiscal     Decimal // akumulasi fiskal s.d. periode
+  bookValueCommercial   Decimal // nilai buku komersial akhir periode
+  bookValueFiscal       Decimal // nilai buku fiskal akhir periode
+  journalEntryId        String?
+  createdAt             DateTime @default(now())
+
+  asset        FixedAsset    @relation(fields: [assetId], references: [id], onDelete: Cascade)
+  journalEntry JournalEntry? @relation(fields: [journalEntryId], references: [id], onDelete: SetNull)
+
+  @@unique([assetId, period])
+  @@index([period])
 }
 
 // ══════════ EN-05 — Outbox Persistence (F2) ══════════
