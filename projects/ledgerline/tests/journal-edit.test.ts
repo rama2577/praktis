@@ -15,6 +15,7 @@ function line(partial: Partial<JournalLine>): JournalLine {
     notes: partial.notes ?? null,
     taxCode: partial.taxCode ?? null,
     taxBase: partial.taxBase ?? null,
+    dimension: partial.dimension ?? null,
   };
 }
 

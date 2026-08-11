@@ -228,6 +228,9 @@ model JournalLine {
   taxCode        String? // mis. "PPN-OUT-01", "PPH23-104", "PPH42-403", "PPH21-21-100-01"
   taxBase        Decimal? // DPP untuk PPh yang dipungut/dipotong @db.Decimal(18, 2)?
 
+  // F6B — dimensi pelaporan (proyek/channel): { "project": "Proyek A", "channel": "Online" }
+  dimension Json?
+
   journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
 
   @@index([journalEntryId])

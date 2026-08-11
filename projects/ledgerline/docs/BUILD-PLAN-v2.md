@@ -189,6 +189,27 @@ lanjutan. Milestone 6 bisa jalan paralel dengan 1–5.
   akuntan setujui → simpan template di ClientProfile.reportTemplates; KB bertambah setelah
   disetujui.
 
+**Status: ✅ SELESAI (2026-08-11, commit f6b-custom-report)** — cakupan terpasang:
+- Schema: `JournalLine.dimension Json?` (proyek/channel); migrasi `f6b_dimensions`. Template
+  disimpan di `ClientProfile.reportTemplates` (sudah ada sejak F1).
+- `src/server/custom-report.ts` (pure): `detectReportKind` (8 jenis: LABA_RUGI, NERACA, ARUS_KAS,
+  PENJUALAN, BEBAN, PENDAPATAN_PER_PROYEK, BEBAN_PER_CHANNEL, PENJUALAN_PER_CHANNEL),
+  `parseReportPrompt` (ekstrak dimensi & groupBy dari prompt, termasuk nama dalam tanda kutip),
+  `suggestReportStructure` (usulan AI deterministik + confidence + alasan), `buildCustomReport`
+  (hitung dari jurnal APPROVED/FINALIZED; groupBy proyek/channel; filter dimensi; LABA = pendapatan − beban),
+  `customReportCsv`; wrapper DB `saveReportTemplate`/`listReportTemplates`/`deleteReportTemplate`.
+- API (OPERATIONAL_ROLES, tenant-scoped): POST `.../custom-reports/suggest` {prompt, period},
+  POST `.../custom-reports/templates` (setujui usulan → simpan), GET `.../custom-reports?period=&templateId=&format=csv|json`
+  (daftar template / jalankan laporan / unduh CSV), DELETE `.../templates/[templateId]`.
+- UI: sidebar + "Laporan Custom AI"; `/dashboard/reports/custom` — form "✨ Minta Laporan"
+  (bahasa natural), kartu usulan AI (badge jenis + confidence + alasan + Setujui/Batal),
+  daftar template (Jalankan / ↓ CSV / Hapus), tabel hasil + total.
+- Test `tests/custom-report.test.ts` +9 → **298/298** (33 files); tsc 0; lint 0; build OK.
+- Live Maju Jaya 2026-08: suggest "pendapatan per proyek" → PENDAPATAN_PER_PROYEK 0.88;
+  approve → template `tmpl_…`; run → Proyek Alpha 18.500.000 + (tanpa proyek) 500.000 =
+  TOTAL 19.000.000 (konsisten SPT 1771); CSV benar; 27 baris jurnal diberi dimensi seed
+  (Proyek Alpha/Beta, channel Online/Offline).
+
 ---
 
 ## Kriteria selesai per milestone

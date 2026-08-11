@@ -31,6 +31,7 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
       { label: "Metrik Kualitas", href: "/dashboard/quality", ready: true },
       { label: "Neraca Percobaan", href: "/dashboard/reports/trial-balance", ready: true },
       { label: "Buku Besar", href: "/dashboard/reports/ledger", ready: true },
+      { label: "Laporan Custom AI", href: "/dashboard/reports/custom", ready: true },
       { label: "Aset Tetap", href: "/dashboard/assets", ready: true },
       { label: "Core Tax", href: "/dashboard/tax", ready: true },
       { label: "Rekonsiliasi Bank", href: "/dashboard/recon", ready: true },
