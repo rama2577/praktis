@@ -100,9 +100,13 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 - Keyboard-first approve/reject, batch approve hanya confidence tinggi, exception satu layar (dokumen + draft + aturan), shortcut untuk power user — mendukung klaim "5 dtk/jurnal".
 - [ ] Keyboard shortcuts · [ ] Batch approve (confidence gate) · [ ] Exception one-screen
 
-## EN-07 · Design system formal (UI Designer)
+## EN-07 · Design system formal (UI Designer)  ✅ SELESAI
 - Token navy/gold → library komponen (table, badge, status, empty/error/loading); portal klien konsisten tanpa desain ulang; dashboard per role (junior=antrian, senior=exception, partner=KPI).
-- [ ] Token & komponen library · [ ] Pola per role
+- **Docs:** `docs/design-system.md` — token warna/tipografi/spacing/radius/shadow/motion, grain overlay, konvensi komponen, mapping role.
+- **Komponen library (`src/components/ui/`):** `Card`/`CardHeader`/`CardBody`, `Button` (primary gold/secondary/ghost/danger), `Table`/`THead`/`TBody`/`TR`/`TH`/`TD` (angka tabular), `Badge` (alias StatusBadge), + EmptyState/ErrorState/Skeleton existing.
+- **Dashboard per role:** `DashboardPanels focus` + `ROLE_FOCUS` — junior=antrian dulu, senior=SLA/kualitas, tax=pipeline pajak, partner=kepatuhan/tren, admin=penuh; subtitle per role; verified SSR semua 5 role.
+- **Test:** `tests/ui-library.test.tsx` 9 kasus → 174 test hijau.
+- [x] Token & komponen library · [x] Pola per role
 
 ## EN-08 · Portal Klien (Business Dev + UX + PM — milestone utama)
 - Persona klien ≠ akuntan: bahasa sederhana, mobile-first, onboarding < 2 menit, notifikasi, laporan self-service + analisa + wawasan AI (digital imaging sudah siap: images/11–16).
