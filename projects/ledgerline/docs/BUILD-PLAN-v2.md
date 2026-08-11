@@ -164,6 +164,26 @@ lanjutan. Milestone 6 bisa jalan paralel dengan 1–5.
 - `BankReconciliation` + `ReconciliationItem`; AI saran matching (jumlah/tanggal/lawan);
   aksi match/unmatch; buat jurnal biaya bank; laporan rekonsiliasi.
 
+**Status: ✅ SELESAI (2026-08-11, commit f6a-bank-recon)** — cakupan terpasang:
+- Schema: model `BankMutation` (firmId/clientId/period, date, description, amount ±,
+  documentId, matchedJournalId, matchStatus UNMATCHED/MATCHED/MANUAL, matchScore); migrasi `f6a_bank_recon`.
+- `src/server/recon.ts` (pure): `suggestMatches` — AI matching (jumlah sama ±Rp100 &
+  tanggal dekat ±3 hari → skor 1.0; ±15 hari → 0.85; bonus kata kunci transfer/pembayaran/
+  penjualan; jurnal yang sudah dipakai tidak dipakai lagi); `buildReconSummary` (saldo bank vs
+  buku, outstanding mutasi & jurnal); `reconCsv` (laporan); wrapper DB `importMutations`
+  (idempotent), `setMutationMatch` (manual match/lepas, validasi jurnal APPROVED/FINALIZED
+  milik klien), `completeReconciliation` (tolak jika masih ada mutasi belum cocok).
+- API (OPERATIONAL_ROLES, tenant-scoped): GET `.../recon?period=` (mutasi + jurnal kas 1-1000/
+  1-1100 + saran AI + ringkasan), POST `.../recon/mutations` (import, skip duplikat),
+  PATCH `.../recon/mutations/[id]` {matchedJournalId|null}, POST `.../recon/complete`,
+  GET `.../recon/export?period=&format=csv|json`.
+- UI: sidebar + "Rekonsiliasi Bank"; `/dashboard/recon` — 4 kartu ringkasan (mutasi, buku kas,
+  outstanding, selisih Bank−Buku), tombol "✨ Terapkan Saran AI", tabel mutasi (status +
+  tombol Cocokkan/Lepas), tabel outstanding jurnal kas, ↓ Laporan CSV.
+- Test `tests/recon.test.ts` +8 → **289/289** (32 files); tsc 0; lint 0; build OK.
+- Live CV Berkah Abadi 2026-07: 8 mutasi (rekening koran) vs 4 jurnal kas; 4 saran AI skor 1.0
+  diterapkan → 4/8 match; complete menolak (4 outstanding); CSV berisi ringkasan + outstanding.
+
 ### F6B · Laporan custom (M7)
 - `JournalLine.dimension` (proyek/channel, jsonb); alur: minta laporan → AI usulkan struktur →
   akuntan setujui → simpan template di ClientProfile.reportTemplates; KB bertambah setelah
