@@ -1,6 +1,8 @@
 import { describe, expect, it } from "vitest";
 import {
+  coaAccountsFromMapping,
   journalIsBalanced,
+  validateLinesAgainstCoa,
   validateManualJournalInput,
   type ManualLineInput,
 } from "@/server/manual-journal";
@@ -117,5 +119,72 @@ describe("validateManualJournalInput — validasi body request", () => {
     });
     expect(r.ok).toBe(false);
     if (!r.ok) expect(r.error).toContain("Kode dan nama akun");
+  });
+});
+
+describe("coaAccountsFromMapping — ekstraksi COA klien", () => {
+  it("mengubah coaMapping ke daftar akun unik & terurut", () => {
+    const r = coaAccountsFromMapping({
+      "1000": { accountCode: "1-1100", accountName: "Kas dan Setara Kas" },
+      "4100": { accountCode: "4-1000", accountName: "Pendapatan Penjualan" },
+      "1100": { accountCode: "1-1200", accountName: "Piutang Usaha" },
+    });
+    expect(r).toEqual([
+      { accountCode: "1-1100", accountName: "Kas dan Setara Kas" },
+      { accountCode: "1-1200", accountName: "Piutang Usaha" },
+      { accountCode: "4-1000", accountName: "Pendapatan Penjualan" },
+    ]);
+  });
+
+  it("menyaring entri tidak valid & duplikat accountCode", () => {
+    const r = coaAccountsFromMapping({
+      "1000": { accountCode: "1-1100", accountName: "Kas" },
+      "2000": { accountCode: "1-1100", accountName: "Kas (duplikat)" },
+      "3000": { accountCode: "", accountName: "Kosong" },
+      "4000": { accountName: "Tanpa kode" },
+      "5000": "bukan objek",
+    });
+    expect(r).toEqual([{ accountCode: "1-1100", accountName: "Kas" }]);
+  });
+
+  it("mapping null/kosong → daftar kosong", () => {
+    expect(coaAccountsFromMapping(null)).toEqual([]);
+    expect(coaAccountsFromMapping({})).toEqual([]);
+    expect(coaAccountsFromMapping("x")).toEqual([]);
+  });
+});
+
+describe("validateLinesAgainstCoa — akun jurnal harus milik COA klien", () => {
+  const mapping = {
+    "1000": { accountCode: "1-1100", accountName: "Kas dan Setara Kas" },
+    "4100": { accountCode: "4-1000", accountName: "Pendapatan Penjualan" },
+  };
+
+  it("semua akun terpetakan → diterima", () => {
+    const r = validateLinesAgainstCoa(
+      [
+        { accountCode: "1-1100" },
+        { accountCode: "4-1000" },
+      ],
+      mapping,
+    );
+    expect(r.ok).toBe(true);
+  });
+
+  it("akun di luar COA klien → ditolak", () => {
+    const r = validateLinesAgainstCoa(
+      [
+        { accountCode: "1-1100" },
+        { accountCode: "9-9999" },
+      ],
+      mapping,
+    );
+    expect(r.ok).toBe(false);
+    if (!r.ok) expect(r.error).toContain("9-9999");
+  });
+
+  it("COA belum dipetakan (kosong) → validasi dilewati", () => {
+    expect(validateLinesAgainstCoa([{ accountCode: "9-9999" }], null).ok).toBe(true);
+    expect(validateLinesAgainstCoa([{ accountCode: "9-9999" }], {}).ok).toBe(true);
   });
 });

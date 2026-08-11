@@ -25,6 +25,67 @@ export type JournalBalance = {
   error?: string;
 };
 
+export type CoaAccount = {
+  accountCode: string;
+  accountName: string;
+  note?: string;
+};
+
+/**
+ * Ekstrak daftar akun standar terpetakan dari ClientProfile.coaMapping.
+ * Format: { "kodeKlien": { accountCode, accountName, note? } } → unik per accountCode, urut abjad.
+ */
+export function coaAccountsFromMapping(mapping: unknown): CoaAccount[] {
+  if (!mapping || typeof mapping !== "object") return [];
+  const out: CoaAccount[] = [];
+  for (const value of Object.values(mapping)) {
+    const rec = (value ?? {}) as { accountCode?: unknown; accountName?: unknown; note?: unknown };
+    if (
+      rec &&
+      typeof rec.accountCode === "string" &&
+      rec.accountCode.trim() !== "" &&
+      typeof rec.accountName === "string" &&
+      rec.accountName.trim() !== ""
+    ) {
+      out.push({
+        accountCode: rec.accountCode.trim(),
+        accountName: rec.accountName.trim(),
+        note: typeof rec.note === "string" ? rec.note.trim() : undefined,
+      });
+    }
+  }
+  const seen = new Set<string>();
+  return out
+    .filter((a) => {
+      if (seen.has(a.accountCode)) return false;
+      seen.add(a.accountCode);
+      return true;
+    })
+    .sort((a, b) => a.accountCode.localeCompare(b.accountCode));
+}
+
+/**
+ * Validasi baris jurnal terhadap COA klien. Kalau COA belum dipetakan (kosong),
+ * validasi dilewati (fallback free-text); begitu COA ada, akun asing ditolak.
+ */
+export function validateLinesAgainstCoa(
+  lines: Array<{ accountCode: string }>,
+  mapping: unknown,
+): { ok: boolean; error?: string } {
+  const accounts = coaAccountsFromMapping(mapping);
+  if (accounts.length === 0) return { ok: true };
+  const codes = new Set(accounts.map((a) => a.accountCode));
+  for (const line of lines) {
+    if (!codes.has(line.accountCode)) {
+      return {
+        ok: false,
+        error: `Akun ${line.accountCode} tidak ada di COA klien. Pilih akun dari daftar COA yang sudah dipetakan.`,
+      };
+    }
+  }
+  return { ok: true };
+}
+
 /**
  * Validasi keseimbangan jurnal (murni, tanpa DB) — total debit harus = total kredit.
  * Aturan per baris: debit ATAU kredit (tidak keduanya, tidak kosong), nilai ≥ 0.
@@ -146,6 +207,16 @@ export async function createManualJournal(params: {
   const balance = journalIsBalanced(lines);
   if (!balance.ok) {
     throw new ManualJournalError(balance.error ?? "Jurnal tidak seimbang.", 400);
+  }
+
+  // COA klien sebagai sumber kebenaran: akun di luar mapping ditolak (jika mapping ada).
+  const profile = await prisma.clientProfile.findUnique({
+    where: { clientId: client.id },
+    select: { coaMapping: true },
+  });
+  const coaCheck = validateLinesAgainstCoa(lines, profile?.coaMapping);
+  if (!coaCheck.ok) {
+    throw new ManualJournalError(coaCheck.error ?? "Akun tidak valid.", 400);
   }
 
   const journal = await prisma.journalEntry.create({

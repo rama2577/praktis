@@ -5,6 +5,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { formatCurrencyRp } from "@/lib/format";
 
 type Client = { id: string; name: string };
+type CoaAccount = { accountCode: string; accountName: string; note?: string };
 type JournalLine = { accountCode: string; accountName: string; debit: string; credit: string; psakRef: string };
 type JournalRow = {
   id: string;
@@ -38,6 +39,11 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
   const [journalType, setJournalType] = useState<"MANUAL" | "ADJUSTING">("MANUAL");
   const [lines, setLines] = useState<JournalLine[]>([emptyLine(), emptyLine()]);
 
+  // COA klien terpilih (sumber kebenaran akun untuk jurnal manual)
+  const [coaAccounts, setCoaAccounts] = useState<CoaAccount[]>([]);
+  const [coaLoading, setCoaLoading] = useState(false);
+  const [coaError, setCoaError] = useState<string | null>(null);
+
   const load = useCallback(async () => {
     try {
       const res = await fetch("/api/journals/manual");
@@ -66,6 +72,39 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
       .catch(() => setClients([]));
   }, []);
 
+  useEffect(() => {
+    if (!clientId) return;
+    let cancelled = false;
+    async function start() {
+      setCoaLoading(true);
+      setCoaError(null);
+      try {
+        const r = await fetch(`/api/clients/${clientId}/coa`);
+        if (!r.ok) throw new Error("Gagal memuat COA klien");
+        const d = (await r.json()) as { data: { accounts: CoaAccount[] } };
+        if (!cancelled) setCoaAccounts(d.data.accounts);
+      } catch (e) {
+        if (!cancelled) {
+          setCoaAccounts([]);
+          setCoaError((e as Error).message);
+        }
+      } finally {
+        if (!cancelled) setCoaLoading(false);
+      }
+    }
+    void start();
+    return () => {
+      cancelled = true;
+    };
+  }, [clientId]);
+
+  function handleClientChange(value: string) {
+    setClientId(value);
+    setCoaAccounts([]);
+    setCoaError(null);
+    setLines([emptyLine(), emptyLine()]);
+  }
+
   const totals = useMemo(() => {
     let debit = 0;
     let credit = 0;
@@ -80,6 +119,20 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
     setLines((prev) => prev.map((l, idx) => (idx === i ? { ...l, ...patch } : l)));
   }
 
+  function selectAccount(i: number, accountCode: string) {
+    const acc = coaAccounts.find((a) => a.accountCode === accountCode);
+    updateLine(i, {
+      accountCode: accountCode,
+      accountName: acc ? acc.accountName : "",
+    });
+  }
+
+  function hasForeignAccount(): boolean {
+    if (coaAccounts.length === 0) return false;
+    const codes = new Set(coaAccounts.map((a) => a.accountCode));
+    return lines.some((l) => l.accountCode && !codes.has(l.accountCode));
+  }
+
   async function submit(e: React.FormEvent) {
     e.preventDefault();
     if (!clientId || !description.trim()) {
@@ -88,6 +141,10 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
     }
     if (!totals.balanced || totals.debit === 0) {
       setError("Jurnal belum seimbang — total debit harus sama dengan total kredit.");
+      return;
+    }
+    if (hasForeignAccount()) {
+      setError("Ada akun di luar COA klien. Pilih akun dari daftar COA yang sudah dipetakan.");
       return;
     }
     setBusy(true);
@@ -163,7 +220,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                   <span className="mb-1 block text-slate-400">Klien *</span>
                   <select
                     value={clientId}
-                    onChange={(e) => setClientId(e.target.value)}
+                    onChange={(e) => handleClientChange(e.target.value)}
                     className="w-full rounded-lg border border-line bg-[#0b1120] px-3 py-2 text-sm text-slate-200 focus:border-accent/60 focus:outline-none"
                   >
                     <option value="">— Pilih klien —</option>
@@ -206,6 +263,23 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                   </select>
                 </label>
               </div>
+              <div className="mt-2 text-xs">
+                {coaLoading ? (
+                  <span className="text-slate-500">Memuat COA klien…</span>
+                ) : coaAccounts.length > 0 ? (
+                  <span className="text-slate-400">
+                    COA klien terpetakan: <span className="font-semibold text-accent">{coaAccounts.length} akun</span> —
+                    baris jurnal hanya bisa memilih akun dari daftar ini.
+                  </span>
+                ) : coaError ? (
+                  <span className="text-red-400">{coaError}</span>
+                ) : clientId ? (
+                  <span className="text-amber-400/90">
+                    COA klien belum dipetakan — akun bebas sementara. Petakan COA di profil klien
+                    agar akun jurnal terkunci.
+                  </span>
+                ) : null}
+              </div>
 
               <div className="mt-5">
                 <div className="mb-2 flex items-center justify-between">
@@ -233,24 +307,44 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                     <tbody>
                       {lines.map((l, i) => (
                         <tr key={i} className="border-b border-line/50 last:border-0">
-                          <td className="px-3 py-1.5">
-                            <input
-                              value={l.accountCode}
-                              onChange={(e) => updateLine(i, { accountCode: e.target.value })}
-                              placeholder="1-1100"
-                              className="w-24 rounded border border-line bg-[#0b1120] px-2 py-1.5 font-mono text-xs text-slate-200 focus:border-accent/60 focus:outline-none"
-                              aria-label={`Kode akun baris ${i + 1}`}
-                            />
-                          </td>
-                          <td className="px-3 py-1.5">
-                            <input
-                              value={l.accountName}
-                              onChange={(e) => updateLine(i, { accountName: e.target.value })}
-                              placeholder="Kas dan Setara Kas"
-                              className="w-full min-w-[140px] rounded border border-line bg-[#0b1120] px-2 py-1.5 text-xs text-slate-200 focus:border-accent/60 focus:outline-none"
-                              aria-label={`Nama akun baris ${i + 1}`}
-                            />
-                          </td>
+                    {coaAccounts.length > 0 ? (
+                      <td colSpan={2} className="px-3 py-1.5">
+                        <select
+                          value={l.accountCode}
+                          onChange={(e) => selectAccount(i, e.target.value)}
+                          className="w-full min-w-[200px] rounded border border-line bg-[#0b1120] px-2 py-1.5 text-xs text-slate-200 focus:border-accent/60 focus:outline-none"
+                          aria-label={`Akun baris ${i + 1}`}
+                        >
+                          <option value="">— Pilih akun COA —</option>
+                          {coaAccounts.map((a) => (
+                            <option key={a.accountCode} value={a.accountCode}>
+                              {a.accountCode} — {a.accountName}
+                            </option>
+                          ))}
+                        </select>
+                      </td>
+                    ) : (
+                      <>
+                        <td className="px-3 py-1.5">
+                          <input
+                            value={l.accountCode}
+                            onChange={(e) => updateLine(i, { accountCode: e.target.value })}
+                            placeholder="1-1100"
+                            className="w-24 rounded border border-line bg-[#0b1120] px-2 py-1.5 font-mono text-xs text-slate-200 focus:border-accent/60 focus:outline-none"
+                            aria-label={`Kode akun baris ${i + 1}`}
+                          />
+                        </td>
+                        <td className="px-3 py-1.5">
+                          <input
+                            value={l.accountName}
+                            onChange={(e) => updateLine(i, { accountName: e.target.value })}
+                            placeholder="Kas dan Setara Kas"
+                            className="w-full min-w-[140px] rounded border border-line bg-[#0b1120] px-2 py-1.5 text-xs text-slate-200 focus:border-accent/60 focus:outline-none"
+                            aria-label={`Nama akun baris ${i + 1}`}
+                          />
+                        </td>
+                      </>
+                    )}
                           <td className="px-3 py-1.5">
                             <input
                               type="number"
