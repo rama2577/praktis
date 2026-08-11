@@ -172,3 +172,12 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 # ✅ Selesai
 
 _(belum ada — mulai dari F0)_
+
+## F3 · Portal Klien (2026-08-11)
+- [x] K1 timeline status berjenjang + label review (belum ada estimasi waktu — SLA dueAt bisa ditambahkan ke UI nanti)
+- [x] K2 dedupe upload via fileHash (409) — dashboard upload belum dedupe (hanya portal)
+- [x] K3 jurnal read-only + bahasa sederhana (simple-explain)
+- [x] K4 ClientNotification — belum ada notifikasi email/webhook ke klien (masih in-app portal)
+- [x] K5 ReportSnapshot versi — snapshot hanya tipe TRIAL_BALANCE saat lock; JOURNALS belum
+- [x] K6 pernyataan privasi statis
+- [ ] EN-09: token portal bisa di-resend via email (belum ada integrasi email provider)

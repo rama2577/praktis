@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { randomUUID } from "node:crypto";
-import { validatePortalToken } from "@/server/portal";
+import { validatePortalToken, findDuplicateDocument } from "@/server/portal";
 import { prisma } from "@/lib/db";
 import { saveUpload } from "@/lib/storage";
 import { enqueueDocumentProcessing } from "@/lib/queue";
@@ -43,6 +43,18 @@ export async function POST(req: Request, ctx: Ctx) {
   }
 
   const id = randomUUID();
+
+  // F3/K2 — tolak kirim ulang dokumen yang sama (hash sama milik klien ini)
+  const dup = await findDuplicateDocument(client.id, sha256Hex(buffer));
+  if (dup) {
+    return NextResponse.json(
+      {
+        error: `Dokumen ini sudah pernah dikirim pada ${dup.createdAt.toLocaleDateString("id-ID")} sebagai "${dup.fileName}". Tidak perlu mengirim ulang.`,
+      },
+      { status: 409 },
+    );
+  }
+
   const filePath = await saveUpload({ id, clientId: client.id, fileName: file.name, buffer });
 
   const document = await prisma.document.create({

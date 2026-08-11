@@ -101,15 +101,17 @@ model Firm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users         User[]
-  clients       Client[]
-  documents     Document[]
-  journals      JournalEntry[]
-  activities    ActivityLog[]
-  slaEvents     SlaEvent[]
-  fiscalPeriods FiscalPeriod[]
-  corrections   JournalCorrection[]
-  outboxEvents  OutboxEvent[]
+  users               User[]
+  clients             Client[]
+  documents           Document[]
+  journals            JournalEntry[]
+  activities          ActivityLog[]
+  slaEvents           SlaEvent[]
+  fiscalPeriods       FiscalPeriod[]
+  corrections         JournalCorrection[]
+  outboxEvents        OutboxEvent[]
+  reportSnapshots     ReportSnapshot[]
+  clientNotifications ClientNotification[]
 }
 
 model User {
@@ -142,12 +144,14 @@ model Client {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  firm          Firm               @relation(fields: [firmId], references: [id])
-  documents     Document[]
-  journals      JournalEntry[]
-  fiscalPeriods FiscalPeriod[]
-  profile       ClientProfile?
-  portalToken   ClientPortalToken?
+  firm                Firm                 @relation(fields: [firmId], references: [id])
+  documents           Document[]
+  journals            JournalEntry[]
+  fiscalPeriods       FiscalPeriod[]
+  profile             ClientProfile?
+  portalToken         ClientPortalToken?
+  reportSnapshots     ReportSnapshot[]
+  clientNotifications ClientNotification[]
 
   @@index([firmId, status])
 }
@@ -397,6 +401,43 @@ model ClientPortalToken {
   client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
 
   @@index([token])
+}
+
+// ══════════ F3 — Portal Klien (K1–K6) ══════════
+// ReportSnapshot: versi laporan per periode (K5/A1) — dibuat saat periode dikunci,
+// bisa diunduh klien kapan saja. ClientNotification: notifikasi proaktif (K4).
+model ReportSnapshot {
+  id          String   @id @default(cuid())
+  firmId      String
+  clientId    String
+  period      String // "2026-08"
+  type        String // "TRIAL_BALANCE" | "JOURNALS"
+  version     Int      @default(1)
+  payload     Json // data laporan (rows, totals, dll)
+  createdById String?
+  createdAt   DateTime @default(now())
+
+  firm   Firm   @relation(fields: [firmId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
+
+  @@unique([clientId, period, type, version])
+  @@index([clientId, period])
+}
+
+model ClientNotification {
+  id        String    @id @default(cuid())
+  firmId    String
+  clientId  String
+  type      String // "REPORT_READY" | "DOCUMENT_PROCESSED" | "EXCEPTION" | "REMINDER"
+  message   String
+  link      String?
+  readAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  firm   Firm   @relation(fields: [firmId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
+
+  @@index([clientId, readAt])
 }
 
 // ══════════ EN-05 — Outbox Persistence (F2) ══════════

@@ -90,6 +90,25 @@ lanjutan. Milestone 6 bisa jalan paralel dengan 1–5.
   proaktif (outbox), laporan self-service + **versi snapshot** (A1), opsi lihat jurnal read-only
   per klien (K3), bahasa sederhana, pernyataan privasi (K6).
 
+**Status: ✅ SELESAI (2026-08-11, commit f3-portal)** — cakupan yang terpasang:
+- **K1/EN-08** — status berjenjang di portal: timeline "Diterima → Diproses AI → Selesai"
+  + label review akun termuda (API `GET /api/portal/[token]/timeline`, render server-side).
+- **K2** — dedupe kirim ulang dokumen: cek `fileHash` milik klien → 409
+  "sudah pernah dikirim" (upload route portal).
+- **K3** — jurnal read-only + bahasa sederhana: `src/server/simple-explain.ts` (pure,
+  klasifikasi 1-5 → frase aset/utang/pendapatan/beban), API
+  `GET /api/portal/[token]/journals`, UI "Transaksi Saya" + "Lihat penjelasan lengkap".
+- **K4** — `ClientNotification` (REPORT_READY/DOCUMENT_PROCESSED/EXCEPTION/REMINDER),
+  dibuat otomatis saat lock periode; API list + mark-read; UI notifikasi + badge unread.
+- **K5/A1** — `ReportSnapshot` (clientId+period+type+version @@unique): snapshot
+  TRIAL_BALANCE dibuat saat periode dikunci (lock route), unduh CSV/XLSX kapan saja
+  (`GET /api/portal/[token]/snapshots`), UI "Laporan & Versi".
+- **K6** — pernyataan privasi statis (enkripsi AES-256-GCM + TLS, tanpa pelatihan lintas firma,
+  token kedaluwarsa).
+- Migrasi `f3_portal_snapshot_notif`; test `simple-explain` +5 → **253/253**; tsc 0; lint 0; build OK.
+- Live: PT Maju Jaya — 3 jurnal read-only, timeline 1 dokumen, snapshot TB v1 (2026-08),
+  2 notifikasi unread, dedupe 409 terverifikasi.
+
 ### F5A · Aset tetap (M8)
 - `FixedAsset` + `DepreciationSchedule`: metode garis lurus/saldo menurun, umur komersial (PSAK 216)
   & kelompok fiskal (Pasal 11: 4/8/16/20 th), jurnal penyusutan otomatis per periode (ADJUSTING),

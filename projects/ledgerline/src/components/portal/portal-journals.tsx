@@ -1,0 +1,92 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+
+type JournalLine = { accountCode: string; accountName: string; debit: number; credit: number };
+type Journal = {
+  id: string;
+  description: string | null;
+  entryDate: string;
+  status: string;
+  journalType: string;
+  lines: JournalLine[];
+  explanation: string;
+  summary: string;
+};
+
+const TYPE_LABELS: Record<string, string> = {
+  AI: "Otomatis",
+  MANUAL: "Manual",
+  ADJUSTING: "Penyesuaian",
+};
+
+export function PortalJournals({ token }: { token: string }) {
+  const [items, setItems] = useState<Journal[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const load = useCallback(async () => {
+    setLoading(true);
+    try {
+      const res = await fetch(`/api/portal/${token}/journals`);
+      if (!res.ok) throw new Error("Gagal memuat transaksi");
+      const data = (await res.json()) as { data: Journal[] };
+      setItems(data.data);
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLoading(false);
+    }
+  }, [token]);
+
+  useEffect(() => {
+    async function start() {
+      await load();
+    }
+    void start();
+  }, [load]);
+
+  return (
+    <section className="rounded-xl border border-slate-700 bg-slate-900/40 p-5">
+      <div className="mb-3">
+        <h2 className="text-sm font-semibold">Transaksi Saya</h2>
+        <p className="mt-1 text-xs text-slate-400">
+          Ringkasan pencatatan yang sudah disetujui tim akuntan — dalam bahasa sederhana.
+        </p>
+      </div>
+
+      {loading && <p className="text-sm text-slate-400">Memuat transaksi…</p>}
+      {error && <p className="text-sm text-red-300">{error}</p>}
+
+      {!loading && !error && items.length === 0 && (
+        <p className="text-sm text-slate-400">
+          Belum ada transaksi tercatat. Setelah dokumen Anda diproses, ringkasan transaksi akan
+          muncul di sini.
+        </p>
+      )}
+
+      {!loading && !error && items.length > 0 && (
+        <ul className="space-y-3">
+          {items.map((j) => (
+            <li key={j.id} className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
+                <span className="font-medium text-slate-200">{j.description ?? "Transaksi"}</span>
+                <span className="rounded bg-slate-800 px-1.5 py-0.5">
+                  {TYPE_LABELS[j.journalType] ?? j.journalType}
+                </span>
+                <span>{new Date(j.entryDate).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</span>
+              </div>
+              <p className="mt-2 text-sm text-slate-300">{j.summary}</p>
+              <details className="mt-2">
+                <summary className="cursor-pointer text-xs text-yellow-300/90 hover:text-yellow-200">
+                  Lihat penjelasan lengkap
+                </summary>
+                <p className="mt-2 text-sm leading-relaxed text-slate-400">{j.explanation}</p>
+              </details>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}

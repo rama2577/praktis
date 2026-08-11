@@ -4,6 +4,8 @@ import { PARTNER_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { withTenantApi } from "@/lib/tenant-api";
 import { lockPeriod } from "@/server/ledger";
+import { getTrialBalance } from "@/server/trial-balance";
+import { createReportSnapshot, notifyClient } from "@/server/portal";
 import { ManualJournalError } from "@/server/manual-journal";
 
 type Ctx = { params: Promise<{ id: string; period: string }> };
@@ -39,6 +41,39 @@ export const POST = withTenantApi<Ctx>(async (_request, ctx) => {
       period,
       lockedById: guard.session.user.id,
     });
+
+    // F3/K5 — simpan snapshot laporan + F3/K4 — notifikasi klien
+    try {
+      const tb = await getTrialBalance(client.id, client.name, period);
+      if (tb) {
+        await createReportSnapshot({
+          firmId: guard.session.user.firmId,
+          clientId: client.id,
+          period,
+          type: "TRIAL_BALANCE",
+          payload: {
+            clientName: tb.clientName,
+            rows: tb.rows,
+            totalDebit: tb.totalDebit,
+            totalCredit: tb.totalCredit,
+            balanced: tb.balanced,
+            periodStatus: tb.periodStatus,
+            capturedAt: new Date().toISOString(),
+          } as never,
+          createdById: guard.session.user.id,
+        });
+        await notifyClient({
+          firmId: guard.session.user.firmId,
+          clientId: client.id,
+          type: "REPORT_READY",
+          message: `Laporan periode ${period} sudah dikunci dan tersedia di portal.`,
+        });
+      }
+    } catch (snapshotErr) {
+      // Snapshot gagal tidak boleh menggagalkan lock — dicatat, lock tetap sukses.
+      console.error("snapshot/notif gagal:", snapshotErr);
+    }
+
     return NextResponse.json({ data: { ...result, clientId: client.id, period } });
   } catch (e) {
     if (e instanceof ManualJournalError) {
