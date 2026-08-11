@@ -110,6 +110,55 @@ CHECKLIST VALIDASI LAPORAN:
 7. Akun riil hanya di Neraca; akun nominal hanya di Laba Rugi.
 8. Komparatif: Perubahan = tahun berjalan − tahun lalu.`,
   },
+  {
+    category: "Referensi Laporan",
+    name: "format-annual-report-narasi-dashboard",
+    title: "Narasi & Dashboard Annual Report (adaptasi Unilever Indonesia 2025)",
+    content: `Struktur annual report perusahaan publik (SEOJK 16/2021) — adaptasi PT Unilever Indonesia Tbk 2025.
+
+URUTAN LAPORAN TAHUNAN:
+1. Sangkalan & batasan tanggung jawab
+2. Pendahuluan & ikhtisar: tema; profil; strategi; kinerja tahun berjalan; ikhtisar keuangan 5 tahun; ikhtisar saham per kuartal; aksi korporasi (buyback/split); obligasi
+3. Laporan manajemen: Laporan Direksi (tinjauan makro, strategi, kinerja, prospek); profil direksi; Laporan Dewan Komisaris
+4. Profil perusahaan: identitas, riwayat, visi-misi, kegiatan usaha, wilayah, struktur, pemegang saham, entitas anak, kronologi pencatatan, penghargaan, peristiwa penting
+5. Penunjang bisnis: SDM, K3, digitalisasi & keamanan siber
+6. Analisis & Pembahasan Manajemen (MD&A): tinjauan operasional per segmen; tinjauan keuangan (kinerja, likuiditas, solvabilitas, struktur modal, target vs realisasi, prospek, kebijakan dividen, pihak berelasi, kelangsungan usaha)
+7. GCG: RUPS, dewan, komite audit/nominasi-remunerasi, audit internal & eksternal, manajemen risiko, pengendalian internal, kode etik, whistleblowing
+8. CSR/keberlanjutan
+9. Pernyataan tanggung jawab direksi & dewan komisaris
+10. Laporan keuangan audited + catatan
+
+DASHBOARD KPI EKSEKUTIF (halaman pertama):
+- Penjualan bersih Rp31,9 T (+4,3% vs 30,6 T); Laba bersih Rp3,5 T (operasi dilanjutkan)
+- GPM 46,9%; OPM 14,4%; ROA 19,6%; ROE 106,8%; EBITDA Rp5,26 T (margin 16,5%); EPS Rp93
+
+IKHTISAR 5 TAHUN (miliar Rp, 2021-2025):
+- Penjualan: 31.943 → 30.623 → 38.611 → 41.219 → 39.546
+- Laba bruto 14.997; laba usaha 4.592; laba 7.641 (2025)
+- Jumlah aset 20.017; liabilitas 15.542; ekuitas 4.475 (2025)
+
+IKHTISAR SAHAM 2025 (per kuartal): harga penutupan 1.265/1.450/1.780/2.600; kapitalisasi pasar akhir Rp99,19 T; buyback maks Rp2 T (maks Rp1.700/saham, free float ≥7,5%)
+
+KERANGKA NARASI LAPORAN DIREKSI:
+1. Kalimat tema + pesan kunci
+2. Tinjauan makro & industri (GDP, inflasi, suku bunga, dinamika kanal)
+3. Strategi: 3 pilar Category (merek, portofolio, digital-first) / Channel (go-to-market, kanal masa depan) / Cost (margin, produktivitas)
+4. Kinerja: penjualan +%, laba, margin, pangsa pasar, efisiensi
+5. Prospek + penutup tanggung jawab
+
+TEMPLATE NARASI UNTUK KLIEN (akuntan):
+1. Ringkasan eksekutif (posisi + pesan kunci)
+2. Konteks usaha/industri (2-3 kalimat)
+3. Kinerja keuangan: penjualan & %, laba kotor/usaha/bersih + margin, penyebab perubahan (volume/harga/bauran/biaya)
+4. Dashboard 4-6 KPI (penjualan, margin, laba, kas, piutang, utang) + komparasi + target
+5. Posisi keuangan & rasio (likuiditas, solvabilitas)
+6. Arus kas (operasi/investasi/pendanaan, kas akhir)
+7. Risiko & mitigasi teratas
+8. Prospek & rencana
+9. Pernyataan tanggung jawab
+
+CHECKLIST: setiap angka punya penjelasan penyebab; KPI konsisten dengan laporan keuangan; komparasi dengan periode lalu; sebut volume vs harga; margin per tingkat; dashboard ≤6 KPI; prospek sebut asumsi.`,
+  },
 ];
 
 async function main() {
