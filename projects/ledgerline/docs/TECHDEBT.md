@@ -44,7 +44,7 @@
 - **TD-06 · Path LLM belum teruji end-to-end** → **engine GLM dipasang (F1)**: default **GLM-4-Flash** (teks, gratis) + **GLM-4V-Flash** (OCR, gratis) + glm-4.6 retry; fallback ganda di `chatJsonWithFallback`; unit test `tests/llm.test.ts` (11 kasus, fetch di-mock). Sisa: integration test dengan key nyata + smoke vision JPG. [x] model routing · [x] fallback · [x] unit test · [ ] test key nyata 🔒 (saldo Z.ai)
 - **TD-07 · Knowledge base statis** (13 referensi hardcoded) → **digantikan EN-01** (KB versioned & updatable). ✅
 - **TD-08 · Parsing dokumen terbatas** (pdf-parse teks-only, belum OCR) → evaluasi OCR layer. [ ]
-- **TD-09 · Isolasi tenant belum teruji E2E** → **test dibuat & LULUS (F0)**: `scripts/e2e-isolation.ts` (8/8 asersi — clients, queues, dashboard, upload lintas-firma ditolak 400, exceptions, PATCH langsung 404). Middleware tenant-scoped (EN-04) framework siap (`withTenantApi` di `src/lib/tenant-api.ts`), wrap route saat multi-firm. [x] test isolasi · [x] withTenantApi siap · [ ] wrap route (saat multi-firm)
+- **TD-09 · Isolasi tenant belum teruji E2E** → **test dibuat & LULUS (F0)**: `scripts/e2e-isolation.ts` (8/8 asersi — clients, queues, dashboard, upload lintas-firma ditolak 400, exceptions, PATCH langsung 404). **EN-04 selesai penuh** (`9d0e89b`): `withTenantApi` wrap 18 route + filter otomatis aktif. [x] test isolasi · [x] withTenantApi · [x] wrap route
 
 ## 🟡 Ringan
 
@@ -82,11 +82,13 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 - Explainability: "kenapa confidence rendah?" — alasan user tersimpan sebagai data.
 - [ ] Record koreksi user · [ ] Dashboard insight dari koreksi · [ ] Pipeline update rule dari pola
 
-## EN-04 · Multi-tenancy via middleware (Full Stack)  ✅ fase 1 (F1)
+## EN-04 · Multi-tenancy via middleware (Full Stack)  ✅ SELESAI
 - Tenant context (Prisma extension) menggantikan `firmId` manual per query → hilangkan kelas bug "lupa filter". Menyelesaikan TD-09 secara struktural.
-- **F1 ✅:** `src/lib/tenant.ts` (AsyncLocalStorage + `applyTenantFilter` murni) + extension di `src/lib/db.ts` — query di dalam `withTenant()` otomatis di-scope (model ber-firmId + ReviewTask via relasi; User/Firm tidak). Unit test `tests/tenant.test.ts` (8 kasus). E2E isolasi tetap 8/8 dengan extension aktif.
-- **Fase 2 (F2):** wrap semua route/server module dengan `withTenant` — bersamaan portal klien.
-- [x] extension + ALS · [x] unit test · [ ] wrap route (F2)
+- **F1 ✅:** `src/lib/tenant.ts` (AsyncLocalStorage + `applyTenantFilter` murni) + extension di `src/lib/db.ts` — query di dalam `withTenant()` otomatis di-scope (model ber-firmId + ReviewTask via relasi; User/Firm tidak). Unit test `tests/tenant.test.ts` (11 kasus).
+- **Wrap route ✅ (F2, commit `9d0e89b`):** `withTenantApi` (typed ctx) di 18 route — auth 401 tanpa firmId + `withTenant()` → semua query auto-scope. Dikecualikan: auth, health, debug-login, portal (token-based).
+- **applyTenantFilter v2:** filter hanya operasi baca kolektif/bulk-write (`findMany/findFirst/count/updateMany/deleteMany`); operasi singular (`findUnique/update/delete/upsert`) di-skip karena `where` harus unique — ownership diverifikasi manual di route (mencegah crash Prisma P2025).
+- **E2E isolasi lintas-firm 8/8 lulus** dengan tenant context aktif (clients, queues, dashboard, upload, exceptions, PATCH lintas-firm).
+- [x] extension + ALS · [x] unit test · [x] wrap route (18 route)
 
 ## EN-05 · Event-driven + outbox (Full Stack)  ✅ fase 1 (F1)
 - Event jurnal (APPROVED, EXCEPTION, SLA_BREACH, REPORT_READY) → notifikasi klien/firma; outbox pattern untuk reliabilitas; dasar webhook & email (TD-14).
