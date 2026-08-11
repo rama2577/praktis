@@ -113,6 +113,7 @@ model Firm {
   reportSnapshots     ReportSnapshot[]
   clientNotifications ClientNotification[]
   fixedAssets         FixedAsset[]
+  bankMutations       BankMutation[]
 }
 
 model User {
@@ -154,6 +155,7 @@ model Client {
   reportSnapshots     ReportSnapshot[]
   clientNotifications ClientNotification[]
   fixedAssets         FixedAsset[]
+  bankMutations       BankMutation[]
 
   @@index([firmId, status])
 }
@@ -172,9 +174,10 @@ model Document {
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 
-  firm     Firm           @relation(fields: [firmId], references: [id])
-  client   Client         @relation(fields: [clientId], references: [id])
-  journals JournalEntry[]
+  firm          Firm           @relation(fields: [firmId], references: [id])
+  client        Client         @relation(fields: [clientId], references: [id])
+  journals      JournalEntry[]
+  bankMutations BankMutation[]
 
   @@index([firmId, clientId])
   @@index([status])
@@ -206,6 +209,7 @@ model JournalEntry {
   slaEvents             SlaEvent[]
   corrections           JournalCorrection[]
   depreciationSchedules DepreciationSchedule[]
+  bankMutations         BankMutation[]
 
   @@index([firmId, status])
   @@index([firmId, clientId])
@@ -503,6 +507,38 @@ model DepreciationSchedule {
 
   @@unique([assetId, period])
   @@index([period])
+}
+
+// ══════════ F6A — Rekonsiliasi Bank (M6) ══════════
+// Baris mutasi bank per klien-periode; di-match-kan ke jurnal kas (1-1000/1-1100).
+enum BankMatchStatus {
+  UNMATCHED
+  MATCHED
+  MANUAL
+}
+
+model BankMutation {
+  id               String          @id @default(cuid())
+  firmId           String
+  clientId         String
+  period           String // "2026-08"
+  date             DateTime
+  description      String
+  amount           Decimal // + masuk, - keluar @db.Decimal(18, 2)
+  documentId       String?
+  matchedJournalId String?
+  matchStatus      BankMatchStatus @default(UNMATCHED)
+  matchScore       Float?
+  notes            String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+
+  firm           Firm          @relation(fields: [firmId], references: [id])
+  client         Client        @relation(fields: [clientId], references: [id])
+  document       Document?     @relation(fields: [documentId], references: [id], onDelete: SetNull)
+  matchedJournal JournalEntry? @relation(fields: [matchedJournalId], references: [id], onDelete: SetNull)
+
+  @@index([firmId, clientId, period])
 }
 
 // ══════════ EN-05 — Outbox Persistence (F2) ══════════
