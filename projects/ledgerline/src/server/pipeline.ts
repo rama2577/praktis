@@ -4,6 +4,7 @@ import { parseDocument } from "@/ai/parsers";
 import { draftJournalFromText } from "@/ai/drafting";
 import { validateDraftLines } from "@/ai/validation";
 import { getClientProfile, coaMappingHint } from "@/server/client-profile";
+import { isReferenceDocType } from "@/ai/doc-type-map";
 import type { JournalStatus } from "@prisma/client";
 
 /**
@@ -45,6 +46,26 @@ export async function processDocument(documentId: string, traceId?: string) {
       "parse dokumen gagal",
     );
     return { ok: false as const, reason: "parse_error", message: reason };
+  }
+
+  // F6C — dokumen referensi (legalitas/org-chart/artikel KB): tidak membuat jurnal.
+  // Teks hasil ekstraksi disimpan sebagai pengetahuan klien (referenceText).
+  if (isReferenceDocType(doc.type)) {
+    await prisma.document.update({
+      where: { id: documentId },
+      data: { status: "PROCESSED", referenceText: text.slice(0, 50_000) },
+    });
+    await logActivity(doc.firmId, "PIPELINE_REFERENCE_INDEXED", {
+      documentId,
+      traceId: trace,
+      docType: doc.type,
+      chars: text.length,
+    });
+    logger.info(
+      { traceId: trace, documentId, docType: doc.type, chars: text.length, event: "pipeline.reference_indexed" },
+      "dokumen referensi diindeks (tanpa jurnal)",
+    );
+    return { ok: true as const, status: "PROCESSED" as const, reference: true };
   }
 
   const draft = await draftJournalFromText({

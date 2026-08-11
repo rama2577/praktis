@@ -21,6 +21,9 @@ export const DOC_TYPE_LABELS: Record<DocumentType, string> = {
   PAYROLL_REPORT: "Laporan Gaji",
   TAX_REPORT: "Laporan Pajak",
   OTHER: "Lain-lain",
+  LEGAL_DOCUMENT: "Dokumen Legalitas (NIB/Akta/NPWP/TDP)",
+  ORGANIZATION_CHART: "Struktur Organisasi",
+  KNOWLEDGE_ARTICLE: "Artikel Pengetahuan Klien",
   INVOICE: "Invoice",
   RECEIPT: "Nota / Kwitansi",
 };
@@ -35,8 +38,16 @@ export const ACTIVE_DOC_TYPES: DocumentType[] = [
   "INVENTORY_REPORT",
   "PAYROLL_REPORT",
   "TAX_REPORT",
+  "LEGAL_DOCUMENT",
+  "ORGANIZATION_CHART",
+  "KNOWLEDGE_ARTICLE",
   "OTHER",
 ];
+
+/** Jenis dokumen referensi — tidak menghasilkan jurnal, disimpan sebagai pengetahuan klien. */
+export const REFERENCE_DOC_TYPES: DocumentType[] = ["LEGAL_DOCUMENT", "ORGANIZATION_CHART", "KNOWLEDGE_ARTICLE"];
+
+export const isReferenceDocType = (t: DocumentType) => REFERENCE_DOC_TYPES.includes(t);
 
 /** Jenis legacy yang masih diterima API (backward-compat). */
 export const LEGACY_DOC_TYPES: DocumentType[] = ["INVOICE", "RECEIPT"];
@@ -120,6 +131,24 @@ export function journalHintForDocType(docType: DocumentType): DocJournalHint {
         kind: null,
         template: null,
         hint: "Dokumen lain-lain → deteksi event dari isi dokumen; jika tidak jelas, buat jurnal umum.",
+      };
+    case "LEGAL_DOCUMENT":
+      return {
+        kind: null,
+        template: null,
+        hint: "Dokumen legalitas (NIB/Akta/NPWP/TDP) → referensi klien, tidak menghasilkan jurnal; teks diindeks sebagai pengetahuan klien.",
+      };
+    case "ORGANIZATION_CHART":
+      return {
+        kind: null,
+        template: null,
+        hint: "Struktur organisasi → referensi klien, tidak menghasilkan jurnal; disimpan untuk konteks persetujuan & otorisasi.",
+      };
+    case "KNOWLEDGE_ARTICLE":
+      return {
+        kind: null,
+        template: null,
+        hint: "Artikel pengetahuan → referensi KB klien, tidak menghasilkan jurnal; teks diindeks untuk memperkuat pemahaman konteks klien.",
       };
     case "INVOICE":
       return {

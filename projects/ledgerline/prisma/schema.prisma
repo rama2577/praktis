@@ -42,6 +42,10 @@ enum DocumentType {
   PAYROLL_REPORT
   TAX_REPORT
   OTHER
+  // F6C — dokumen referensi klien (tidak menghasilkan jurnal)
+  LEGAL_DOCUMENT // NIB, Akta, NPWP, TDP, SIUP, dsb.
+  ORGANIZATION_CHART // struktur organisasi
+  KNOWLEDGE_ARTICLE // artikel/pengetahuan penguat KB klien
   // Legacy (backward-compat, deprecated — M2 menggantikan enum lama)
   INVOICE
   RECEIPT
@@ -171,6 +175,7 @@ model Document {
   fileHash  String
   sizeBytes Int
   status    DocumentStatus @default(PENDING)
+  referenceText String? // F6C: teks hasil ekstraksi dokumen referensi (legalitas/org-chart/artikel KB)
   createdAt DateTime       @default(now())
   updatedAt DateTime       @updatedAt
 

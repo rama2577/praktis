@@ -8,12 +8,13 @@ import {
 } from "@/ai/doc-type-map";
 import { detectBusinessEvent } from "@/ai/rule-engine";
 
-describe("katalog 9 kategori dokumen (F2.5C / PRD M2)", () => {
-  it("9 kategori utama + 2 legacy = 11 total", () => {
-    expect(ACTIVE_DOC_TYPES).toHaveLength(9);
+describe("katalog kategori dokumen (F2.5C / PRD M2 / F6C)", () => {
+  it("12 kategori utama + 2 legacy = 14 total (termasuk referensi F6C)", () => {
+    expect(ACTIVE_DOC_TYPES).toHaveLength(12);
+    expect(ACTIVE_DOC_TYPES).toEqual(expect.arrayContaining(["LEGAL_DOCUMENT", "ORGANIZATION_CHART", "KNOWLEDGE_ARTICLE"]));
     expect(LEGACY_DOC_TYPES).toEqual(["INVOICE", "RECEIPT"]);
-    expect(ALL_DOC_TYPES).toHaveLength(11);
-    expect(new Set(ALL_DOC_TYPES).size).toBe(11); // tidak ada duplikat
+    expect(ALL_DOC_TYPES).toHaveLength(14);
+    expect(new Set(ALL_DOC_TYPES).size).toBe(14); // tidak ada duplikat
   });
 
   it("semua jenis punya label Indonesia", () => {
