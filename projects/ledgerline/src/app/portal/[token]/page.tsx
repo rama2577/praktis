@@ -10,6 +10,7 @@ import { ExportButtons } from "./export-buttons";
 import { PortalNotifications } from "@/components/portal/portal-notifications";
 import { PortalJournals } from "@/components/portal/portal-journals";
 import { PortalSnapshots } from "@/components/portal/portal-snapshots";
+import { PortalFinancial } from "@/components/portal/portal-financial";
 import type { DocumentStatus } from "@prisma/client";
 import { ACTIVE_DOC_TYPES, DOC_TYPE_LABELS } from "@/ai/doc-type-map";
 
@@ -209,6 +210,11 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
       {/* Laporan & versi (K5) */}
       <div className="mt-6">
         <PortalSnapshots token={token} />
+      </div>
+
+      {/* Laporan keuangan (paritas dengan sisi akuntan) */}
+      <div className="mt-6">
+        <PortalFinancial token={token} />
       </div>
 
       {/* Privasi (K6) */}

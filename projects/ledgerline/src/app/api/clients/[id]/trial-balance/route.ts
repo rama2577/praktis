@@ -60,6 +60,20 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
     });
   }
 
+  if (format === "worksheet" || format === "worksheet-csv") {
+    const { buildWorksheet, worksheetCsv } = await import("@/server/worksheet");
+    const ws = buildWorksheet(report.rows, client.name, period);
+    if (format === "worksheet-csv") {
+      return new NextResponse("\uFEFF" + worksheetCsv(ws), {
+        headers: {
+          "Content-Type": "text/csv; charset=utf-8",
+          "Content-Disposition": `attachment; filename="neraca-lajur-${period}.csv"`,
+        },
+      });
+    }
+    return NextResponse.json({ data: ws });
+  }
+
   return NextResponse.json({ data: report });
 });
 

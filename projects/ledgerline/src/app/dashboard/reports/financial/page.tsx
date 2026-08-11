@@ -1,22 +1,20 @@
+import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
-import { prisma } from "@/lib/db";
-import { FinancialStatementsView } from "@/components/reports/financial-statements-view";
-import { redirect } from "next/navigation";
+import { FinancialReportsPage } from "@/components/reports/financial-reports-page";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "Laporan Keuangan — Praktis" };
 
-export default async function FinancialStatementsPage() {
+export default async function FinancialReportsRoute() {
   const session = await requireRole(OPERATIONAL_ROLES);
-  if (!session) redirect("/login");
 
   const clients = await prisma.client.findMany({
     where: { firmId: session.user.firmId },
-    orderBy: { name: "asc" },
     select: { id: true, name: true },
+    orderBy: { name: "asc" },
   });
 
-  return <FinancialStatementsView initialClients={clients} />;
+  return <FinancialReportsPage initialClients={clients} />;
 }

@@ -39,6 +39,35 @@ type Report = {
   periodStatus: "OPEN" | "CLOSED";
 };
 
+type WorksheetLine = {
+  no: number;
+  accountCode: string;
+  accountName: string;
+  ref: string;
+  nsDebit: number;
+  nsCredit: number;
+  lrDebit: number;
+  lrCredit: number;
+  neracaDebit: number;
+  neracaCredit: number;
+};
+
+type Worksheet = {
+  clientName: string;
+  period: string;
+  lines: WorksheetLine[];
+  totals: {
+    nsDebit: number;
+    nsCredit: number;
+    lrDebit: number;
+    lrCredit: number;
+    neracaDebit: number;
+    neracaCredit: number;
+  };
+  labaBersih: number;
+  balanced: boolean;
+};
+
 const CLASS_TONE: Record<Classification, "neutral" | "accent" | "positive" | "danger"> = {
   ASET: "accent",
   LIABILITAS: "neutral",
@@ -67,6 +96,8 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
   const [clientId, setClientId] = useState("");
   const [period, setPeriod] = useState(currentMonth());
   const [report, setReport] = useState<Report | null>(null);
+  const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
+  const [mode, setMode] = useState<"standar" | "lajur">("standar");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [locking, setLocking] = useState(false);
@@ -104,12 +135,19 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
       }
       const data = (await res.json()) as { data: Report };
       setReport(data.data);
+      if (mode === "lajur") {
+        const wsRes = await fetch(`/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet`);
+        if (wsRes.ok) {
+          const ws = (await wsRes.json()) as { data: Worksheet };
+          setWorksheet(ws.data);
+        }
+      }
     } catch (e) {
       setError((e as Error).message);
     } finally {
       setLoading(false);
     }
-  }, [clientId, period]);
+  }, [clientId, period, mode]);
 
   useEffect(() => {
     async function start() {
@@ -193,6 +231,37 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
           }`}
         >
           ↓ Ekspor XLSX
+        </a>
+        <div className="flex overflow-hidden rounded-lg border border-slate-700 text-xs">
+          <button
+            type="button"
+            onClick={() => setMode("standar")}
+            className={`px-3 py-2 transition ${
+              mode === "standar" ? "bg-yellow-400/20 text-yellow-300" : "text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Standar
+          </button>
+          <button
+            type="button"
+            onClick={() => setMode("lajur")}
+            className={`px-3 py-2 transition ${
+              mode === "lajur" ? "bg-yellow-400/20 text-yellow-300" : "text-slate-300 hover:bg-slate-800"
+            }`}
+          >
+            Neraca Lajur
+          </button>
+        </div>
+        <a
+          href={clientId ? `/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet-csv` : "#"}
+          aria-disabled={!clientId}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${
+            clientId
+              ? "border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20"
+              : "pointer-events-none opacity-40"
+          }`}
+        >
+          ↓ Lajur CSV
         </a>
         {report?.periodStatus === "OPEN" && canLock && (
           <button
@@ -333,6 +402,71 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
               </span>
             </div>
           </div>
+
+          {mode === "lajur" && worksheet && (
+            <div className="rounded-xl border border-slate-800 bg-slate-900/50">
+              <div className="border-b border-slate-800 px-4 py-3">
+                <h3 className="text-sm font-medium text-slate-100">Neraca Lajur — {worksheet.clientName}</h3>
+                <p className="text-xs text-slate-400">
+                  Periode {worksheet.period} · format spreadsheet: Neraca Saldo → Laba Rugi → Neraca
+                  {worksheet.balanced ? " · seimbang ✓" : " · tidak seimbang ⚠"}
+                </p>
+              </div>
+              <div className="overflow-x-auto">
+                <table className="w-full min-w-[900px] text-left text-sm">
+                  <thead>
+                    <tr className="border-b border-slate-800 text-xs text-slate-400">
+                      <th className="px-3 py-2" rowSpan={2}>No</th>
+                      <th className="px-3 py-2" rowSpan={2}>Kode</th>
+                      <th className="px-3 py-2" rowSpan={2}>Nama Akun</th>
+                      <th className="px-3 py-2 text-center" colSpan={2}>Neraca Saldo</th>
+                      <th className="px-3 py-2 text-center" colSpan={2}>Laba Rugi</th>
+                      <th className="px-3 py-2 text-center" colSpan={2}>Neraca</th>
+                    </tr>
+                    <tr className="border-b border-slate-800 text-xs text-slate-500">
+                      <th className="px-3 py-1 text-right">Debit</th>
+                      <th className="px-3 py-1 text-right">Kredit</th>
+                      <th className="px-3 py-1 text-right">Debit</th>
+                      <th className="px-3 py-1 text-right">Kredit</th>
+                      <th className="px-3 py-1 text-right">Debit</th>
+                      <th className="px-3 py-1 text-right">Kredit</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {worksheet.lines.map((l) => (
+                      <tr
+                        key={l.no}
+                        className={`border-b border-slate-800/60 ${
+                          l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold text-slate-100" : "text-slate-300"
+                        }`}
+                      >
+                        <td className="px-3 py-2 text-slate-500">{l.no}</td>
+                        <td className="px-3 py-2 font-mono text-xs text-slate-500">{l.accountCode}</td>
+                        <td className="px-3 py-2">{l.accountName}</td>
+                        <td className="px-3 py-2 text-right font-mono">{l.nsDebit > 0 ? formatCurrencyRp(l.nsDebit) : ""}</td>
+                        <td className="px-3 py-2 text-right font-mono">{l.nsCredit > 0 ? formatCurrencyRp(l.nsCredit) : ""}</td>
+                        <td className="px-3 py-2 text-right font-mono">{l.lrDebit > 0 ? formatCurrencyRp(l.lrDebit) : ""}</td>
+                        <td className="px-3 py-2 text-right font-mono">{l.lrCredit > 0 ? formatCurrencyRp(l.lrCredit) : ""}</td>
+                        <td className="px-3 py-2 text-right font-mono">{l.neracaDebit > 0 ? formatCurrencyRp(l.neracaDebit) : ""}</td>
+                        <td className="px-3 py-2 text-right font-mono">{l.neracaCredit > 0 ? formatCurrencyRp(l.neracaCredit) : ""}</td>
+                      </tr>
+                    ))}
+                  </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-slate-700 bg-slate-950 font-semibold text-slate-100">
+                      <td className="px-3 py-2" colSpan={3}>TOTAL</td>
+                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsDebit)}</td>
+                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsCredit)}</td>
+                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrDebit)}</td>
+                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrCredit)}</td>
+                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.neracaDebit)}</td>
+                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.neracaCredit)}</td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          )}
         </>
       )}
     </div>
