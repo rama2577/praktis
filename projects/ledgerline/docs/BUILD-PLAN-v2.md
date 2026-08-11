@@ -140,6 +140,26 @@ lanjutan. Milestone 6 bisa jalan paralel dengan 1–5.
   23/4(2), 1771 + rekonsiliasi fiskal) → CSV/XML skema DJP; review tax specialist; export
   siap upload Core Tax (e-Faktur/e-Bupot). Integrasi PJAP = tahap lanjut (opsional).
 
+**Status: ✅ SELESAI (2026-08-11, commit f5b-core-tax)** — cakupan yang terpasang:
+- Schema: `JournalLine.taxCode` (override tax specialist) + `taxBase` (DPP); migrasi `f5b_tax_codes`.
+- `src/server/tax.ts` (pure): katalog 18 kode pajak (PPN-OUT 01/02, PPN-IN 01/03 B2/B3, PPh 21
+  21-100-01/02/03, PPh 22, PPh 23 103-106, PPh 4(2) 401-404, PPh 25) + ACCOUNT_TAX_MAP (2-2000 →
+  PPN-OUT, 1-1400 → PPN-IN, 2-2100/2200/2300/2400/2500 → PPh 21/22/23/4(2)/25; PPN masukan
+  "tidak dapat dikreditkan" → B3); inferTaxCode/taxBaseOf; classifyTaxLines → ringkasan per jenis;
+  generator CSV skema DJP: buildSpt1111Csv (B1/B2/B3 + ringkasan), buildSpt1771 (laba komersial →
+  koreksi fiskal → laba fiskal → PPh 22%, koreksi aset otomatis dari F5A), buildEBupotCsv (KAP/KJS
+  PPh 23), buildPPh42Csv, buildPPh21Csv.
+- `src/server/tax-report.ts` (wrapper): getTaxLines (jurnal APPROVED/FINALIZED periode, akun pajak),
+  getTaxSummary, getAssetTaxCorrection (F5A), getSpt1771Data, setLineTaxCode (override validasi).
+- API (OPERATIONAL_ROLES, tenant-scoped): GET `/api/clients/[id]/tax?period=`, PATCH
+  `.../tax/lines/[lineId]` {taxCode,taxBase}, GET `.../tax/export?period=&type=spt1111|spt1771|ebupot23|pph42|pph21`.
+- UI: sidebar + "Core Tax"; `/dashboard/tax` — kartu ringkasan 8 jenis, review baris pajak
+  (DPP override + dropdown kode pajak 18 opsi + simpan), 5 tombol export CSV.
+- Test `tests/tax.test.ts` +12 → **281/281** (31 files); tsc 0; lint 0; build OK.
+- Live: Maju Jaya 2026-08 — PK 223.850 (DPP 2.035.000), PM 107.690 (B2); SPT 1111 B1/B2;
+  SPT 1771 (laba komersial −4.625.000, koreksi aset +791.667); override PPN-OUT-02 tersimpan &
+  revert; jurnal APPROVED/FINALIZED saja yang dihitung (DRAFT/TAX_REVIEW tidak).
+
 ### F6A · Bank rekonsiliasi (M6)
 - `BankReconciliation` + `ReconciliationItem`; AI saran matching (jumlah/tanggal/lawan);
   aksi match/unmatch; buat jurnal biaya bank; laporan rekonsiliasi.

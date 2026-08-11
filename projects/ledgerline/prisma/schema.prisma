@@ -212,14 +212,17 @@ model JournalEntry {
 }
 
 model JournalLine {
-  id             String  @id @default(cuid())
+  id             String   @id @default(cuid())
   journalEntryId String
   accountCode    String
   accountName    String
-  debit          Decimal @default(0) @db.Decimal(18, 2)
-  credit         Decimal @default(0) @db.Decimal(18, 2)
+  debit          Decimal  @default(0) @db.Decimal(18, 2)
+  credit         Decimal  @default(0) @db.Decimal(18, 2)
   psakRef        String? // traceability: referensi PSAK
   notes          String?
+  // F5B — kode pajak (KAP/KJS & jenis): override oleh tax specialist saat review.
+  taxCode        String? // mis. "PPN-OUT-01", "PPH23-104", "PPH42-403", "PPH21-21-100-01"
+  taxBase        Decimal? // DPP untuk PPh yang dipungut/dipotong @db.Decimal(18, 2)?
 
   journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
 

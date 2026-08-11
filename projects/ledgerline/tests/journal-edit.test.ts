@@ -13,6 +13,8 @@ function line(partial: Partial<JournalLine>): JournalLine {
     credit: partial.credit ?? new Prisma.Decimal(0),
     psakRef: partial.psakRef ?? null,
     notes: partial.notes ?? null,
+    taxCode: partial.taxCode ?? null,
+    taxBase: partial.taxBase ?? null,
   };
 }
 
