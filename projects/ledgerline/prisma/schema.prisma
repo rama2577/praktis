@@ -61,6 +61,7 @@ enum JournalStatus {
   TAX_REVIEW
   PARTNER_APPROVAL
   APPROVED
+  FINALIZED // periode tutup buku — laporan disetujui partner, edit langsung dilarang
   EXCEPTION
   REJECTED
   ARCHIVED
@@ -100,14 +101,15 @@ model Firm {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  users      User[]
-  clients    Client[]
-  documents  Document[]
-  journals   JournalEntry[]
-  activities ActivityLog[]
-  slaEvents  SlaEvent[]
-  corrections JournalCorrection[]
-  outboxEvents OutboxEvent[]
+  users         User[]
+  clients       Client[]
+  documents     Document[]
+  journals      JournalEntry[]
+  activities    ActivityLog[]
+  slaEvents     SlaEvent[]
+  fiscalPeriods FiscalPeriod[]
+  corrections   JournalCorrection[]
+  outboxEvents  OutboxEvent[]
 }
 
 model User {
@@ -121,9 +123,10 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  firm         Firm                @relation(fields: [firmId], references: [id])
-  reviewTasks  ReviewTask[]        @relation("ReviewAssignee")
-  corrections  JournalCorrection[] @relation("CorrectionUser")
+  firm                Firm                @relation(fields: [firmId], references: [id])
+  reviewTasks         ReviewTask[]        @relation("ReviewAssignee")
+  corrections         JournalCorrection[] @relation("CorrectionUser")
+  fiscalPeriodsLocked FiscalPeriod[]      @relation("PeriodLocker")
 
   @@unique([firmId, email])
   @@index([firmId, role])
@@ -139,28 +142,29 @@ model Client {
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
-  firm      Firm          @relation(fields: [firmId], references: [id])
-  documents Document[]
-  journals  JournalEntry[]
-  profile   ClientProfile?
-  portalToken ClientPortalToken?
+  firm          Firm               @relation(fields: [firmId], references: [id])
+  documents     Document[]
+  journals      JournalEntry[]
+  fiscalPeriods FiscalPeriod[]
+  profile       ClientProfile?
+  portalToken   ClientPortalToken?
 
   @@index([firmId, status])
 }
 
 model Document {
-  id          String         @id @default(cuid())
-  firmId      String
-  clientId    String
-  type        DocumentType
-  mimeType    String
-  fileName    String
-  filePath    String
-  fileHash    String
-  sizeBytes   Int
-  status      DocumentStatus @default(PENDING)
-  createdAt   DateTime       @default(now())
-  updatedAt   DateTime       @updatedAt
+  id        String         @id @default(cuid())
+  firmId    String
+  clientId  String
+  type      DocumentType
+  mimeType  String
+  fileName  String
+  filePath  String
+  fileHash  String
+  sizeBytes Int
+  status    DocumentStatus @default(PENDING)
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
 
   firm     Firm           @relation(fields: [firmId], references: [id])
   client   Client         @relation(fields: [clientId], references: [id])
@@ -185,13 +189,13 @@ model JournalEntry {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  firm       Firm                @relation(fields: [firmId], references: [id])
-  client     Client              @relation(fields: [clientId], references: [id])
-  document   Document?           @relation(fields: [documentId], references: [id])
-  lines      JournalLine[]
-  reviewTask ReviewTask[]
-  activities ActivityLog[]
-  slaEvents  SlaEvent[]
+  firm        Firm                @relation(fields: [firmId], references: [id])
+  client      Client              @relation(fields: [clientId], references: [id])
+  document    Document?           @relation(fields: [documentId], references: [id])
+  lines       JournalLine[]
+  reviewTask  ReviewTask[]
+  activities  ActivityLog[]
+  slaEvents   SlaEvent[]
   corrections JournalCorrection[]
 
   @@index([firmId, status])
@@ -199,31 +203,57 @@ model JournalEntry {
 }
 
 model JournalLine {
-  id            String        @id @default(cuid())
+  id             String  @id @default(cuid())
   journalEntryId String
-  accountCode   String
-  accountName   String
-  debit         Decimal       @default(0) @db.Decimal(18, 2)
-  credit        Decimal       @default(0) @db.Decimal(18, 2)
-  psakRef       String? // traceability: referensi PSAK
-  notes         String?
+  accountCode    String
+  accountName    String
+  debit          Decimal @default(0) @db.Decimal(18, 2)
+  credit         Decimal @default(0) @db.Decimal(18, 2)
+  psakRef        String? // traceability: referensi PSAK
+  notes          String?
 
   journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
 
   @@index([journalEntryId])
 }
 
+// ══════════ F2.5E — Periode tutup buku (PRD M4/A5) ══════════
+// Satu periode per klien; CLOSED = dikunci partner, edit langsung dilarang,
+// hanya jurnal penyesuaian (ADJUSTING) yang boleh masuk setelahnya.
+enum FiscalPeriodStatus {
+  OPEN
+  CLOSED
+}
+
+model FiscalPeriod {
+  id         String             @id @default(cuid())
+  firmId     String
+  clientId   String
+  period     String // "2026-08" (YYYY-MM)
+  status     FiscalPeriodStatus @default(OPEN)
+  lockedById String?
+  lockedAt   DateTime?
+  createdAt  DateTime           @default(now())
+
+  firm     Firm   @relation(fields: [firmId], references: [id])
+  client   Client @relation(fields: [clientId], references: [id])
+  lockedBy User?  @relation("PeriodLocker", fields: [lockedById], references: [id])
+
+  @@unique([clientId, period])
+  @@index([firmId, status])
+}
+
 model ReviewTask {
-  id            String           @id @default(cuid())
+  id             String           @id @default(cuid())
   journalEntryId String
-  stage         ReviewStage
-  assigneeId    String?
-  status        ReviewTaskStatus @default(PENDING)
-  urgent        Boolean          @default(false)
-  dueAt         DateTime? // batas SLA stage
-  reviewedAt    DateTime?
-  note          String?
-  createdAt     DateTime         @default(now())
+  stage          ReviewStage
+  assigneeId     String?
+  status         ReviewTaskStatus @default(PENDING)
+  urgent         Boolean          @default(false)
+  dueAt          DateTime? // batas SLA stage
+  reviewedAt     DateTime?
+  note           String?
+  createdAt      DateTime         @default(now())
 
   journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
   assignee     User?        @relation("ReviewAssignee", fields: [assigneeId], references: [id])
@@ -236,7 +266,7 @@ model ReviewTask {
 // Setiap perubahan baris jurnal oleh reviewer tercatat di sini → sumber data
 // belajar KB (EN-03) + insight "akun paling sering dikoreksi" (A6).
 model JournalCorrection {
-  id             String       @id @default(cuid())
+  id             String      @id @default(cuid())
   firmId         String
   journalEntryId String
   userId         String?
@@ -245,11 +275,11 @@ model JournalCorrection {
   accountCode    String? // konteks akun yang dikoreksi (untuk insight A6)
   before         Json?
   after          Json?
-  createdAt      DateTime     @default(now())
+  createdAt      DateTime    @default(now())
 
-  firm         Firm          @relation(fields: [firmId], references: [id])
-  journalEntry JournalEntry  @relation(fields: [journalEntryId], references: [id])
-  user         User?         @relation("CorrectionUser", fields: [userId], references: [id])
+  firm         Firm         @relation(fields: [firmId], references: [id])
+  journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id])
+  user         User?        @relation("CorrectionUser", fields: [userId], references: [id])
 
   @@index([firmId, createdAt])
   @@index([journalEntryId])
@@ -272,14 +302,14 @@ model ActivityLog {
 }
 
 model SlaEvent {
-  id              String    @id @default(cuid())
-  firmId          String
-  journalEntryId  String?
-  stage           ReviewStage
-  targetMinutes   Int
-  actualMinutes   Int?
-  status          SlaStatus
-  createdAt       DateTime  @default(now())
+  id             String      @id @default(cuid())
+  firmId         String
+  journalEntryId String?
+  stage          ReviewStage
+  targetMinutes  Int
+  actualMinutes  Int?
+  status         SlaStatus
+  createdAt      DateTime    @default(now())
 
   firm         Firm          @relation(fields: [firmId], references: [id])
   journalEntry JournalEntry? @relation(fields: [journalEntryId], references: [id])
@@ -380,18 +410,18 @@ enum OutboxStatus {
 }
 
 model OutboxEvent {
-  id          String        @id @default(cuid())
-  firmId      String? // tenant pemilik event (nullable utk data legacy; wajib di create baru)
-  clientId    String? // klien terkait event, bila ada
-  eventType   String // "journalApproved" | "journalException" | "slaBreach"
-  payload     Json
-  status      OutboxStatus  @default(PENDING)
-  retryCount  Int           @default(0)
-  maxRetries  Int           @default(3)
-  lastError   String?
+  id           String       @id @default(cuid())
+  firmId       String? // tenant pemilik event (nullable utk data legacy; wajib di create baru)
+  clientId     String? // klien terkait event, bila ada
+  eventType    String // "journalApproved" | "journalException" | "slaBreach"
+  payload      Json
+  status       OutboxStatus @default(PENDING)
+  retryCount   Int          @default(0)
+  maxRetries   Int          @default(3)
+  lastError    String?
   processAfter DateTime     @default(now()) // delay retry eksponensial
-  processedAt DateTime?
-  createdAt   DateTime      @default(now())
+  processedAt  DateTime?
+  createdAt    DateTime     @default(now())
 
   firm          Firm?             @relation(fields: [firmId], references: [id])
   notifications NotificationLog[]
@@ -406,14 +436,14 @@ model OutboxEvent {
 // Event diproses via consumer worker → POST ke webhook URL.
 
 model WebhookSubscription {
-  id        String   @id @default(cuid())
-  firmId    String
-  url       String // endpoint webhook firma
-  secret    String? // HMAC secret untuk verifikasi signature
+  id         String   @id @default(cuid())
+  firmId     String
+  url        String // endpoint webhook firma
+  secret     String? // HMAC secret untuk verifikasi signature
   eventTypes String[] // ["journalApproved", "slaBreach", ...]
-  enabled   Boolean  @default(true)
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  enabled    Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
 
   notifications NotificationLog[]
 
@@ -422,16 +452,16 @@ model WebhookSubscription {
 
 model NotificationLog {
   id         String   @id @default(cuid())
-  outboxId   String?  // relasi ke OutboxEvent
+  outboxId   String? // relasi ke OutboxEvent
   webhookId  String?
   status     String   @default("SENT") // SENT | FAILED
-  statusCode Int?     // HTTP response code
-  response   String?  // body response
+  statusCode Int? // HTTP response code
+  response   String? // body response
   error      String?
   sentAt     DateTime @default(now())
 
-  outboxEvent OutboxEvent?          @relation(fields: [outboxId], references: [id], onDelete: SetNull)
-  webhook     WebhookSubscription?  @relation(fields: [webhookId], references: [id], onDelete: SetNull)
+  outboxEvent OutboxEvent?         @relation(fields: [outboxId], references: [id], onDelete: SetNull)
+  webhook     WebhookSubscription? @relation(fields: [webhookId], references: [id], onDelete: SetNull)
 
   @@index([outboxId])
   @@index([sentAt])

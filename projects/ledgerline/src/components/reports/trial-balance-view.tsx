@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Table, TBody, THead, TH, TD, TR } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -34,6 +36,7 @@ type Report = {
   totalCredit: number;
   balanced: boolean;
   unusualCount: number;
+  periodStatus: "OPEN" | "CLOSED";
 };
 
 const CLASS_TONE: Record<Classification, "neutral" | "accent" | "positive" | "danger"> = {
@@ -59,13 +62,15 @@ function currentMonth(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
-export function TrialBalanceView() {
+export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
   const [clients, setClients] = useState<Client[]>([]);
   const [clientId, setClientId] = useState("");
   const [period, setPeriod] = useState(currentMonth());
   const [report, setReport] = useState<Report | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [locking, setLocking] = useState(false);
+  const router = useRouter();
 
   // Muat daftar klien sekali
   const loadClients = useCallback(async () => {
@@ -115,6 +120,27 @@ export function TrialBalanceView() {
 
   const exportUrl = (format: "csv" | "xlsx") =>
     clientId ? `/api/clients/${clientId}/trial-balance?period=${period}&format=${format}` : null;
+
+  const handleLock = async () => {
+    if (!clientId || !report || report.periodStatus !== "OPEN") return;
+    if (!window.confirm("Kunci periode ini? Jurnal APPROVED akan menjadi FINALIZED dan tidak bisa diedit langsung — perbaikan hanya lewat jurnal penyesuaian.")) return;
+    setLocking(true);
+    setError(null);
+    try {
+      const res = await fetch(`/api/clients/${clientId}/periods/${period}/lock`, { method: "POST" });
+      if (!res.ok) {
+        const body = (await res.json().catch(() => null)) as { error?: string } | null;
+        throw new Error(body?.error ?? "Gagal mengunci periode");
+      }
+      const data = (await res.json()) as { data: { status: string; finalized: number } };
+      setReport({ ...report, periodStatus: data.data.status as "OPEN" | "CLOSED" });
+      router.refresh();
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setLocking(false);
+    }
+  };
 
   return (
     <div className="space-y-5">
@@ -168,6 +194,16 @@ export function TrialBalanceView() {
         >
           ↓ Ekspor XLSX
         </a>
+        {report?.periodStatus === "OPEN" && canLock && (
+          <button
+            type="button"
+            onClick={() => void handleLock()}
+            disabled={locking}
+            className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-300 transition hover:bg-yellow-400/20 disabled:opacity-50"
+          >
+            {locking ? "Mengunci…" : "🔒 Kunci Periode"}
+          </button>
+        )}
       </div>
 
       {error && <ErrorState message={error} onRetry={() => void load()} />}
@@ -231,27 +267,40 @@ export function TrialBalanceView() {
                   {report.prevPeriod ? ` · komparatif vs ${report.prevPeriod}` : ""} · {report.rows.length} akun
                 </p>
               </div>
+              <div className="flex items-center gap-2">
+                {report.periodStatus === "CLOSED" ? (
+                  <Badge label="🔒 Periode terkunci" tone="accent" />
+                ) : (
+                  <Badge label="Periode terbuka" tone="positive" />
+                )}
+              </div>
             </div>
             <Table>
               <THead>
-                <tr>
-                  <TH>Kode</TH>
-                  <TH>Akun</TH>
-                  <TH>Klasifikasi</TH>
-                  <TH className="text-right">Debit</TH>
-                  <TH className="text-right">Kredit</TH>
-                  <TH className="text-right">Saldo</TH>
-                  <TH className="text-right">
-                    Bulan Lalu
-                    {report.prevPeriod ? ` (${report.prevPeriod})` : ""}
-                  </TH>
-                  <TH>Indikator</TH>
-                </tr>
+                <TH>Kode</TH>
+                <TH>Akun</TH>
+                <TH>Klasifikasi</TH>
+                <TH className="text-right">Debit</TH>
+                <TH className="text-right">Kredit</TH>
+                <TH className="text-right">Saldo</TH>
+                <TH className="text-right">
+                  Bulan Lalu
+                  {report.prevPeriod ? ` (${report.prevPeriod})` : ""}
+                </TH>
+                <TH>Indikator</TH>
               </THead>
               <TBody>
                 {report.rows.map((r) => (
                   <TR key={r.accountCode} className={r.unusual ? "bg-red-950/20" : undefined}>
-                    <TD className="font-mono">{r.accountCode}</TD>
+                    <TD className="font-mono">
+                      <Link
+                        href={`/dashboard/reports/ledger?clientId=${report.clientId}&accountCode=${encodeURIComponent(r.accountCode)}&period=${report.period}`}
+                        className="text-yellow-300/90 underline-offset-2 hover:underline"
+                        title={`Buku besar ${r.accountName}`}
+                      >
+                        {r.accountCode}
+                      </Link>
+                    </TD>
                     <TD>{r.accountName}</TD>
                     <TD>
                       <Badge label={CLASS_LABELS[r.classification]} tone={CLASS_TONE[r.classification]} />

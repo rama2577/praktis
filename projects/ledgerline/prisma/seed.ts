@@ -59,6 +59,7 @@ const STAGE_TASKS: Record<JournalStatus, StageTaskMap | null> = {
   },
   EXCEPTION: null,
   REJECTED: null,
+  FINALIZED: null,
   ARCHIVED: null,
 };
 

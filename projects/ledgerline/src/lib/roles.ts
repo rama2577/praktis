@@ -34,3 +34,9 @@ export const OPERATIONAL_ROLES: Role[] = [
 
 /** Role yang boleh mengakses pengaturan sistem & manajemen klien penuh. */
 export const SYSTEM_ROLES: Role[] = [Role.ADMIN, Role.SENIOR];
+
+/** Role yang boleh mengunci periode tutup buku (partner + admin). */
+export const PARTNER_ROLES: Role[] = [Role.ADMIN, Role.PARTNER];
+
+/** Role yang boleh reclass/edit jurnal APPROVED (senior + partner + admin). */
+export const EDIT_JOURNAL_ROLES: Role[] = [Role.ADMIN, Role.SENIOR, Role.PARTNER];

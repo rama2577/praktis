@@ -1,5 +1,6 @@
 import * as XLSX from "xlsx";
 import { prisma } from "@/lib/db";
+import { getFiscalPeriodStatus } from "@/server/ledger";
 
 // ── Tipe ────────────────────────────────────────────────────────────────────
 
@@ -37,6 +38,7 @@ export type TrialBalanceReport = {
   totalCredit: number;
   balanced: boolean;
   unusualCount: number;
+  periodStatus: "OPEN" | "CLOSED"; // F2.5E: status tutup buku
 };
 
 type LineLike = {
@@ -210,6 +212,7 @@ export function buildTrialBalance(
     totalCredit,
     balanced: Math.abs(totalDebit - totalCredit) < EPS,
     unusualCount: rows.filter((r) => r.unusual).length,
+    periodStatus: "OPEN",
   };
 }
 
@@ -228,7 +231,7 @@ async function fetchEntries(clientId: string, start: Date, end: Date): Promise<F
   const rows = await prisma.journalEntry.findMany({
     where: {
       clientId,
-      status: "APPROVED",
+      status: { in: ["APPROVED", "FINALIZED"] },
       entryDate: { gte: start, lt: end },
     },
     select: {
@@ -260,14 +263,16 @@ export async function getTrialBalance(
   const prevPeriod = prevPeriodOf(period);
   const prevRange = prevPeriod ? parsePeriod(prevPeriod) : null;
 
-  const [entries, prevEntries] = await Promise.all([
+  const [entries, prevEntries, periodStatus] = await Promise.all([
     fetchEntries(clientId, range.start, range.end),
     prevRange ? fetchEntries(clientId, prevRange.start, prevRange.end) : Promise.resolve([]),
+    getFiscalPeriodStatus(clientId, period),
   ]);
 
   const report = buildTrialBalance(entries, period, prevEntries, prevPeriod);
   report.clientId = clientId;
   report.clientName = clientName;
+  report.periodStatus = periodStatus;
   return report;
 }
 
