@@ -191,6 +191,86 @@ export function nextStatusForAction(stage: ReviewStage, action: ReviewAction): J
 }
 
 /**
+ * EN-06 — Batch approve (confidence gate).
+ * Ambang confidence minimum untuk disetujui otomatis dalam batch.
+ * Task di bawah ambang TIDAK ikut disetujui (dilewati, bukan ditolak).
+ */
+export const BATCH_APPROVE_CONFIDENCE_MIN = 0.85;
+
+/**
+ * Seleksi murni — task mana yang layak batch-approve berdasarkan confidence.
+ * (Pure, tanpa DB → bisa diuji langsung.)
+ */
+export function selectBatchApprovable(
+  tasks: Array<{ id: string; confidence: number | null }>,
+  threshold: number,
+): { approvable: string[]; skipped: string[] } {
+  const approvable: string[] = [];
+  const skipped: string[] = [];
+  for (const t of tasks) {
+    if (t.confidence !== null && t.confidence >= threshold) approvable.push(t.id);
+    else skipped.push(t.id);
+  }
+  return { approvable, skipped };
+}
+
+/**
+ * EN-06 — Setujui banyak task sekaligus (hanya confidence ≥ ambang).
+ * Tetap lewat state machine terpusat (transitionJournal) per task —
+ * SLA events, outbox, & activity log tetap tercatat. Admin bisa semua
+ * task firma; role lain hanya task miliknya.
+ */
+export async function batchApproveTasks(opts: {
+  firmId: string;
+  userId: string;
+  role: string;
+  taskIds: string[];
+  actor: User;
+}): Promise<{ approved: number; skipped: number; threshold: number }> {
+  const isAdmin = opts.role === "ADMIN";
+  const tasks = await prisma.reviewTask.findMany({
+    where: {
+      id: { in: opts.taskIds },
+      status: "PENDING",
+      journalEntry: { firmId: opts.firmId },
+      ...(isAdmin ? {} : { assigneeId: opts.userId }),
+    },
+    include: { journalEntry: { select: { id: true, confidence: true } } },
+    take: 50,
+  });
+
+  const { approvable, skipped } = selectBatchApprovable(
+    tasks.map((t) => ({ id: t.id, confidence: t.journalEntry.confidence })),
+    BATCH_APPROVE_CONFIDENCE_MIN,
+  );
+
+  let approved = 0;
+  let failed = 0;
+  for (const id of approvable) {
+    const task = tasks.find((t) => t.id === id);
+    if (!task) continue;
+    const to = nextStatusForAction(task.stage, "approve");
+    try {
+      await transitionJournal(to, "approve", {
+        firmId: opts.firmId,
+        actor: opts.actor,
+        task,
+        note: `Disetujui batch (confidence ≥ ${Math.round(BATCH_APPROVE_CONFIDENCE_MIN * 100)}%)`,
+      });
+      approved++;
+    } catch {
+      failed++;
+    }
+  }
+
+  return {
+    approved,
+    skipped: skipped.length + failed,
+    threshold: BATCH_APPROVE_CONFIDENCE_MIN,
+  };
+}
+
+/**
  * Pilih assignee untuk stage: user dengan role stage yang punya paling
  * sedikit task pending (load balancing sederhana); null jika tidak ada.
  */

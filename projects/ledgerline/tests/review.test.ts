@@ -1,9 +1,12 @@
 import { describe, expect, it } from "vitest";
 import {
+  batchApproveTasks,
+  BATCH_APPROVE_CONFIDENCE_MIN,
   canTransition,
   JOURNAL_TRANSITIONS,
   nextStatusForAction,
   reviewStageForStatus,
+  selectBatchApprovable,
 } from "@/server/journal-machine";
 import { computeFinalSlaStatus, computeSlaStatus, SLA_TARGETS_MIN } from "@/server/sla";
 
@@ -90,6 +93,41 @@ describe("status tujuan per aksi review", () => {
     expect(nextStatusForAction("SENIOR", "return")).toBe("JUNIOR_REVIEW");
     expect(nextStatusForAction("TAX", "return")).toBe("SENIOR_REVIEW");
     expect(nextStatusForAction("PARTNER", "return")).toBe("TAX_REVIEW");
+  });
+});
+
+describe("EN-06 — batch approve (confidence gate)", () => {
+  it("ambang default 85%", () => {
+    expect(BATCH_APPROVE_CONFIDENCE_MIN).toBe(0.85);
+  });
+
+  it("hanya confidence ≥ ambang yang layak disetujui", () => {
+    const tasks = [
+      { id: "a", confidence: 0.9 },
+      { id: "b", confidence: 0.84 },
+      { id: "c", confidence: 0.85 },
+      { id: "d", confidence: null },
+    ];
+    const { approvable, skipped } = selectBatchApprovable(tasks, 0.85);
+    expect(approvable).toEqual(["a", "c"]);
+    expect(skipped).toEqual(["b", "d"]);
+  });
+
+  it("ambang 0 → semua (termasuk confidence rendah) layak", () => {
+    const tasks = [{ id: "x", confidence: 0.1 }];
+    const { approvable, skipped } = selectBatchApprovable(tasks, 0);
+    expect(approvable).toEqual(["x"]);
+    expect(skipped).toEqual([]);
+  });
+
+  it("list kosong → tidak ada yang layak/skip", () => {
+    const { approvable, skipped } = selectBatchApprovable([], 0.85);
+    expect(approvable).toEqual([]);
+    expect(skipped).toEqual([]);
+  });
+
+  it("batchApproveTasks terdefinisi (orchestrasi via state machine)", () => {
+    expect(typeof batchApproveTasks).toBe("function");
   });
 });
 

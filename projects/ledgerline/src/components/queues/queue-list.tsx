@@ -35,6 +35,9 @@ type QueueTask = {
 
 type QueueResponse = { data: QueueTask[]; summary: Record<string, number>; isAdmin: boolean };
 
+/** EN-06 — ambang batch approve (sinkron dengan server: BATCH_APPROVE_CONFIDENCE_MIN). */
+const BATCH_CONFIDENCE_MIN = 0.85;
+
 function formatDue(dueAt: string): string {
   const due = new Date(dueAt);
   const now = Date.now();
@@ -88,6 +91,51 @@ export function QueueList() {
     }
     void start();
   }, [load]);
+
+  // EN-06: Batch approve — task terpilih (confidence ≥ ambang)
+  const [selected, setSelected] = useState<Set<string>>(new Set());
+  const [batchBusy, setBatchBusy] = useState(false);
+
+  const toggleSelect = useCallback((id: string) => {
+    setSelected((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
+      return next;
+    });
+  }, []);
+
+  const submitBatch = useCallback(async () => {
+    if (selected.size === 0) return;
+    setBatchBusy(true);
+    setFlash(null);
+    try {
+      const res = await fetch("/api/reviews/batch", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ taskIds: [...selected] }),
+      });
+      const json = (await res.json()) as {
+        data?: { approved: number; skipped: number; threshold: number };
+        error?: string;
+      };
+      if (!res.ok) throw new Error(json.error ?? "Batch gagal");
+      const { approved, skipped, threshold } = json.data!;
+      setFlash(
+        skipped > 0
+          ? `✅ ${approved} disetujui · ${skipped} dilewati (confidence < ${Math.round(threshold * 100)}%)`
+          : `✅ ${approved} jurnal disetujui sekaligus`,
+      );
+      setSelected(new Set());
+      setOpenTaskId(null);
+      setNote("");
+      await load();
+    } catch (e) {
+      setFlash(`Gagal: ${(e as Error).message}`);
+    } finally {
+      setBatchBusy(false);
+    }
+  }, [selected, load]);
 
   const grouped = useMemo(() => {
     const map = new Map<string, QueueTask[]>();
@@ -166,6 +214,39 @@ export function QueueList() {
         </div>
       )}
 
+      {/* EN-06: Batch approve bar — muncul saat ada task terpilih */}
+      {selected.size > 0 && (
+        <div className="sticky top-2 z-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-yellow-400/40 bg-slate-900/95 px-4 py-3 shadow-lg backdrop-blur">
+          <p className="text-sm text-slate-200">
+            <span className="font-semibold text-yellow-400">{selected.size}</span> task dipilih · confidence ≥{" "}
+            {Math.round(BATCH_CONFIDENCE_MIN * 100)}%
+          </p>
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              disabled={batchBusy}
+              onClick={() => setSelected(new Set())}
+              className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 disabled:opacity-50"
+            >
+              Batal
+            </button>
+            <button
+              type="button"
+              disabled={batchBusy}
+              onClick={() => void submitBatch()}
+              className="rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-slate-900 hover:bg-yellow-300 disabled:opacity-50"
+            >
+              {batchBusy ? "Memproses…" : `Setujui ${selected.size}`}
+            </button>
+          </div>
+        </div>
+      )}
+
+      <p className="text-xs text-slate-500">
+        💡 Batch approve: centang task dengan confidence ≥ {Math.round(BATCH_CONFIDENCE_MIN * 100)}%, lalu setujui
+        sekaligus — tetap lewat state machine & tercatat di SLA/aktivitas.
+      </p>
+
       {grouped.map(({ stage, tasks }) => (
         <section key={stage}>
           <div className="mb-3 flex items-center gap-3">
@@ -183,6 +264,19 @@ export function QueueList() {
                 <div className="flex flex-wrap items-start justify-between gap-3">
                   <div className="min-w-0">
                     <div className="flex flex-wrap items-center gap-2">
+                      <input
+                        type="checkbox"
+                        aria-label={`Pilih ${task.journalEntry.client.name} — ${task.journalEntry.description}`}
+                        checked={selected.has(task.id)}
+                        disabled={task.journalEntry.confidence < BATCH_CONFIDENCE_MIN}
+                        onChange={() => toggleSelect(task.id)}
+                        title={
+                          task.journalEntry.confidence < BATCH_CONFIDENCE_MIN
+                            ? `Confidence di bawah ambang batch (${Math.round(BATCH_CONFIDENCE_MIN * 100)}%)`
+                            : "Pilih untuk batch approve"
+                        }
+                        className="h-4 w-4 shrink-0 rounded border-slate-600 bg-slate-800 accent-yellow-400 disabled:cursor-not-allowed disabled:opacity-40"
+                      />
                       <span className="font-medium text-slate-100">{task.journalEntry.client.name}</span>
                       {task.urgent && <StatusBadge label="Urgent" tone="danger" />}
                       <StatusBadge
