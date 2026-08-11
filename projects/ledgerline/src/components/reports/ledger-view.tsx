@@ -207,14 +207,32 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
       {report && (
         <>
           <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-            <h2 className="text-sm font-medium text-slate-100">
-              Buku Besar — {report.accountName}{" "}
-              <span className="font-mono text-slate-400">({report.accountCode})</span>
-            </h2>
-            <p className="mt-1 text-xs text-slate-400">
-              {report.clientName} · Periode {report.period} · {report.entries.length} jurnal · Saldo
-              akhir {formatCurrencyRp(report.closingBalance)}
-            </p>
+            <div className="flex flex-wrap items-start justify-between gap-3">
+              <div>
+                <h2 className="text-sm font-medium text-slate-100">
+                  Buku Besar — {report.accountName}{" "}
+                  <span className="font-mono text-slate-400">({report.accountCode})</span>
+                </h2>
+                <p className="mt-1 text-xs text-slate-400">
+                  {report.clientName} · Periode {report.period} · {report.entries.length} jurnal · Saldo
+                  akhir {formatCurrencyRp(report.closingBalance)}
+                </p>
+              </div>
+              <div className="flex gap-2">
+                <a
+                  href={`/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}&format=csv`}
+                  className="rounded-lg border border-slate-700 px-3 py-2 text-sm text-slate-200 transition hover:border-yellow-400/50 hover:text-yellow-300"
+                >
+                  ↓ CSV
+                </a>
+                <a
+                  href={`/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}&format=xlsx`}
+                  className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-300 transition hover:bg-yellow-400/20"
+                >
+                  ↓ XLSX
+                </a>
+              </div>
+            </div>
           </div>
 
           {report.status === "CLOSED" && (

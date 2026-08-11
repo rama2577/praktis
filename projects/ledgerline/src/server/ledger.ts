@@ -279,3 +279,60 @@ function periodEnd(period: string): Date {
 export function periodOf(date: Date): string {
   return `${date.getUTCFullYear()}-${String(date.getUTCMonth() + 1).padStart(2, "0")}`;
 }
+
+// ── Export buku besar (CSV / XLSX) ───────────────────────────────────────────
+
+const escCsv = (v: string | number) => `"${String(v).replace(/"/g, '""')}"`;
+
+export function ledgerCsv(r: LedgerReport): string {
+  const head = ["Tanggal", "Referensi", "Uraian", "Jenis", "Status", "Debit", "Kredit", "Saldo Berjalan"];
+  const out: string[] = [head.map(escCsv).join(",")];
+  for (const e of r.entries) {
+    out.push(
+      [
+        e.entryDate.toISOString().slice(0, 10),
+        e.reference,
+        e.description ?? "",
+        e.journalType,
+        e.status,
+        e.debit.toFixed(2),
+        e.credit.toFixed(2),
+        e.balance.toFixed(2),
+      ]
+        .map(escCsv)
+        .join(","),
+    );
+  }
+  out.push(
+    [escCsv("TOTAL"), "", "", "", "", escCsv(r.totalDebit.toFixed(2)), escCsv(r.totalCredit.toFixed(2)), escCsv(r.closingBalance.toFixed(2))].join(","),
+  );
+  return out.join("\n");
+}
+
+export function ledgerXlsx(r: LedgerReport): Buffer {
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const XLSX = require("xlsx") as typeof import("xlsx");
+  const rows: (string | number)[][] = [
+    ["BUKU BESAR", r.clientName, `Periode ${r.period}`, `Akun ${r.accountCode} — ${r.accountName}`, ""],
+    [],
+    ["Tanggal", "Referensi", "Uraian", "Jenis", "Status", "Debit", "Kredit", "Saldo Berjalan"],
+  ];
+  for (const e of r.entries) {
+    rows.push([
+      e.entryDate.toISOString().slice(0, 10),
+      e.reference,
+      e.description ?? "",
+      e.journalType,
+      e.status,
+      e.debit,
+      e.credit,
+      e.balance,
+    ]);
+  }
+  rows.push(["TOTAL", "", "", "", "", r.totalDebit, r.totalCredit, r.closingBalance]);
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = [{ wch: 12 }, { wch: 16 }, { wch: 44 }, { wch: 12 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 16 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "Buku Besar");
+  return XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
+}

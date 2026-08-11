@@ -3,7 +3,7 @@ import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { withTenantApi } from "@/lib/tenant-api";
-import { getLedger } from "@/server/ledger";
+import { getLedger, ledgerCsv, ledgerXlsx } from "@/server/ledger";
 import { parsePeriod } from "@/server/trial-balance";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -39,5 +39,25 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
   }
 
   const report = await getLedger(client.id, client.name, accountCode.trim(), period);
+
+  const format = searchParams.get("format") ?? "json";
+  if (format === "csv") {
+    return new NextResponse("\uFEFF" + ledgerCsv(report), {
+      headers: {
+        "Content-Type": "text/csv; charset=utf-8",
+        "Content-Disposition": `attachment; filename="buku-besar-${accountCode.trim()}-${period}.csv"`,
+      },
+    });
+  }
+  if (format === "xlsx") {
+    const buffer = ledgerXlsx(report);
+    return new NextResponse(new Uint8Array(buffer), {
+      headers: {
+        "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        "Content-Disposition": `attachment; filename="buku-besar-${accountCode.trim()}-${period}.xlsx"`,
+      },
+    });
+  }
+
   return NextResponse.json({ data: report });
 });
