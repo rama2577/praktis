@@ -15,6 +15,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // PDFKit memakai __dirname node_modules — jangan di-bundle webpack
+  serverExternalPackages: ["pdfkit"],
   // PDFKit font data perlu disertakan di standalone output
   outputFileTracingIncludes: {
     "/api/portal/*": ["./node_modules/pdfkit/js/data/*.afm"],

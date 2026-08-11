@@ -202,12 +202,12 @@ export function CalkView({ clients, period, clientId, setClientId, setPeriod }: 
         <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
         <PeriodInput period={period} setPeriod={setPeriod} />
         <a
-          href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=calk&format=md` : "#"}
-          className={`rounded-lg border border-slate-700 px-3 py-2 text-sm transition ${
-            clientId ? "text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300" : "pointer-events-none opacity-40"
+          href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=calk&format=xlsx` : "#"}
+          className={`rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-300 transition hover:bg-yellow-400/20 ${
+            clientId ? "" : "pointer-events-none opacity-40"
           }`}
         >
-          ↓ Markdown
+          ↓ XLSX
         </a>
         <a
           href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=calk&format=csv` : "#"}
@@ -407,12 +407,20 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
         <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
         <PeriodInput period={period} setPeriod={setPeriod} />
         <a
-          href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=annual&format=md` : "#"}
+          href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=annual&format=pdf` : "#"}
           className={`rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-300 transition hover:bg-yellow-400/20 ${
             clientId ? "" : "pointer-events-none opacity-40"
           }`}
         >
-          ↓ Unduh Dokumen (.md)
+          ↓ Unduh PDF
+        </a>
+        <a
+          href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=annual&format=csv` : "#"}
+          className={`rounded-lg border border-slate-700 px-3 py-2 text-sm transition ${
+            clientId ? "text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300" : "pointer-events-none opacity-40"
+          }`}
+        >
+          ↓ CSV
         </a>
         <Button variant="secondary" onClick={() => window.print()} disabled={!data}>
           🖨 Cetak

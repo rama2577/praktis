@@ -7,9 +7,9 @@ import { getTrialBalance, parsePeriod } from "@/server/trial-balance";
 import { getTaxLines } from "@/server/tax-report";
 import { getClientProfile } from "@/server/client-profile";
 import { buildAnalysis } from "@/server/financial-analysis";
-import { buildCalk, calkMarkdown, calkCsv } from "@/server/calk";
+import { buildCalk, calkCsv, calkXlsx } from "@/server/calk";
 import { buildTaxAnalysis } from "@/server/tax-analysis";
-import { buildAnnualReport, annualReportMarkdown } from "@/server/annual-report";
+import { buildAnnualReport, annualReportPdf, annualReportCsv } from "@/server/annual-report";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -59,11 +59,12 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
 
   if (scope === "calk") {
     const calk = buildCalk(calkInput);
-    if (format === "md") {
-      return new NextResponse(calkMarkdown(calk), {
+    if (format === "xlsx") {
+      const buffer = calkXlsx(calk);
+      return new NextResponse(new Uint8Array(buffer), {
         headers: {
-          "Content-Type": "text/markdown; charset=utf-8",
-          "Content-Disposition": `attachment; filename="calk-${period}.md"`,
+          "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+          "Content-Disposition": `attachment; filename="calk-${period}.xlsx"`,
         },
       });
     }
@@ -93,11 +94,20 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
       depreciationMethod: depMeta._count > 0 ? depMeta._min.method : null,
       assetCount: depMeta._count,
     });
-    if (format === "md") {
-      return new NextResponse(annualReportMarkdown(report), {
+    if (format === "pdf") {
+      const buffer = await annualReportPdf(report);
+      return new NextResponse(new Uint8Array(buffer), {
         headers: {
-          "Content-Type": "text/markdown; charset=utf-8",
-          "Content-Disposition": `attachment; filename="penyampaian-laporan-${period}.md"`,
+          "Content-Type": "application/pdf",
+          "Content-Disposition": `attachment; filename="penyampaian-laporan-${period}.pdf"`,
+        },
+      });
+    }
+    if (format === "csv") {
+      return new NextResponse("\uFEFF" + annualReportCsv(report), {
+        headers: {
+          "Content-Type": "text/csv; charset=utf-8",
+          "Content-Disposition": `attachment; filename="penyampaian-laporan-${period}.csv"`,
         },
       });
     }

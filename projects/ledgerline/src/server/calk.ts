@@ -149,3 +149,26 @@ export function calkCsv(c: Calk): string {
   }
   return out.join("\n");
 }
+
+/** Export CALK sebagai XLSX (satu sheet, kolom Bagian/Isi/Nilai). */
+export function calkXlsx(c: Calk): Buffer {
+  // lazy import agar tidak memuat xlsx di bundle server lain
+  // eslint-disable-next-line @typescript-eslint/no-require-imports
+  const XLSX = require("xlsx") as typeof import("xlsx");
+  const rows: (string | number)[][] = [
+    ["BAGIAN", "ISI", "NILAI"],
+    ["CATATAN ATAS LAPORAN KEUANGAN", `${c.clientName} — Periode yang berakhir ${c.period}`, ""],
+  ];
+  for (const s of c.sections) {
+    const head = `${s.number}. ${s.title}`;
+    if (s.paragraphs.length === 0 && !s.items) continue;
+    rows.push([head, "", ""]);
+    for (const p of s.paragraphs) rows.push(["", p, ""]);
+    for (const it of s.items ?? []) rows.push(["", it.label, it.value]);
+  }
+  const ws = XLSX.utils.aoa_to_sheet(rows);
+  ws["!cols"] = [{ wch: 34 }, { wch: 90 }, { wch: 24 }];
+  const wb = XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb, ws, "CALK");
+  return XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
+}
