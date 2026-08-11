@@ -3,6 +3,8 @@ import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { getClerkMetrics, getFirmMetrics, getQualityMetrics, pct } from "@/server/metrics";
 import type { StatusConfidence, StageBreachRate } from "@/server/metrics";
 import Link from "next/link";
+import { Card, CardHeader } from "@/components/ui/card";
+import { Table, THead, TBody, TR, TH, TD } from "@/components/ui/table";
 
 export const dynamic = "force-dynamic";
 
@@ -105,26 +107,28 @@ export default async function QualityPage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-2">
-        <section className="rounded-xl border border-line bg-card/40 p-5">
-          <h2 className="mb-3 font-medium text-slate-100">Confidence vs Status</h2>
-          <p className="mb-4 text-xs text-slate-500">
-            Rata-rata skor keyakinan AI per status — exception & penolakan seharusnya berkorelasi dengan confidence rendah.
-          </p>
+        <Card>
+          <CardHeader
+            title="Confidence vs Status"
+            description="Rata-rata skor keyakinan AI per status — exception & penolakan seharusnya berkorelasi dengan confidence rendah."
+          />
           <StatusConfidenceBars rows={m.statusConfidence} />
-        </section>
-        <section className="rounded-xl border border-line bg-card/40 p-5">
-          <h2 className="mb-3 font-medium text-slate-100">SLA Breach Rate per Stage</h2>
-          <p className="mb-4 text-xs text-slate-500">Proporsi task yang melewati tenggat dari seluruh event SLA tercatat.</p>
+        </Card>
+        <Card>
+          <CardHeader
+            title="SLA Breach Rate per Stage"
+            description="Proporsi task yang melewati tenggat dari seluruh event SLA tercatat."
+          />
           <BreachBars rows={m.stageBreachRates} />
-        </section>
+        </Card>
       </div>
 
       {/* EN-10: Performa Tim — metrik per clerk & firma */}
-      <section className="rounded-xl border border-trust/20 bg-card/40 p-5">
-        <h2 className="mb-1 font-medium text-slate-100">Performa Tim</h2>
-        <p className="mb-4 text-xs text-slate-500">
-          Metrik per clerk & ringkasan firma — basis untuk evaluasi beban kerja dan kualitas review.
-        </p>
+      <Card className="border-trust/20">
+        <CardHeader
+          title="Performa Tim"
+          description="Metrik per clerk & ringkasan firma — basis untuk evaluasi beban kerja dan kualitas review."
+        />
 
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
@@ -152,48 +156,48 @@ export default async function QualityPage() {
         {clerks.length === 0 ? (
           <p className="text-sm text-slate-400">Belum ada data review per clerk.</p>
         ) : (
-          <div className="overflow-x-auto rounded-lg border border-line">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-slate-800/60 text-xs uppercase tracking-wide text-slate-400">
-                <tr>
-                  <th scope="col" className="px-3 py-2">Clerk</th>
-                  <th scope="col" className="px-3 py-2">Role</th>
-                  <th scope="col" className="px-3 py-2 text-right">Review</th>
-                  <th scope="col" className="px-3 py-2 text-right">Approve</th>
-                  <th scope="col" className="px-3 py-2 text-right">Tolak</th>
-                  <th scope="col" className="px-3 py-2 text-right">Rata-rata</th>
-                  <th scope="col" className="px-3 py-2 text-right">SLA Met</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
+          <div className="overflow-hidden rounded-lg border border-line">
+            <Table>
+              <THead>
+                <TH>Clerk</TH>
+                <TH>Role</TH>
+                <TH className="text-right">Review</TH>
+                <TH className="text-right">Approve</TH>
+                <TH className="text-right">Tolak</TH>
+                <TH className="text-right">Rata-rata</TH>
+                <TH className="text-right">SLA Met</TH>
+              </THead>
+              <TBody>
                 {clerks.map((c) => (
-                  <tr key={c.userId} className="hover:bg-white/5">
-                    <td className="px-3 py-2 font-medium text-slate-200">{c.name}</td>
-                    <td className="px-3 py-2 text-xs text-slate-400">{c.role}</td>
-                    <td className="px-3 py-2 text-right tabular-nums text-slate-300">{c.totalReviews}</td>
-                    <td className="px-3 py-2 text-right tabular-nums text-emerald-300">{c.approved}</td>
-                    <td className="px-3 py-2 text-right tabular-nums text-red-300">{c.rejected}</td>
-                    <td className="px-3 py-2 text-right tabular-nums text-slate-300">
+                  <TR key={c.userId}>
+                    <TD className="font-medium text-slate-200">{c.name}</TD>
+                    <TD className="text-xs text-slate-400">{c.role}</TD>
+                    <TD numeric className="text-right text-slate-300">{c.totalReviews}</TD>
+                    <TD numeric className="text-right text-emerald-300">{c.approved}</TD>
+                    <TD numeric className="text-right text-red-300">{c.rejected}</TD>
+                    <TD numeric className="text-right text-slate-300">
                       {c.avgMinutes === null ? "—" : `${c.avgMinutes} mnt`}
-                    </td>
-                    <td className={`px-3 py-2 text-right tabular-nums ${c.slaRate >= 80 ? "text-emerald-300" : c.slaRate >= 50 ? "text-amber-300" : "text-red-300"}`}>
+                    </TD>
+                    <TD numeric className={`text-right ${c.slaRate >= 80 ? "text-emerald-300" : c.slaRate >= 50 ? "text-amber-300" : "text-red-300"}`}>
                       {c.slaRate}%
-                    </td>
-                  </tr>
+                    </TD>
+                  </TR>
                 ))}
-              </tbody>
-            </table>
+              </TBody>
+            </Table>
           </div>
         )}
-      </section>
+      </Card>
 
-      <section className="rounded-xl border border-line bg-card/40 p-5">
-        <div className="mb-3 flex items-center justify-between">
-          <h2 className="font-medium text-slate-100">Jurnal Exception</h2>
-          <Link href="/dashboard/exceptions" className="text-xs text-yellow-400 hover:underline">
-            Kelola exception →
-          </Link>
-        </div>
+      <Card>
+        <CardHeader
+          title="Jurnal Exception"
+          action={
+            <Link href="/dashboard/exceptions" className="text-xs text-yellow-400 hover:underline">
+              Kelola exception →
+            </Link>
+          }
+        />
         {m.exceptions.length === 0 ? (
           <p className="text-sm text-slate-400">Tidak ada jurnal berstatus exception.</p>
         ) : (
@@ -213,7 +217,7 @@ export default async function QualityPage() {
             ))}
           </ul>
         )}
-      </section>
+      </Card>
     </div>
   );
 }

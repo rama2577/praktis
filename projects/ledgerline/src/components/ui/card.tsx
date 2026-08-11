@@ -1,0 +1,45 @@
+import type { ReactNode } from "react";
+
+/**
+ * EN-07 — Card: surface panel standar.
+ * Pola: `rounded-xl border border-line bg-card/40 p-5` (token design system).
+ */
+export function Card({
+  children,
+  className = "",
+}: {
+  children: ReactNode;
+  className?: string;
+}) {
+  return (
+    <section className={`rounded-xl border border-line bg-card/40 p-5 ${className}`}>
+      {children}
+    </section>
+  );
+}
+
+export function CardHeader({
+  title,
+  description,
+  action,
+  className = "",
+}: {
+  title: ReactNode;
+  description?: ReactNode;
+  action?: ReactNode;
+  className?: string;
+}) {
+  return (
+    <div className={`mb-4 flex items-start justify-between gap-3 ${className}`}>
+      <div>
+        <h2 className="font-medium text-slate-100">{title}</h2>
+        {description && <p className="mt-0.5 text-xs text-slate-500">{description}</p>}
+      </div>
+      {action}
+    </div>
+  );
+}
+
+export function CardBody({ children, className = "" }: { children: ReactNode; className?: string }) {
+  return <div className={className}>{children}</div>;
+}

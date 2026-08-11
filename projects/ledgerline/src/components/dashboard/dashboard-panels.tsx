@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type ReactNode } from "react";
 import {
   Bar,
   BarChart,
@@ -21,6 +21,7 @@ import type {
   WeeklyTrendPoint,
 } from "@/server/dashboard";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { Card, CardHeader } from "@/components/ui/card";
 import { formatRelativeTime } from "@/lib/format";
 
 const POLL_MS = 30_000;
@@ -287,7 +288,28 @@ function QualityExceptionInsights({ data }: { data: ExceptionInsight[] }) {
 
 // ── Panel gabungan dengan polling ────────────────────────────────────────
 
-export function DashboardPanels({ initial }: { initial: OpsData }) {
+/** EN-07 — Fokus section per role (urutan render dashboard). */
+export type DashboardFocus = "junior" | "senior" | "tax" | "partner" | "admin";
+
+const FOCUS_ORDER: Record<DashboardFocus, string[]> = {
+  // Junior: antrian duluan (pekerjaan utamanya)
+  junior: ["pipeline", "activity", "sla", "insight"],
+  // Senior: SLA/kualitas duluan (exception & kepatuhan)
+  senior: ["sla", "pipeline", "insight", "activity"],
+  // Tax: pipeline (stage pajak) + SLA
+  tax: ["pipeline", "sla", "insight", "activity"],
+  // Partner: kepatuhan & tren duluan (KPI ringkas sudah di atas)
+  partner: ["sla", "insight", "confidence", "pipeline", "activity"],
+  admin: ["pipeline", "sla", "activity", "insight"],
+};
+
+export function DashboardPanels({
+  initial,
+  focus = "admin",
+}: {
+  initial: OpsData;
+  focus?: DashboardFocus;
+}) {
   const [data, setData] = useState<OpsData>(initial);
   const [lastSync, setLastSync] = useState<Date>(new Date());
   const [error, setError] = useState<string | null>(null);
@@ -310,26 +332,26 @@ export function DashboardPanels({ initial }: { initial: OpsData }) {
     return () => clearInterval(t);
   }, [refresh]);
 
-  return (
-    <div className="space-y-6">
-      <section className="rounded-xl border border-line bg-card/40 p-5">
-        <div className="mb-4 flex items-center justify-between">
-          <h2 className="font-medium text-slate-100">Pipeline Produksi</h2>
-          <span className="text-xs text-slate-500">
-            {error ? (
-              <button
-                type="button"
-                onClick={() => void refresh()}
-                title="Coba sinkronisasi lagi"
-                className="text-red-400 underline decoration-dotted hover:text-red-300"
-              >
-                {error} — Coba lagi
-              </button>
-            ) : (
-              `auto-refresh · ${lastSync.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
-            )}
-          </span>
-        </div>
+  const syncLabel = error ? (
+    <button
+      type="button"
+      onClick={() => void refresh()}
+      title="Coba sinkronisasi lagi"
+      className="text-red-400 underline decoration-dotted hover:text-red-300"
+    >
+      {error} — Coba lagi
+    </button>
+  ) : (
+    `auto-refresh · ${lastSync.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit", second: "2-digit" })}`
+  );
+
+  const sections: Record<string, ReactNode> = {
+    pipeline: (
+      <Card>
+        <CardHeader
+          title="Pipeline Produksi"
+          action={<span className="text-xs text-slate-500">{syncLabel}</span>}
+        />
         <PipelineViz data={data.pipeline} />
         <div className="mt-5">
           <div className="mb-2 flex items-center justify-between">
@@ -340,37 +362,60 @@ export function DashboardPanels({ initial }: { initial: OpsData }) {
           </div>
           <ReviewQueues data={data.pipeline} />
         </div>
-      </section>
-
-      <div className="grid gap-4 lg:grid-cols-3">
-        <section className="rounded-xl border border-line bg-card/40 p-5 lg:col-span-2">
-          <h2 className="mb-4 font-medium text-slate-100">Monitoring SLA</h2>
-          <SlaPanel data={data.sla} />
-        </section>
-        <section className="rounded-xl border border-line bg-card/40 p-5">
-          <h2 className="mb-2 font-medium text-slate-100">Distribusi Keyakinan AI</h2>
-          <p className="mb-2 text-xs text-slate-500">Skor confidence jurnal aktual</p>
-          <ConfidenceChart data={data.confidence} />
-        </section>
-      </div>
-
-      <section className="rounded-xl border border-line bg-card/40 p-5">
-        <h2 className="mb-1 font-medium text-slate-100">Aktivitas Terbaru</h2>
+      </Card>
+    ),
+    sla: (
+      <Card className="lg:col-span-2">
+        <CardHeader title="Monitoring SLA" />
+        <SlaPanel data={data.sla} />
+      </Card>
+    ),
+    confidence: (
+      <Card>
+        <CardHeader
+          title="Distribusi Keyakinan AI"
+          description="Skor confidence jurnal aktual"
+        />
+        <ConfidenceChart data={data.confidence} />
+      </Card>
+    ),
+    activity: (
+      <Card>
+        <CardHeader title="Aktivitas Terbaru" />
         <ActivityFeed data={data.activity} />
-      </section>
-
-      {/* EN-03: Feedback Loop — Quality Insights */}
-      <section className="rounded-xl border border-emerald-500/20 bg-card/40 p-5">
-        <h2 className="mb-1 font-medium text-slate-100">Insight Kualitas (Feedback Loop)</h2>
-        <p className="mb-4 text-xs text-slate-500">
-          Metrik real-time dari data operasional: exception rate, first-pass, tren mingguan, & alasan pengecualian.
-        </p>
+      </Card>
+    ),
+    insight: (
+      <Card className="border-emerald-500/20">
+        <CardHeader
+          title="Insight Kualitas (Feedback Loop)"
+          description="Metrik real-time dari data operasional: exception rate, first-pass, tren mingguan, & alasan pengecualian."
+        />
         <div className="grid gap-4 lg:grid-cols-3">
           <QualityTrend data={data.trend} />
           <QualityByIndustry data={data.industry} />
           <QualityExceptionInsights data={data.insights} />
         </div>
-      </section>
+      </Card>
+    ),
+  };
+
+  const order = FOCUS_ORDER[focus] ?? FOCUS_ORDER.admin;
+
+  return (
+    <div className="space-y-6">
+      <div className="grid gap-4 lg:grid-cols-3">
+        {order.map((key) => {
+          const node = sections[key];
+          // SLA + Confidence berbagi grid 2+1; sisanya full-width
+          const inGrid = key === "sla" || key === "confidence";
+          return (
+            <div key={key} className={inGrid ? "contents" : "lg:col-span-3"}>
+              {node}
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }
