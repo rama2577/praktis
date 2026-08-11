@@ -56,6 +56,11 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
       {/* Upload */}
       <div className="rounded-xl border border-slate-700 bg-slate-900/40 p-5">
         <h2 className="mb-3 text-sm font-semibold">Upload Dokumen Baru</h2>
+        <p className="mb-3 text-xs leading-relaxed text-slate-400">
+          Selain bukti transaksi, Anda juga dapat mengunggah <strong>dokumen legalitas</strong> (NIB, Akta,
+          NPWP, TDP, SIUP), <strong>struktur organisasi</strong>, atau <strong>artikel</strong> yang memperkuat
+          pemahaman tim akuntan tentang bisnis Anda — dokumen ini diindeks otomatis sebagai pengetahuan klien.
+        </p>
         <form
           action={`/api/portal/${token}/documents`}
           method="POST"
