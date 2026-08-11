@@ -29,6 +29,15 @@ export type DraftResult = {
 
 export type EventKind = "SALES_CREDIT" | "SALES_CASH" | "PURCHASE" | "RECEIPT" | "PAYMENT";
 
+/** Label aturan dalam Bahasa Indonesia (EN-06: tampil saat resolve exception). */
+export const EVENT_RULE_LABELS: Record<EventKind, { label: string; template: string; psakRef: string }> = {
+  SALES_CREDIT: { label: "Penjualan Kredit", template: "T-003", psakRef: "PSAK 72" },
+  SALES_CASH: { label: "Penjualan Tunai", template: "T-001", psakRef: "PSAK 72" },
+  PURCHASE: { label: "Pembelian / Persediaan", template: "T-005", psakRef: "PSAK 14" },
+  RECEIPT: { label: "Penerimaan Piutang", template: "T-004", psakRef: "PSAK 72" },
+  PAYMENT: { label: "Pembayaran Utang", template: "T-005", psakRef: "PSAK 14" },
+};
+
 // ── Parse nominal Rupiah ─────────────────────────────────────────────────
 
 /**

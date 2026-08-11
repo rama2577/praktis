@@ -1,4 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
+import { EVENT_RULE_LABELS } from "@/ai/rule-engine";
 import {
   chatCompletion,
   chatJsonWithFallback,
@@ -154,5 +155,18 @@ describe("stripCodeFence", () => {
   });
   it("teks polos tidak berubah", () => {
     expect(stripCodeFence('{"a":1}')).toBe('{"a":1}');
+  });
+});
+
+describe("EVENT_RULE_LABELS (EN-06)", () => {
+  it("menyediakan label, template, dan referensi PSAK untuk semua event", () => {
+    
+    const kinds = ["SALES_CREDIT", "SALES_CASH", "PURCHASE", "RECEIPT", "PAYMENT"];
+    for (const kind of kinds) {
+      const r = EVENT_RULE_LABELS[kind];
+      expect(r.label.length).toBeGreaterThan(0);
+      expect(r.template).toMatch(/^T-\d{3}$/);
+      expect(r.psakRef).toMatch(/PSAK/);
+    }
   });
 });

@@ -100,7 +100,13 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 - Keyboard-first approve/reject, batch approve hanya confidence tinggi, exception satu layar (dokumen + draft + aturan), shortcut untuk power user — mendukung klaim "5 dtk/jurnal".
 - [x] **Keyboard shortcuts** ✅ (`cd474f2`): A=Setujui, R=Kembalikan, X=Tolak, Esc=Tutup di panel review.
 - [x] **Batch approve (confidence gate)** ✅ — `src/server/journal-machine.ts` (`selectBatchApprovable` pure + `batchApproveTasks`), route `POST /api/reviews/batch` (`withTenantApi` + `requireRoleApi(OPERATIONAL_ROLES)`, 1–50 task, anti-duplicate PENDING, 409 error), UI `queue-list.tsx` (checkbox per task, disabled < 85%, sticky batch bar, flash hasil). Tetap lewat `transitionJournal` per task → SlaEvent + ActivityLog tercatat. Test `tests/review.test.ts` +5 (total 179 hijau). Verifikasi live: 1 task Junior→Senior, flash ✅, SLA MET + REVIEW_APPROVED tercatat.
-- [ ] Exception one-screen (dokumen + draft + aturan dalam satu layar saat resolve)
+- [x] **Exception one-screen** ✅ (`en06-one-screen`) — saat resolve, panel satu layar:
+  dokumen sumber (nama/jenis/ukuran/tanggal + tombol "🔍 Buka dokumen" via route
+  `GET /api/documents/[id]/file`, tenant-scoped, dekripsi AES-256-GCM) · aturan & alasan
+  (label Indonesia + template + referensi PSAK + skor, re-deteksi deterministik via
+  `detectBusinessEvent` + `EVENT_RULE_LABELS` baru) · draft jurnal AI (tabel debit/kredit)
+  · form resolusi. API baru `GET /api/exceptions/[id]` (OPERATIONAL_ROLES, tenant-scoped).
+  Test `EVENT_RULE_LABELS` +1 → 254 hijau; tsc 0; lint 0; build OK; verifikasi live.
 
 ## EN-07 · Design system formal (UI Designer)  ✅ SELESAI
 - Token navy/gold → library komponen (table, badge, status, empty/error/loading); portal klien konsisten tanpa desain ulang; dashboard per role (junior=antrian, senior=exception, partner=KPI).
