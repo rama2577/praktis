@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
+import { withTenantApi } from "@/lib/tenant-api";
 import { parseBankCsv, type BankTransaction } from "@/server/connectors";
 
 /** POST /api/connectors/bank-import — upload CSV bank & parse transaksi. */
-export async function POST(request: Request) {
+export const POST = withTenantApi(async (request) => {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
       transactions: result.transactions.slice(0, 100), // max 100 di respons
     },
   });
-}
+});
 
 function summarize(txs: BankTransaction[]) {
   let masuk = 0;

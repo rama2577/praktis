@@ -3,6 +3,7 @@ import { Role } from "@prisma/client";
 import { requireRoleApi } from "@/lib/rbac";
 import { learnMappingFromText } from "@/server/client-profile";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -10,7 +11,7 @@ type Ctx = { params: Promise<{ id: string }> };
  * POST /api/clients/[id]/profile/learn — belajar mapping dari daftar akun klien
  * (teks hasil upload COA klien). GLM-4-Flash (gratis) → status REVIEW.
  */
-export async function POST(req: Request, ctx: Ctx) {
+export const POST = withTenantApi<Ctx>(async (req, ctx) => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const { id } = await ctx.params;
@@ -35,4 +36,4 @@ export async function POST(req: Request, ctx: Ctx) {
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 422 });
   }
-}
+});

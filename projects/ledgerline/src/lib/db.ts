@@ -11,10 +11,10 @@ function createClient() {
   return base.$extends({
     query: {
       $allModels: {
-        async $allOperations({ model, args, query }) {
+        async $allOperations({ model, operation, args, query }) {
           const firmId = getTenantFirmId();
           if (!firmId) return query(args);
-          return query(applyTenantFilter(model, args, firmId) as typeof args);
+          return query(applyTenantFilter(model, operation, args, firmId) as typeof args);
         },
       },
     },

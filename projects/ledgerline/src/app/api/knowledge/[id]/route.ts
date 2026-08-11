@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { Role } from "@prisma/client";
 import { requireRoleApi } from "@/lib/rbac";
+import { withTenantApi } from "@/lib/tenant-api";
 import { rejectKnowledge } from "@/server/knowledge";
 
 type Ctx = { params: Promise<{ id: string }> };
 
 /** PATCH /api/knowledge/[id] — tolak draf (Senior/Partner/Admin). */
-export async function PATCH(req: Request, ctx: Ctx) {
+export const PATCH = withTenantApi<Ctx>(async (req, ctx) => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const { id } = await ctx.params;
@@ -20,4 +21,4 @@ export async function PATCH(req: Request, ctx: Ctx) {
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 400 });
   }
-}
+});

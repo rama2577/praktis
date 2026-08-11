@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
+import { withTenantApi } from "@/lib/tenant-api";
 import { getConfidenceDistribution, getIndustryBreakdown, getExceptionInsights, getPipelineData, getRecentActivity, getSlaSummary, getWeeklyTrend } from "@/server/dashboard";
 
 /** GET /api/dashboard — pipeline, antrian, SLA, confidence & activity untuk polling ringan (30 dtk). */
-export async function GET() {
+export const GET = withTenantApi(async () => {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const firmId = guard.session.user.firmId;
@@ -18,4 +19,4 @@ export async function GET() {
     getExceptionInsights(firmId),
   ]);
   return NextResponse.json({ data: { pipeline, sla, confidence, activity, industry, trend, insights } });
-}
+});

@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 
 /** GET /api/exceptions — daftar jurnal berstatus EXCEPTION. */
-export async function GET() {
+export const GET = withTenantApi(async () => {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -29,4 +30,4 @@ export async function GET() {
       createdAt: r.createdAt.toISOString(),
     })),
   });
-}
+});

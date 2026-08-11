@@ -3,6 +3,7 @@ import { randomUUID } from "node:crypto";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 import { saveUpload } from "@/lib/storage";
 import { enqueueDocumentProcessing } from "@/lib/queue";
 import { validateUploadFile, sha256Hex } from "@/server/documents";
@@ -18,7 +19,7 @@ const DOC_TYPES: DocumentType[] = ["INVOICE", "BANK_STATEMENT", "RECEIPT"];
  * Field: clientId, docType (INVOICE|BANK_STATEMENT|RECEIPT), file.
  * Rate limit: MAX_UPLOADS_PER_MINUTE per user (Redis fixed window).
  */
-export async function POST(request: Request) {
+export const POST = withTenantApi(async (request) => {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) {
     return NextResponse.json({ error: guard.message }, { status: guard.status });
@@ -112,4 +113,4 @@ export async function POST(request: Request) {
     },
     { status: 201 },
   );
-}
+});

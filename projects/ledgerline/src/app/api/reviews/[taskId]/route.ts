@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
+import { withTenantApi } from "@/lib/tenant-api";
 import { nextStatusForAction, transitionJournal } from "@/server/journal-machine";
 import type { ReviewAction } from "@/server/journal-machine";
 
@@ -13,12 +14,12 @@ const ACTIONS: ReviewAction[] = ["approve", "reject", "return"];
  * Guard: pemilik task (assigneeId) atau ADMIN. Transisi via state machine
  * terpusat (transitionJournal) — tidak ada jalur langsung lain.
  */
-export async function POST(req: Request, { params }: { params: Promise<{ taskId: string }> }) {
+export const POST = withTenantApi<{ params: Promise<{ taskId: string }> }>(async (req, ctx) => {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const user = guard.session.user;
 
-  const { taskId } = await params;
+  const { taskId } = await ctx.params;
   const body = (await req.json().catch(() => ({}))) as { action?: string; note?: string };
   if (!body.action || !ACTIONS.includes(body.action as ReviewAction)) {
     return NextResponse.json({ error: "Aksi tidak valid. Gunakan approve, reject, atau return." }, { status: 400 });
@@ -59,4 +60,4 @@ export async function POST(req: Request, { params }: { params: Promise<{ taskId:
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 409 });
   }
-}
+});

@@ -9,6 +9,7 @@ import {
   upsertClientProfile,
 } from "@/server/client-profile";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -19,7 +20,7 @@ async function loadClientOr404(clientId: string, firmId: string) {
 }
 
 /** GET /api/clients/[id]/profile — profil + hint mapping (staff login). */
-export async function GET(_req: Request, ctx: Ctx) {
+export const GET = withTenantApi<Ctx>(async (_req, ctx) => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR, Role.JUNIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const { id } = await ctx.params;
@@ -27,10 +28,10 @@ export async function GET(_req: Request, ctx: Ctx) {
   if (!client) return NextResponse.json({ error: "Klien tidak ditemukan" }, { status: 404 });
   const profile = await getClientProfile(id);
   return NextResponse.json({ profile, mappingHint: coaMappingHint(profile) });
-}
+});
 
 /** PUT /api/clients/[id]/profile — update manual mapping/aturan (Senior/Partner). */
-export async function PUT(req: Request, ctx: Ctx) {
+export const PUT = withTenantApi<Ctx>(async (req, ctx) => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const { id } = await ctx.params;
@@ -64,10 +65,10 @@ export async function PUT(req: Request, ctx: Ctx) {
     updatedById: guard.session.user.id,
   });
   return NextResponse.json({ profile });
-}
+});
 
 /** PATCH /api/clients/[id]/profile — setujui mapping → READY (Senior/Partner). */
-export async function PATCH(req: Request, ctx: Ctx) {
+export const PATCH = withTenantApi<Ctx>(async (req, ctx) => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const { id } = await ctx.params;
@@ -83,4 +84,4 @@ export async function PATCH(req: Request, ctx: Ctx) {
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 400 });
   }
-}
+});

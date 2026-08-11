@@ -33,15 +33,26 @@ export const TENANT_MODELS = new Set([
 /**
  * Terapkan filter tenant pada args query (murni — bisa diuji tanpa DB).
  * Aturan:
+ * - HANYA operasi baca kolektif / bulk-write (where bebas, non-unique):
+ *   findMany, findFirst, findFirstOrThrow, count, aggregate, groupBy,
+ *   updateMany, deleteMany — aman ditambah `firmId`.
+ * - Operasi singular (findUnique, findUniqueOrThrow, update, delete, upsert)
+ *   TIDAK difilter: `where` hanya menerima field unique/relasi, dan ownership
+ *   sudah diverifikasi manual di route sebelum query dijalankan.
  * - model dengan kolom firmId → tambah `where.firmId` (jika belum ada)
  * - ReviewTask (tanpa firmId) → filter lewat relasi `journalEntry.firmId`
  * - operasi tanpa `where` (mis. create) → args utuh
  * - `where.firmId`/`where.journalEntry` sudah ada → tidak dobel
  */
-export function applyTenantFilter(model: string, args: unknown, firmId: string): unknown {
+export function applyTenantFilter(
+  model: string,
+  operation: string | undefined,
+  args: unknown,
+  firmId: string,
+): unknown {
   if (typeof args !== "object" || args === null) return args;
   const a = args as { where?: Record<string, unknown> };
-  if (!("where" in a)) return args;
+  if (!("where" in a) || !FILTERABLE_OPS.has(operation ?? "")) return args;
 
   const where = a.where ?? {};
   if (TENANT_MODELS.has(model) && !("firmId" in where)) {
@@ -52,3 +63,15 @@ export function applyTenantFilter(model: string, args: unknown, firmId: string):
   }
   return args;
 }
+
+/** Operasi di mana `where` bebas (non-unique) → filter tenant aman. */
+export const FILTERABLE_OPS = new Set([
+  "findMany",
+  "findFirst",
+  "findFirstOrThrow",
+  "count",
+  "aggregate",
+  "groupBy",
+  "updateMany",
+  "deleteMany",
+]);

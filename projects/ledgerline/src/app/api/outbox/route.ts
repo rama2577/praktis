@@ -2,10 +2,11 @@ import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { SYSTEM_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 import { processOutbox } from "@/server/outbox";
 
 /** GET /api/outbox — lihat event pending/gagal (Admin/Partner). */
-export async function GET(request: Request) {
+export const GET = withTenantApi(async (request) => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -23,13 +24,13 @@ export async function GET(request: Request) {
   const failed = await prisma.outboxEvent.count({ where: { status: "FAILED" } });
 
   return NextResponse.json({ data: { events, summary: { pending, failed } } });
-}
+});
 
 /** POST /api/outbox — trigger proses (Admin). */
-export async function POST() {
+export const POST = withTenantApi(async () => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
   const result = await processOutbox();
   return NextResponse.json({ data: result });
-}
+});

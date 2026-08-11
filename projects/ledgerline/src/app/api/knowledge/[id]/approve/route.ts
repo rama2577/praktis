@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { Role } from "@prisma/client";
 import { requireRoleApi } from "@/lib/rbac";
+import { withTenantApi } from "@/lib/tenant-api";
 import { approveKnowledge } from "@/server/knowledge";
 
 type Ctx = { params: Promise<{ id: string }> };
 
 /** POST /api/knowledge/[id]/approve — setujui draf (Senior/Partner/Admin). */
-export async function POST(_req: Request, ctx: Ctx) {
+export const POST = withTenantApi<Ctx>(async (_req, ctx) => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const { id } = await ctx.params;
@@ -16,4 +17,4 @@ export async function POST(_req: Request, ctx: Ctx) {
   } catch (e) {
     return NextResponse.json({ error: (e as Error).message }, { status: 400 });
   }
-}
+});

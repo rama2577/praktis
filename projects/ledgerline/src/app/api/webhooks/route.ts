@@ -2,9 +2,10 @@ import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { SYSTEM_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 
 /** GET /api/webhooks — daftar subscription (Admin/Partner). */
-export async function GET() {
+export const GET = withTenantApi(async () => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -14,10 +15,10 @@ export async function GET() {
   });
 
   return NextResponse.json({ data: subs });
-}
+});
 
 /** POST /api/webhooks — daftarkan webhook baru. */
-export async function POST(request: Request) {
+export const POST = withTenantApi(async (request) => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -39,10 +40,10 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json({ data: sub }, { status: 201 });
-}
+});
 
 /** DELETE /api/webhooks?id=xxx — hapus subscription. */
-export async function DELETE(request: Request) {
+export const DELETE = withTenantApi(async (request) => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -57,4 +58,4 @@ export async function DELETE(request: Request) {
 
   await prisma.webhookSubscription.delete({ where: { id } });
   return NextResponse.json({ message: "Webhook dihapus" });
-}
+});

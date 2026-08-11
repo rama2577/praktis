@@ -1,18 +1,19 @@
 import { NextResponse } from "next/server";
 import { Role } from "@prisma/client";
 import { requireRoleApi } from "@/lib/rbac";
+import { withTenantApi } from "@/lib/tenant-api";
 import { createKnowledgeDraft, listKnowledgeItems } from "@/server/knowledge";
 
 /** GET /api/knowledge — daftar semua versi KB (staff login). */
-export async function GET() {
+export const GET = withTenantApi(async () => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR, Role.JUNIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
   const items = await listKnowledgeItems();
   return NextResponse.json({ items });
-}
+});
 
 /** POST /api/knowledge — buat draf versi baru KB (Senior/Partner/Admin). */
-export async function POST(req: Request) {
+export const POST = withTenantApi(async (req) => {
   const guard = await requireRoleApi([Role.ADMIN, Role.PARTNER, Role.SENIOR]);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -46,4 +47,4 @@ export async function POST(req: Request) {
     createdById: guard.session.user.id,
   });
   return NextResponse.json({ item }, { status: 201 });
-}
+});

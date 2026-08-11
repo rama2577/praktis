@@ -2,20 +2,21 @@ import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { SYSTEM_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 import { listClients, validateClientInput } from "@/server/clients";
 
 /** GET /api/clients — daftar klien (ADMIN/SENIOR) */
-export async function GET() {
+export const GET = withTenantApi(async () => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) {
     return NextResponse.json({ error: guard.message }, { status: guard.status });
   }
   const clients = await listClients(guard.session.user.firmId);
   return NextResponse.json({ data: clients });
-}
+});
 
 /** POST /api/clients — tambah klien (ADMIN/SENIOR) */
-export async function POST(request: Request) {
+export const POST = withTenantApi(async (request) => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) {
     return NextResponse.json({ error: guard.message }, { status: guard.status });
@@ -37,4 +38,4 @@ export async function POST(request: Request) {
   });
 
   return NextResponse.json({ data: client }, { status: 201 });
-}
+});

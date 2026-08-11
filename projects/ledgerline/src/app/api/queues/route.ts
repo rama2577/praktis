@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
+import { withTenantApi } from "@/lib/tenant-api";
 
 /**
  * GET /api/queues — antrian review untuk user yang login.
@@ -9,7 +10,7 @@ import { OPERATIONAL_ROLES } from "@/lib/roles";
  * - ADMIN (dev): semua task PENDING semua stage (akses seluruh alur).
  * Urutan: urgent dulu, lalu createdAt terlama.
  */
-export async function GET() {
+export const GET = withTenantApi(async () => {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -41,4 +42,4 @@ export async function GET() {
   }, {});
 
   return NextResponse.json({ data: tasks, summary, isAdmin });
-}
+});

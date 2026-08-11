@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
+import { withTenantApi } from "@/lib/tenant-api";
 // Dynamic import supaya build tidak crash saat SheetJS missing di edge
 const XLSX = await import("xlsx");
 
@@ -9,7 +10,7 @@ const XLSX = await import("xlsx");
  * Download XLSX template COA + format laporan per industri.
  * Untuk onboarding klien < 15 menit (EN-09).
  */
-export async function GET(request: Request) {
+export const GET = withTenantApi(async (request) => {
   const guard = await requireRoleApi(OPERATIONAL_ROLES);
   if (!guard.ok) return NextResponse.json({ error: guard.message }, { status: guard.status });
 
@@ -55,7 +56,7 @@ export async function GET(request: Request) {
       "Content-Disposition": `attachment; filename="template-onboarding-${industry}.xlsx"`,
     },
   });
-}
+});
 
 type IndustryTemplate = {
   coa: Array<{ clientCode: string; clientName: string; standardCode: string; standardName: string; category: string }>;

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { SYSTEM_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
+import { withTenantApi } from "@/lib/tenant-api";
 import { validateClientInput } from "@/server/clients";
 import type { Industry } from "@prisma/client";
 
@@ -11,13 +12,13 @@ type Params = { params: Promise<{ id: string }> };
  * PATCH /api/clients/[id] — ubah data klien atau ubah status aktif/nonaktif.
  * Body: { name?, industry?, taxId?, status? } — minimal satu field.
  */
-export async function PATCH(request: Request, { params }: Params) {
+export const PATCH = withTenantApi<Params>(async (request, ctx) => {
   const guard = await requireRoleApi(SYSTEM_ROLES);
   if (!guard.ok) {
     return NextResponse.json({ error: guard.message }, { status: guard.status });
   }
 
-  const { id } = await params;
+  const { id } = await ctx.params;
   const client = await prisma.client.findFirst({
     where: { id, firmId: guard.session.user.firmId },
   });
@@ -73,4 +74,4 @@ export async function PATCH(request: Request, { params }: Params) {
   });
 
   return NextResponse.json({ data: updated });
-}
+});
