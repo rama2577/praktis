@@ -28,33 +28,34 @@ const minutesAgo = (m: number) => new Date(NOW.getTime() - m * 60_000);
 const PASSWORD_HASH = bcrypt.hashSync("password123", 10);
 
 type StageTaskMap = Partial<
-  Record<ReviewStage, { status: ReviewTaskStatus; assignee: string; reviewedAt?: Date }>
+  Record<ReviewStage, { status: ReviewTaskStatus; assignee: string; offsetMinutes?: number }>
 >;
 
-// Stage task untuk tiap status jurnal
+// Stage task untuk tiap status jurnal.
+// offsetMinutes = waktu review relatif terhadap createdAt jurnal (konsisten!).
 const STAGE_TASKS: Record<JournalStatus, StageTaskMap | null> = {
   DRAFT: null,
   JUNIOR_REVIEW: { JUNIOR: { status: "PENDING", assignee: "budi" } },
   SENIOR_REVIEW: {
-    JUNIOR: { status: "APPROVED", assignee: "budi", reviewedAt: minutesAgo(160) },
+    JUNIOR: { status: "APPROVED", assignee: "budi", offsetMinutes: 80 },
     SENIOR: { status: "PENDING", assignee: "rina" },
   },
   TAX_REVIEW: {
-    JUNIOR: { status: "APPROVED", assignee: "budi", reviewedAt: minutesAgo(300) },
-    SENIOR: { status: "APPROVED", assignee: "rina", reviewedAt: minutesAgo(200) },
+    JUNIOR: { status: "APPROVED", assignee: "budi", offsetMinutes: 90 },
+    SENIOR: { status: "APPROVED", assignee: "rina", offsetMinutes: 150 },
     TAX: { status: "PENDING", assignee: "sari" },
   },
   PARTNER_APPROVAL: {
-    JUNIOR: { status: "APPROVED", assignee: "budi", reviewedAt: minutesAgo(420) },
-    SENIOR: { status: "APPROVED", assignee: "rina", reviewedAt: minutesAgo(300) },
-    TAX: { status: "APPROVED", assignee: "sari", reviewedAt: minutesAgo(180) },
+    JUNIOR: { status: "APPROVED", assignee: "budi", offsetMinutes: 100 },
+    SENIOR: { status: "APPROVED", assignee: "rina", offsetMinutes: 170 },
+    TAX: { status: "APPROVED", assignee: "sari", offsetMinutes: 240 },
     PARTNER: { status: "PENDING", assignee: "andi" },
   },
   APPROVED: {
-    JUNIOR: { status: "APPROVED", assignee: "budi", reviewedAt: minutesAgo(600) },
-    SENIOR: { status: "APPROVED", assignee: "rina", reviewedAt: minutesAgo(480) },
-    TAX: { status: "APPROVED", assignee: "sari", reviewedAt: minutesAgo(300) },
-    PARTNER: { status: "APPROVED", assignee: "andi", reviewedAt: minutesAgo(120) },
+    JUNIOR: { status: "APPROVED", assignee: "budi", offsetMinutes: 80 },
+    SENIOR: { status: "APPROVED", assignee: "rina", offsetMinutes: 160 },
+    TAX: { status: "APPROVED", assignee: "sari", offsetMinutes: 260 },
+    PARTNER: { status: "APPROVED", assignee: "andi", offsetMinutes: 330 },
   },
   EXCEPTION: null,
   REJECTED: null,
@@ -268,7 +269,11 @@ async function main() {
 
     const tasks = STAGE_TASKS[j.status];
     if (tasks) {
-      for (const [stage, t] of Object.entries(tasks) as Array<[ReviewStage, { status: ReviewTaskStatus; assignee: string; reviewedAt?: Date }]>) {
+      for (const [stage, t] of Object.entries(tasks) as Array<[ReviewStage, { status: ReviewTaskStatus; assignee: string; offsetMinutes?: number }]>) {
+        const reviewedAt =
+          t.offsetMinutes !== undefined
+            ? new Date(j.createdAt.getTime() + t.offsetMinutes * 60_000)
+            : undefined;
         await prisma.reviewTask.create({
           data: {
             journalEntryId: entry.id,
@@ -276,6 +281,12 @@ async function main() {
             assigneeId: users[t.assignee],
             status: t.status,
             urgent: j.urgent ?? false,
+            // Task selesai: createdAt = waktu mulai review (25 mnt sebelum reviewedAt)
+            // → durasi review positif & konsisten dengan metrik (reviewedAt − createdAt).
+            createdAt:
+              t.status === "APPROVED" && reviewedAt
+                ? new Date(reviewedAt.getTime() - 25 * 60_000)
+                : new Date(),
             // Task pending: tenggat ke depan; urgent sengaja lewat 15 mnt (simulasi breach).
             // Task riwayat (sudah di-review): tenggat dihitung dari createdAt jurnal.
             dueAt:
@@ -284,10 +295,27 @@ async function main() {
                   ? new Date(Date.now() - 15 * 60_000)
                   : new Date(Date.now() + SLA_TARGET_MIN[stage] * 60_000)
                 : new Date(j.createdAt.getTime() + SLA_TARGET_MIN[stage] * 60_000),
-            reviewedAt: t.reviewedAt,
+            reviewedAt,
             note: t.status === "APPROVED" ? "Disetujui — sesuai referensi" : null,
           },
         });
+
+        // SLA event per task selesai — ter-link ke jurnal (untuk metrik per clerk)
+        if (t.status === "APPROVED") {
+          const actualMinutes = t.offsetMinutes ?? 0;
+          const targetMinutes = SLA_TARGET_MIN[stage];
+          await prisma.slaEvent.create({
+            data: {
+              firmId: firm.id,
+              journalEntryId: entry.id,
+              stage,
+              targetMinutes,
+              actualMinutes,
+              status: actualMinutes <= targetMinutes ? SlaStatus.MET : SlaStatus.BREACHED,
+              createdAt: new Date(j.createdAt.getTime() + actualMinutes * 60_000),
+            },
+          });
+        }
       }
     }
   }
@@ -303,16 +331,7 @@ async function main() {
     ],
   });
 
-  await prisma.slaEvent.createMany({
-    data: [
-      { firmId: firm.id, stage: ReviewStage.JUNIOR, targetMinutes: 120, actualMinutes: 84, status: SlaStatus.MET },
-      { firmId: firm.id, stage: ReviewStage.SENIOR, targetMinutes: 240, actualMinutes: 168, status: SlaStatus.MET },
-      { firmId: firm.id, stage: ReviewStage.TAX, targetMinutes: 240, actualMinutes: 192, status: SlaStatus.AT_RISK },
-      { firmId: firm.id, stage: ReviewStage.PARTNER, targetMinutes: 120, actualMinutes: 48, status: SlaStatus.MET },
-      { firmId: firm.id, stage: ReviewStage.JUNIOR, targetMinutes: 120, actualMinutes: 152, status: SlaStatus.BREACHED, journalEntryId: null },
-      { firmId: firm.id, stage: ReviewStage.TAX, targetMinutes: 240, actualMinutes: 262, status: SlaStatus.BREACHED, journalEntryId: null },
-    ],
-  });
+  // SLA events sekarang dibuat per task selesai (ter-link ke journalEntryId).
 
   // EN-01: impor 13 file knowledge → KnowledgeItem ACTIVE v1 (idempotent)
   const kbCreated = await seedKnowledgeFromFiles();
