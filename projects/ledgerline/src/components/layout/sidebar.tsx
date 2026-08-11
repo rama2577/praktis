@@ -29,6 +29,7 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
     group: "Analitik",
     items: [
       { label: "Metrik Kualitas", href: "/dashboard/quality", ready: true },
+      { label: "Neraca Percobaan", href: "/dashboard/reports/trial-balance", ready: true },
       { label: "Monitoring SLA", href: "/dashboard/sla", ready: false, task: "Task 10" },
     ],
   },
