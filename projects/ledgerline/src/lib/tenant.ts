@@ -24,10 +24,16 @@ export function getTenantFirmId(): string | null {
 /** Model yang punya kolom `firmId` langsung. */
 export const TENANT_MODELS = new Set([
   "Client",
+  "ClientProfile",
   "Document",
   "JournalEntry",
+  "JournalCorrection",
   "ActivityLog",
   "SlaEvent",
+  "OutboxEvent",
+  "WebhookSubscription",
+  // KnowledgeItem sengaja TIDAK masuk: Knowledge Base = aset platform (global),
+  // bukan data klien — semua firma berbagi standar akuntansi yang sama.
 ]);
 
 /**

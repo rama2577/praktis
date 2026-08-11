@@ -97,6 +97,7 @@ model Firm {
   activities ActivityLog[]
   slaEvents  SlaEvent[]
   corrections JournalCorrection[]
+  outboxEvents OutboxEvent[]
 }
 
 model User {
@@ -370,6 +371,8 @@ enum OutboxStatus {
 
 model OutboxEvent {
   id          String        @id @default(cuid())
+  firmId      String? // tenant pemilik event (nullable utk data legacy; wajib di create baru)
+  clientId    String? // klien terkait event, bila ada
   eventType   String // "journalApproved" | "journalException" | "slaBreach"
   payload     Json
   status      OutboxStatus  @default(PENDING)
@@ -380,8 +383,10 @@ model OutboxEvent {
   processedAt DateTime?
   createdAt   DateTime      @default(now())
 
+  firm          Firm?             @relation(fields: [firmId], references: [id])
   notifications NotificationLog[]
 
+  @@index([firmId, status])
   @@index([status, processAfter])
   @@index([eventType])
 }

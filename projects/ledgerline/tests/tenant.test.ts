@@ -63,4 +63,41 @@ describe("applyTenantFilter (EN-04)", () => {
   it("args non-objek dikembalikan apa adanya", () => {
     expect(applyTenantFilter("Client", "findMany", undefined as never, FIRM)).toBeUndefined();
   });
+
+  it("TENANT_MODELS mencakup semua model data klien ber-firmId (hardening multi-firma)", () => {
+    for (const model of [
+      "Client",
+      "ClientProfile",
+      "Document",
+      "JournalEntry",
+      "JournalCorrection",
+      "ActivityLog",
+      "SlaEvent",
+      "OutboxEvent",
+      "WebhookSubscription",
+    ]) {
+      expect(TENANT_MODELS.has(model)).toBe(true);
+      const out = applyTenantFilter(model, "findMany", { where: {} }, FIRM) as { where: Record<string, unknown> };
+      expect(out.where.firmId).toBe(FIRM);
+    }
+  });
+
+  it("KnowledgeItem tetap global (KB = aset platform, bukan data klien)", () => {
+    expect(TENANT_MODELS.has("KnowledgeItem")).toBe(false);
+    const out = applyTenantFilter("KnowledgeItem", "findMany", { where: { category: "COA" } }, FIRM);
+    expect(out).toEqual({ where: { category: "COA" } });
+  });
+
+  it("ReviewTask & JournalLine & NotificationLog difilter via relasi parent / tidak difilter langsung", () => {
+    // ReviewTask → lewat journalEntry.firmId (sudah ada aturan khusus)
+    const rt = applyTenantFilter("ReviewTask", "findMany", { where: { stage: "JUNIOR_REVIEW" } }, FIRM) as {
+      where: Record<string, unknown>;
+    };
+    expect(rt.where.journalEntry).toEqual({ firmId: FIRM });
+    // JournalLine & NotificationLog tanpa kolom firmId → args tidak diubah (diakses via parent)
+    for (const model of ["JournalLine", "NotificationLog"]) {
+      const args = { where: { id: "x" } };
+      expect(applyTenantFilter(model, "findMany", args, FIRM)).toBe(args);
+    }
+  });
 });

@@ -21,11 +21,15 @@ export async function enqueueOutbox<K extends keyof PraktisEvents>(
   // Emit in-process dulu (untuk listener real-time)
   emit(eventType, payload);
 
-  // Simpan ke outbox untuk persistence
+  // Simpan ke outbox untuk persistence — firmId/clientId diambil dari payload
+  // agar event bisa di-scope per tenant (OutboxEvent masuk TENANT_MODELS).
+  const p = payload as unknown as { firmId?: unknown; clientId?: unknown };
   await prisma.outboxEvent.create({
     data: {
       eventType: eventType as string,
       payload: payload as Record<string, unknown>,
+      firmId: typeof p.firmId === "string" ? p.firmId : null,
+      clientId: typeof p.clientId === "string" ? p.clientId : null,
     },
   });
 }
