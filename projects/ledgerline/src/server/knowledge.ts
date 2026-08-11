@@ -26,6 +26,11 @@ export function knowledgeCategory(name: string): string {
   if (name.includes("materiality")) return "Validasi & Materialitas";
   if (name.includes("industry")) return "Referensi Industri";
   if (name.includes("accounting-skills")) return "Keterampilan Akuntansi";
+  if (name.includes("prinsip") || name.includes("akuntansi-biaya") || name.includes("manajemen-keuangan")) return "Keterampilan Akuntansi";
+  if (name.includes("pajak-indonesia")) return "Peraturan Pajak";
+  if (name.includes("sak-psak")) return "Referensi PSAK";
+  if (name.includes("laporan") || name.includes("format-laporan")) return "Referensi Laporan";
+  if (name.includes("unilever") || name.includes("annual")) return "Referensi Industri";
   return "Lainnya";
 }
 
