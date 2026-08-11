@@ -163,7 +163,7 @@ describe("EVENT_RULE_LABELS (EN-06)", () => {
     
     const kinds = ["SALES_CREDIT", "SALES_CASH", "PURCHASE", "RECEIPT", "PAYMENT"];
     for (const kind of kinds) {
-      const r = EVENT_RULE_LABELS[kind];
+      const r = EVENT_RULE_LABELS[kind as keyof typeof EVENT_RULE_LABELS];
       expect(r.label.length).toBeGreaterThan(0);
       expect(r.template).toMatch(/^T-\d{3}$/);
       expect(r.psakRef).toMatch(/PSAK/);

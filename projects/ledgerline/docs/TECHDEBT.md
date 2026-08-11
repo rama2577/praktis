@@ -55,7 +55,12 @@
 - **TD-14 · Alert SLA breach internal saja** → email/SMTP/Telegram (post-launch DoD). [ ]
 - **TD-15 · Tidak ada backup/restore strategy** (lihat TD-04). [ ]
 - **TD-16 · Seed akun demo `password123`** → ganti/disable sebelum produksi. [ ]
-- **TD-17 · Security headers belum lengkap** → tambah `X-Permitted-Cross-Domain-Policies: none` + `Strict-Transport-Security` (HSTS, hanya NODE_ENV=production) — F0 ✅; **CSP penuh belum** (butuh nonce, risiko break) → lanjutkan di F1. [x] HSTS + X-PCDP · [ ] CSP
+- **TD-17 · Security headers belum lengkap** → F0 ✅ (HSTS + X-PCDP); **SE-05 ✅ CSP penuh** (commit `se05-csp`):
+  - `src/lib/csp.ts` (pure): buildCsp nonce-based — produksi ketat `script-src 'self' 'nonce-…'` (tanpa unsafe-inline/eval), dev longgar untuk HMR (eval + ws://localhost).
+  - `src/middleware.ts` (baru): `x-nonce` acak per request + `Content-Security-Policy`; Next.js otomatis menerapkan nonce ke inline script (verified MATCH header↔body).
+  - next.config: + `Cross-Origin-Opener-Policy: same-origin` · `Cross-Origin-Resource-Policy: same-origin` · `Origin-Agent-Cluster: ?1`.
+  - Directives: default-src/script-src/style-src (unsafe-inline utk next/font)/img-src data: blob:/font-src/connect-src/object-src 'none'/base-uri/form-action/frame-ancestors 'none'.
+  - Test `tests/csp.test.ts` +4 → 258/258; tsc 0; lint 0; build OK. Verifikasi: dev header nonce unik; produksi `next start` — CSP ketat + HSTS + COOP/CORP; dashboard jalan normal (JS hidup, auto-refresh).
 
 ---
 
