@@ -294,3 +294,79 @@ export async function getFirmMetrics(firmId: string): Promise<FirmMetric> {
 }
 
 export { STAGE_LABEL };
+
+// ══════════ F2.5B — Insight koreksi jurnal (A6) ══════════
+
+export type CorrectionInsight = {
+  totalCorrections: number;
+  totalEditedJournals: number;
+  byField: Array<{ field: string; count: number }>;
+  topAccounts: Array<{ accountCode: string; accountName: string; count: number }>;
+  byUser: Array<{ userId: string; name: string; count: number }>;
+};
+
+const FIELD_LABEL: Record<string, string> = {
+  accountCode: "Kode akun",
+  accountName: "Nama akun",
+  debit: "Debit",
+  credit: "Kredit",
+  notes: "Keterangan",
+};
+
+export function correctionFieldLabel(field: string): string {
+  return FIELD_LABEL[field] ?? field;
+}
+
+/**
+ * F2.5B/A6 — akumulasi koreksi reviewer per firma: total koreksi, distribusi
+ * per field, akun paling sering dikoreksi, dan kontributor (reviewer).
+ * Sumber data: JournalCorrection (feedback loop KB, EN-03).
+ */
+export async function getCorrectionInsights(firmId: string): Promise<CorrectionInsight> {
+  const [corrections, accounts, users] = await Promise.all([
+    prisma.journalCorrection.findMany({
+      where: { firmId },
+      select: { field: true, accountCode: true, userId: true, journalEntryId: true },
+    }),
+    prisma.journalLine.findMany({
+      where: { journalEntry: { firmId } },
+      select: { accountCode: true, accountName: true },
+      distinct: ["accountCode"],
+    }),
+    prisma.user.findMany({
+      where: { firmId },
+      select: { id: true, name: true },
+    }),
+  ]);
+
+  const byField = new Map<string, number>();
+  const byAccount = new Map<string, number>();
+  const byUser = new Map<string, number>();
+  const editedJournals = new Set<string>();
+
+  for (const c of corrections) {
+    byField.set(c.field, (byField.get(c.field) ?? 0) + 1);
+    if (c.accountCode) byAccount.set(c.accountCode, (byAccount.get(c.accountCode) ?? 0) + 1);
+    if (c.userId) byUser.set(c.userId, (byUser.get(c.userId) ?? 0) + 1);
+    editedJournals.add(c.journalEntryId);
+  }
+
+  const nameByCode = new Map(accounts.map((a) => [a.accountCode, a.accountName]));
+  const nameById = new Map(users.map((u) => [u.id, u.name]));
+
+  return {
+    totalCorrections: corrections.length,
+    totalEditedJournals: editedJournals.size,
+    byField: [...byField.entries()]
+      .map(([field, count]) => ({ field, count }))
+      .sort((a, b) => b.count - a.count),
+    topAccounts: [...byAccount.entries()]
+      .map(([accountCode, count]) => ({ accountCode, accountName: nameByCode.get(accountCode) ?? "—", count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10),
+    byUser: [...byUser.entries()]
+      .map(([userId, count]) => ({ userId, name: nameById.get(userId) ?? "—", count }))
+      .sort((a, b) => b.count - a.count)
+      .slice(0, 10),
+  };
+}

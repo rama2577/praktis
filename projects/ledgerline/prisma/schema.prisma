@@ -96,6 +96,7 @@ model Firm {
   journals   JournalEntry[]
   activities ActivityLog[]
   slaEvents  SlaEvent[]
+  corrections JournalCorrection[]
 }
 
 model User {
@@ -109,8 +110,9 @@ model User {
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
 
-  firm         Firm         @relation(fields: [firmId], references: [id])
-  reviewTasks  ReviewTask[] @relation("ReviewAssignee")
+  firm         Firm                @relation(fields: [firmId], references: [id])
+  reviewTasks  ReviewTask[]        @relation("ReviewAssignee")
+  corrections  JournalCorrection[] @relation("CorrectionUser")
 
   @@unique([firmId, email])
   @@index([firmId, role])
@@ -172,13 +174,14 @@ model JournalEntry {
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 
-  firm       Firm          @relation(fields: [firmId], references: [id])
-  client     Client        @relation(fields: [clientId], references: [id])
-  document   Document?     @relation(fields: [documentId], references: [id])
+  firm       Firm                @relation(fields: [firmId], references: [id])
+  client     Client              @relation(fields: [clientId], references: [id])
+  document   Document?           @relation(fields: [documentId], references: [id])
   lines      JournalLine[]
   reviewTask ReviewTask[]
   activities ActivityLog[]
   slaEvents  SlaEvent[]
+  corrections JournalCorrection[]
 
   @@index([firmId, status])
   @@index([firmId, clientId])
@@ -216,6 +219,30 @@ model ReviewTask {
 
   @@index([journalEntryId, stage])
   @@index([assigneeId, status])
+}
+
+// ══════════ F2.5B — Koreksi jurnal saat review (feedback KB) ══════════
+// Setiap perubahan baris jurnal oleh reviewer tercatat di sini → sumber data
+// belajar KB (EN-03) + insight "akun paling sering dikoreksi" (A6).
+model JournalCorrection {
+  id             String       @id @default(cuid())
+  firmId         String
+  journalEntryId String
+  userId         String?
+  stage          ReviewStage
+  field          String // "accountCode" | "accountName" | "debit" | "credit" | "notes"
+  accountCode    String? // konteks akun yang dikoreksi (untuk insight A6)
+  before         Json?
+  after          Json?
+  createdAt      DateTime     @default(now())
+
+  firm         Firm          @relation(fields: [firmId], references: [id])
+  journalEntry JournalEntry  @relation(fields: [journalEntryId], references: [id])
+  user         User?         @relation("CorrectionUser", fields: [userId], references: [id])
+
+  @@index([firmId, createdAt])
+  @@index([journalEntryId])
+  @@index([firmId, accountCode])
 }
 
 model ActivityLog {

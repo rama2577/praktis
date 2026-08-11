@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
-import { getClerkMetrics, getFirmMetrics, getQualityMetrics, pct } from "@/server/metrics";
+import { getClerkMetrics, getFirmMetrics, getQualityMetrics, getCorrectionInsights, correctionFieldLabel, pct } from "@/server/metrics";
 import type { StatusConfidence, StageBreachRate } from "@/server/metrics";
 import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -79,6 +79,7 @@ export default async function QualityPage() {
   const m = await getQualityMetrics(session.user.firmId);
   const clerks = await getClerkMetrics(session.user.firmId);
   const firm = await getFirmMetrics(session.user.firmId);
+  const corrections = await getCorrectionInsights(session.user.firmId);
 
   const cards = [
     { label: "Jurnal Total", value: String(m.totalJournals), hint: `${m.approvedCount} disetujui · ${m.rejectedCount} ditolak`, tone: "text-slate-100" },
@@ -216,6 +217,57 @@ export default async function QualityPage() {
               </li>
             ))}
           </ul>
+        )}
+      </Card>
+
+      {/* F2.5B/A6: Akun paling sering dikoreksi — feedback loop KB */}
+      <Card className="border-sky-500/20">
+        <CardHeader
+          title="Akun Paling Sering Dikoreksi"
+          description={`Feedback loop KB — ${corrections.totalCorrections} koreksi dari ${corrections.totalEditedJournals} jurnal tercatat sebagai data belajar (EN-03).`}
+        />
+        {corrections.totalCorrections === 0 ? (
+          <p className="text-sm text-slate-400">
+            Belum ada koreksi. Saat reviewer mengubah baris jurnal di panel review, koreksi otomatis tercatat di sini.
+          </p>
+        ) : (
+          <div className="grid gap-6 lg:grid-cols-2">
+            <div>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Berdasarkan Akun</p>
+              <div className="space-y-2">
+                {corrections.topAccounts.map((a) => (
+                  <div key={a.accountCode} className="flex items-center gap-3 text-sm">
+                    <span className="w-24 shrink-0 font-mono text-xs text-sky-300">{a.accountCode}</span>
+                    <span className="flex-1 truncate text-slate-200">{a.accountName}</span>
+                    <span className="w-16 shrink-0 text-right tabular-nums text-xs text-slate-400">{a.count}×</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div className="space-y-6">
+              <div>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Berdasarkan Field</p>
+                <div className="flex flex-wrap gap-2">
+                  {corrections.byField.map((f) => (
+                    <span key={f.field} className="rounded-full border border-slate-700 bg-slate-800/60 px-2.5 py-1 text-xs text-slate-300">
+                      {correctionFieldLabel(f.field)} · <span className="tabular-nums text-slate-100">{f.count}</span>
+                    </span>
+                  ))}
+                </div>
+              </div>
+              <div>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Reviewer Aktif Mengoreksi</p>
+                <div className="space-y-1.5">
+                  {corrections.byUser.map((u) => (
+                    <div key={u.userId} className="flex items-center justify-between text-sm">
+                      <span className="text-slate-300">{u.name}</span>
+                      <span className="tabular-nums text-xs text-slate-400">{u.count} koreksi</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </Card>
     </div>

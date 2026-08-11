@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { stageBadge, stageLabel, STAGE_ORDER } from "@/components/queues/stage-meta";
+import { JournalLinesEditor } from "@/components/queues/journal-lines-editor";
 import { formatCurrencyRp } from "@/lib/format";
 import { SkeletonList } from "@/components/ui/skeleton";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -29,6 +30,7 @@ type QueueTask = {
       debit: string;
       credit: string;
       psakRef: string;
+      notes?: string | null;
     }>;
   };
 };
@@ -58,6 +60,7 @@ export function QueueList() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [openTaskId, setOpenTaskId] = useState<string | null>(null);
+  const [editTaskId, setEditTaskId] = useState<string | null>(null);
   const [, setAction] = useState<string | null>(null);
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
@@ -173,9 +176,9 @@ export function QueueList() {
     [load, note],
   );
 
-  // EN-06: Keyboard shortcuts — review jurnal tanpa mouse
+  // EN-06: Keyboard shortcuts — review jurnal tanpa mouse (nonaktif saat mode edit)
   useEffect(() => {
-    if (!openTaskId || busy) return;
+    if (!openTaskId || busy || editTaskId) return;
     const handler = (e: KeyboardEvent) => {
       const isTextarea = e.target instanceof HTMLTextAreaElement;
       if (isTextarea && e.key !== "Escape") return;
@@ -188,7 +191,7 @@ export function QueueList() {
     };
     window.addEventListener("keydown", handler);
     return () => window.removeEventListener("keydown", handler);
-  }, [openTaskId, busy, submitAction]);
+  }, [openTaskId, busy, editTaskId, submitAction]);
 
   if (loading) {
     return <SkeletonList rows={3} />;
@@ -299,6 +302,7 @@ export function QueueList() {
                     <button
                       onClick={() => {
                         setOpenTaskId(openTaskId === task.id ? null : task.id);
+                        setEditTaskId(null);
                         setNote("");
                         setAction(null);
                       }}
@@ -306,8 +310,35 @@ export function QueueList() {
                     >
                       {openTaskId === task.id ? "Tutup" : "Review"}
                     </button>
+                    <button
+                      onClick={() => {
+                        setEditTaskId(editTaskId === task.id ? null : task.id);
+                        setOpenTaskId(null);
+                        setNote("");
+                        setAction(null);
+                      }}
+                      className="rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-sm text-sky-300 hover:bg-sky-500/20"
+                    >
+                      {editTaskId === task.id ? "Tutup Edit" : "✏️ Edit"}
+                    </button>
                   </div>
                 </div>
+
+                {editTaskId === task.id && (
+                  <div className="mt-4 space-y-4 border-t border-slate-800 pt-4">
+                    <JournalLinesEditor
+                      taskId={task.id}
+                      initialLines={task.journalEntry.lines}
+                      onSaved={(message) => {
+                        setFlash(message);
+                        setEditTaskId(null);
+                        setOpenTaskId(null);
+                        void load();
+                      }}
+                      onCancel={() => setEditTaskId(null)}
+                    />
+                  </div>
+                )}
 
                 {openTaskId === task.id && (
                   <div className="mt-4 space-y-4 border-t border-slate-800 pt-4">
