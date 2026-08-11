@@ -94,6 +94,7 @@ export function classifyAccount(code: string): AccountClassification {
     case "4":
       return "PENDAPATAN";
     case "5":
+    case "6":
       return "BEBAN";
     default:
       return "LAINNYA";
