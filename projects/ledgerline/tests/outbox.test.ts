@@ -31,6 +31,8 @@ vi.stubGlobal("fetch", mockFetch);
 
 const { enqueueOutbox, processOutbox } = await import("../src/server/outbox");
 const { signPayload } = await import("../src/server/notifications");
+const { emit } = await import("@/lib/events");
+const emitMock = emit as unknown as ReturnType<typeof vi.fn>;
 
 describe("outbox", () => {
   beforeEach(() => {
@@ -84,7 +86,7 @@ describe("outbox", () => {
       processAfter: new Date(0), createdAt: new Date(),
     }]);
     mockWebhook.findMany.mockResolvedValueOnce([]);
-    (await import("@/lib/events")).emit.mockImplementationOnce(() => {
+    emitMock.mockImplementationOnce(() => {
       throw new Error("emit error");
     });
     mockOutbox.update.mockResolvedValueOnce({ id: "e2", status: "FAILED" });

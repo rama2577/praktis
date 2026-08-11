@@ -1,5 +1,8 @@
 import { prisma } from "@/lib/db";
-import type { JournalStatus, ReviewStage } from "@prisma/client";
+import type { JournalStatus, ReviewStage, SlaEvent } from "@prisma/client";
+
+/** Ringkasan SLA yang dipilih untuk metrik. */
+type SlaKey = Pick<SlaEvent, "stage" | "status" | "journalEntryId">;
 
 // ── Pure helpers (unit-testable) ─────────────────────────────────────────
 
@@ -131,3 +134,163 @@ export async function getQualityMetrics(firmId: string): Promise<QualityMetrics>
     })),
   };
 }
+
+// ══════════ EN-10 — Metrik per clerk & per firma ══════════
+
+const STAGE_LABEL: Record<ReviewStage, string> = {
+  JUNIOR: "Junior",
+  SENIOR: "Senior",
+  TAX: "Pajak",
+  PARTNER: "Partner",
+};
+
+/** Rata-rata menit dari durasi; null jika tidak ada data. */
+export function avgMinutes(minutes: number[]): number | null {
+  if (minutes.length === 0) return null;
+  return Math.round((minutes.reduce((a, b) => a + b, 0) / minutes.length) * 10) / 10;
+}
+
+export type ClerkMetric = {
+  userId: string;
+  name: string;
+  email: string;
+  role: ReviewStage | "ADMIN";
+  totalReviews: number;
+  approved: number;
+  rejected: number;
+  returned: number;
+  avgMinutes: number | null;
+  slaMet: number;
+  slaBreached: number;
+  slaRate: number; // 0–100
+};
+
+export type FirmMetric = {
+  totalTasks: number;
+  totalApproved: number;
+  avgReviewMinutes: number | null;
+  avgSlaRate: number | null;
+  perStage: Array<{
+    stage: ReviewStage;
+    label: string;
+    total: number;
+    avgMinutes: number | null;
+    slaRate: number;
+  }>;
+};
+
+/**
+ * Metrik per clerk — siapa yang cepat/lambat, banyak tolak, breach SLA.
+ */
+export async function getClerkMetrics(firmId: string): Promise<ClerkMetric[]> {
+  const [users, tasks, slaEvents] = await Promise.all([
+    prisma.user.findMany({
+      where: { firmId, role: { in: ["JUNIOR", "SENIOR", "TAX", "PARTNER", "ADMIN"] } },
+      select: { id: true, name: true, email: true, role: true },
+    }),
+    prisma.reviewTask.findMany({
+      where: { status: { not: "PENDING" }, journalEntry: { firmId } },
+      select: { id: true, assigneeId: true, journalEntryId: true, stage: true, status: true, reviewedAt: true, createdAt: true, note: true },
+    }),
+    prisma.slaEvent.findMany({
+      where: { firmId },
+      select: { stage: true, status: true, journalEntryId: true },
+    }),
+  ]);
+
+  const slaByKey = new Map<string, SlaKey>();
+  for (const s of slaEvents) {
+    if (s.journalEntryId) slaByKey.set(`${s.journalEntryId}:${s.stage}`, s);
+  }
+
+  return users
+    .map((user): ClerkMetric => {
+      const myTasks = tasks.filter((t) => t.assigneeId === user.id);
+      const durations = myTasks
+        .map((t) => {
+          if (!t.reviewedAt) return null;
+          return (t.reviewedAt.getTime() - t.createdAt.getTime()) / 60_000;
+        })
+        .filter((d): d is number => d !== null);
+
+      const slaMine = myTasks.map((t) => slaByKey.get(`${t.journalEntryId}:${t.stage}`)).filter(Boolean);
+      const slaMet = slaMine.filter((s) => s!.status === "MET").length;
+      const slaBreached = slaMine.filter((s) => s!.status === "BREACHED").length;
+
+      return {
+        userId: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role as ClerkMetric["role"],
+        totalReviews: myTasks.length,
+        approved: myTasks.filter((t) => t.status === "APPROVED").length,
+        rejected: myTasks.filter((t) => t.status === "REJECTED").length,
+        returned: myTasks.filter((t) => t.note !== null && t.status === "APPROVED").length,
+        avgMinutes: avgMinutes(durations),
+        slaMet,
+        slaBreached,
+        slaRate: pct(slaMet, slaMine.length),
+      };
+    })
+    .filter((c) => c.totalReviews > 0 || c.slaBreached > 0)
+    .sort((a, b) => b.totalReviews - a.totalReviews);
+}
+
+/** Metrik agregat firma — ringkasan performa tim. */
+export async function getFirmMetrics(firmId: string): Promise<FirmMetric> {
+  const [tasks, slaEvents] = await Promise.all([
+    prisma.reviewTask.findMany({
+      where: { status: { not: "PENDING" }, journalEntry: { firmId } },
+      select: { id: true, journalEntryId: true, stage: true, status: true, reviewedAt: true, createdAt: true },
+    }),
+    prisma.slaEvent.findMany({
+      where: { firmId },
+      select: { stage: true, status: true, journalEntryId: true },
+    }),
+  ]);
+
+  const slaByKey = new Map<string, SlaKey>();
+  for (const s of slaEvents) {
+    if (s.journalEntryId) slaByKey.set(`${s.journalEntryId}:${s.stage}`, s);
+  }
+
+  const allDurations = tasks
+    .map((t) => {
+      if (!t.reviewedAt) return null;
+      return (t.reviewedAt.getTime() - t.createdAt.getTime()) / 60_000;
+    })
+    .filter((d): d is number => d !== null);
+
+  const stageOrder: ReviewStage[] = ["JUNIOR", "SENIOR", "TAX", "PARTNER"];
+  const perStage = stageOrder.map((stage) => {
+    const stageTasks = tasks.filter((t) => t.stage === stage);
+    const durations = stageTasks
+      .map((t) => {
+        if (!t.reviewedAt) return null;
+        return (t.reviewedAt.getTime() - t.createdAt.getTime()) / 60_000;
+      })
+      .filter((d): d is number => d !== null);
+    const sla = stageTasks.map((t) => slaByKey.get(`${t.journalEntryId}:${t.stage}`)).filter(Boolean);
+    const met = sla.filter((s) => s!.status === "MET").length;
+    return {
+      stage,
+      label: STAGE_LABEL[stage],
+      total: stageTasks.length,
+      avgMinutes: avgMinutes(durations),
+      slaRate: pct(met, sla.length),
+    };
+  });
+
+  const allSla = [...slaByKey.values()];
+  const allMet = allSla.filter((s) => s.status === "MET").length;
+
+  return {
+    totalTasks: tasks.length,
+    totalApproved: tasks.filter((t) => t.status === "APPROVED").length,
+    avgReviewMinutes: avgMinutes(allDurations),
+    avgSlaRate: allSla.length > 0 ? pct(allMet, allSla.length) : null,
+    perStage,
+  };
+}
+
+export { STAGE_LABEL };

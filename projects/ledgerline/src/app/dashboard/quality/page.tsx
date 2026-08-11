@@ -1,6 +1,6 @@
 import { requireRole } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
-import { getQualityMetrics, pct } from "@/server/metrics";
+import { getClerkMetrics, getFirmMetrics, getQualityMetrics, pct } from "@/server/metrics";
 import type { StatusConfidence, StageBreachRate } from "@/server/metrics";
 import Link from "next/link";
 
@@ -75,6 +75,8 @@ function BreachBars({ rows }: { rows: StageBreachRate[] }) {
 export default async function QualityPage() {
   const session = await requireRole(OPERATIONAL_ROLES);
   const m = await getQualityMetrics(session.user.firmId);
+  const clerks = await getClerkMetrics(session.user.firmId);
+  const firm = await getFirmMetrics(session.user.firmId);
 
   const cards = [
     { label: "Jurnal Total", value: String(m.totalJournals), hint: `${m.approvedCount} disetujui · ${m.rejectedCount} ditolak`, tone: "text-slate-100" },
@@ -116,6 +118,74 @@ export default async function QualityPage() {
           <BreachBars rows={m.stageBreachRates} />
         </section>
       </div>
+
+      {/* EN-10: Performa Tim — metrik per clerk & firma */}
+      <section className="rounded-xl border border-trust/20 bg-card/40 p-5">
+        <h2 className="mb-1 font-medium text-slate-100">Performa Tim</h2>
+        <p className="mb-4 text-xs text-slate-500">
+          Metrik per clerk & ringkasan firma — basis untuk evaluasi beban kerja dan kualitas review.
+        </p>
+
+        <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
+          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+            <p className="text-[11px] uppercase tracking-wider text-slate-500">Task Selesai</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-100">{firm.totalTasks}</p>
+          </div>
+          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+            <p className="text-[11px] uppercase tracking-wider text-slate-500">Rata-rata Review</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-100">
+              {firm.avgReviewMinutes === null ? "—" : `${firm.avgReviewMinutes} mnt`}
+            </p>
+          </div>
+          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+            <p className="text-[11px] uppercase tracking-wider text-slate-500">SLA Met</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-400">
+              {firm.avgSlaRate === null ? "—" : `${firm.avgSlaRate.toLocaleString("id-ID")}%`}
+            </p>
+          </div>
+          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+            <p className="text-[11px] uppercase tracking-wider text-slate-500">Disetujui</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-100">{firm.totalApproved}</p>
+          </div>
+        </div>
+
+        {clerks.length === 0 ? (
+          <p className="text-sm text-slate-400">Belum ada data review per clerk.</p>
+        ) : (
+          <div className="overflow-x-auto rounded-lg border border-line">
+            <table className="w-full text-left text-sm">
+              <thead className="bg-slate-800/60 text-xs uppercase tracking-wide text-slate-400">
+                <tr>
+                  <th scope="col" className="px-3 py-2">Clerk</th>
+                  <th scope="col" className="px-3 py-2">Role</th>
+                  <th scope="col" className="px-3 py-2 text-right">Review</th>
+                  <th scope="col" className="px-3 py-2 text-right">Approve</th>
+                  <th scope="col" className="px-3 py-2 text-right">Tolak</th>
+                  <th scope="col" className="px-3 py-2 text-right">Rata-rata</th>
+                  <th scope="col" className="px-3 py-2 text-right">SLA Met</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-line">
+                {clerks.map((c) => (
+                  <tr key={c.userId} className="hover:bg-white/5">
+                    <td className="px-3 py-2 font-medium text-slate-200">{c.name}</td>
+                    <td className="px-3 py-2 text-xs text-slate-400">{c.role}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-slate-300">{c.totalReviews}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-emerald-300">{c.approved}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-red-300">{c.rejected}</td>
+                    <td className="px-3 py-2 text-right tabular-nums text-slate-300">
+                      {c.avgMinutes === null ? "—" : `${c.avgMinutes} mnt`}
+                    </td>
+                    <td className={`px-3 py-2 text-right tabular-nums ${c.slaRate >= 80 ? "text-emerald-300" : c.slaRate >= 50 ? "text-amber-300" : "text-red-300"}`}>
+                      {c.slaRate}%
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </section>
 
       <section className="rounded-xl border border-line bg-card/40 p-5">
         <div className="mb-3 flex items-center justify-between">
