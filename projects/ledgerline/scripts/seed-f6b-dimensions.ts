@@ -33,7 +33,7 @@ async function main() {
 
   let updated = 0;
   for (const j of journals) {
-    const target = targets.find((t) => j.description.includes(t.match));
+    const target = targets.find((t) => j.description?.includes(t.match));
     if (!target) continue;
     for (const l of j.lines) {
       if (l.dimension) continue;

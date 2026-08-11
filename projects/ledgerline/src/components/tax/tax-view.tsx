@@ -25,6 +25,8 @@ const EXPORT_TYPES = [
   { value: "ebupot23", label: "e-Bupot PPh 23" },
   { value: "pph42", label: "PPh 4(2)" },
   { value: "pph21", label: "PPh 21 Masa" },
+  { value: "efaktur-xml", label: "e-Faktur XML" },
+  { value: "ebupot-xml", label: "e-Bupot XML" },
 ];
 
 export function TaxView({ clients }: { clients: { id: string; name: string }[] }) {

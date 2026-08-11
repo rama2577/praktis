@@ -160,6 +160,21 @@ lanjutan. Milestone 6 bisa jalan paralel dengan 1–5.
   SPT 1771 (laba komersial −4.625.000, koreksi aset +791.667); override PPN-OUT-02 tersimpan &
   revert; jurnal APPROVED/FINALIZED saja yang dihitung (DRAFT/TAX_REVIEW tidak).
 
+**Lanjutan ✅ (2026-08-11, commit f5b-xml) — e-Faktur & e-Bupot XML (skema DJP):**
+- `src/server/tax-xml.ts` (pure): `normalizeNpwp` (→16 digit), `objectCodeOf` (PPH23-104 → 104),
+  `buildEfakturXml` (root `<eFaktur versi="4.0">`, per faktur: NPWP/Nama/Alamat/NoFaktur seri
+  `01`+13 digit/TglFaktur/JumlahDpp/JumlahPpn/KeteranganTambahan, escape XML penuh),
+  `buildEBupotXml` (root `<eBupot>`, per bukti potong: npwpPemotong/kodeObjekPajak/masa/tahun/
+  jumlahPenghasilanBruto/tarif (dari TAX_CODE_CATALOG)/pphYangDipotong/keterangan).
+- Export route: tipe baru `efaktur-xml` & `ebupot-xml` (Content-Type application/xml, filename
+  `.xml`); taxCode efektif = override ?? inferTaxCode (baris tanpa override tetap masuk).
+- UI: 2 tombol export tambahan (↓ e-Faktur XML, ↓ e-Bupot XML).
+- Test `tests/tax-xml.test.ts` +8 → **306/306** (34 files); tsc 0; lint 0; build OK.
+- Live Maju Jaya 2026-08: e-Faktur 1 faktur (NPWP 0123456789010000, DPP 2.035.000, PPN 223.850);
+  e-Bupot 1 bukti potong PPh 23 (kode 104, bruto 10.000.000, tarif 2%, PPh 200.000) dari jurnal
+  jasa teknik seed `seed-f5b-pph23.ts`.
+- Integrasi API PJAP tetap tahap lanjut (opsional) — export file siap upload sudah lengkap CSV+XML.
+
 ### F6A · Bank rekonsiliasi (M6)
 - `BankReconciliation` + `ReconciliationItem`; AI saran matching (jumlah/tanggal/lawan);
   aksi match/unmatch; buat jurnal biaya bank; laporan rekonsiliasi.
