@@ -6,8 +6,9 @@ import { saveUpload } from "@/lib/storage";
 import { enqueueDocumentProcessing } from "@/lib/queue";
 import { validateUploadFile, sha256Hex } from "@/server/documents";
 import type { DocumentType } from "@prisma/client";
+import { ALL_DOC_TYPES } from "@/ai/doc-type-map";
 
-const DOC_TYPES: DocumentType[] = ["INVOICE", "BANK_STATEMENT", "RECEIPT"];
+const DOC_TYPES: DocumentType[] = ALL_DOC_TYPES;
 
 type Ctx = { params: Promise<{ token: string }> };
 
@@ -26,7 +27,7 @@ export async function POST(req: Request, ctx: Ctx) {
   const file = form.get("file");
 
   if (!DOC_TYPES.includes(docType as DocumentType)) {
-    return NextResponse.json({ error: "Jenis dokumen harus INVOICE, BANK_STATEMENT, atau RECEIPT" }, { status: 400 });
+    return NextResponse.json({ error: "Jenis dokumen tidak valid." }, { status: 400 });
   }
   if (!(file instanceof File)) {
     return NextResponse.json({ error: "File wajib diunggah" }, { status: 400 });

@@ -32,8 +32,18 @@ enum ClientStatus {
 }
 
 enum DocumentType {
-  INVOICE
+  // Kategori utama (9 jenis) — PRD v2 M2
+  FINANCIAL_STATEMENT
+  GENERAL_JOURNAL
   BANK_STATEMENT
+  PAYABLES_REPORT
+  RECEIVABLES_REPORT
+  INVENTORY_REPORT
+  PAYROLL_REPORT
+  TAX_REPORT
+  OTHER
+  // Legacy (backward-compat, deprecated — M2 menggantikan enum lama)
+  INVOICE
   RECEIPT
 }
 

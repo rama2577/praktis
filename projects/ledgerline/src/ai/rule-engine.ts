@@ -7,6 +7,8 @@
  * koma desimal).
  */
 
+import { DOC_KIND_PREFERENCE } from "@/ai/doc-type-map";
+
 export type RuleLine = {
   accountCode: string;
   accountName: string;
@@ -116,12 +118,22 @@ export function detectBusinessEvent(text: string, docType: string): { kind: Even
     }
   }
 
-  // Prioritas jenis dokumen: invoice → penjualan/pembelian; rekening koran → penerimaan/pembayaran
-  if (docType === "BANK_STATEMENT" && best && (best.kind === "RECEIPT" || best.kind === "PAYMENT")) {
-    return best;
-  }
-  if (docType === "INVOICE" && best && (best.kind === "SALES_CREDIT" || best.kind === "SALES_CASH" || best.kind === "PURCHASE")) {
-    return best;
+  // Prioritas jenis dokumen (F2.5C): pilih rule terbaik DI ANTARA jenis event yang
+  // cocok untuk dokumen tsb (laporan hutang → pembelian; piutang → penjualan;
+  // rekening koran → penerimaan/pembayaran). Fallback ke deteksi umum.
+  const preferred = DOC_KIND_PREFERENCE[docType as keyof typeof DOC_KIND_PREFERENCE] ?? [];
+  if (preferred.length > 0) {
+    let bestPreferred: typeof best = null;
+    for (const rule of EVENT_RULES) {
+      if (!preferred.includes(rule.kind)) continue;
+      const hits = rule.keywords.filter((k) => lower.includes(k)).length;
+      if (hits === 0) continue;
+      const score = hits / rule.keywords.length;
+      if (!bestPreferred || score > bestPreferred.score) {
+        bestPreferred = { kind: rule.kind, template: rule.template, psakRef: rule.psakRef, score };
+      }
+    }
+    if (bestPreferred) return bestPreferred;
   }
 
   return best;

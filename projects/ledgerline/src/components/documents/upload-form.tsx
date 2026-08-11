@@ -2,20 +2,20 @@
 
 import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { ACTIVE_DOC_TYPES, DOC_TYPE_LABELS } from "@/ai/doc-type-map";
 
-const DOC_TYPE_OPTIONS = [
-  { value: "INVOICE", label: "Invoice" },
-  { value: "BANK_STATEMENT", label: "Rekening Koran" },
-  { value: "RECEIPT", label: "Nota / Kwitansi" },
-] as const;
+const DOC_TYPE_OPTIONS = ACTIVE_DOC_TYPES.map((value) => ({
+  value,
+  label: DOC_TYPE_LABELS[value],
+}));
 
 const ACCEPTED = ".pdf,.jpg,.jpeg,.xlsx";
 
-/** Form upload dokumen: drag & drop + pilih jenis dokumen. */
+/** Form upload dokumen: drag & drop + pilih jenis dokumen (9 kategori). */
 export function UploadForm({ clientId }: { clientId: string }) {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [docType, setDocType] = useState<string>("INVOICE");
+  const [docType, setDocType] = useState<string>("BANK_STATEMENT");
   const [fileName, setFileName] = useState<string | null>(null);
   const [dragging, setDragging] = useState(false);
   const [error, setError] = useState<string | null>(null);

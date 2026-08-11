@@ -3,13 +3,8 @@ import { validatePortalToken, getPortalDocuments } from "@/server/portal";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatBytes } from "@/lib/format";
 import { ExportButtons } from "./export-buttons";
-import type { DocumentStatus, DocumentType } from "@prisma/client";
-
-const DOC_TYPE_LABELS: Record<DocumentType, string> = {
-  INVOICE: "Invoice",
-  BANK_STATEMENT: "Rekening Koran",
-  RECEIPT: "Nota / Kwitansi",
-};
+import type { DocumentStatus } from "@prisma/client";
+import { ACTIVE_DOC_TYPES, DOC_TYPE_LABELS } from "@/ai/doc-type-map";
 
 const STATUS_LABELS: Record<DocumentStatus, string> = {
   PENDING: "Menunggu",
@@ -56,11 +51,14 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
         >
           <select
             name="docType"
+            defaultValue="BANK_STATEMENT"
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
           >
-            <option value="INVOICE">Invoice</option>
-            <option value="BANK_STATEMENT">Rekening Koran</option>
-            <option value="RECEIPT">Nota / Kwitansi</option>
+            {ACTIVE_DOC_TYPES.map((value) => (
+              <option key={value} value={value}>
+                {DOC_TYPE_LABELS[value]}
+              </option>
+            ))}
           </select>
           <input
             type="file"

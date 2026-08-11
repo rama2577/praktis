@@ -10,9 +10,10 @@ import { validateUploadFile, sha256Hex } from "@/server/documents";
 import { isRateLimited, MAX_UPLOADS_PER_MINUTE, rateLimitKey } from "@/lib/rate-limit";
 import { getRedis } from "@/lib/redis";
 import { logger } from "@/lib/logger";
+import { ALL_DOC_TYPES } from "@/ai/doc-type-map";
 import type { DocumentType } from "@prisma/client";
 
-const DOC_TYPES: DocumentType[] = ["INVOICE", "BANK_STATEMENT", "RECEIPT"];
+const DOC_TYPES: DocumentType[] = ALL_DOC_TYPES;
 
 /**
  * POST /api/documents — upload dokumen klien (multipart/form-data).
@@ -57,7 +58,7 @@ export const POST = withTenantApi(async (request) => {
   }
   if (!DOC_TYPES.includes(docType as DocumentType)) {
     return NextResponse.json(
-      { errors: { docType: "Jenis dokumen harus INVOICE, BANK_STATEMENT, atau RECEIPT." } },
+      { errors: { docType: "Jenis dokumen tidak valid. Pilih salah satu kategori yang tersedia." } },
       { status: 400 },
     );
   }

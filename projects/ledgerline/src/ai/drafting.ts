@@ -1,9 +1,10 @@
 import { readFile } from "node:fs/promises";
 import path from "node:path";
-import type { Industry } from "@prisma/client";
+import type { DocumentType, Industry } from "@prisma/client";
 import { chatJsonWithFallback, isLLMConfigured } from "@/ai/llm";
 import { buildDraftJournal, type DraftResult, type RuleLine } from "@/ai/rule-engine";
 import { validateDraftLines } from "@/ai/validation";
+import { journalHintForDocType } from "@/ai/doc-type-map";
 
 const KB_DIR = path.join(process.cwd(), "src", "ai", "knowledge");
 
@@ -51,6 +52,8 @@ async function draftWithLLM(opts: {
   docType: string;
   coaMappingHint?: string | null;
 }): Promise<DraftResult | null> {
+  const docHint =
+    journalHintForDocType(opts.docType as DocumentType) ?? { kind: null, template: null, hint: "" };
   const [templates, businessEvents, taxPpn, coa] = await Promise.all([
     loadKnowledgeFile("journal-templates.md"),
     loadKnowledgeFile("business-events.md"),
@@ -97,7 +100,11 @@ RESPONS (JSON saja):
   // jika flash gagal network/parse — lihat chatJsonWithFallback.
   const { json } = await chatJsonWithFallback({
     system,
-    user: `Jenis dokumen: ${opts.docType}\nIndustri klien: ${opts.industry}\n\nISI DOKUMEN:\n${opts.text.slice(0, 8000)}`,
+    user: `Jenis dokumen: ${opts.docType}
+Industri klien: ${opts.industry}
+Panduan penyusunan jurnal untuk jenis ini: ${docHint.hint}
+
+ISI DOKUMEN:\n${opts.text.slice(0, 8000)}`,
     timeoutMs: 90_000,
   });
 

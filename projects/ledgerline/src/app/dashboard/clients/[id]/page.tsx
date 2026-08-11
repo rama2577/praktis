@@ -6,15 +6,10 @@ import { UploadForm } from "@/components/documents/upload-form";
 import { ClientProfilePanel } from "@/components/clients/client-profile-panel";
 import { formatBytes } from "@/lib/format";
 import Link from "next/link";
-import { Role, type DocumentStatus, type DocumentType } from "@prisma/client";
+import { Role, type DocumentStatus } from "@prisma/client";
+import { DOC_TYPE_LABELS } from "@/ai/doc-type-map";
 
 const PROFILE_EDITORS: Role[] = [Role.ADMIN, Role.PARTNER, Role.SENIOR];
-
-const DOC_TYPE_LABELS: Record<DocumentType, string> = {
-  INVOICE: "Invoice",
-  BANK_STATEMENT: "Rekening Koran",
-  RECEIPT: "Nota / Kwitansi",
-};
 
 const STATUS_TONE: Record<DocumentStatus, "neutral" | "accent" | "positive" | "danger"> = {
   PENDING: "neutral",
