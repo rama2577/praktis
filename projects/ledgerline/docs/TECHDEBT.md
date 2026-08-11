@@ -48,7 +48,7 @@
 
 ## 🟡 Ringan
 
-- **TD-10 · CI belum pernah benar-benar jalan** (belum push ke GitHub) → workflow diperbarui (TEST_PASSWORD env, step audit, step e2e-isolation) & semua langkah terverifikasi lokal; **butuh push ke GitHub** untuk eksekusi nyata. [x] verifikasi lokal · [ ] push & hijau di GitHub
+- **TD-10 · CI belum pernah benar-benar jalan** (belum push ke GitHub) → workflow diperbarui (TEST_PASSWORD env, step audit, step e2e-isolation) & semua langkah terverifikasi lokal; **butuh push ke GitHub** untuk eksekusi nyata. [x] verifikasi lokal · [ ] push & hijau di GitHub — ✅ SELESAI 2026-08-11 (github.com/rama2577/praktis, push -u origin main)
 - **TD-11 · Tooling deck nyasar di repo app** (`screenshot-mockups.ts`, `playwright.config.ts`) → pindah ke `projects/praktis-deck`. [ ]
 - **TD-12 · Playwright hardcode `channel: "chrome"`** → dokumentasikan/pinned headless shell. [ ]
 - **TD-13 · Coverage UI = 0** → **component tests ✅**: `tests/status-badge.test.tsx` (5 + 5) + `tests/empty-state.test.tsx` (5) + `tests/queue-list.test.tsx` (3) + `tests/kpi-cards.test.tsx` (9) = **22 component tests**, total 151/151. Lanjutan: dashboard-panels → post-launch. [x] status-badge · [x] empty-state · [x] queue-list · [x] kpi-cards · [ ] dashboard-panels
