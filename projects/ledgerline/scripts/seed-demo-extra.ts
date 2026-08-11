@@ -8,7 +8,7 @@
  * Idempotent — aman dijalankan berulang (juga setelah re-seed).
  * Jalankan: npx tsx scripts/seed-demo-extra.ts
  */
-import { PrismaClient, ProfileStatus } from "@prisma/client";
+import { PrismaClient, ProfileStatus, Prisma } from "@prisma/client";
 
 const prisma = new PrismaClient();
 
@@ -33,9 +33,9 @@ async function main() {
     client: typeof maju;
     mappingStatus: ProfileStatus;
     sourcePeriod: string;
-    coaMapping: Record<string, { accountCode: string; accountName: string; note?: string }>;
-    reportTemplates: Record<string, unknown>;
-    rules: Record<string, unknown>;
+    coaMapping: Prisma.InputJsonValue;
+    reportTemplates: Prisma.InputJsonValue;
+    rules: Prisma.InputJsonValue;
   }> = [
     {
       client: maju,

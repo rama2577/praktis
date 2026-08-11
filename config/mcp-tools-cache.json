@@ -1,20 +1,11 @@
 {
-  "generatedAt": "2026-08-07T04:06:53.635Z",
+  "generatedAt": "2026-08-10T05:13:06.078Z",
   "counts": {
     "ok": 0,
     "auth": 0,
     "offline": 0,
     "http": 0,
-    "error": 1
+    "error": 0
   },
-  "servers": [
-    {
-      "name": "autoclaw-productivity",
-      "status": "error",
-      "durationMs": 12,
-      "transport": "HTTP http://127.0.0.1:19681/mcp",
-      "error": "SSE error: Unable to connect. Is the computer able to access the url?",
-      "tools": []
-    }
-  ]
+  "servers": []
 }

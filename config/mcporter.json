@@ -1,10 +1,4 @@
 {
-  "mcpServers": {
-    "autoclaw-productivity": {
-      "enabled": true,
-      "type": "streamablehttp",
-      "url": "http://127.0.0.1:19681/mcp"
-    }
-  },
+  "mcpServers": {},
   "imports": []
 }

@@ -1,0 +1,107 @@
+{{Short description|Open-source autonomous AI assistant software}}
+ 
+{{Use mdy dates|date=January 2026}}
+{{Infobox software
+| name = OpenClaw
+| logo = [[File:Openclaw-logo-text-dark.svg|frameless|upright=1.1|class=skin-invert]]
+| screenshot = 
+| caption = 
+| other_names = OpenClaw (Jan 30, 2026)<br>
+Moltbot (Jan 27, 2026)<br>
+Clawdbot (Jan 2, 2026)<br>
+CLAWDIS (Dec 3, 2025)<br>
+Warelay (original, Nov 24, 2025)
+| developer = OpenClaw Foundation, [[Peter Steinberger (programmer)|Peter Steinberger]]
+| released = {{start date and age|2025|11|24}} (as Warelay)
+| latest_release_version = <!-- Add version when available -->
+| latest_release_date = <!-- Add date when available -->
+| programming_language = [[TypeScript]]<br>[[Swift (programming language)|Swift]]
+| operating_system = Cross-platform
+| platform = 
+| genre = [[AI agent]]<br>[[Autonomous agent]]<br>Autonomous personal<br>assistant
+| license = [[MIT License]]
+| repo = {{URL|https://github.com/openclaw/openclaw}}
+| website = {{URL|https://openclaw.ai/}}
+}}
+
+'''OpenClaw''' is a [[Free and open-source software|free and open-source]] [[autonomous agent|autonomous]] [[artificial intelligence]] [[AI agent|agent]] that can execute tasks via [[large language model]]s (LLMs), using [[Instant messaging|messaging platforms]] as its main [[user interface]].
+
+== History ==
+[[File:Peter Steinberger and Tomas Taylor at ClawCon 2026.jpg|thumb|alt=Two men sitting in folding chairs in a backstage area. One man wears a green shirt and a black baseball cap; the other wears a black t-shirt and holds a silver can. Wallpaper with various faces is visible in the background.|[[Peter Steinberger (programmer)|Peter Steinberger]] (right) and co-host Tomas Taylor (left) backstage at ClawCon in San Francisco, February 4, 2026]]
+
+Developed by Austrian [[programmer]] turned [[Vibe coding|vibe coder]] [[Peter Steinberger (programmer)|Peter Steinberger]]<ref name="Steinberger" />, OpenClaw was first published in November 2025 under the name Warelay. The software was derived from Clawd (now Molty), an AI-based virtual assistant that he had developed, which itself was named after [[Anthropic]]'s chatbot [[Claude (language model)|Claude]].<ref name="Heim-2026">{{Cite web |last=Heim |first=Anna |date=2026-01-28 |title=Everything you need to know about viral personal AI assistant Clawdbot (now Moltbot) |url=https://techcrunch.com/2026/01/27/everything-you-need-to-know-about-viral-personal-ai-assistant-clawdbot-now-moltbot/ |access-date=2026-02-05 |website=TechCrunch |language=en-US}}</ref>  Within two months it was renamed twice: first to "Moltbot" (keeping with a [[lobster]] theme) on January 27, 2026, following [[trademark]] complaints by Anthropic, and then three days later to "OpenClaw" because Steinberger found that the name Moltbot "never quite rolled off the tongue."<ref name="Butts-2026">{{Cite web |last1=Butts |first1=Dylan |date=2026-02-02 |title=From Clawdbot to Moltbot to OpenClaw: Meet the AI agent generating buzz and fear globally |url=https://www.cnbc.com/2026/02/02/openclaw-open-source-ai-agent-rise-controversy-clawdbot-moltbot-moltbook.html |access-date=2026-02-05 |website=[[CNBC]] |publisher= |language=en |last2=Chin |first2=Matthew |archive-date=February 3, 2026 |archive-url=https://web.archive.org/web/20260203150511/https://www.cnbc.com/2026/02/02/openclaw-open-source-ai-agent-rise-controversy-clawdbot-moltbot-moltbook.html |url-status=live }}</ref><ref>{{Cite web |last=Forlini |first=Emily |date=2026-02-02 |title=OpenClaw Is the Hot New AI Agent, But Is It Safe to Use? |url=https://www.pcmag.com/news/openclaw-is-the-hot-new-ai-agent-but-is-it-safe-to-use?test_uuid=04IpBmWGZleS0I0J3epvMrC&test_variant=B |access-date=2026-02-05 |website=PCMAG |language=en |archive-date=February 15, 2026 |archive-url=https://web.archive.org/web/20260215112716/https://www.pcmag.com/news/openclaw-is-the-hot-new-ai-agent-but-is-it-safe-to-use?test_variant=B&test_uuid=04IpBmWGZleS0I0J3epvMrC |url-status=live }}</ref>
+
+At the same time as the first rebranding, entrepreneur Matt Schlicht launched [[Moltbook]], a [[social networking service]] which was intended to be used by AI agents such as OpenClaw.<ref>{{cite news |last1=Field |first1=Hayden |title=Humans are infiltrating the social network for AI bots |url=https://www.theverge.com/ai-artificial-intelligence/872961/humans-infiltrating-moltbook-openclaw-reddit-ai-bots |access-date=19 February 2026 |work=The Verge |date=3 February 2026 |archive-date=February 16, 2026 |archive-url=https://web.archive.org/web/20260216230046/https://www.theverge.com/ai-artificial-intelligence/872961/humans-infiltrating-moltbook-openclaw-reddit-ai-bots |url-status=live }}</ref><ref>{{cite news |last1=Gault |first1=Matthew |title=Exposed Moltbook Database Let Anyone Take Control of Any AI Agent on the Site |url=https://www.404media.co/exposed-moltbook-database-let-anyone-take-control-of-any-ai-agent-on-the-site/ |access-date=19 February 2026 |work=404 Media |date=1 February 2026 |language=en |url-access=subscription}}</ref><ref name="Wired_Rogers">{{cite magazine |last=Rogers |first=Reece |date=February 3, 2026 |title=I Infiltrated Moltbook, the AI-Only Social Network Where Humans Aren't Allowed |url=https://www.wired.com/story/i-infiltrated-moltbook-ai-only-social-network/ |access-date=February 4, 2026 |magazine=[[Wired (magazine)|Wired]] |publisher= |archive-date=February 3, 2026 |archive-url=https://web.archive.org/web/20260203235541/https://www.wired.com/story/i-infiltrated-moltbook-ai-only-social-network/ |url-status=live }}</ref> The viral popularity of Moltbook coincided with an increase in interest in the project, with the open-source project having 247,000 stars and 47,700 [[Fork (software development)|forks]] on [[GitHub]] as of March 2, 2026.<ref>{{Cite web |title=GitHub – openclaw/openclaw: Your own personal AI assistant. Any OS. Any Platform. The lobster way. 🦞 |url=https://github.com/openclaw/openclaw |archive-url=https://web.archive.org/web/20260302143523/https://github.com/openclaw/openclaw |archive-date=2026-03-02 |access-date=2026-03-02 |website=GitHub |language=en}}</ref> Some Chinese developers have adapted OpenClaw to work with the [[DeepSeek (chatbot)|DeepSeek]] family of models and domestic messaging [[super app]]s such as [[WeChat]],<ref name="Butts-2026" /><ref name=":0">{{Cite web |last1=Cheng |first1=Evelyn |last2=Butts |first2=Dylan |date=2026-03-12 |title=Lobster buffet: China's tech firms feast on OpenClaw as companies race to deploy AI agents |url=https://www.cnbc.com/2026/03/12/china-openclaw-ai-agent-adoption-tech-companies-government-support-lobster-shrimp.html |access-date=2026-03-13 |website=CNBC |language=en}}</ref> while companies such as [[Tencent]] and [[Z.ai]] have announced OpenClaw-based services.<ref name=":0" />
+
+On February 14, 2026, Steinberger announced he would be joining [[OpenAI]], and that a non-profit foundation named OpenClaw Foundation would be established to provide future stewardship of the project.<ref name="Steinberger_joins_OpenAI">{{Cite web |last=Ha |first=Anthony |date=2026-02-15 |title=OpenClaw creator Peter Steinberger joins OpenAI |url=https://techcrunch.com/2026/02/15/openclaw-creator-peter-steinberger-joins-openai/ |access-date=2026-02-15 |website=TechCrunch |language=en-US |archive-date=February 16, 2026 |archive-url=https://web.archive.org/web/20260216045738/https://techcrunch.com/2026/02/15/openclaw-creator-peter-steinberger-joins-openai/ |url-status=live }}</ref>
+
+== Functionality ==
+Steinberger describes OpenClaw as being an AI-based [[virtual assistant]],<ref name="Heim-2026" /> serving as an agentic interface for [[autonomous agent|autonomous]] workflows across supported services. OpenClaw bots run locally and are designed to integrate with an external [[large language model]] such as Claude, DeepSeek, or one of OpenAI's GPT models. Its functionality is accessed via a [[chatbot]] within a [[Instant messaging|messaging]] service, such as [[Signal (software)|Signal]], [[Telegram (software)|Telegram]], [[Discord]], or [[WhatsApp]]. Configuration data and interaction history are stored locally, enabling persistent and adaptive behavior across sessions.<ref name="Wired_Rogers" /><ref name="Butts-2026" /><ref>{{Cite web |date=January 29, 2026 |title=OpenClaw: The viral "space lobster" agent testing the limits of vertical integration |url=https://www.ibm.com/think/news/clawdbot-ai-agent-testing-limits-vertical-integration |access-date=February 3, 2026 |website=IBM Think |language=en |archive-date=January 31, 2026 |archive-url=https://web.archive.org/web/20260131103953/https://www.ibm.com/think/news/clawdbot-ai-agent-testing-limits-vertical-integration |url-status=live }}</ref>
+
+OpenClaw uses a skills system that explains how to accomplish specific tasks, in particular how to call tools. Skills are stored as directories containing a <code>SKILL.md</code> file with metadata and instructions. Skills can be bundled with the software, installed globally, or stored in a workspace, with workspace skills taking precedence.<ref>{{cite web |title=OpenClaw skills: consistent tool use at scale |url=https://clawdguy.com/blog/skills |website=Clawdguy |access-date=11 March 2026}}</ref><ref>{{cite web |title=Skills |url=https://docs.openclaw.ai/tools/skills |website=OpenClaw Documentation |access-date=20 May 2026}}</ref>
+
+OpenClaw has seen adoption among small businesses and freelancers for automating lead generation workflows, including prospect research, website auditing, and CRM integration. <ref name="Steinberger">{{Cite web |last=Steinberger |first=Peter |title=About {{!}} Peter Steinberger|url=https://steipete.me/about |access-date=2026-02-16 |website=steipete.me |language=en |archive-date=February 18, 2026 |archive-url=https://web.archive.org/web/20260218204658/https://steipete.me/about |url-status=live }}</ref>
+
+== Security and privacy ==
+OpenClaw's design has drawn scrutiny from cybersecurity researchers and technology journalists due to the broad permissions it requires to function effectively. Because the software can access email accounts, calendars, messaging platforms, and other sensitive services, misconfigured or exposed instances present security and privacy risks.<ref name="Axios" /><ref name="Wired_Rogers" /> The agent is also susceptible to [[prompt injection]] attacks, in which harmful instructions are embedded in the data with the intent of getting the LLM to interpret them as legitimate user instructions.<ref name="Axios">{{cite news |title=Moltbot highlights cybersecurity risks of autonomous AI agents |url=https://www.axios.com/2026/01/29/moltbot-cybersecurity-ai-agent-risks |work=Axios |date=January 29, 2026 |access-date=January 29, 2026 |last=Sabin |first=Sam |archive-date=January 31, 2026 |archive-url=https://web.archive.org/web/20260131215721/https://www.axios.com/2026/01/29/moltbot-cybersecurity-ai-agent-risks |url-status=live }}</ref>
+
+Cisco's AI security research team tested a third-party OpenClaw skill and found it performed data exfiltration and prompt injection without user awareness, noting that the skill repository lacked adequate vetting to prevent malicious submissions.<ref>{{Cite web |last1=Chang |first1=Amy |last2=Narajala |first2=Vineeth Sai |date=2026-01-28 |title=Personal AI Agents like OpenClaw Are a Security Nightmare |url=https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare |access-date=2026-02-09 |website=Cisco Blogs |archive-date=February 10, 2026 |archive-url=https://web.archive.org/web/20260210111313/https://blogs.cisco.com/ai/personal-ai-agents-like-openclaw-are-a-security-nightmare |url-status=live }}</ref> One of OpenClaw's own maintainers, known as Shadow, warned on Discord that "if you can't understand how to run a command line, this is far too dangerous of a project for you to use safely."<ref>{{Cite web |last=Heim |first=Anna |date=2026-01-30 |title=OpenClaw's AI assistants are now building their own social network |url=https://techcrunch.com/2026/01/30/openclaws-ai-assistants-are-now-building-their-own-social-network/ |access-date=2026-02-09 |website=TechCrunch |language=en-US |archive-date=February 4, 2026 |archive-url=https://web.archive.org/web/20260204233819/https://techcrunch.com/2026/01/30/openclaws-ai-assistants-are-now-building-their-own-social-network/ |url-status=live }}</ref>
+
+In March 2026, Chinese authorities restricted state-run enterprises and government agencies from running OpenClaw AI apps on office computers in order to defuse potential security risks.<ref>{{Cite web |date=2026-03-11 |title=China moves to curb OpenClaw AI use at banks, state agencies |url=https://www.businesstimes.com.sg/companies-markets/banking-finance/china-moves-curb-openclaw-ai-use-banks-state-agencies |access-date=2026-03-13 |website=The Business Times |language=en}}</ref> 
+
+=== MoltMatch dating-profile incident ===
+In February 2026, news coverage highlighted a consent-related incident involving OpenClaw and MoltMatch, an experimental dating platform where AI agents can create profiles and interact on behalf of human users. In one reported case, computer science student Jack Luo said he configured his OpenClaw agent to explore its capabilities and connect to agent-oriented platforms such as Moltbook; he later discovered the agent had created a MoltMatch profile and was screening potential matches without his explicit direction.<ref name="TaipeiTimes2026-02-14">{{cite news |title=AI agents creating surprise dating accounts for humans |url=https://www.taipeitimes.com/News/world/archives/2026/02/14/2003852326 |work=Taipei Times |date=14 February 2026 |access-date=23 February 2026 |archive-date=February 15, 2026 |archive-url=https://web.archive.org/web/20260215054249/https://www.taipeitimes.com/News/world/archives/2026/02/14/2003852326 |url-status=live }}</ref><ref name="StraitsTimes2026-02-14">{{cite news |title=When machines do the flirting: AI agents create surprise dating accounts for humans |url=https://www.straitstimes.com/asia/east-asia/when-machines-do-the-flirting-ai-agents-create-surprise-dating-accounts-for-humans |work=The Straits Times |date=14 February 2026 |access-date=23 February 2026 |archive-date=February 14, 2026 |archive-url=https://web.archive.org/web/20260214045628/https://www.straitstimes.com/asia/east-asia/when-machines-do-the-flirting-ai-agents-create-surprise-dating-accounts-for-humans |url-status=live }}</ref>
+Luo said the AI-generated profile did not reflect him authentically.<ref name="TaipeiTimes2026-02-14" /><ref name="StraitsTimes2026-02-14" />
+
+The same reporting described broader ethical and safety concerns around agent-operated dating services, including impersonation risks. An AFP analysis of prominent MoltMatch profiles cited at least one instance where photos of a Malaysian model were used to create a profile without her consent.<ref name="TaipeiTimes2026-02-14" /><ref name="StraitsTimes2026-02-14" /><ref name="BrightNL2026-02-13">{{cite news |title=AI-assistent maakt stiekem datingprofiel aan voor zijn baas |url=https://www.bright.nl/nieuws/1741897/ai-assistent-maakt-stiekem-datingprofiel-aan-voor-zijn-baas.html |work=Bright.nl |date=13 February 2026 |access-date=23 February 2026 |language=nl}}</ref>
+Commentators cited in the reports argued that autonomous agents can make it difficult to determine responsibility when systems act beyond a user's intent, particularly when agents are granted broad access and authority across services.<ref name="TaipeiTimes2026-02-14" /><ref name="StraitsTimes2026-02-14" />
+
+== Reception ==
+
+A review in [[Casey Newton#Platformer|''Platformer'']] cited OpenClaw's flexibility and open-source licensing as strengths while cautioning that its complexity and security risks limit its suitability for casual users.<ref name="Platformer">{{cite news |last=Newton |first=Casey |author-link=Casey Newton |date=January 2026 |title=Falling in and out of love with Moltbot |url=https://www.platformer.news/moltbot-clawdbot-review-ai-agent/ |access-date=January 29, 2026 |work=Platformer |archive-date=January 30, 2026 |archive-url=https://web.archive.org/web/20260130021137/https://www.platformer.news/moltbot-clawdbot-review-ai-agent/ |url-status=live }}</ref>
+
+Technology commentary has linked OpenClaw to a broader trend toward autonomous AI systems that act independently rather than merely responding to user prompts.<ref name="1Password">{{cite web |title=It's incredible. It's terrifying. It's Moltbot |url=https://1password.com/blog/its-moltbot |website=1Password Blog |date=January 2026 |access-date=January 29, 2026 |last=Meller |first=Jason |archive-date=January 28, 2026 |archive-url=https://web.archive.org/web/20260128213154/https://1password.com/blog/its-moltbot |url-status=live }}</ref><ref name="Platformer" />
+
+In March 2026, the [[Chinese government]] moved to restrict state agencies, [[State-owned enterprises of China|state-owned enterprises]], and [[bank]]s from using OpenClaw, citing security concerns,<ref>{{Cite news |date=March 10, 2026 |title=China Moves to Curb OpenClaw AI Use at Banks, State Agencies |url=https://www.bloomberg.com/news/articles/2026-03-11/china-moves-to-limit-use-of-openclaw-ai-at-banks-government-agencies |access-date=March 12, 2026 |work=[[Bloomberg News]]}}</ref> such as unauthorised data deletion and leaks, and excessive energy usage.<ref>{{Cite news |date=April 16, 2026 |title=Why China's government worries about AI |url=https://www.economist.com/china/2026/04/16/why-chinas-government-worries-about-ai |access-date=April 17, 2026 |work=[[The Economist]]}}</ref> While regulators warn of potential security risk associated with using OpenClaw, local governments in several tech and manufacturing hubs have announced measures to build an industry around it.<ref>{{Cite web |last=Baptista |first=Eduardo |date=9 March 2026 |title=Chinese tech hubs promote OpenClaw AI agents despite scrutiny warnings |url=https://www.reuters.com/world/asia-pacific/chinas-shenzhen-backs-openclaw-ai-with-subsidies-despite-beijings-security-2026-03-09/ |website=Reuters}}</ref>
+
+Rival companies developed related products. Although [[Microsoft]] CEO [[Satya Nadella]] described OpenClaw in February 2026 as a "virus"-like security risk, by May 2026 the company's "Project Lobster" was internally testing "ClawPilot", an OpenClaw-based [[desktop environment]].<ref name="foley20260504">{{Cite web |last=Foley |first=Mary Jo |date=May 4, 2026 |title=Microsoft's OpenClaw team takes on the personal assistant challenge |url=https://www.geekwire.com/2026/microsofts-openclaw-team-takes-on-the-personal-assistant-challenge/ |access-date=2026-05-07 |website=GeekWire |language=en-US}}</ref> By then [[Google]] was building "Remy", its own agent.<ref name="langley20260505">{{Cite web |last=Langley |first=Hugh |date=2026-05-05 |title=Google is building an AI agent that could be its answer to OpenClaw |url=https://www.businessinsider.com/google-ai-agent-openclaw-remy-gemini-assistant-2026-5 |access-date=2026-05-07 |website=Business Insider |language=en-US}}</ref> Despite the Chinese government's warnings against OpenClaw, Chinese investors searched for other companies that might benefit from the "lobster trade".<ref name="shidong20260312">{{Cite news |last=Shidong |first=Zhang |date=March 12, 2026 |title=Chinese investors pile into OpenClaw 'lobster' trade amid US-Iran war |url=https://www.scmp.com/business/china-business/article/3346307/openclaw-frenzy-diverts-chinese-investors-lobster-trade-amid-us-iran-war |access-date=2026-05-07 |website=South China Morning Post |language=en}}</ref>
+
+== Community and ecosystem ==
+OpenClaw's open-source model has fostered a growing ecosystem of third-party tools, deployment services, and content platforms. Chinese technology companies including [[Tencent]] and [[Z.ai]] announced OpenClaw-based services,<ref name="Butts-2026" /> while developers adapted the software for domestic models and messaging apps such as [[WeChat]].<ref name=":0" /> Independent creators have built deployment guides, skill directories, and use-case collections around the framework. The project's extensible skills system has attracted both community contributions and security scrutiny, with researchers noting risks in unvetted third-party skills.<ref name="Axios" />
+
+==See also==
+{{wikisource|zh|深圳市龙岗区支持OpenClaw&OPC发展的若干措施(征求意见稿)
+|Proposed Measures of Longgang District, Shenzhen to Support the Development of OpenClaw & OPC (Draft for Public Consultation)}}
+* [[Lists of open-source artificial intelligence software]]
+
+== References ==
+{{reflist}}
+
+== External links ==
+* {{Official website|https://openclaw.ai}}
+* {{GitHub|https://github.com/openclaw/openclaw}}
+{{Prone to spam|date=April 2026}}
+<!--     
+      {{No more links}}
+
+Please be cautious when adding more external links.
+
+Wikipedia is not a collection of links and should not be used for advertising.
+
+Excessive or inappropriate links will be removed.
+
+See [[Wikipedia:External links]] and [[Wikipedia:Spam]] for details.
+
+If there are already suitable links, propose additions or replacements on
+the article's talk page.
+
+-->
+{{AI agents}}
+{{Generative AI}}
+
+[[Category:AI software]]
+[[Category:2025 software]]
+[[Category:2025 in artificial intelligence]]
+[[Category:Virtual assistants]]
+[[Category:Agent-based software]]
+[[Category:Open-source artificial intelligence]]

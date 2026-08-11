@@ -3,7 +3,7 @@
     "autoclaw-productivity": {
       "type": "streamable-http",
       "url": "http://127.0.0.1:19681/mcp",
-      "enabled": true
+      "enabled": false
     }
   }
 }

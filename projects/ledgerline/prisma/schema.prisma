@@ -56,6 +56,12 @@ enum JournalStatus {
   ARCHIVED
 }
 
+enum JournalType {
+  AI
+  MANUAL
+  ADJUSTING
+}
+
 enum ReviewStage {
   JUNIOR
   SENIOR
@@ -161,6 +167,8 @@ model JournalEntry {
   description   String? // ringkasan transaksi
   exceptionFlag String? // mis. "Faktur PPN tidak ditemukan"
   createdByAi   Boolean       @default(true)
+  journalType   JournalType   @default(AI) // AI = dari pipeline; MANUAL = input akuntan; ADJUSTING = jurnal penyesuaian
+  entryDate     DateTime      @default(now()) // tanggal transaksi (untuk laporan per periode)
   createdAt     DateTime      @default(now())
   updatedAt     DateTime      @updatedAt
 

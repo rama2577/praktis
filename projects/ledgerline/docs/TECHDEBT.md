@@ -159,6 +159,8 @@ Klien yang sudah punya **laporan keuangan baku + COA baku** harus langsung diken
 | **F2 · Knowledge Platform** | KB versioned + approval (EN-01), pengenalan profil klien (EN-02), feedback loop AI (EN-03), test LLM + OCR | TD-06, TD-07→EN-01, TD-08, EN-01..03 | KB bisa di-update via UI + audit; klien lama langsung dikenali; first-pass naik |
 | **F3 · Portal Klien** | Persona klien, auth klien, upload mandiri, laporan self-service, wawasan AI | EN-08, EN-06, EN-07, EN-10 | Pilot 1 firma: overhead −77%, onboarding <2 mnt |
 | **F4 · Scale & monetisasi** | Konektor pajak DJP & bank, template usaha, pricing premium, case study | EN-09, EN-11, TD-14 | Case study terbit; 3+ firma pilot |
+| **F2.5A · Jurnal Manual** ✅ (2026-08-11, PRD v2 M5) | Entry jurnal manual + penyesuaian; `JournalType` (AI/MANUAL/ADJUSTING) + `entryDate`; validasi debit=kredit; langsung APPROVED + ActivityLog | PRD v2 M5 → BUILD-PLAN-v2 M1 | ✅ 12 test baru (191 total), lint 0, build OK; verifikasi live: jurnal ADJUSTING tersimpan + tampil di daftar |
+| **F2.5B · Edit saat Review** (PRD v2 M1) | Panel review bisa edit isi jurnal + audit trail + feedback ke KB | PRD v2 M1 → BUILD-PLAN-v2 M2 | Next milestone |
 
 **Urutan logika:** F0 menutup lubang keamanan → F1 bikin fondasi aman dikembangkan → F2 bikin AI makin pintar (KB + profil klien) → F3 lever terbesar (portal) dengan AI yang sudah mengenal klien → F4 jualan & skala.
 
