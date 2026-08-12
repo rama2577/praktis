@@ -11,6 +11,7 @@ const rp = (n: number) => `Rp${fmt(n)}`;
 type Client = { id: string; name: string };
 
 import { useAnalytics, type AnnualData, SelectClient, PeriodInput } from "./analytics-views";
+import { SignoffPanel } from "./signoff-panel";
 
 function StmtBlock({ title, lines }: { title: string; lines: { label: string; amount: number; indent?: number; bold?: boolean }[] }) {
   return (

@@ -431,10 +431,17 @@ model ReportSnapshot {
   firmId      String
   clientId    String
   period      String // "2026-08"
-  type        String // "TRIAL_BALANCE" | "JOURNALS"
+  type        String // "TRIAL_BALANCE" | "JOURNALS" | "ANNUAL_REPORT"
+  status      ReportSnapshotStatus @default(DRAFT)
   version     Int      @default(1)
-  payload     Json // data laporan (rows, totals, dll)
+  payload     Json
+  notes       String?
   createdById String?
+  reviewedById String?
+  reviewedAt   DateTime?
+  approvedById String?
+  approvedAt   DateTime?
+  deliveredAt  DateTime?
   createdAt   DateTime @default(now())
 
   firm   Firm   @relation(fields: [firmId], references: [id])
@@ -519,6 +526,13 @@ model DepreciationSchedule {
 
 // ══════════ F6A — Rekonsiliasi Bank (M6) ══════════
 // Baris mutasi bank per klien-periode; di-match-kan ke jurnal kas (1-1000/1-1100).
+enum ReportSnapshotStatus {
+  DRAFT       @map("draft")
+  IN_REVIEW   @map("in_review")
+  APPROVED    @map("approved")
+  DELIVERED   @map("delivered")
+}
+
 enum BankMatchStatus {
   UNMATCHED
   MATCHED
