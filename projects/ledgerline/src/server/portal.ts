@@ -249,3 +249,42 @@ export async function notifyClient(params: {
     },
   });
 }
+
+/**
+ * Portal access gate — cek apakah laporan keuangan periode berjalan
+ * sudah disetujui (APPROVED/DELIVERED). Jika belum, klien hanya bisa
+ * melihat pipeline status dan laporan periode sebelumnya.
+ */
+export async function getPortalAccessLevel(clientId: string): Promise<{
+  currentAccess: "FULL" | "PIPELINE_ONLY";
+  currentPeriod: string;
+  availablePeriods: string[];
+}> {
+  const currentPeriod = new Date().toISOString().slice(0, 7);
+
+  // Cek ReportSnapshot dengan type ANNUAL_REPORT dan status APPROVED/DELIVERED
+  const snapshots = await prisma.reportSnapshot.findMany({
+    where: {
+      clientId,
+      type: "ANNUAL_REPORT",
+      status: { in: ["APPROVED", "DELIVERED"] },
+    },
+    select: { period: true },
+    orderBy: { period: "desc" },
+    distinct: ["period"],
+  });
+
+  const approvedPeriods = snapshots.map((s) => s.period);
+  const currentApproved = approvedPeriods.includes(currentPeriod);
+
+  // Periods available for viewing (all approved)
+  const availablePeriods = approvedPeriods
+    .filter((p) => p !== currentPeriod || currentApproved)
+    .slice(0, 12);
+
+  return {
+    currentAccess: currentApproved ? "FULL" : "PIPELINE_ONLY",
+    currentPeriod,
+    availablePeriods,
+  };
+}

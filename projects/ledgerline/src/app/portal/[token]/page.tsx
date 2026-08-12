@@ -3,6 +3,7 @@ import {
   validatePortalToken,
   getPortalDocuments,
   getPortalTimeline,
+  getPortalAccessLevel,
 } from "@/server/portal";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatBytes } from "@/lib/format";
@@ -36,9 +37,10 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
   if (!result) notFound();
 
   const { client } = result;
-  const [documents, timeline] = await Promise.all([
+  const [documents, timeline, access] = await Promise.all([
     getPortalDocuments(client.id),
     getPortalTimeline(client.id),
+    getPortalAccessLevel(client.id),
   ]);
 
   return (
