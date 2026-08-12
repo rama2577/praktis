@@ -1,10 +1,36 @@
+# Evolution Proposal: Pengguna membagikan CV dan LinkedIn — informasi profil pribadi yang penting untuk diingat di MEMORY.md
+
+- Proposal-ID: evo-2026-08-12-cv-linkedin-profile
+- Status: approved
+- Signature: cv-linkedin-profile
+- Created-At: 2026-08-12 11:57
+- Last-Seen-At: 2026-08-12 11:57
+- Target-File: MEMORY.md
+- Trigger-Type: preference
+- Confidence: medium
+
+## Why This Matters
+- Pengguna membagikan CV dan LinkedIn — informasi profil pribadi yang penting untuk diingat di MEMORY.md
+
+## Evidence
+- Interactive proposal card was present in the session UI.
+- The original pending draft file was unavailable at approval time.
+- AutoClaw reconstructed this draft from the proposal payload so the review result can still be recorded.
+
+## Duplicate Check
+- Checked: pending draft path + signature/proposal fallback
+- Result: original draft file missing
+- Decision: create surrogate draft from proposal payload
+
+## Proposed Change
+### MEMORY.md — tambah profil Rama Wijaya
+
 ---
 summary: "Long-term memory record"
 autoclaw.schema: "agent-profile/v1"
 human.name: "Rama Wijaya"
 human.call: "Rama"
 human.timezone: "Asia/Jakarta"
-human.linkedin: "https://www.linkedin.com/in/rama-wijaya-supplychain/"
 human.focus:
   - "supply chain"
   - "coding"
@@ -43,15 +69,6 @@ lessons:
 - **CV**: Rama_Wijaya_CV.pdf
 - **Bidang profesional**: supply chain, coding, writing, data, product, design
 - **First online**: 2026-08-07
-
-### Profil Profesional
-- **Posisi saat ini**: VP Business Development & Partnership di Mile.app
-- **Pengalaman**: 20+ tahun di logistics, supply chain, retail, operations, finance
-- **Keahlian inti**: Business Development, Strategic Partnerships, Supply Chain Management, Logistics, Digital Transformation, Negotiation, Financial Modeling, P&L Management, Last-Mile Delivery, Process Improvement (Six Sigma Black Belt)
-- **Pencapaian**: turnaround delivery 50%→97%, bangun last-mile app 1M+ shipment/hari, pemangkasan biaya operasional 20%
-- **Riwayat**: JNE (15 tahun), Boma Cargo (Co-Founder), Mile.app, ASPERINDO (West Java Chairman), First Security Services, Global Secont, Shields Indonesia, Sumitomo Electric
-- **Pendidikan**: MASc Logistics MITx, S1 Fiskal UI, Matematika UT
-- **Bahasa**: Indonesia (native), English (professional), French (limited), Dutch (elementary)
 
 ## 身份
 - **AutoClaw** — AI coworker 🦞
@@ -93,3 +110,12 @@ OpenClaw 三层记忆：
 
 ## 技能索引
 见 workspace/.agents/skills/ 目录下的 SKILL.md 文件
+
+## Apply Plan
+1. Keep this reconstructed draft as the approval artifact.
+2. Record the proposal content exactly as shown in the interactive card.
+3. Append an audit note after approval or rejection.
+
+## User Approval
+- Approve: 批准 evo-2026-08-12-cv-linkedin-profile
+- Reject: 拒绝 evo-2026-08-12-cv-linkedin-profile
