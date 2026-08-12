@@ -10,6 +10,7 @@
 
 import { createHmac } from "node:crypto";
 import { prisma } from "@/lib/db";
+import { decryptBuffer } from "@/lib/crypto";
 
 type WebhookPayload = {
   eventType: string;
@@ -57,7 +58,10 @@ export async function dispatchWebhooks(
       };
 
       if (sub.secret) {
-        headers["X-Praktis-Signature"] = signPayload(sub.secret, bodyStr);
+        headers["X-Praktis-Signature"] = signPayload(
+              decryptBuffer(Buffer.from(sub.secret!, "hex")).toString("utf-8"),
+              bodyStr,
+            );
       }
 
       const res = await fetch(sub.url, {

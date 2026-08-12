@@ -31,6 +31,7 @@ vi.stubGlobal("fetch", mockFetch);
 
 const { enqueueOutbox, processOutbox } = await import("../src/server/outbox");
 const { signPayload } = await import("../src/server/notifications");
+const { encryptBuffer } = await import("../src/lib/crypto");
 const { emit } = await import("@/lib/events");
 const emitMock = emit as unknown as ReturnType<typeof vi.fn>;
 
@@ -57,7 +58,7 @@ describe("outbox", () => {
     }]);
     mockWebhook.findMany.mockResolvedValueOnce([{
       id: "w-1", url: "https://firma.example.com/webhook",
-      secret: "secret123", eventTypes: ["slaBreach"], enabled: true,
+      secret: encryptBuffer(Buffer.from("secret123", "utf-8")).toString("hex"), eventTypes: ["slaBreach"], enabled: true,
     }]);
     mockFetch.mockResolvedValueOnce({ ok: true, text: async () => "OK" });
     mockOutbox.update.mockResolvedValueOnce({ id: "e1", status: "PROCESSED" });
