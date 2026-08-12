@@ -60,7 +60,7 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
   if (scope === "calk") {
     const calk = buildCalk(calkInput);
     if (format === "xlsx") {
-      const buffer = calkXlsx(calk);
+      const buffer = await calkXlsx(calk);
       return new NextResponse(new Uint8Array(buffer), {
         headers: {
           "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

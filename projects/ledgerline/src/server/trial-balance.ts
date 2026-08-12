@@ -1,4 +1,4 @@
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import { prisma } from "@/lib/db";
 import { getFiscalPeriodStatus } from "@/server/ledger";
 
@@ -307,19 +307,30 @@ export function trialBalanceCsv(report: TrialBalanceReport): string {
 }
 
 /** XLSX (buffer siap dikirim). */
-export function trialBalanceXlsx(report: TrialBalanceReport): Buffer {
-  const data = report.rows.map((r) => ({
-    "Kode Akun": r.accountCode,
-    "Nama Akun": r.accountName,
-    Klasifikasi: CLASSIFICATION_LABELS[r.classification],
-    Debit: r.debit,
-    Kredit: r.credit,
-    Saldo: r.balance,
-    "Bulan Lalu": r.prevBalance ?? "",
-    Indikator: r.unusualReason ?? "",
-  }));
-  const ws = XLSX.utils.json_to_sheet(data);
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Neraca Percobaan");
-  return XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
+export async function trialBalanceXlsx(report: TrialBalanceReport): Promise<Buffer> {
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet("Neraca Percobaan");
+  ws.columns = [
+    { header: "Kode Akun", key: "accountCode", width: 14 },
+    { header: "Nama Akun", key: "accountName", width: 40 },
+    { header: "Klasifikasi", key: "classification", width: 14 },
+    { header: "Debit", key: "debit", width: 16 },
+    { header: "Kredit", key: "credit", width: 16 },
+    { header: "Saldo", key: "balance", width: 16 },
+    { header: "Bulan Lalu", key: "prevBalance", width: 16 },
+    { header: "Indikator", key: "unusualReason", width: 30 },
+  ];
+  for (const r of report.rows) {
+    ws.addRow({
+      accountCode: r.accountCode,
+      accountName: r.accountName,
+      classification: CLASSIFICATION_LABELS[r.classification],
+      debit: r.debit,
+      credit: r.credit,
+      balance: r.balance,
+      prevBalance: r.prevBalance ?? "",
+      unusualReason: r.unusualReason ?? "",
+    });
+  }
+  return Buffer.from(await wb.xlsx.writeBuffer());
 }

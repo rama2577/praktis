@@ -53,7 +53,7 @@ export async function GET(req: Request, ctx: Ctx) {
       break;
     }
     case "xlsx": {
-      body = generateReportXlsx(journals);
+      body = await generateReportXlsx(journals);
       filename = `laporan-${client.name.toLowerCase().replace(/\s+/g, "-")}.xlsx`;
       break;
     }

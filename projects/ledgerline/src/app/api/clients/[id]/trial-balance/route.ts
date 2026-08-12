@@ -51,7 +51,7 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
   }
 
   if (format === "xlsx") {
-    const buffer = trialBalanceXlsx(report);
+    const buffer = await trialBalanceXlsx(report);
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

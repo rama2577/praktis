@@ -47,7 +47,7 @@ export async function GET(req: Request, ctx: Ctx) {
       });
     }
     if (format === "xlsx") {
-      const buffer = trialBalanceXlsx(report);
+      const buffer = await trialBalanceXlsx(report);
       return new NextResponse(new Uint8Array(buffer), {
         headers: {
           "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

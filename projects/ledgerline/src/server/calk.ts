@@ -1,3 +1,4 @@
+import ExcelJS from "exceljs";
 /**
  * Catatan atas Laporan Keuangan (CALK) — dihasilkan otomatis (rule-based)
  * dari profil klien, aset tetap, dan trial balance.
@@ -151,24 +152,18 @@ export function calkCsv(c: Calk): string {
 }
 
 /** Export CALK sebagai XLSX (satu sheet, kolom Bagian/Isi/Nilai). */
-export function calkXlsx(c: Calk): Buffer {
-  // lazy import agar tidak memuat xlsx di bundle server lain
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const XLSX = require("xlsx") as typeof import("xlsx");
-  const rows: (string | number)[][] = [
-    ["BAGIAN", "ISI", "NILAI"],
-    ["CATATAN ATAS LAPORAN KEUANGAN", `${c.clientName} — Periode yang berakhir ${c.period}`, ""],
-  ];
+export async function calkXlsx(c: Calk): Promise<Buffer> {
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet("CALK");
+  ws.addRow(["BAGIAN", "ISI", "NILAI"]);
+  ws.addRow(["CATATAN ATAS LAPORAN KEUANGAN", `${c.clientName} — Periode yang berakhir ${c.period}`, ""]);
   for (const s of c.sections) {
     const head = `${s.number}. ${s.title}`;
     if (s.paragraphs.length === 0 && !s.items) continue;
-    rows.push([head, "", ""]);
-    for (const p of s.paragraphs) rows.push(["", p, ""]);
-    for (const it of s.items ?? []) rows.push(["", it.label, it.value]);
+    ws.addRow([head, "", ""]);
+    for (const p of s.paragraphs) ws.addRow(["", p, ""]);
+    for (const it of s.items ?? []) ws.addRow(["", it.label, it.value]);
   }
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws["!cols"] = [{ wch: 34 }, { wch: 90 }, { wch: 24 }];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "CALK");
-  return XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
+  ws.columns = [{ width: 34 }, { width: 90 }, { width: 24 }];
+  return Buffer.from(await wb.xlsx.writeBuffer());
 }

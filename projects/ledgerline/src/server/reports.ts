@@ -1,5 +1,5 @@
+import ExcelJS from "exceljs";
 import PDFDocument from "pdfkit";
-import * as XLSX from "xlsx";
 import type { JournalEntry, JournalLine } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
@@ -110,35 +110,45 @@ export function generateReportCsv(journals: JournalWithLines[]): string {
 }
 
 /** Generate laporan XLSX (sheet Jurnal + sheet Neraca). */
-export function generateReportXlsx(journals: JournalWithLines[]): Buffer {
-  const ws = XLSX.utils.json_to_sheet(
-    journals.flatMap((j) =>
-      j.lines.map((l) => ({
-        Tanggal: j.createdAt.toISOString().slice(0, 10),
-        Deskripsi: j.description ?? "",
-        Status: j.status,
-        Confidence: j.confidence ?? "",
-        Exception: j.exceptionFlag ?? "",
-        KodeAkun: l.accountCode,
-        NamaAkun: l.accountName,
-        Debit: Number(l.debit),
-        Kredit: Number(l.credit),
-        PSAK: l.psakRef,
-      })),
-    ),
+export async function generateReportXlsx(journals: JournalWithLines[]): Promise<Buffer> {
+  const rows = journals.flatMap((j) =>
+    j.lines.map((l) => ({
+      Tanggal: j.createdAt.toISOString().slice(0, 10),
+      Deskripsi: j.description ?? "",
+      Status: j.status,
+      Confidence: j.confidence ?? "",
+      Exception: j.exceptionFlag ?? "",
+      KodeAkun: l.accountCode,
+      NamaAkun: l.accountName,
+      Debit: Number(l.debit),
+      Kredit: Number(l.credit),
+      PSAK: l.psakRef,
+    })),
   );
 
   const debitTotal = journals.reduce((s, j) => s + j.lines.reduce((a, l) => a + Number(l.debit), 0), 0);
   const creditTotal = journals.reduce((s, j) => s + j.lines.reduce((a, l) => a + Number(l.credit), 0), 0);
-  const summary = XLSX.utils.json_to_sheet([
-    { Keterangan: "Total Debit", Jumlah: debitTotal },
-    { Keterangan: "Total Kredit", Jumlah: creditTotal },
-    { Keterangan: "Selisih", Jumlah: Math.abs(debitTotal - creditTotal) },
-    { Keterangan: "Jumlah Jurnal", Jumlah: journals.length },
-  ]);
 
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Jurnal");
-  XLSX.utils.book_append_sheet(wb, summary, "Neraca");
-  return Buffer.from(XLSX.write(wb, { type: "buffer", bookType: "xlsx" }));
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet("Jurnal");
+  ws.columns = [
+    { header: "Tanggal", key: "Tanggal", width: 12 },
+    { header: "Deskripsi", key: "Deskripsi", width: 36 },
+    { header: "Status", key: "Status", width: 12 },
+    { header: "Confidence", key: "Confidence", width: 12 },
+    { header: "Exception", key: "Exception", width: 24 },
+    { header: "Kode Akun", key: "KodeAkun", width: 14 },
+    { header: "Nama Akun", key: "NamaAkun", width: 36 },
+    { header: "Debit", key: "Debit", width: 16 },
+    { header: "Kredit", key: "Kredit", width: 16 },
+    { header: "PSAK", key: "PSAK", width: 12 },
+  ];
+  for (const r of rows) ws.addRow(r);
+  const summaryWs = wb.addWorksheet("Neraca");
+  summaryWs.addRow(["Keterangan", "Jumlah"]);
+  summaryWs.addRow(["Total Debit", debitTotal]);
+  summaryWs.addRow(["Total Kredit", creditTotal]);
+  summaryWs.addRow(["Selisih", Math.abs(debitTotal - creditTotal)]);
+  summaryWs.addRow(["Jumlah Jurnal", journals.length]);
+  return Buffer.from(await wb.xlsx.writeBuffer());
 }

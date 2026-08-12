@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { withTenantApi } from "@/lib/tenant-api";
-// Dynamic import supaya build tidak crash saat SheetJS missing di edge
-const XLSX = await import("xlsx");
+import ExcelJS from "exceljs";
 
 /**
  * GET /api/connectors/template?industry=retail|fnb|services
@@ -18,37 +17,31 @@ export const GET = withTenantApi(async (request) => {
   const industry = url.searchParams.get("industry") ?? "retail";
   const template = getTemplate(industry);
 
-  const wb = XLSX.utils.book_new();
+  const wb = new ExcelJS.Workbook();
 
   // Sheet 1: COA Mapping
-  const coaSheet = XLSX.utils.aoa_to_sheet([
-    ["Kode Klien", "Nama Akun Klien", "Kode Standar", "Nama Akun Standar", "Kategori"],
-    ...template.coa.map((r) => [r.clientCode, r.clientName, r.standardCode, r.standardName, r.category]),
-  ]);
-  XLSX.utils.book_append_sheet(wb, coaSheet, "COA Mapping");
+  const coaSheet = wb.addWorksheet("COA Mapping");
+  coaSheet.addRow(["Kode Klien", "Nama Akun Klien", "Kode Standar", "Nama Akun Standar", "Kategori"]);
+  for (const r of template.coa) coaSheet.addRow([r.clientCode, r.clientName, r.standardCode, r.standardName, r.category]);
 
   // Sheet 2: Format Laporan
-  const reportSheet = XLSX.utils.aoa_to_sheet([
-    ["Jenis Laporan", "Format", "Periode"],
-    ["Laba Rugi", template.reportFormat, "Bulanan"],
-    ["Neraca", template.reportFormat, "Bulanan"],
-    ["Arus Kas", template.reportFormat, "Bulanan"],
-  ]);
-  XLSX.utils.book_append_sheet(wb, reportSheet, "Format Laporan");
+  const reportSheet = wb.addWorksheet("Format Laporan");
+  reportSheet.addRow(["Jenis Laporan", "Format", "Periode"]);
+  reportSheet.addRow(["Laba Rugi", template.reportFormat, "Bulanan"]);
+  reportSheet.addRow(["Neraca", template.reportFormat, "Bulanan"]);
+  reportSheet.addRow(["Arus Kas", template.reportFormat, "Bulanan"]);
 
   // Sheet 3: Panduan
-  const guideSheet = XLSX.utils.aoa_to_sheet([
-    ["Panduan Pengisian Template"],
-    ["1. Isi kolom 'Kode Klien' dan 'Nama Akun Klien' sesuai COA perusahaan klien"],
-    ["2. Kolom 'Kode Standar' dan 'Nama Akun Standar' adalah referensi — jangan diubah"],
-    ["3. Upload file ini di halaman Profil Klien untuk belajar mapping otomatis"],
-    ["4. AI (Praktis) akan mengenali format laporan klien setelah 1-2 periode"],
-    [""],
-    ["Butuh bantuan? Hubungi tim support Praktis."],
-  ]);
-  XLSX.utils.book_append_sheet(wb, guideSheet, "Panduan");
+  const guideSheet = wb.addWorksheet("Panduan");
+  guideSheet.addRow(["Panduan Pengisian Template"]);
+  guideSheet.addRow(["1. Isi kolom 'Kode Klien' dan 'Nama Akun Klien' sesuai COA perusahaan klien"]);
+  guideSheet.addRow(["2. Kolom 'Kode Standar' dan 'Nama Akun Standar' adalah referensi — jangan diubah"]);
+  guideSheet.addRow(["3. Upload file ini di halaman Profil Klien untuk belajar mapping otomatis"]);
+  guideSheet.addRow(["4. AI (Praktis) akan mengenali format laporan klien setelah 1-2 periode"]);
+  guideSheet.addRow([""]);
+  guideSheet.addRow(["Butuh bantuan? Hubungi tim support Praktis."]);
 
-  const buf = XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
+  const buf = Buffer.from(await wb.xlsx.writeBuffer());
 
   return new NextResponse(buf as unknown as BodyInit, {
     headers: {

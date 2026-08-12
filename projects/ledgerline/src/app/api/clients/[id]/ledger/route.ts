@@ -50,7 +50,7 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
     });
   }
   if (format === "xlsx") {
-    const buffer = ledgerXlsx(report);
+    const buffer = await ledgerXlsx(report);
     return new NextResponse(new Uint8Array(buffer), {
       headers: {
         "Content-Type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",

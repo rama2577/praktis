@@ -1,3 +1,4 @@
+import ExcelJS from "exceljs";
 import type { FiscalPeriodStatus, JournalStatus } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import {
@@ -309,30 +310,16 @@ export function ledgerCsv(r: LedgerReport): string {
   return out.join("\n");
 }
 
-export function ledgerXlsx(r: LedgerReport): Buffer {
-  // eslint-disable-next-line @typescript-eslint/no-require-imports
-  const XLSX = require("xlsx") as typeof import("xlsx");
-  const rows: (string | number)[][] = [
-    ["BUKU BESAR", r.clientName, `Periode ${r.period}`, `Akun ${r.accountCode} — ${r.accountName}`, ""],
-    [],
-    ["Tanggal", "Referensi", "Uraian", "Jenis", "Status", "Debit", "Kredit", "Saldo Berjalan"],
-  ];
+export async function ledgerXlsx(r: LedgerReport): Promise<Buffer> {
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet("Buku Besar");
+  ws.addRow(["BUKU BESAR", r.clientName, `Periode ${r.period}`, `Akun ${r.accountCode} — ${r.accountName}`]);
+  ws.addRow([]);
+  ws.addRow(["Tanggal", "Referensi", "Uraian", "Jenis", "Status", "Debit", "Kredit", "Saldo Berjalan"]);
   for (const e of r.entries) {
-    rows.push([
-      e.entryDate.toISOString().slice(0, 10),
-      e.reference,
-      e.description ?? "",
-      e.journalType,
-      e.status,
-      e.debit,
-      e.credit,
-      e.balance,
-    ]);
+    ws.addRow([e.entryDate.toISOString().slice(0, 10), e.reference, e.description ?? "", e.journalType, e.status, e.debit, e.credit, e.balance]);
   }
-  rows.push(["TOTAL", "", "", "", "", r.totalDebit, r.totalCredit, r.closingBalance]);
-  const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws["!cols"] = [{ wch: 12 }, { wch: 16 }, { wch: 44 }, { wch: 12 }, { wch: 12 }, { wch: 14 }, { wch: 14 }, { wch: 16 }];
-  const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "Buku Besar");
-  return XLSX.write(wb, { type: "buffer", bookType: "xlsx" }) as Buffer;
+  ws.addRow(["TOTAL", "", "", "", "", r.totalDebit, r.totalCredit, r.closingBalance]);
+  ws.columns = [{ width: 12 }, { width: 16 }, { width: 44 }, { width: 12 }, { width: 12 }, { width: 14 }, { width: 14 }, { width: 16 }];
+  return Buffer.from(await wb.xlsx.writeBuffer());
 }

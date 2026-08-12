@@ -5,7 +5,7 @@
 import { mkdirSync } from "node:fs";
 import { writeFileSync } from "node:fs";
 import PDFDocument from "pdfkit";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 
 const FIXTURES = "tests/fixtures";
 mkdirSync(FIXTURES, { recursive: true });
@@ -38,14 +38,13 @@ doc.text("Pembayaran: 30 hari setelah faktur (piutang usaha).");
 doc.end();
 
 // ── XLSX: rekening koran dengan penerimaan piutang ──────────────────────
-const rows = [
-  ["Tanggal", "Keterangan", "Debet", "Kredit"],
-  ["2026-08-01", "Saldo awal", "", "10.000.000"],
-  ["2026-08-02", "Transfer masuk pelunasan piutang PT Sentosa", "", "2.500.000"],
-  ["2026-08-03", "Pembayaran utang usaha CV Berkah", "1.200.000", ""],
-];
-const ws = XLSX.utils.aoa_to_sheet(rows);
-const wb = XLSX.utils.book_new();
-XLSX.utils.book_append_sheet(wb, ws, "Rekening Koran");
-XLSX.writeFile(wb, `${FIXTURES}/rekening-koran.xlsx`);
-console.log("✅ rekening-koran.xlsx");
+(async () => {
+  const wb = new ExcelJS.Workbook();
+  const ws = wb.addWorksheet("Rekening Koran");
+  ws.addRow(["Tanggal", "Keterangan", "Debet", "Kredit"]);
+  ws.addRow(["2026-08-01", "Saldo awal", "", "10.000.000"]);
+  ws.addRow(["2026-08-02", "Transfer masuk pelunasan piutang PT Sentosa", "", "2.500.000"]);
+  ws.addRow(["2026-08-03", "Pembayaran utang usaha CV Berkah", "1.200.000", ""]);
+  writeFileSync(`${FIXTURES}/rekening-koran.xlsx`, Buffer.from(await wb.xlsx.writeBuffer()));
+  console.log("✅ rekening-koran.xlsx");
+})();

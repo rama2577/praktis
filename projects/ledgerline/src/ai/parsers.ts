@@ -1,5 +1,5 @@
 import { PDFParse } from "pdf-parse";
-import * as XLSX from "xlsx";
+import ExcelJS from "exceljs";
 import path from "node:path";
 import { isLLMConfigured, visionCompletion } from "@/ai/llm";
 import { readStoredFile } from "@/lib/storage";
@@ -35,16 +35,19 @@ async function parsePdf(buffer: Buffer): Promise<string> {
 }
 
 async function parseXlsx(buffer: Buffer): Promise<string> {
-  const workbook = XLSX.read(buffer, { cellDates: true, type: "buffer" });
+  const workbook = new ExcelJS.Workbook();
+  await workbook.xlsx.load(buffer as any);
   const lines: string[] = [];
-  for (const sheetName of workbook.SheetNames) {
-    const sheet = workbook.Sheets[sheetName];
-    const rows = XLSX.utils.sheet_to_json<unknown[]>(sheet, {
-      defval: "",
-      header: 1,
-    });
-    for (const row of rows.slice(0, 200)) {
-      const cells = row.filter((c) => c !== "" && c != null);
+  for (const sheet of workbook.worksheets) {
+    if (sheet.rowCount === 0) continue;
+    const limit = Math.min(sheet.rowCount, 200);
+    for (let r = 1; r <= limit; r++) {
+      const row = sheet.getRow(r);
+      const cells: string[] = [];
+      row.eachCell({ includeEmpty: false }, (cell) => {
+        const v = cell.text?.trim() ?? "";
+        if (v) cells.push(v);
+      });
       if (cells.length > 0) lines.push(cells.join(" | "));
     }
   }

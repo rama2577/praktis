@@ -187,8 +187,8 @@ describe("ekspor", () => {
     expect(csv).toContain("Total Kredit,10000.00");
   });
 
-  it("XLSX menghasilkan buffer non-kosong", () => {
-    const buf = trialBalanceXlsx(report);
+  it("XLSX menghasilkan buffer non-kosong", async () => {
+    const buf = await trialBalanceXlsx(report);
     expect(Buffer.isBuffer(buf)).toBe(true);
     expect(buf.length).toBeGreaterThan(100);
   });
