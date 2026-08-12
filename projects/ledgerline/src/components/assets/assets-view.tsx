@@ -483,3 +483,36 @@ function AssetRow({
     </>
   );
 }
+
+function BulkUploadAssets({ clientId, onUploaded }: { clientId: string; onUploaded: () => void }) {
+  const [uploading, setUploading] = useState(false);
+  const [msg, setMsg] = useState<string | null>(null);
+
+  const handleUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    setMsg(null);
+    try {
+      const form = new FormData();
+      form.append("file", file);
+      const res = await fetch(`/api/clients/${clientId}/assets/upload`, { method: "POST", body: form });
+      const data = await res.json().catch(() => ({ error: "Gagal" }));
+      if (!res.ok) throw new Error(data.error ?? "Gagal");
+      setMsg(data.message ?? `✅ ${data.data?.created ?? 0} aset berhasil diupload`);
+      onUploaded();
+    } catch (err) {
+      setMsg(`❌ ${(err as Error).message}`);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  return (
+    <label className={`cursor-pointer rounded-lg border px-3 py-2 text-sm transition ${uploading ? "opacity-50" : "border-slate-700 text-slate-300 hover:border-yellow-400/50"}`}>
+      {uploading ? "Mengupload..." : "⬇ Upload Spreadsheet"}
+      <input type="file" accept=".csv,.txt,.tsv" onChange={handleUpload} className="hidden" disabled={uploading} />
+      {msg && <span className={`ml-2 text-xs ${msg.startsWith("✅") ? "text-emerald-400" : "text-rose-400"}`}>{msg}</span>}
+    </label>
+  );
+}
