@@ -80,24 +80,80 @@ export function buildCalk(input: Input): Calk {
   const material = (rs: TrialBalanceRow[], limit: number) =>
     [...rs].filter((r) => r.balance !== 0).sort((a, b) => b.balance - a.balance).slice(0, limit);
 
-  const items: { label: string; value: string }[] = [
-    { label: "Total aset", value: fmtRupiah(totalAset) },
-    { label: "Total liabilitas", value: fmtRupiah(liabilitas.reduce((s, r) => s + r.balance, 0)) },
-    { label: "Total ekuitas", value: fmtRupiah(ekuitas.reduce((s, r) => s + r.balance, 0)) },
-    { label: "Pendapatan periode", value: fmtRupiah(totalPendapatan) },
-    { label: "Beban periode", value: fmtRupiah(totalBeban) },
-    { label: "Laba (rugi) periode", value: fmtRupiah(laba) },
+  const hppRows = beban.filter(
+    (r) => r.accountName.toLowerCase().includes("hpp") || r.accountName.toLowerCase().includes("pokok penjualan"),
+  );
+  const hppTotal = hppRows.reduce((sm, r) => sm + r.balance, 0);
+
+  // ── Section 3: Rincian per-akun material dengan narasi ──
+  const perAset = material(aset, 5);
+  const perLiabilitas = material(liabilitas, 3);
+  const perPendapatan = material(pendapatan, 3);
+  const perBeban = material(beban, 3);
+
+  const b3paragraphs: string[] = [
+    "Rincian pos-pos signifikan dalam laporan keuangan periode berjalan disajikan di bawah ini.",
   ];
-  for (const r of material(aset, 5)) items.push({ label: `Aset — ${r.accountName}`, value: fmtRupiah(r.balance) });
-  for (const r of material(liabilitas, 4)) items.push({ label: `Liabilitas — ${r.accountName}`, value: fmtRupiah(r.balance) });
-  for (const r of material(pendapatan, 4)) items.push({ label: `Pendapatan — ${r.accountName}`, value: fmtRupiah(r.balance) });
-  for (const r of material(beban, 4)) items.push({ label: `Beban — ${r.accountName}`, value: fmtRupiah(r.balance) });
+
+  // Aset
+  if (perAset.length > 0) {
+    const assetList = perAset.map((r) => {
+      const pct = totalAset > 0 ? ((r.balance / totalAset) * 100).toFixed(1) : "0";
+      const isCurr = r.accountCode.startsWith("1-1");
+      return `${r.accountName} sebesar ${fmtRupiah(r.balance)} (${pct}% dari total aset${isCurr ? ", termasuk aset lancar" : ""})`;
+    }).join("; ");
+    b3paragraphs.push(`Aset terbesar entitas meliputi: ${assetList}.`);
+  }
+
+  // Liabilitas
+  if (perLiabilitas.length > 0) {
+    const liabList = perLiabilitas.map((r) => {
+      const isShort = r.accountCode.startsWith("2-1");
+      return `${r.accountName} sebesar ${fmtRupiah(r.balance)}${isShort ? " (jangka pendek)" : ""}`;
+    }).join("; ");
+    b3paragraphs.push(`Liabilitas signifikan: ${liabList}.`);
+  }
+
+  // Pendapatan
+  if (perPendapatan.length > 0 && totalPendapatan > 0) {
+    const revList = perPendapatan.map((r) => 
+      `${r.accountName} sebesar ${fmtRupiah(r.balance)} (${((r.balance / totalPendapatan) * 100).toFixed(0)}% dari total pendapatan)`
+    ).join("; ");
+    b3paragraphs.push(`Komposisi pendapatan: ${revList}.`);
+  }
+
+  // Beban
+  if (perBeban.length > 0 && totalBeban > 0) {
+    const expList = perBeban.map((r) => 
+      `${r.accountName} sebesar ${fmtRupiah(r.balance)} (${((r.balance / totalBeban) * 100).toFixed(0)}% dari total beban)`
+    ).join("; ");
+    b3paragraphs.push(`Komposisi beban: ${expList}.`);
+  }
+
+  // Rasio piutang/persediaan jika relevan
+  const piutangDagang = aset.find((r) => r.accountCode.startsWith("1-12") && r.balance > 0);
+  if (piutangDagang && totalPendapatan > 0) {
+    const turnover = totalPendapatan / piutangDagang.balance;
+    const days = 365 / turnover;
+    b3paragraphs.push(`Perputaran piutang usaha tercatat ${turnover.toFixed(1)}× per periode (rata-rata ${days.toFixed(0)} hari penagihan).`);
+  }
+
+  const persediaan = aset.find((r) => r.accountCode.startsWith("1-13") && r.balance > 0);
+  if (persediaan && hppTotal > 0) {
+    const turnover = hppTotal / persediaan.balance;
+    b3paragraphs.push(`Perputaran persediaan tercatat ${turnover.toFixed(1)}× per periode.`);
+  }
+
+  // Depresiasi + aset tetap
+  if (assetCount && assetCount > 0) {
+    b3paragraphs.push(`Entitas memiliki ${assetCount} aset tetap yang disusutkan dengan metode ${depreciationMethod || "garis lurus"}. Rincian aset tetap tersedia dalam daftar aset tetap terpisah.`);
+  }
 
   sections.push({
     number: 3,
     title: "Rincian Pos-Pos Material",
-    paragraphs: ["Rincian pos-pos signifikan dalam laporan keuangan periode berjalan:"],
-    items,
+    paragraphs: b3paragraphs,
+    items: undefined,
   });
 
   // 4. Peristiwa setelah periode pelaporan
