@@ -3,10 +3,12 @@
 import { useState } from "react";
 import { FinancialStatementsView } from "@/components/reports/financial-statements-view";
 import { AnalysisView, CalkView, TaxAnalysisView, AnnualReportView } from "@/components/reports/analytics-views";
+import { MultiPeriodView } from "@/components/reports/multi-period-view";
 
 type Client = { id: string; name: string };
 
 const TABS = [
+  { key: "ikhtisar", label: "Ikhtisar" },
   { key: "laporan", label: "Laporan" },
   { key: "analisa", label: "Analisa" },
   { key: "calk", label: "CALK" },
@@ -15,7 +17,7 @@ const TABS = [
 ] as const;
 
 export function FinancialReportsPage({ initialClients = [] }: { initialClients?: Client[] }) {
-  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("laporan");
+  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("ikhtisar");
   const [clientId, setClientId] = useState(initialClients[0]?.id ?? "");
   const [period, setPeriod] = useState("2026-08");
 
@@ -46,6 +48,7 @@ export function FinancialReportsPage({ initialClients = [] }: { initialClients?:
         ))}
       </div>
 
+      {tab === "ikhtisar" && <MultiPeriodView {...shared} />}
       {tab === "laporan" && <FinancialStatementsView initialClients={initialClients} />}
       {tab === "analisa" && <AnalysisView {...shared} />}
       {tab === "calk" && <CalkView {...shared} />}
