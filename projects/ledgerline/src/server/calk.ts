@@ -153,7 +153,14 @@ export function buildCalk(input: Input): Calk {
     number: 3,
     title: "Rincian Pos-Pos Material",
     paragraphs: b3paragraphs,
-    items: undefined,
+    items: [
+      { label: "Total aset", value: fmtRupiah(totalAset) },
+      { label: "Total liabilitas", value: fmtRupiah(liabilitas.reduce((acc, r) => acc + r.balance, 0)) },
+      { label: "Total ekuitas", value: fmtRupiah(ekuitas.reduce((acc, r) => acc + r.balance, 0)) },
+      { label: "Pendapatan periode", value: fmtRupiah(totalPendapatan) },
+      { label: "Beban periode", value: fmtRupiah(totalBeban) },
+      { label: "Laba (rugi) periode", value: fmtRupiah(laba) },
+    ],
   });
 
   // 4. Peristiwa setelah periode pelaporan
