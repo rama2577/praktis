@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
+import { Breadcrumb } from "@/components/ui/breadcrumb";
 import type { Role } from "@prisma/client";
 
 export function DashboardShell({
@@ -70,6 +71,9 @@ export function DashboardShell({
             </span>
           </div>
         </header>
+        <div className="border-b border-line bg-card/20 px-4 py-1.5 sm:px-6">
+          <Breadcrumb />
+        </div>
         <main id="main-content" className="flex-1 overflow-y-auto p-4 sm:p-6">{children}</main>
       </div>
     </div>

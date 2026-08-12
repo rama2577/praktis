@@ -416,8 +416,8 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                 <table className="w-full min-w-[900px] text-left text-sm">
                   <thead>
                     <tr className="border-b border-slate-800 text-xs text-slate-400">
-                      <th className="px-3 py-2" rowSpan={2}>No</th>
-                      <th className="px-3 py-2" rowSpan={2}>Kode</th>
+                      <th className="sticky left-0 z-20 bg-slate-950 px-3 py-2" rowSpan={2}>No</th>
+                      <th className="sticky left-[48px] z-20 bg-slate-950 px-3 py-2" rowSpan={2}>Kode</th>
                       <th className="px-3 py-2" rowSpan={2}>Nama Akun</th>
                       <th className="px-3 py-2 text-center" colSpan={2}>Neraca Saldo</th>
                       <th className="px-3 py-2 text-center" colSpan={2}>Laba Rugi</th>
@@ -440,8 +440,8 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                           l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold text-slate-100" : "text-slate-300"
                         }`}
                       >
-                        <td className="px-3 py-2 text-slate-500">{l.no}</td>
-                        <td className="px-3 py-2 font-mono text-xs text-slate-500">{l.accountCode}</td>
+                        <td className="sticky left-0 z-10 bg-slate-950 px-3 py-2 text-slate-500">{l.no}</td>
+                        <td className="sticky left-[48px] z-10 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-500">{l.accountCode}</td>
                         <td className="px-3 py-2">{l.accountName}</td>
                         <td className="px-3 py-2 text-right font-mono">{l.nsDebit > 0 ? formatCurrencyRp(l.nsDebit) : ""}</td>
                         <td className="px-3 py-2 text-right font-mono">{l.nsCredit > 0 ? formatCurrencyRp(l.nsCredit) : ""}</td>
@@ -454,7 +454,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                   </tbody>
                   <tfoot>
                     <tr className="border-t-2 border-slate-700 bg-slate-950 font-semibold text-slate-100">
-                      <td className="px-3 py-2" colSpan={3}>TOTAL</td>
+                      <td className="sticky left-0 z-10 bg-slate-950 px-3 py-2" colSpan={3}>TOTAL</td>
                       <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsDebit)}</td>
                       <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsCredit)}</td>
                       <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrDebit)}</td>
