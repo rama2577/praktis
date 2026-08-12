@@ -39,35 +39,6 @@ type Report = {
   periodStatus: "OPEN" | "CLOSED";
 };
 
-type WorksheetLine = {
-  no: number;
-  accountCode: string;
-  accountName: string;
-  ref: string;
-  nsDebit: number;
-  nsCredit: number;
-  lrDebit: number;
-  lrCredit: number;
-  neracaDebit: number;
-  neracaCredit: number;
-};
-
-type Worksheet = {
-  clientName: string;
-  period: string;
-  lines: WorksheetLine[];
-  totals: {
-    nsDebit: number;
-    nsCredit: number;
-    lrDebit: number;
-    lrCredit: number;
-    neracaDebit: number;
-    neracaCredit: number;
-  };
-  labaBersih: number;
-  balanced: boolean;
-};
-
 const CLASS_TONE: Record<Classification, "neutral" | "accent" | "positive" | "danger"> = {
   ASET: "accent",
   LIABILITAS: "neutral",
@@ -91,19 +62,54 @@ function currentMonth(): string {
   return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}`;
 }
 
+// ── Server-side type mirrors ─────────────────────────────────────────────────
+
+type WorksheetLineSrv = {
+  no: number;
+  accountCode: string;
+  accountName: string;
+  ref: string;
+  nsDebit: number; nsCredit: number;
+  adjDebit: number; adjCredit: number;
+  adjNsDebit: number; adjNsCredit: number;
+  lrDebit: number; lrCredit: number;
+  neracaDebit: number; neracaCredit: number;
+  prevBalance: number | null;
+  variance: number | null;
+  variancePct: number | null;
+  isAdjusting: boolean;
+};
+
+type WorksheetSrv = {
+  clientName: string;
+  period: string;
+  prevPeriodLabel: string | null;
+  lines: WorksheetLineSrv[];
+  totals: {
+    nsDebit: number; nsCredit: number;
+    adjDebit: number; adjCredit: number;
+    adjNsDebit: number; adjNsCredit: number;
+    lrDebit: number; lrCredit: number;
+    neracaDebit: number; neracaCredit: number;
+  };
+  labaBersih: number;
+  balanced: boolean;
+};
+
+// ──────────────────────────────────────────────────────────────────────────────
+
 export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
   const [clients, setClients] = useState<Client[]>([]);
   const [clientId, setClientId] = useState("");
   const [period, setPeriod] = useState(currentMonth());
   const [report, setReport] = useState<Report | null>(null);
-  const [worksheet, setWorksheet] = useState<Worksheet | null>(null);
-  const [mode, setMode] = useState<"standar" | "lajur">("standar");
+  const [worksheet, setWorksheet] = useState<WorksheetSrv | null>(null);
+  const [mode, setMode] = useState<"standar" | "lajur">("lajur");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [locking, setLocking] = useState(false);
   const router = useRouter();
 
-  // Muat daftar klien sekali
   const loadClients = useCallback(async () => {
     try {
       const res = await fetch("/api/clients");
@@ -117,10 +123,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
   }, []);
 
   useEffect(() => {
-    async function start() {
-      await loadClients();
-    }
-    void start();
+    void loadClients();
   }, [loadClients]);
 
   const load = useCallback(async () => {
@@ -138,7 +141,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
       if (mode === "lajur") {
         const wsRes = await fetch(`/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet`);
         if (wsRes.ok) {
-          const ws = (await wsRes.json()) as { data: Worksheet };
+          const ws = (await wsRes.json()) as { data: WorksheetSrv };
           setWorksheet(ws.data);
         }
       }
@@ -150,10 +153,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
   }, [clientId, period, mode]);
 
   useEffect(() => {
-    async function start() {
-      await load();
-    }
-    void start();
+    void load();
   }, [load]);
 
   const exportUrl = (format: "csv" | "xlsx") =>
@@ -180,96 +180,54 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
     }
   };
 
+  // ── Helper: render amt atau kosong ─────────────────────────────────────────
+  const fmtOrEmpty = (v: number) => v > 0 ? formatCurrencyRp(v) : "";
+
   return (
     <div className="space-y-5">
-      {/* Filter */}
+      {/* Filter bar */}
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
         <label className="flex flex-col gap-1 text-xs text-slate-400">
           Klien
           <select
             value={clientId}
-            onChange={(e) => {
-              setClientId(e.target.value);
-              setReport(null);
-            }}
+            onChange={(e) => { setClientId(e.target.value); setReport(null); }}
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
           >
-            {clients.map((c) => (
-              <option key={c.id} value={c.id}>
-                {c.name}
-              </option>
-            ))}
+            {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </label>
         <label className="flex flex-col gap-1 text-xs text-slate-400">
           Periode
           <input
-            type="month"
-            value={period}
+            type="month" value={period}
             onChange={(e) => setPeriod(e.target.value)}
             className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
           />
         </label>
         <a
-          href={exportUrl("csv") ?? "#"}
-          aria-disabled={!clientId}
+          href={exportUrl("csv") ?? "#"} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId
-              ? "border-slate-700 text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300"
-              : "pointer-events-none opacity-40"
-          }`}
-        >
-          ↓ Ekspor CSV
-        </a>
+            clientId ? "border-slate-700 text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300" : "pointer-events-none opacity-40"}`}
+        >↓ Ekspor CSV</a>
         <a
-          href={exportUrl("xlsx") ?? "#"}
-          aria-disabled={!clientId}
+          href={exportUrl("xlsx") ?? "#"} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId
-              ? "border-slate-700 text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300"
-              : "pointer-events-none opacity-40"
-          }`}
-        >
-          ↓ Ekspor XLSX
-        </a>
-        <div className="flex overflow-hidden rounded-lg border border-slate-700 text-xs">
-          <button
-            type="button"
-            onClick={() => setMode("standar")}
-            className={`px-3 py-2 transition ${
-              mode === "standar" ? "bg-yellow-400/20 text-yellow-300" : "text-slate-300 hover:bg-slate-800"
-            }`}
-          >
-            Standar
-          </button>
-          <button
-            type="button"
-            onClick={() => setMode("lajur")}
-            className={`px-3 py-2 transition ${
-              mode === "lajur" ? "bg-yellow-400/20 text-yellow-300" : "text-slate-300 hover:bg-slate-800"
-            }`}
-          >
-            Neraca Lajur
-          </button>
-        </div>
+            clientId ? "border-slate-700 text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300" : "pointer-events-none opacity-40"}`}
+        >↓ Ekspor XLSX</a>
+        <span className="rounded-lg border border-yellow-400/30 bg-yellow-400/10 px-3 py-2 text-xs text-yellow-300">
+          📋 10-Kolom Big 4
+        </span>
         <a
           href={clientId ? `/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet-csv` : "#"}
           aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId
-              ? "border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20"
-              : "pointer-events-none opacity-40"
+            clientId ? "border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20" : "pointer-events-none opacity-40"
           }`}
-        >
-          ↓ Lajur CSV
-        </a>
+        >↓ Lajur CSV</a>
         {report?.periodStatus === "OPEN" && canLock && (
-          <button
-            type="button"
-            onClick={() => void handleLock()}
-            disabled={locking}
-            className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-300 transition hover:bg-yellow-400/20 disabled:opacity-50"
-          >
+          <button type="button" onClick={() => void handleLock()} disabled={locking}
+            className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-300 transition hover:bg-yellow-400/20 disabled:opacity-50">
             {locking ? "Mengunci…" : "🔒 Kunci Periode"}
           </button>
         )}
@@ -284,47 +242,158 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
       )}
 
       {!loading && !error && !report && (
-        <EmptyState
-          title="Belum ada data"
-          description="Pilih klien dan periode untuk melihat neraca percobaan."
-        />
+        <EmptyState title="Belum ada data" description="Pilih klien dan periode untuk melihat neraca percobaan." />
       )}
 
       {!loading && !error && report && (
         <>
-          {/* Ringkasan */}
+          {/* Ringkasan KPI */}
           <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-              <p className="text-xs text-slate-400">Total Debit</p>
-              <p className="mt-1 font-mono text-lg text-slate-100">{formatCurrencyRp(report.totalDebit)}</p>
-            </div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-              <p className="text-xs text-slate-400">Total Kredit</p>
-              <p className="mt-1 font-mono text-lg text-slate-100">{formatCurrencyRp(report.totalCredit)}</p>
-            </div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-              <p className="text-xs text-slate-400">Status Seimbang</p>
-              <div className="mt-2">
-                {report.balanced ? (
-                  <Badge label="✓ Seimbang" tone="positive" />
-                ) : (
-                  <Badge label="Tidak seimbang" tone="danger" />
-                )}
+            {([
+              ["Total Debit", formatCurrencyRp(report.totalDebit)],
+              ["Total Kredit", formatCurrencyRp(report.totalCredit)],
+              ["Status", report.balanced ? "✓ Seimbang" : "Tidak seimbang"],
+              ["Indikator", report.unusualCount === 0 ? "Semua wajar" : `${report.unusualCount} akun perlu cek`],
+            ] as const).map(([label, val]) => (
+              <div key={label} className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+                <p className="text-xs text-slate-400">{label}</p>
+                <div className="mt-2">
+                  {label === "Status" ? (
+                    <Badge label={val} tone={report.balanced ? "positive" : "danger"} />
+                  ) : label === "Indikator" ? (
+                    <Badge label={val} tone={report.unusualCount === 0 ? "positive" : "danger"} />
+                  ) : (
+                    <p className="font-mono text-lg text-slate-100">{val}</p>
+                  )}
+                </div>
               </div>
-            </div>
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-              <p className="text-xs text-slate-400">Indikator Kewajaran</p>
-              <div className="mt-2">
-                {report.unusualCount === 0 ? (
-                  <Badge label="Semua wajar" tone="positive" />
-                ) : (
-                  <Badge label={`${report.unusualCount} akun perlu cek`} tone="danger" />
-                )}
-              </div>
-            </div>
+            ))}
           </div>
 
-          {/* Tabel */}
+          {/* ── 10-KOLOM WORKKSHEET — ditampilkan di mode "lajur" ── */}
+          {mode === "lajur" && worksheet && (
+            <div className="rounded-xl border border-slate-800 bg-slate-900/50">
+              <div className="flex flex-wrap items-center gap-4 border-b border-slate-800 px-4 py-3">
+                <div>
+                  <h3 className="text-sm font-medium text-slate-100">
+                    Neraca Lajur — {worksheet.clientName}
+                  </h3>
+                  <p className="text-xs text-slate-400">
+                    {worksheet.period}
+                    {worksheet.prevPeriodLabel ? ` · vs ${worksheet.prevPeriodLabel}` : ""}
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center gap-2">
+                  {worksheet.balanced && <Badge label="Seimbang" tone="positive" />}
+                  {!worksheet.balanced && <Badge label="Tidak seimbang" tone="danger" />}
+                  {report.periodStatus === "CLOSED" && <Badge label="🔒 Terkunci" tone="accent" />}
+                  <span className="rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                    💰 {new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0}).format(worksheet.labaBersih)}
+                  </span>
+                  <span className="text-xs text-slate-500">{worksheet.lines.length} akun</span>
+                </div>
+              </div>
+              <div className="overflow-x-auto">
+                {/* 15 kolom: No | Kode | Nama | NS:D/K | Adj:D/K | AdjNS:D/K | LR:D/K | Ner:D/K | Prev | Var% */}
+                <table className="w-full min-w-[1400px] text-left text-sm">
+                  {/* Row 1: main groups */}
+                  <thead>
+                    <tr className="border-b border-slate-800 text-[11px] text-slate-400">
+                      <th className="sticky left-0 z-20 bg-slate-950 px-2 py-1.5" rowSpan={2}>No</th>
+                      <th className="sticky left-[40px] z-20 bg-slate-950 px-2 py-1.5" rowSpan={2}>Kode</th>
+                      <th className="px-2 py-1.5" rowSpan={2}>Nama Akun</th>
+                      <th className="px-2 py-1.5 text-center" colSpan={2}>Neraca Saldo</th>
+                      <th className="px-2 py-1.5 text-center bg-slate-800/30" colSpan={2}>Penyesuaian</th>
+                      <th className="px-2 py-1.5 text-center" colSpan={2}>NS Disesuaikan</th>
+                      <th className="px-2 py-1.5 text-center" colSpan={2}>Laba Rugi</th>
+                      <th className="px-2 py-1.5 text-center" colSpan={2}>Neraca</th>
+                      <th className="px-2 py-1.5 text-center" colSpan={2}>vs Bln Lalu</th>
+                    </tr>
+                    {/* Row 2: D/K sub-headers */}
+                    <tr className="border-b border-slate-800 text-[10px] text-slate-500">
+                      <th className="px-2 py-1 text-right">D</th>
+                      <th className="px-2 py-1 text-right">K</th>
+                      <th className="px-2 py-1 text-right bg-slate-800/20">D</th>
+                      <th className="px-2 py-1 text-right bg-slate-800/20">K</th>
+                      <th className="px-2 py-1 text-right">D</th>
+                      <th className="px-2 py-1 text-right">K</th>
+                      <th className="px-2 py-1 text-right">D</th>
+                      <th className="px-2 py-1 text-right">K</th>
+                      <th className="px-2 py-1 text-right">D</th>
+                      <th className="px-2 py-1 text-right">K</th>
+                      <th className="px-2 py-1 text-right">Saldo</th>
+                      <th className="px-2 py-1 text-right">%</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {worksheet.lines.map((l) => {
+                      const isLaba = l.accountName.includes("LABA");
+                      const rowBg = isLaba ? "bg-yellow-400/10" : "";
+                      return (
+                        <tr
+                          key={l.no}
+                          className={`border-b border-slate-800/60 ${
+                            isLaba ? "bg-yellow-400/10 font-semibold text-slate-100" : "text-slate-300"
+                          } ${l.isAdjusting ? "ring-1 ring-inset ring-amber-400/30" : ""}`}
+                        >
+                          <td className={`sticky left-0 z-10 px-2 py-1.5 text-slate-500 ${rowBg}`}>{l.no}</td>
+                          <td className={`sticky left-[40px] z-10 px-2 py-1.5 font-mono text-[11px] text-slate-500 ${rowBg}`}>{l.accountCode}</td>
+                          <td className="px-2 py-1.5">
+                            {l.accountCode ? (
+                              <a
+                                href={`/dashboard/reports/ledger?clientId=${encodeURIComponent(report.clientId)}&accountCode=${encodeURIComponent(l.accountCode)}&period=${encodeURIComponent(worksheet.period)}`}
+                                className="text-slate-300 hover:text-yellow-300 hover:underline transition"
+                                title={`Buku Besar ${l.accountName}`}
+                              >{l.accountName}</a>
+                            ) : l.accountName}
+                          </td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.nsDebit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.nsCredit)}</td>
+                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-800/20 ${l.isAdjusting ? "text-amber-300" : ""}`}>{fmtOrEmpty(l.adjDebit)}</td>
+                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-800/20 ${l.isAdjusting ? "text-amber-300" : ""}`}>{fmtOrEmpty(l.adjCredit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.adjNsDebit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.adjNsCredit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.lrDebit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.lrCredit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.neracaDebit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.neracaCredit)}</td>
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px] text-slate-500">
+                            {l.prevBalance !== null ? formatCurrencyRp(l.prevBalance) : ""}
+                          </td>
+                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] ${
+                            l.variancePct !== null
+                              ? l.variancePct > 20 ? "text-emerald-400" : l.variancePct < -20 ? "text-rose-400" : "text-slate-500"
+                              : ""
+                          }`}>
+                            {l.variancePct !== null ? `${l.variancePct >= 0 ? "↑" : "↓"}${Math.abs(l.variancePct).toFixed(0)}%` : ""}
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                  <tfoot>
+                    <tr className="border-t-2 border-slate-700 bg-slate-950 font-semibold text-slate-100 text-[11px]">
+                      <td className="sticky left-0 z-10 bg-slate-950 px-2 py-2" colSpan={3}>TOTAL</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsDebit)}</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsCredit)}</td>
+                      <td className="px-2 py-2 text-right font-mono bg-slate-800/20">{formatCurrencyRp(worksheet.totals.adjDebit)}</td>
+                      <td className="px-2 py-2 text-right font-mono bg-slate-800/20">{formatCurrencyRp(worksheet.totals.adjCredit)}</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.adjNsDebit)}</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.adjNsCredit)}</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrDebit)}</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrCredit)}</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.neracaDebit)}</td>
+                      <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.neracaCredit)}</td>
+                      <td className="px-2 py-2" colSpan={2}></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+            </div>
+          )}
+
+          {/* ── Mode Standar — tabel neraca percobaan ── */}
+          {mode === "standar" && (
           <div className="rounded-xl border border-slate-800 bg-slate-900/50">
             <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
               <div>
@@ -371,26 +440,12 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                       </Link>
                     </TD>
                     <TD>{r.accountName}</TD>
-                    <TD>
-                      <Badge label={CLASS_LABELS[r.classification]} tone={CLASS_TONE[r.classification]} />
-                    </TD>
-                    <TD className="text-right font-mono text-slate-300">
-                      {r.debit > 0 ? formatCurrencyRp(r.debit) : "—"}
-                    </TD>
-                    <TD className="text-right font-mono text-slate-300">
-                      {r.credit > 0 ? formatCurrencyRp(r.credit) : "—"}
-                    </TD>
+                    <TD><Badge label={CLASS_LABELS[r.classification]} tone={CLASS_TONE[r.classification]} /></TD>
+                    <TD className="text-right font-mono text-slate-300">{r.debit > 0 ? formatCurrencyRp(r.debit) : "—"}</TD>
+                    <TD className="text-right font-mono text-slate-300">{r.credit > 0 ? formatCurrencyRp(r.credit) : "—"}</TD>
                     <TD className="text-right font-mono text-slate-100">{formatCurrencyRp(r.balance)}</TD>
-                    <TD className="text-right font-mono text-slate-400">
-                      {r.prevBalance === null ? "—" : formatCurrencyRp(r.prevBalance)}
-                    </TD>
-                    <TD>
-                      {r.unusualReason && (
-                        <span className="text-xs text-red-300" title={r.unusualReason}>
-                          ⚠ {r.unusualReason}
-                        </span>
-                      )}
-                    </TD>
+                    <TD className="text-right font-mono text-slate-400">{r.prevBalance === null ? "—" : formatCurrencyRp(r.prevBalance)}</TD>
+                    <TD>{r.unusualReason && <span className="text-xs text-red-300" title={r.unusualReason}>⚠ {r.unusualReason}</span>}</TD>
                   </TR>
                 ))}
               </TBody>
@@ -402,70 +457,6 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
               </span>
             </div>
           </div>
-
-          {mode === "lajur" && worksheet && (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50">
-              <div className="border-b border-slate-800 px-4 py-3">
-                <h3 className="text-sm font-medium text-slate-100">Neraca Lajur — {worksheet.clientName}</h3>
-                <p className="text-xs text-slate-400">
-                  Periode {worksheet.period} · format spreadsheet: Neraca Saldo → Laba Rugi → Neraca
-                  {worksheet.balanced ? " · seimbang ✓" : " · tidak seimbang ⚠"}
-                </p>
-              </div>
-              <div className="overflow-x-auto">
-                <table className="w-full min-w-[900px] text-left text-sm">
-                  <thead>
-                    <tr className="border-b border-slate-800 text-xs text-slate-400">
-                      <th className="sticky left-0 z-20 bg-slate-950 px-3 py-2" rowSpan={2}>No</th>
-                      <th className="sticky left-[48px] z-20 bg-slate-950 px-3 py-2" rowSpan={2}>Kode</th>
-                      <th className="px-3 py-2" rowSpan={2}>Nama Akun</th>
-                      <th className="px-3 py-2 text-center" colSpan={2}>Neraca Saldo</th>
-                      <th className="px-3 py-2 text-center" colSpan={2}>Laba Rugi</th>
-                      <th className="px-3 py-2 text-center" colSpan={2}>Neraca</th>
-                    </tr>
-                    <tr className="border-b border-slate-800 text-xs text-slate-500">
-                      <th className="px-3 py-1 text-right">Debit</th>
-                      <th className="px-3 py-1 text-right">Kredit</th>
-                      <th className="px-3 py-1 text-right">Debit</th>
-                      <th className="px-3 py-1 text-right">Kredit</th>
-                      <th className="px-3 py-1 text-right">Debit</th>
-                      <th className="px-3 py-1 text-right">Kredit</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {worksheet.lines.map((l) => (
-                      <tr
-                        key={l.no}
-                        className={`border-b border-slate-800/60 ${
-                          l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold text-slate-100" : "text-slate-300"
-                        }`}
-                      >
-                        <td className="sticky left-0 z-10 bg-slate-950 px-3 py-2 text-slate-500">{l.no}</td>
-                        <td className="sticky left-[48px] z-10 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-500">{l.accountCode}</td>
-                        <td className="px-3 py-2">{l.accountName}</td>
-                        <td className="px-3 py-2 text-right font-mono">{l.nsDebit > 0 ? formatCurrencyRp(l.nsDebit) : ""}</td>
-                        <td className="px-3 py-2 text-right font-mono">{l.nsCredit > 0 ? formatCurrencyRp(l.nsCredit) : ""}</td>
-                        <td className="px-3 py-2 text-right font-mono">{l.lrDebit > 0 ? formatCurrencyRp(l.lrDebit) : ""}</td>
-                        <td className="px-3 py-2 text-right font-mono">{l.lrCredit > 0 ? formatCurrencyRp(l.lrCredit) : ""}</td>
-                        <td className="px-3 py-2 text-right font-mono">{l.neracaDebit > 0 ? formatCurrencyRp(l.neracaDebit) : ""}</td>
-                        <td className="px-3 py-2 text-right font-mono">{l.neracaCredit > 0 ? formatCurrencyRp(l.neracaCredit) : ""}</td>
-                      </tr>
-                    ))}
-                  </tbody>
-                  <tfoot>
-                    <tr className="border-t-2 border-slate-700 bg-slate-950 font-semibold text-slate-100">
-                      <td className="sticky left-0 z-10 bg-slate-950 px-3 py-2" colSpan={3}>TOTAL</td>
-                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsDebit)}</td>
-                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsCredit)}</td>
-                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrDebit)}</td>
-                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrCredit)}</td>
-                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.neracaDebit)}</td>
-                      <td className="px-3 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.neracaCredit)}</td>
-                    </tr>
-                  </tfoot>
-                </table>
-              </div>
-            </div>
           )}
         </>
       )}

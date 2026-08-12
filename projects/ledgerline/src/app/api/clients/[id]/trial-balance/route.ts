@@ -62,7 +62,7 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
 
   if (format === "worksheet" || format === "worksheet-csv") {
     const { buildWorksheet, worksheetCsv } = await import("@/server/worksheet");
-    const ws = buildWorksheet(report.rows, client.name, period);
+    const ws = buildWorksheet(report.rows, client.name, period, report.prevPeriod);
     if (format === "worksheet-csv") {
       return new NextResponse("\uFEFF" + worksheetCsv(ws), {
         headers: {

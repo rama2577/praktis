@@ -63,7 +63,7 @@ const TAX_LINES: TaxLine[] = [
 
 describe("worksheet — neraca lajur", () => {
   it("pasangan kolom seimbang + laba bersih dipindah", () => {
-    const w = buildWorksheet(ROWS, "PT Maju Jaya", "2026-08");
+    const w = buildWorksheet(ROWS, "PT Maju Jaya", "2026-08", null);
     expect(w.balanced).toBe(true);
     // pendapatan 20jt − beban 5jt = laba 15jt
     expect(w.labaBersih).toBe(15_000_000);
@@ -74,8 +74,8 @@ describe("worksheet — neraca lajur", () => {
   });
 
   it("CSV memiliki 10 kolom + baris TOTAL", () => {
-    const csv = worksheetCsv(buildWorksheet(ROWS, "PT Maju Jaya", "2026-08"));
-    expect(csv.split("\n")[0].split(",")).toHaveLength(10);
+    const csv = worksheetCsv(buildWorksheet(ROWS, "PT Maju Jaya", "2026-08", null));
+    expect(csv.split("\n")[0].split(",")).toHaveLength(16); // 16 kolom Big 4
     expect(csv).toContain("TOTAL");
   });
 });

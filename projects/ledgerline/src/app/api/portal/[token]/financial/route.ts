@@ -55,7 +55,7 @@ export async function GET(req: Request, ctx: Ctx) {
       clientName: clientFull.name,
       period: effective,
       availablePeriods: available,
-      worksheet: buildWorksheet(tb.rows, clientFull.name, effective),
+      worksheet: buildWorksheet(tb.rows, clientFull.name, effective, null),
       statements: { labaRugi, neraca, ekuitas, arusKas },
       analysis: buildAnalysis(tb.rows, clientFull.name, effective),
       calk: buildCalk({ clientName: clientFull.name, period: effective, rows: tb.rows, profile: profileSubset }),

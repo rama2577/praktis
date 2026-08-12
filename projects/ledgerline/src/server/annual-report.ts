@@ -57,7 +57,7 @@ export function buildAnnualReport(input: Input): AnnualReport {
   const analysis = buildAnalysis(rows, clientName, period);
   const calk = buildCalk({ clientName, period, rows, profile, depreciationMethod, assetCount });
   const taxAnalysis = buildTaxAnalysis(clientName, period, taxLines, rows);
-  const worksheet = buildWorksheet(rows, clientName, period);
+  const worksheet = buildWorksheet(rows, clientName, period, null);
 
   const labaRugi = buildIncomeStatement(rows, clientName, period);
   const laba = labaRugi.lines.find((l) => l.label.includes("LABA (RUGI)"))?.amount ?? 0;
