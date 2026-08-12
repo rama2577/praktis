@@ -1,0 +1,97 @@
+"use client";
+
+import { useCallback, useEffect, useState } from "react";
+import { Card } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Skeleton } from "@/components/ui/skeleton";
+import { ErrorState } from "@/components/ui/error-state";
+
+const fmt = (n: number) => new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 }).format(n);
+const rp = (n: number) => `Rp${fmt(n)}`;
+
+type Client = { id: string; name: string };
+
+import { useAnalytics, type AnalysisData, BarChart, RatioCard, SelectClient, PeriodInput } from "./analytics-views";
+
+export function AnalysisView({ clients, period, clientId, setClientId, setPeriod }: {
+  clients: Client[];
+  period: string;
+  clientId: string;
+  setClientId: (v: string) => void;
+  setPeriod: (v: string) => void;
+}) {
+  const { data, loading, error, reload } = useAnalytics<AnalysisData>(clientId, period, "analysis", !!clientId);
+  return (
+    <div className="space-y-5">
+      <div className="flex flex-wrap items-end gap-3">
+        <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
+        <PeriodInput period={period} setPeriod={setPeriod} />
+      </div>
+      {error && <ErrorState message={error} onRetry={() => void reload()} />}
+      {loading && <Skeleton className="h-64 w-full" />}
+      {!loading && data && (
+        <>
+          <Card className="p-5">
+            <h3 className="mb-3 font-display text-sm font-bold text-slate-100">Analisa Manajemen (otomatis)</h3>
+            <ul className="list-disc space-y-2 pl-5 text-sm text-slate-300">
+              {data.narrative.map((n, i) => (
+                <li key={i}>{n}</li>
+              ))}
+            </ul>
+          </Card>
+          <div>
+            <h3 className="mb-3 font-display text-sm font-bold text-slate-100">Rasio Keuangan</h3>
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+              {data.ratios.map((r) => (
+                <RatioCard key={r.key} r={r} />
+              ))}
+            </div>
+          </div>
+          <div className="grid gap-4 lg:grid-cols-2">
+            <Card className="p-5">
+              <h3 className="mb-3 text-sm font-medium text-slate-200">Komposisi Aset</h3>
+              <BarChart series={data.charts.komposisiAset} color="#f5c518" />
+            </Card>
+            <Card className="p-5">
+              <h3 className="mb-3 text-sm font-medium text-slate-200">Pendapatan vs Beban</h3>
+              <div className="flex h-40 items-end gap-6 px-4">
+                {[
+                  { label: "Pendapatan", value: data.charts.pendapatanVsBeban.pendapatan, color: "#34d399" },
+                  { label: "Beban", value: data.charts.pendapatanVsBeban.beban, color: "#fb7185" },
+                ].map((b) => {
+                  const max = Math.max(data.charts.pendapatanVsBeban.pendapatan, data.charts.pendapatanVsBeban.beban, 1);
+                  return (
+                    <div key={b.label} className="flex flex-1 flex-col items-center gap-1">
+                      <span className="font-mono text-xs text-slate-300">{rp(b.value)}</span>
+                      <div
+                        className="w-full rounded-t-lg transition-all"
+                        style={{ height: `${Math.max((b.value / max) * 100, 3)}%`, backgroundColor: b.color }}
+                      />
+                      <span className="text-xs text-slate-400">{b.label}</span>
+                    </div>
+                  );
+                })}
+              </div>
+            </Card>
+            <Card className="p-5">
+              <h3 className="mb-3 text-sm font-medium text-slate-200">Kontribusi Pendapatan</h3>
+              <BarChart series={data.charts.kontribusiPendapatan} color="#38bdf8" />
+            </Card>
+            <Card className="p-5">
+              <h3 className="mb-3 text-sm font-medium text-slate-200">Kontribusi Beban</h3>
+              <BarChart series={data.charts.kontribusiBeban} color="#fb7185" />
+            </Card>
+          </div>
+        </>
+      )}
+    </div>
+  );
+}
+
+// ── CALK ─────────────────────────────────────────────────────────────────────
+
+type CalkData = {
+  clientName: string;
+  period: string;
+  sections: { number: number; title: string; paragraphs: string[]; items?: { label: string; value: string }[] }[];
+};
