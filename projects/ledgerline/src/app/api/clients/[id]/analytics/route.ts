@@ -3,13 +3,14 @@ import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { withTenantApi } from "@/lib/tenant-api";
-import { getTrialBalance, parsePeriod } from "@/server/trial-balance";
+import { getTrialBalance, parsePeriod, prevPeriodOf } from "@/server/trial-balance";
 import { getTaxLines } from "@/server/tax-report";
 import { getClientProfile } from "@/server/client-profile";
 import { buildAnalysis } from "@/server/financial-analysis";
 import { buildCalk, calkCsv, calkXlsx } from "@/server/calk";
 import { buildTaxAnalysis } from "@/server/tax-analysis";
 import { buildAnnualReport, annualReportPdf, annualReportCsv } from "@/server/annual-report";
+import { buildVarianceDecomposition } from "@/server/variance-decomposition";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -82,6 +83,15 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
   if (scope === "tax") {
     const tax = buildTaxAnalysis(client.name, period, taxLines, tb.rows);
     return NextResponse.json({ data: tax });
+  }
+
+  if (scope === "variance") {
+    const prevPeriod = prevPeriodOf(period);
+    if (!prevPeriod) return NextResponse.json({ error: "Tidak dapat menghitung periode sebelumnya" }, { status: 400 });
+    const priorTb = await getTrialBalance(client.id, client.name, prevPeriod);
+    if (!priorTb) return NextResponse.json({ error: `Tidak ada data trial balance untuk ${prevPeriod}` }, { status: 404 });
+    const decomp = await buildVarianceDecomposition(tb.rows, priorTb.rows, client.name, period, prevPeriod);
+    return NextResponse.json({ data: decomp });
   }
 
   if (scope === "annual") {

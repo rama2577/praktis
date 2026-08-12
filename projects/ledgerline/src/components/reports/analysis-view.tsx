@@ -12,6 +12,7 @@ const rp = (n: number) => `Rp${fmt(n)}`;
 type Client = { id: string; name: string };
 
 import { useAnalytics, type AnalysisData, BarChart, RatioCard, SelectClient, PeriodInput } from "./analytics-views";
+import type { VarianceDecomposition } from "@/server/variance-decomposition";
 
 export function AnalysisView({ clients, period, clientId, setClientId, setPeriod }: {
   clients: Client[];
@@ -20,6 +21,7 @@ export function AnalysisView({ clients, period, clientId, setClientId, setPeriod
   setClientId: (v: string) => void;
   setPeriod: (v: string) => void;
 }) {
+  const { data: variance } = useAnalytics<VarianceDecomposition>(clientId, period, "variance", !!clientId);
   const { data, loading, error, reload } = useAnalytics<AnalysisData>(clientId, period, "analysis", !!clientId);
   return (
     <div className="space-y-5">
@@ -82,6 +84,23 @@ export function AnalysisView({ clients, period, clientId, setClientId, setPeriod
               <BarChart series={data.charts.kontribusiBeban} color="#fb7185" />
             </Card>
           </div>
+          {/* AI Variance Decomposition */}
+          {variance && (
+            <Card className="border-yellow-400/20 bg-yellow-400/5 p-5">
+              <div className="mb-3 flex items-center gap-2">
+                <h3 className="font-display text-sm font-bold text-slate-100">🤖 Analisis Varians AI</h3>
+                <Badge label={`${variance.currentPeriod} vs ${variance.priorPeriod}`} tone="accent" />
+              </div>
+              <p className="text-sm leading-relaxed text-slate-300">{variance.narrative}</p>
+              {variance.keyDrivers.length > 0 && (
+                <div className="mt-3 flex flex-wrap gap-2">
+                  {variance.keyDrivers.map((d, i) => (
+                    <span key={i} className="rounded-full bg-slate-800 px-2.5 py-0.5 text-xs text-slate-300">{d}</span>
+                  ))}
+                </div>
+              )}
+            </Card>
+          )}
         </>
       )}
     </div>
