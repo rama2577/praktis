@@ -135,9 +135,23 @@ model User {
   reviewTasks         ReviewTask[]        @relation("ReviewAssignee")
   corrections         JournalCorrection[] @relation("CorrectionUser")
   fiscalPeriodsLocked FiscalPeriod[]      @relation("PeriodLocker")
+  dashboardLayout     DashboardLayout?
 
   @@unique([firmId, email])
   @@index([firmId, role])
+}
+
+// DashboardLayout: susunan panel Dockview per user (F7 — PoC dockable dashboard).
+model DashboardLayout {
+  id         String   @id @default(cuid())
+  userId     String   @unique
+  layoutJson String   @db.Text
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
 }
 
 model Client {

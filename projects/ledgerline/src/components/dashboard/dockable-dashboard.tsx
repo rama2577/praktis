@@ -6,7 +6,7 @@
 
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { DockviewReadyEvent } from "dockview-core";
 import "dockview/dist/styles/dockview.css";
@@ -178,13 +178,34 @@ const DockviewReact = dynamic(
 );
 
 export function DockableDashboard({ data }: { data: PanelProps }) {
-  const [mounted, setMounted] = useState(false);
+  const [ready, setReady] = useState<{ layout: string | null } | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [lastSaved, setLastSaved] = useState<string | null>(null);
+  const apiRef = useRef<DockviewReadyEvent["api"] | null>(null);
+  const loadedRef = useRef(false);
 
-  useEffect(() => setMounted(true), []);
+  // Muat layout tersimpan per user SEBELUM DockviewReact mount (hindari race async di onReady).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      let layout: string | null = null;
+      try {
+        const res = await fetch("/api/dashboard/layout");
+        const json = await res.json();
+        if (res.ok && json.layout) layout = json.layout;
+      } catch {
+        // fallback default
+      }
+      if (!cancelled) setReady({ layout });
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
-  const onReady = (event: DockviewReadyEvent) => {
-    const api = event.api;
+  const buildDefaultLayout = useCallback((api: DockviewReadyEvent["api"]) => {
     const add = (id: string, component: string, title: string, ref?: string, dir: "right" | "below" | "within" = "right") => {
+      if (api.getPanel(id)) return; // idempotent — aman dari double-mount StrictMode
       api.addPanel({
         id,
         component,
@@ -196,24 +217,97 @@ export function DockableDashboard({ data }: { data: PanelProps }) {
     add("pipeline", "pipeline", "Pipeline Produksi", "kpi", "below");
     add("sla", "sla", "Monitoring SLA", "pipeline", "right");
     add("quality", "quality", "Insight Kualitas", "sla", "below");
-  };
+  }, []);
 
-  if (!mounted) {
+  const saveLayout = useCallback(async () => {
+    const api = apiRef.current;
+    if (!api || !loadedRef.current) return;
+    try {
+      const layout = JSON.stringify(api.toJSON());
+      await fetch("/api/dashboard/layout", {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ layout }),
+      });
+      setLastSaved(new Date().toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" }));
+    } catch {
+      // gagal simpan — jangan ganggu pengguna, layout tetap berlaku sesi ini
+    }
+  }, []);
+
+  const onReady = useCallback(
+    (event: DockviewReadyEvent) => {
+      const api = event.api;
+      apiRef.current = api;
+      // Guard double-mount (React StrictMode dev): jangan init ulang jika panel sudah ada.
+      if (api.panels.length > 0 || !ready) return;
+      loadedRef.current = false;
+
+      // Muat layout tersimpan; fallback ke default.
+      try {
+        if (ready.layout) {
+          api.fromJSON(JSON.parse(ready.layout));
+        } else {
+          buildDefaultLayout(api);
+        }
+      } catch {
+        buildDefaultLayout(api);
+      }
+      loadedRef.current = true;
+
+      // Simpan otomatis setiap layout berubah (drag, resize, close, reorder).
+      api.onDidLayoutChange(() => {
+        void saveLayout();
+      });
+    },
+    [buildDefaultLayout, saveLayout, ready],
+  );
+
+  const resetLayout = useCallback(async () => {
+    const api = apiRef.current;
+    if (!api) return;
+    setSaving(true);
+    try {
+      await fetch("/api/dashboard/layout", { method: "DELETE" });
+      api.clear();
+      buildDefaultLayout(api);
+      setLastSaved(null);
+    } finally {
+      setSaving(false);
+    }
+  }, [buildDefaultLayout]);
+
+  if (!ready) {
     return <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center text-sm text-slate-500">Memuat workspace…</div>;
   }
 
   return (
-    <div className="h-[70vh] overflow-hidden rounded-xl border border-slate-800">
-      <DockviewReact
-        className="dockview-theme-dark"
-        components={{
-          kpi: () => <KpiPanel kpi={data.kpi} />,
-          pipeline: () => <PipelinePanel pipeline={data.pipeline} />,
-          sla: () => <SlaPanel sla={data.sla} />,
-          quality: () => <QualityPanel insights={data.insights} />,
-        }}
-        onReady={onReady}
-      />
+    <div>
+      <div className="mb-2 flex items-center justify-between">
+        <div className="flex items-center gap-2 text-[11px] text-slate-500">
+          <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">Workspace Dockable</span>
+          {lastSaved && <span className="px-1">Tersimpan {lastSaved}</span>}
+        </div>
+        <button
+          onClick={resetLayout}
+          disabled={saving}
+          className="rounded-md border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300 transition hover:border-rose-500/50 hover:text-rose-300 disabled:opacity-50"
+        >
+          {saving ? "Mereset…" : "Reset Layout"}
+        </button>
+      </div>
+      <div className="h-[70vh] overflow-hidden rounded-xl border border-slate-800">
+        <DockviewReact
+          className="dockview-theme-dark"
+          components={{
+            kpi: () => <KpiPanel kpi={data.kpi} />,
+            pipeline: () => <PipelinePanel pipeline={data.pipeline} />,
+            sla: () => <SlaPanel sla={data.sla} />,
+            quality: () => <QualityPanel insights={data.insights} />,
+          }}
+          onReady={onReady}
+        />
+      </div>
     </div>
   );
 }
