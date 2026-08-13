@@ -37,5 +37,21 @@ export const POST = withTenantApi(async (request) => {
     },
   });
 
+  // Gap #2: isi coaMapping klien dari template COA industri —
+  // AI langsung punya referensi akun klien sejak hari pertama.
+  const { coaMappingFromTemplate } = await import("@/server/coa-template");
+  const coaMapping = await coaMappingFromTemplate(result.data.industry);
+  if (Object.keys(coaMapping).length > 0) {
+    await prisma.clientProfile.create({
+      data: {
+        clientId: client.id,
+        firmId: guard.session.user.firmId,
+        coaMapping,
+        mappingStatus: "READY",
+        rules: { source: "industry-template", template: result.data.industry },
+      },
+    });
+  }
+
   return NextResponse.json({ data: client }, { status: 201 });
 });

@@ -10,11 +10,9 @@ export type ClientFormData = {
   taxId: string | null;
 };
 
-const INDUSTRY_OPTIONS = [
-  { value: "RETAIL", label: "Retail" },
-  { value: "SERVICES", label: "Jasa" },
-  { value: "FNB", label: "F&B" },
-] as const;
+import { INDUSTRY_LIST, INDUSTRY_LABELS } from "@/lib/industries";
+
+const INDUSTRY_OPTIONS = INDUSTRY_LIST.map((v) => ({ value: v, label: INDUSTRY_LABELS[v] }));
 
 export function ClientForm({
   mode,

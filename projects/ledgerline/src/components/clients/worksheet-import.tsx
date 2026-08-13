@@ -39,7 +39,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [clientName, setClientName] = useState("");
-  const [industry, setIndustry] = useState<"SERVICES" | "RETAIL" | "FNB">("SERVICES");
+  const [industry, setIndustry] = useState<string>("SERVICES");
   const [result, setResult] = useState<{ clientId: string; clientName: string; journalCreated: number; coaImported: number } | null>(null);
 
   async function uploadPreview() {
@@ -217,9 +217,14 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
                 onChange={(e) => setIndustry(e.target.value as typeof industry)}
                 className="mt-1 w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-1.5 text-sm text-slate-200"
               >
-                <option value="SERVICES">Services</option>
-                <option value="RETAIL">Retail</option>
-                <option value="FNB">F&B</option>
+                {[
+                  ["SERVICES", "Jasa"], ["RETAIL", "Perdagangan"], ["FNB", "F&B"], ["MANUFACTURING", "Manufaktur"],
+                  ["CONSTRUCTION", "Konstruksi"], ["PROPERTY", "Properti"], ["HOSPITALITY", "Hotel"], ["HEALTHCARE", "Kesehatan"],
+                  ["EDUCATION", "Pendidikan"], ["COOPERATIVE", "Koperasi"], ["NONPROFIT", "Yayasan"], ["AGRICULTURE", "Agrikultur"],
+                  ["TRANSPORT", "Transportasi"], ["TECHNOLOGY", "Teknologi"], ["FINANCE", "Fintech"], ["EVENT", "Event"], ["OTHER", "Lainnya"],
+                ].map(([v, l]) => (
+                  <option key={v} value={v}>{l}</option>
+                ))}
               </select>
             </label>
             <div className="flex items-end text-[11px] text-slate-500">

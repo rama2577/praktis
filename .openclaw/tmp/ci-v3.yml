@@ -26,6 +26,11 @@ jobs:
       - name: Lint (non-blocking)
         run: npm run lint
         continue-on-error: true
+      - name: SonarCloud scan (aktif saat SONAR_TOKEN diisi)
+        if: env.SONAR_TOKEN != ''
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+        uses: SonarSource/sonarcloud-github-action@v2
 
   security:
     runs-on: ubuntu-latest

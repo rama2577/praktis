@@ -1,5 +1,6 @@
 import type { Industry } from "@prisma/client";
 import { prisma } from "@/lib/db";
+import { INDUSTRY_LIST, isIndustry } from "@/lib/industries";
 
 // ── Validasi input klien (tanpa dependency eksternal) ────────────────────
 
@@ -12,7 +13,7 @@ export type ClientInput = {
 
 export type ClientErrors = Partial<Record<"name" | "industry" | "taxId", string>>;
 
-const INDUSTRIES: Industry[] = ["RETAIL", "SERVICES", "FNB"];
+const INDUSTRIES: Industry[] = INDUSTRY_LIST;
 
 /** Validasi & normalisasi input klien. Return { ok: true, data } atau { ok: false, errors }. */
 export function validateClientInput(raw: unknown): { ok: true; data: ClientInput } | { ok: false; errors: ClientErrors } {
@@ -24,8 +25,8 @@ export function validateClientInput(raw: unknown): { ok: true; data: ClientInput
   else if (name.length > 120) errors.name = "Nama maksimal 120 karakter.";
 
   const industry = typeof input.industry === "string" ? input.industry : "";
-  if (!INDUSTRIES.includes(industry as Industry)) {
-    errors.industry = "Pilih industri: Retail, Jasa, atau F&B.";
+  if (!isIndustry(industry)) {
+    errors.industry = "Pilih industri yang valid.";
   }
 
   let taxId: string | null = null;

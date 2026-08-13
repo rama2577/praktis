@@ -5,14 +5,11 @@ import { chatJsonWithFallback, isLLMConfigured } from "@/ai/llm";
 import { buildDraftJournal, type DraftResult, type RuleLine } from "@/ai/rule-engine";
 import { validateDraftLines } from "@/ai/validation";
 import { journalHintForDocType } from "@/ai/doc-type-map";
+import { INDUSTRY_COA_FILE } from "@/lib/industries";
 
 const KB_DIR = path.join(process.cwd(), "src", "ai", "knowledge");
 
-export const COA_FILES: Record<Industry, string> = {
-  RETAIL: "coa-retail.csv",
-  SERVICES: "coa-services.csv",
-  FNB: "coa-fnb.csv",
-};
+export const COA_FILES: Record<Industry, string> = INDUSTRY_COA_FILE;
 
 export async function loadKnowledgeFile(name: string): Promise<string> {
   return readFile(path.join(KB_DIR, name), "utf8");

@@ -2,13 +2,7 @@ import { requireRole } from "@/lib/rbac";
 import { SYSTEM_ROLES } from "@/lib/roles";
 import { listClients } from "@/server/clients";
 import { ClientsManager } from "./clients-manager";
-import type { Industry } from "@prisma/client";
-
-const INDUSTRY_LABELS: Record<Industry, string> = {
-  RETAIL: "Retail",
-  SERVICES: "Jasa",
-  FNB: "F&B",
-};
+import { INDUSTRY_LABELS } from "@/lib/industries";
 
 export default async function ClientsPage() {
   const session = await requireRole(SYSTEM_ROLES);

@@ -136,6 +136,22 @@ export function ClientProfilePanel({
         </pre>
       )}
 
+      {/* COA klien (template industri / hasil import) — selalu tampil ringkas */}
+      {!loading && entries.length > 0 && (
+        <details className="mt-3">
+          <summary className="cursor-pointer text-xs text-accent hover:underline">
+            Lihat COA Klien ({entries.length} akun)
+          </summary>
+          <div className="mt-2 grid max-h-64 grid-cols-2 gap-x-4 overflow-auto rounded-lg border border-slate-700 bg-slate-950 p-3 font-mono text-[11px] leading-relaxed text-slate-300 md:grid-cols-3">
+            {entries.map(([kode, v]) => (
+              <div key={kode} className="truncate" title={`${kode} — ${v.accountName}`}>
+                <span className="text-slate-500">{kode}</span> {v.accountName}
+              </div>
+            ))}
+          </div>
+        </details>
+      )}
+
       {!loading && status === "REVIEW" && canEdit && (
         <div className="mt-3">
           <div className="max-h-56 overflow-auto rounded-lg border border-slate-700 bg-slate-950 p-3 font-mono text-[11px] leading-relaxed text-slate-300">

@@ -15,19 +15,24 @@ import { withTenantApi } from "@/lib/tenant-api";
 import { parseWorksheet, buildOpeningJournals } from "@/server/worksheet-import";
 import type { ImportJournal } from "@/server/worksheet-import";
 
-const INDUSTRIES = ["RETAIL", "SERVICES", "FNB"] as const;
+import { INDUSTRY_LIST, isIndustry } from "@/lib/industries";
+const INDUSTRIES = INDUSTRY_LIST;
 
 async function persistImport(
   firmId: string,
   result: Awaited<ReturnType<typeof parseWorksheet>>,
   opts: { clientName?: string; industry?: string },
 ) {
-  const industry = (INDUSTRIES as readonly string[]).includes(opts.industry ?? "") ? opts.industry! : "SERVICES";
+  const industry: "SERVICES" | "MANUFACTURING" | "CONSTRUCTION" | "EVENT" =
+    opts.industry === "MANUFACTURING" ? "MANUFACTURING"
+    : opts.industry === "CONSTRUCTION" ? "CONSTRUCTION"
+    : opts.industry === "EVENT" ? "EVENT"
+    : "SERVICES";
   const name = (opts.clientName ?? result.clientName ?? "Klien Import").trim();
   const year = result.year ?? new Date().getFullYear();
 
   const client = await prisma.client.create({
-    data: { firmId, name, industry: industry as "SERVICES" },
+    data: { firmId, name, industry: industry },
   });
 
   // Simpan COA hasil import sebagai coaMapping klien (referensi AI + mapping).
