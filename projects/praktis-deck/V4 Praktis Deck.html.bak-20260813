@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Praktis · Deck Penawaran — AI Bookkeeping untuk Accounting Service</title>
+<style>
+/* ============ Tokens — identitas Praktis (dark navy + gold) ============ */
+:root{
+  --bg:#f6f7fb; --bg-soft:#eef1f7; --surface:#ffffff; --surface-2:#e9edf5;
+  --border:rgba(15,23,42,.1); --border-strong:rgba(15,23,42,.22);
+  --text-1:#0f172a; --text-2:#46536e; --text-3:#8390a8;
+  --accent:#f5c518; --accent-2:#eab308; --accent-ink:#0b1120;
+  --good:#059669; --warn:#d97706; --bad:#dc2626; --sky:#0284c7;
+  --grad:linear-gradient(135deg,#8a6d00,#d99e00);
+  --radius:18px; --radius-sm:12px; --radius-lg:26px;
+  --shadow:0 10px 30px rgba(15,23,42,.08),0 2px 8px rgba(15,23,42,.05);
+  --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --font-mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--text-1);font-family:var(--font-sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+img{max-width:100%;display:block}
+:focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:6px}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}}
+
+/* ============ Slide system (16:9, 1920×1080 canvas) ============ */
+body{width:1920px;height:1080px;overflow:hidden;transform:scale(var(--deck-scale,1));transform-origin:top left}
+.deck{position:relative;width:1920px;height:1080px;overflow:hidden;background:var(--bg)}
+.slide{position:absolute;inset:0;display:flex;flex-direction:column;justify-content:center;padding:76px 96px;
+  opacity:0;pointer-events:none;transform:translateX(40px);transition:opacity .5s var(--ease),transform .5s var(--ease);overflow:hidden}
+.slide.is-active{opacity:1;pointer-events:auto;transform:none;z-index:2}
+.slide.is-prev{transform:translateX(-40px)}
+.slide > *{position:relative;z-index:1}
+
+/* chrome */
+.deck-header{position:absolute;top:26px;left:96px;right:96px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-3);z-index:10;pointer-events:none}
+.brand{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;color:var(--text-1);letter-spacing:-.01em}
+.brand .badge{width:30px;height:30px;border-radius:8px;background:var(--grad);color:var(--accent-ink);font-weight:900;display:flex;align-items:center;justify-content:center;font-size:15px}
+.deck-footer{position:absolute;bottom:24px;left:96px;right:96px;display:flex;align-items:center;justify-content:space-between;font-size:12px;color:var(--text-3);z-index:10;pointer-events:none}
+.slide-number::before{content:attr(data-current)}.slide-number::after{content:" / " attr(data-total)}
+.progress-bar{position:fixed;left:0;bottom:0;height:4px;background:rgba(148,163,184,.12);z-index:20}
+.progress-bar>span{display:block;height:100%;width:0;background:var(--grad);transition:width .3s var(--ease)}
+
+/* ============ Typography (scale 1.25) ============ */
+.kicker{font-size:14px;font-weight:700;color:var(--accent);letter-spacing:.14em;text-transform:uppercase}
+.eyebrow{font-size:13px;font-weight:600;letter-spacing:.16em;text-transform:uppercase;color:var(--text-3)}
+.h1{font-size:76px;line-height:1.04;font-weight:900;letter-spacing:-.03em;margin:14px 0 20px}
+.h2{font-size:52px;line-height:1.08;font-weight:800;letter-spacing:-.025em;margin:10px 0 14px}
+.h3{font-size:28px;line-height:1.25;font-weight:700;margin:0 0 8px}
+.h4{font-size:20px;line-height:1.3;font-weight:700;margin:0 0 6px}
+.lede{font-size:21px;line-height:1.55;color:var(--text-2);max-width:66ch}
+.dim{color:var(--text-2)}.dim2{color:var(--text-3)}.mono{font-family:var(--font-mono)}
+.gold{color:var(--accent)}.green{color:var(--good)}.red{color:var(--bad)}.sky{color:var(--sky)}
+.grad-text{background:var(--grad);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.big{font-size:64px;font-weight:900;line-height:1;letter-spacing:-.03em}
+.center{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center}
+
+/* ============ Layout ============ */
+.row{display:flex;gap:22px;align-items:center}.row.wrap{flex-wrap:wrap}
+.grid{display:grid;gap:20px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.fill{flex:1}.mt-s{margin-top:10px}.mt-m{margin-top:22px}.mt-l{margin-top:38px}.mb-s{margin-bottom:10px}.mb-m{margin-bottom:22px}
+.tr{text-align:right}.tc{text-align:center}
+.section-num{position:absolute;right:88px;bottom:36px;font-size:220px;font-weight:900;line-height:.9;color:rgba(148,163,184,.06);z-index:0;letter-spacing:-.05em}
+
+/* ============ Components ============ */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:24px 26px;box-shadow:var(--shadow)}
+.card-soft{background:var(--surface-2);border:1px solid var(--border)}
+.card-accent{border-top:3px solid var(--accent)}
+.pill{display:inline-block;padding:5px 14px;border-radius:999px;font-size:13px;font-weight:600;background:var(--surface-2);color:var(--text-2);border:1px solid var(--border)}
+.pill-gold{background:rgba(245,197,24,.12);color:var(--accent);border-color:rgba(245,197,24,.35)}
+.pill-green{background:rgba(52,211,153,.1);color:var(--good);border-color:rgba(52,211,153,.35)}
+.pill-red{background:rgba(248,113,113,.1);color:var(--bad);border-color:rgba(248,113,113,.4)}
+.pill-sky{background:rgba(56,189,248,.1);color:#0369a1;border-color:rgba(56,189,248,.4)}
+.metric .n{font-size:64px;font-weight:900;letter-spacing:-.03em;line-height:1;color:var(--text-1)}
+.metric .n.gold{color:var(--accent)}
+.metric .l{color:var(--text-2);font-size:15px;margin-top:8px}
+.divider{height:1px;background:var(--border);width:100%}
+.bar{height:10px;border-radius:99px;background:#1b2946;overflow:hidden}
+.bar>i{display:block;height:100%;border-radius:99px}
+
+/* table */
+table{width:100%;border-collapse:collapse;font-size:15px}
+th{text-align:left;color:var(--text-3);font-weight:600;font-size:12px;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;border-bottom:1px solid var(--border-strong)}
+td{padding:11px 12px;border-bottom:1px solid var(--border);color:var(--text-2)}
+td b,td .b{color:var(--text-1)}
+tr.hl td{background:rgba(245,197,24,.06)}
+tr.total td{border-top:2px solid var(--border-strong);font-weight:700;color:var(--text-1)}
+
+/* screenshot frame */
+.shot{border-radius:14px;border:1px solid var(--border-strong);overflow:hidden;box-shadow:var(--shadow);background:#0d1526;line-height:0}
+.shot img{width:100%;height:auto}
+.shot .cap{line-height:1.4;padding:12px 16px;font-size:12.5px;color:var(--text-3);border-top:1px solid var(--border);background:var(--surface);display:flex;align-items:center;gap:10px}
+
+/* pipeline flow */
+.flow{display:flex;align-items:stretch;gap:10px}
+.fstep{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:16px;min-width:0}
+.fstep .t{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--text-3);font-weight:700}
+.fstep .d{font-size:12.5px;color:var(--text-2);margin-top:5px}
+.farrow{align-self:center;color:var(--accent);font-size:20px;font-weight:700}
+
+/* timeline */
+.tl{display:flex;align-items:center;gap:0}
+.tl .seg{flex:1;text-align:center;padding:14px 8px;font-size:13px;color:var(--text-2)}
+.tl .seg b{display:block;font-size:15px;color:var(--text-1);margin-bottom:2px}
+.tl .arrow{color:var(--accent);font-weight:900;padding:0 4px}
+
+/* animasi ringan */
+.anim-fade-up{animation:fadeUp .7s var(--ease) both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(26px)}to{opacity:1;transform:none}}
+.stagger>*{opacity:0;animation:fadeUp .6s var(--ease) both}
+.stagger>*:nth-child(1){animation-delay:.06s}.stagger>*:nth-child(2){animation-delay:.16s}
+.stagger>*:nth-child(3){animation-delay:.26s}.stagger>*:nth-child(4){animation-delay:.36s}
+.stagger>*:nth-child(5){animation-delay:.46s}.stagger>*:nth-child(6){animation-delay:.56s}
+
+/* ============ Print (export PDF 1920×1080) ============ */
+@page{size:1920px 1080px landscape;margin:0}
+@media print{
+  body{transform:none;width:1920px;height:auto;overflow:visible}
+  .deck{height:auto;overflow:visible}
+  .slide{position:relative;opacity:1!important;transform:none!important;height:1080px;page-break-after:always;break-after:page}
+  .deck-header,.deck-footer,.progress-bar{display:none!important}
+  .anim-fade-up,.stagger>*{animation:none!important;opacity:1!important}
+}
+</style>
+<style>
+/* Light-theme overrides — identitas Praktis di atas kanvas terang */
+.light .kicker{color:#8a6d00}
+.light .gold{color:#8a6d00}
+.light .green{color:#047857}.light .red{color:#b91c1c}.light .sky{color:#0369a1}
+.light .grad-text{background:linear-gradient(135deg,#7a5f00,#c98a00);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.light .section-num{color:rgba(15,23,42,.055)}
+.light .card{box-shadow:0 10px 30px rgba(15,23,42,.07)}
+.light .card-accent{border-top-color:#d99e00}
+.light .shot{background:#eef1f7}
+.light .bar{background:#e2e8f0}
+.light .bar>i[style*="var(--accent)"]{background:#c98a00!important}
+.light .farrow,.light .tl .arrow{color:#b8860b}
+.light .fstep{background:#ffffff}
+.light .fstep .t{color:#64748b}
+.light .pill-gold{background:rgba(245,197,24,.18);color:#8a6d00;border-color:rgba(202,138,4,.45)}
+.light .pill-green{background:rgba(5,150,105,.1);color:#047857;border-color:rgba(5,150,105,.35)}
+.light .pill-red{background:rgba(220,38,38,.08);color:#b91c1c;border-color:rgba(220,38,38,.35)}
+.light tr.hl td{background:rgba(245,197,24,.1)}
+.light .progress-bar{background:rgba(15,23,42,.08)}
+.light .brand .badge{color:#0b1120}
+/* Hybrid: cover & CTA dark di dalam deck light */
+.slide.dark{background:#0b1120}
+.slide.dark .brand{color:#eef1f8}
+.slide.dark .brand .badge{background:linear-gradient(135deg,#f5c518,#ffd94d);color:#0b1120}
+.slide.dark .kicker{color:#f5c518}
+.slide.dark .h1,.slide.dark .h1 span{color:#eef1f8}
+.slide.dark .grad-text{background:linear-gradient(135deg,#f5c518,#ffd94d);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+.slide.dark .lede{color:#b6c0d4}
+.slide.dark .pill{background:#101a30;border-color:rgba(148,163,184,.25);color:#b6c0d4}
+.slide.dark .pill-gold{background:rgba(245,197,24,.12);color:#f5c518;border-color:rgba(245,197,24,.4)}
+.slide.dark .pill-green{background:rgba(52,211,153,.1);color:#34d399;border-color:rgba(52,211,153,.35)}
+.slide.dark .deck-footer{color:#7d8aa5}
+</style>
+</head>
+<body class="light">
+<main class="deck" data-deck>
+
+<!-- ═══ 1 · COVER ═══ -->
+<section class="slide is-active dark" data-title="Cover" role="region" aria-label="Sampul">
+  <div style="position:absolute;inset:0;background:radial-gradient(900px 500px at 85% -10%,rgba(245,197,24,.24),transparent 60%),radial-gradient(700px 460px at -10% 110%,rgba(56,189,248,.14),transparent 60%)"></div>
+  <div class="brand anim-fade-up" style="position:absolute;top:56px;left:96px"><span class="badge">P</span><span>Praktis</span></div>
+  <p class="kicker anim-fade-up">AI Bookkeeping untuk Accounting Service</p>
+  <h1 class="h1 anim-fade-up" style="max-width:16ch">Tim Anda bisa melayani <span class="grad-text">5× lebih banyak klien</span>, tanpa menambah kepala.</h1>
+  <p class="lede mt-s anim-fade-up" style="max-width:56ch">Praktis mengotomatiskan entry, data cleaning, dan rekonsiliasi — junior accountant berubah dari juru ketik menjadi reviewer. Laporan selesai 3–6 hari, dari biasanya 12–20 hari. Setiap klien punya portal pribadi: upload sendiri, pantau status, lihat laporan &amp; wawasan AI.</p>
+  <div class="row mt-l anim-fade-up">
+    <span class="pill pill-gold">25–30 klien per junior</span>
+    <span class="pill pill-green">Cycle −70%</span>
+    <span class="pill">PSAK &amp; PPN-aware</span>
+    <span class="pill">Human-in-the-loop</span>
+  </div>
+  <div class="deck-footer"><span>Praktis · Deck Penawaran 2026</span><span class="slide-number" data-current="1" data-total="13"></span></div>
+</section>
+
+<!-- ═══ 2 · PROBLEM ═══ -->
+<section class="slide" data-title="Masalah" role="region" aria-label="Masalah">
+  <span class="section-num">01</span>
+  <p class="kicker">Masalah</p>
+  <h2 class="h2">85% waktu junior accountant habis untuk <span class="grad-text">input &amp; cleaning data</span>.</h2>
+  <div class="grid g3 mt-l stagger">
+    <div class="card"><h4>🕳️ Entry manual</h4><p class="dim">Scan dokumen, ketik ulang, kategorisasi, rapikan data — transaksi tunai di-entry satu per satu. 2,5–3,5 menit per transaksi.</p></div>
+    <div class="card"><h4>🏦 Rekonsiliasi bank</h4><p class="dim">Cocokkan mutasi 3–10 rekening per klien secara manual, bulan demi bulan. Error manusia mengintai di setiap baris.</p></div>
+    <div class="card"><h4>📎 Overhead klien</h4><p class="dim">Chase data, revisi, komunikasi bolak-balik — porsi terbesar kedua yang tidak pernah hilang meski staf bertambah.</p></div>
+  </div>
+  <div class="card mt-l"><div class="row" style="justify-content:space-between">
+    <div><b>Alokasi waktu junior (manual, klien kecil 400 transaksi/bln)</b></div>
+    <div style="font-size:13px;color:var(--text-3)">Kapasitas: hanya 4–5 klien per junior</div>
+  </div>
+  <div class="mt-s"><div class="bar"><i style="width:54%;background:var(--accent)"></i></div><div class="row" style="justify-content:space-between" ><span class="dim2" style="font-size:13px">54% Entry &amp; cleaning</span><span class="dim2" style="font-size:13px">18% Overhead</span><span class="dim2" style="font-size:13px">11% Rekonsiliasi</span><span class="dim2" style="font-size:13px">17% Pajak · laporan · adj</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 3 · SOLUTION ═══ -->
+<section class="slide" data-title="Solusi" role="region" aria-label="Solusi">
+  <span class="section-num">02</span>
+  <p class="kicker">Solusi</p>
+  <h2 class="h2">Satu pipeline AI: <span class="grad-text">upload → draft → review 4 lapis → laporan</span>.</h2>
+  <div class="flow mt-l">
+    <div class="fstep"><div class="t">1 · Upload</div><div class="d">Klien upload sendiri lewat portal pribadi (PDF / JPG / XLSX) — langsung masuk pipeline</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="t">2 · AI Pipeline</div><div class="d">Ekstraksi → deteksi event → draft jurnal (PSAK, PPN 11%) → validasi saldo → skor keyakinan</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="t">3 · Review 4 lapis</div><div class="d">Junior → Senior → Tax → Partner. Draft tervalidasi, manusia tetap memegang keputusan</div></div>
+    <div class="farrow">→</div>
+    <div class="fstep"><div class="t">4 · Laporan</div><div class="d">Trial balance, laba rugi, neraca — ter-generate otomatis dari jurnal APPROVED</div></div>
+  </div>
+  <div class="grid g2 mt-l">
+    <div class="shot"><img src="images/03-pipeline.png" alt="AI pipeline sedang memproses dokumen klien"><div class="cap"><span class="pill pill-green">AI Pipeline</span><span>Dokumen diproses dalam hitungan detik — trace ID tiap dokumen</span></div></div>
+    <div class="shot"><img src="images/04-draft-generated.png" alt="Draft jurnal hasil AI dengan referensi PSAK dan PPN"><div class="cap"><span class="pill pill-gold">Draft Jurnal</span><span>Piutang Rp 9.435.000 · PPN 11% · PSAK 72 · saldo seimbang ✓</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 4 · MATH ═══ -->
+<section class="slide" data-title="Angka Kunci" role="region" aria-label="Angka Kunci">
+  <span class="section-num">03</span>
+  <p class="kicker">Angka Kunci</p>
+  <h2 class="h2">Produktivitas terukur, <span class="grad-text">bukan janji</span>.</h2>
+  <div class="grid g2 mt-m">
+    <table>
+      <tr><th>Metrik</th><th class="tr">Manual</th><th class="tr">Praktis</th><th class="tr">Perubahan</th></tr>
+      <tr><td>Entry + cleaning + rekonsiliasi</td><td class="tr">85% waktu junior</td><td class="tr"><b class="green">~0%</b></td><td class="tr green">otomatis</td></tr>
+      <tr><td>Waktu per transaksi (junior)</td><td class="tr">2,5–3,5 mnt</td><td class="tr"><b>5–10 dtk</b></td><td class="tr green">−95%</td></tr>
+      <tr><td>Cycle days (data → laporan)</td><td class="tr">12–20 hari</td><td class="tr"><b>3–6 hari</b></td><td class="tr green">−70%</td></tr>
+      <tr><td>Overhead komunikasi per klien</td><td class="tr">325 mnt</td><td class="tr"><b>75 mnt</b></td><td class="tr green">−77%</td></tr>
+      <tr class="hl"><td><b>Klien per junior</b></td><td class="tr">4–5</td><td class="tr"><b class="gold">25–30</b></td><td class="tr green">6×</td></tr>
+      <tr><td>Junior per senior</td><td class="tr">3–5</td><td class="tr"><b>4–6</b></td><td class="tr green">~1,3×</td></tr>
+      <tr><td>Klien per senior</td><td class="tr">14–25</td><td class="tr"><b>80–150</b></td><td class="tr green">5×</td></tr>
+      <tr><td>Beban pajak per klien</td><td class="tr">90–240 mnt</td><td class="tr"><b>30–120 mnt</b></td><td class="tr green">−65%</td></tr>
+    </table>
+    <div class="card card-accent">
+      <p class="eyebrow">Efek ke bisnis</p>
+      <div class="row mt-m" style="gap:34px">
+        <div class="metric"><div class="n gold">5–7×</div><div class="l">Revenue per junior<br>(Rp 6–15 jt → Rp 45–75 jt/bln)</div></div>
+        <div class="metric"><div class="n">80%+</div><div class="l">Margin kontribusi<br>per head</div></div>
+        <div class="metric"><div class="n gold">H+5</div><div class="l">SLA laporan<br>yang bisa dijanjikan</div></div>
+      </div>
+      <p class="dim mt-l" style="font-size:14px">Segmen mikro (30–150 transaksi/bln) yang tadinya tidak ekonomis dilayani — kini bisa jadi portofolio high-volume, low-touch. Portal klien menaikkan batas kognitif junior: komunikasi jadi self-service.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ 5 · CYCLE DAYS ═══ -->
+<section class="slide" data-title="Cycle Days" role="region" aria-label="Cycle Days">
+  <span class="section-num">04</span>
+  <p class="kicker">Kecepatan</p>
+  <h2 class="h2">Laporan bulanan dari <span class="grad-text">3 minggu menjadi 3–6 hari</span>.</h2>
+  <div class="grid g2 mt-l">
+    <div class="card">
+      <p class="eyebrow">Manual — 12–20 hari</p>
+      <div class="tl mt-m">
+        <div class="seg" style="background:rgba(148,163,184,.05)"><b>3–7 hr</b>Kumpul data</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(148,163,184,.05)"><b>3–6 hr</b>Entry &amp; rekonsiliasi</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(148,163,184,.05)"><b>2–3 hr</b>Adjustment &amp; pajak</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(148,163,184,.05)"><b>2–3 hr</b>Review senior</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(148,163,184,.05)"><b>1–2 hr</b>Laporan</div>
+      </div>
+      <p class="dim mt-m" style="font-size:13.5px">Batch di akhir bulan: data menumpuk, entry manual jadi bottleneck, revisi menunda laporan.</p>
+    </div>
+    <div class="card card-accent">
+      <p class="eyebrow gold">Dengan Praktis — 3–6 hari</p>
+      <div class="tl mt-m">
+        <div class="seg" style="background:rgba(245,197,24,.07)"><b>0–1 hr</b>Upload portal klien</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(245,197,24,.07)"><b>detik</b>AI pipeline</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(245,197,24,.07)"><b>1–2 hr</b>Review junior (streaming)</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(245,197,24,.07)"><b>1–2 hr</b>Senior + pajak</div><div class="arrow">→</div>
+        <div class="seg" style="background:rgba(245,197,24,.07)"><b>instan</b>Laporan</div>
+      </div>
+      <p class="dim mt-m" style="font-size:13.5px">Data diproses harian saat masuk — bukan menumpuk di akhir bulan. Sisa waktu = menunggu data klien; reminder otomatis &amp; upload mandiri memangkasnya.</p>
+    </div>
+  </div>
+  <div class="shot mt-m" style="max-width:880px"><img src="images/10-report.png" alt="Laporan keuangan final yang dikirim ke klien"><div class="cap"><span class="pill pill-green">Hasil Akhir</span><span>Laba rugi, neraca &amp; rekap PPN ter-generate dari jurnal APPROVED — SLA H+5</span></div></div>
+</section>
+
+<!-- ═══ 6 · KAPASITAS PER HEAD ═══ -->
+<section class="slide" data-title="Kapasitas" role="region" aria-label="Kapasitas Per Orang">
+  <span class="section-num">05</span>
+  <p class="kicker">Kapasitas</p>
+  <h2 class="h2">Satu junior, <span class="grad-text">20–30 klien</span> — tergantung segmen &amp; kualitas data.</h2>
+  <div class="grid g4 mt-l">
+    <div class="card"><p class="eyebrow">Mikro · 100 tx/bln</p><div class="metric mt-s"><div class="n gold">50–60</div><div class="l">klien/junior (manual ±10) · matematis</div></div></div>
+    <div class="card card-accent"><p class="eyebrow">Kecil · 400 tx/bln</p><div class="metric mt-s"><div class="n gold">26–30</div><div class="l">klien/junior (manual 4–5)</div></div></div>
+    <div class="card"><p class="eyebrow">Kecil · 600 tx/bln</p><div class="metric mt-s"><div class="n gold">19–22</div><div class="l">klien/junior (manual 3,4)</div></div></div>
+    <div class="card"><p class="eyebrow">Menengah · 1.500 tx/bln</p><div class="metric mt-s"><div class="n gold">9–12</div><div class="l">klien/junior (manual 1,6)</div></div></div>
+  </div>
+  <div class="grid g2 mt-l">
+    <div class="card"><h4>Asumsi yang jujur</h4><ul style="color:var(--text-2);font-size:15px;padding-left:20px;line-height:1.9">
+      <li>Data digital rapi (export bank, faktur terstruktur) → exception ≤ 5–10%</li>
+      <li>Junior = reviewer murni: entry &amp; cleaning otomatis penuh</li>
+      <li>Komunikasi klien dikelola (portal, template, SLA) — ±3 jam/klien/bln</li>
+      <li>Junior tetap merangkap tax officer — beban pajak turun 65%</li>
+      <li>Batas kognitif: 30+ hubungan → rotasi klien &amp; pembagian per segmen</li>
+    </ul></div>
+    <div class="shot"><img src="images/02-upload.png" alt="Upload dokumen dan daftar jurnal hasil AI di halaman klien"><div class="cap"><span class="pill pill-gold">Alur kerja</span><span>Upload → jurnal AI → antrian review — tanpa ketik ulang</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 7 · SIMULASI ═══ -->
+<section class="slide" data-title="Simulasi" role="region" aria-label="Simulasi Satu Klien">
+  <span class="section-num">06</span>
+  <p class="kicker">Simulasi</p>
+  <h2 class="h2">Satu klien kecil (400 transaksi/bln): <span class="grad-text">1.850 → 298 menit</span>.</h2>
+  <div class="grid g2 mt-l">
+    <div class="card"><p class="eyebrow">Manual — 1.850 mnt/klien/bln</p>
+      <div class="bar mt-m"><i style="width:54%;background:var(--text-3)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">1.000 mnt · entry &amp; cleaning</p>
+      <div class="bar mt-s"><i style="width:11%;background:var(--text-3)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">210 mnt · rekonsiliasi</p>
+      <div class="bar mt-s"><i style="width:17%;background:var(--text-3)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">315 mnt · pajak, laporan, adjustment</p>
+      <div class="bar mt-s"><i style="width:18%;background:var(--text-3)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">325 mnt · overhead klien</p>
+    </div>
+    <div class="card card-accent"><p class="eyebrow gold">Praktis + portal — 298 mnt/klien/bln (−84%)</p>
+      <div class="bar mt-m"><i style="width:11%;background:var(--accent)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">33 mnt · review jurnal batch (5 dtk/jurnal)</p>
+      <div class="bar mt-s"><i style="width:3%;background:var(--accent)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">10 mnt · konfirmasi rekonsiliasi</p>
+      <div class="bar mt-s"><i style="width:20%;background:var(--accent)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">60 mnt · verifikasi pajak, laporan, adjustment</p>
+      <div class="bar mt-s"><i style="width:25%;background:var(--accent)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">75 mnt · overhead portal (klien self-service)</p>
+      <div class="bar mt-s"><i style="width:40%;background:var(--warn)"></i></div><p class="dim2 mt-s" style="font-size:13.5px">120 mnt · exception (10% × 3 mnt) — flag AI, manusia putuskan</p>
+    </div>
+  </div>
+  <p class="dim mt-l" style="font-size:14px">Sisa terbesar kini exception (40% beban) — data digital langsung dari portal klien menekannya ke arah 5%. <span class="gold">Praktis tidak menghilangkan judgment; ia menghilangkan ketikan.</span></p>
+</section>
+
+<!-- ═══ 8 · BOTTLENECK → CONFIDENCE ═══ -->
+<section class="slide" data-title="Bottleneck Senior" role="region" aria-label="Bottleneck Senior dan Solusinya">
+  <span class="section-num">07</span>
+  <p class="kicker">Insight</p>
+  <h2 class="h2">Otomasi memindahkan bottleneck ke review senior —<br><span class="grad-text">Praktis menjawabnya dengan confidence scoring.</span></h2>
+  <div class="grid g2 mt-l">
+    <div class="card"><h4>Masalahnya</h4><p class="dim">Junior jadi 5× lebih cepat, tapi senior tidak ikut 5× — tanpa strategi, 1 senior malah sanggup mengawal lebih sedikit junior (3,4 vs 5).</p>
+      <div class="row mt-m"><span class="pill pill-red">Tanpa strategi: bottleneck di senior</span></div>
+    </div>
+    <div class="card card-accent"><h4>Solusi Praktis</h4><p class="dim">Setiap draft AI diberi <b>skor keyakinan</b>; jurnal berisiko &amp; exception otomatis dirutekan ke review penuh. Senior fokus ke yang bernilai — sisanya spot check.</p>
+      <div class="row mt-m"><span class="pill pill-green">4–6 junior per senior</span><span class="pill pill-gold">80–150 klien per senior</span></div>
+    </div>
+  </div>
+  <div class="grid g2 mt-l">
+    <div class="shot"><img src="images/09-exception.png" alt="Jurnal exception dengan keyakinan rendah yang diflag AI untuk manusia"><div class="cap"><span class="pill pill-red">Exception routing</span><span>Confidence 55% → diflag "Faktur PPN tidak ditemukan" — AI tidak pernah mengarang</span></div></div>
+    <div class="shot"><img src="images/05-review-junior.png" alt="Antrian review dengan badge urgent dan aksi setujui"><div class="cap"><span class="pill pill-gold">Review terpandu</span><span>Urgent badge, tenggat SLA, dan aksi setujui/kembalikan/tolak</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 9 · FITUR KUNCI ═══ -->
+<section class="slide" data-title="Fitur Kunci" role="region" aria-label="Fitur Kunci">
+  <span class="section-num">08</span>
+  <p class="kicker">Fitur</p>
+  <h2 class="h2">Dibangun untuk standar akuntan, <span class="grad-text">bukan sekadar OCR</span>.</h2>
+  <div class="grid g4 mt-l">
+    <div class="card card-hover"><h4>🧾 Traceability</h4><p class="dim">Setiap baris jurnal punya referensi PSAK, kode akun COA, dan jejak reviewer — siap audit.</p></div>
+    <div class="card card-hover"><h4>🎯 Confidence score</h4><p class="dim">Keyakinan AI per jurnal; yang ragu diflag, bukan diarang. Senior tahu harus fokus ke mana.</p></div>
+    <div class="card card-hover"><h4>⏱️ SLA per stage</h4><p class="dim">Tenggat otomatis per lapis review (Junior 2 jam → Partner 2 jam) dengan alert breach.</p></div>
+    <div class="card card-hover"><h4>🔐 RBAC 4 lapis</h4><p class="dim">Junior, Senior, Tax, Partner — setiap aksi tercatat, tidak ada jalan pintas status.</p></div>
+  </div>
+  <div class="grid g2 mt-l">
+    <div class="shot"><img src="images/01-dashboard.png" alt="Dashboard operasional dengan KPI dan monitoring SLA"><div class="cap"><span class="pill pill-gold">Dashboard real-time</span><span>KPI, pipeline, SLA, distribusi confidence — auto-refresh 30 detik</span></div></div>
+    <div class="shot"><img src="images/07-tax-review.png" alt="Review pajak dengan pemeriksaan PPN dan rekap SPT"><div class="cap"><span class="pill pill-sky">Pajak terbantu</span><span>Draft PPN/PPh dari jurnal APPROVED — beban tax officer turun 65%</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 10 · PORTAL KLIEN ═══ -->
+<section class="slide" data-title="Portal Klien" role="region" aria-label="Portal Klien">
+  <span class="section-num">10</span>
+  <p class="kicker">Fitur Baru</p>
+  <h2 class="h2">Setiap klien punya <span class="grad-text">portal pribadi</span> — data masuk sendiri, laporan diakses sendiri.</h2>
+  <div class="grid g3 mt-l stagger">
+    <div class="card"><h4>📤 Klien upload sendiri</h4><p class="dim">Faktur &amp; rekening koran masuk langsung ke pipeline AI — junior tidak lagi menerima &amp; merapikan file.</p></div>
+    <div class="card"><h4>👀 Status real-time</h4><p class="dim">Diterima → diproses → review → siap. Hilang pertanyaan "mana laporannya?" — klien melihat sendiri.</p></div>
+    <div class="card"><h4>📄 Self-service</h4><p class="dim">Laporan standar diunduh kapan saja (PDF/XLSX) — tidak ada kirim bolak-balik.</p></div>
+  </div>
+  <div class="grid g2 mt-l">
+    <div class="shot"><img src="images/12-beranda-klien.png" alt="Beranda portal klien dengan KPI dan status dokumen"><div class="cap"><span class="pill pill-gold">Beranda klien</span><span>KPI, status dokumen, siklus pelaporan H+3 · SLA H+5</span></div></div>
+    <div class="shot"><img src="images/13-upload-klien.png" alt="Upload dokumen drag-drop oleh klien"><div class="cap"><span class="pill pill-green">Upload mandiri</span><span>Drag-drop → AI memproses → status terpantau</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 11 · ANALISA & WAWASAN AI ═══ -->
+<section class="slide" data-title="Analisa & Wawasan AI" role="region" aria-label="Analisa dan Wawasan AI">
+  <span class="section-num">11</span>
+  <p class="kicker">Nilai Tambah</p>
+  <h2 class="h2">Laporan itu dasar — <span class="grad-text">analisa &amp; wawasan AI yang membedakan</span>.</h2>
+  <div class="grid g2 mt-l">
+    <div class="shot"><img src="images/15-analisa-klien.png" alt="Analisa keuangan klien dengan chart tren dan rasio"><div class="cap"><span class="pill pill-gold">Analisa otomatis</span><span>Tren 6 bulan, margin, rasio, beban per kategori — tanpa kerja ekstra junior</span></div></div>
+    <div class="shot"><img src="images/16-wawasan-ai.png" alt="Komentar AI dengan rekomendasi untuk klien"><div class="cap"><span class="pill pill-sky">Wawasan AI</span><span>Ringkasan bulanan + rekomendasi tindakan — disertai disclaimer</span></div></div>
+  </div>
+  <div class="row mt-l">
+    <span class="pill pill-gold">Upsell premium: paket analisa</span>
+    <span class="pill pill-green">Retensi naik — klien lihat progress</span>
+    <span class="pill">Diferensiasi kompetitif</span>
+  </div>
+</section>
+
+<!-- ═══ 12 · KEPERCAYAAN & ADOPSI ═══ -->
+<section class="slide" data-title="Kepercayaan & Adopsi" role="region" aria-label="Kepercayaan dan Adopsi">
+  <span class="section-num">12</span>
+  <p class="kicker">Kepercayaan</p>
+  <h2 class="h2">Data klien Anda adalah data paling sensitif — <span class="grad-text">kami memperlakukannya seperti itu.</span></h2>
+  <div class="grid g4 mt-l">
+    <div class="card"><h4>🔒 Enkripsi at-rest</h4><p class="dim">Dokumen terenkripsi AES-256-GCM di penyimpanan; hanya dibuka saat pipeline memproses.</p></div>
+    <div class="card"><h4>📜 Audit trail penuh</h4><p class="dim">Setiap transisi status jurnal tercatat: siapa, kapan, catatan apa. Siap untuk review dan audit.</p></div>
+    <div class="card"><h4>🧑‍⚖️ Human-in-the-loop</h4><p class="dim">AI menyusun, manusia memutuskan. PSAK &amp; perpajakan tetap tanggung jawab akuntan.</p></div>
+    <div class="card"><h4>🔐 Akses terisolasi</h4><p class="dim">Portal klien hanya menampilkan data perusahaannya sendiri — login &amp; izin terpisah dari tim internal.</p></div>
+  </div>
+  <div class="grid g2 mt-l">
+    <div class="card card-accent"><p class="eyebrow gold">Cara adopsi</p>
+      <div class="row mt-m" style="gap:14px">
+        <span class="pill pill-gold">1 · Pilot 1 klien</span>
+        <span class="pill">2 · Standarisasi data</span>
+        <span class="pill">3 · Scale ke portofolio</span>
+      </div>
+      <p class="dim mt-m" style="font-size:14px">Mulai dari satu klien dengan data digital. Ukur exception rate &amp; waktu review. Baru percepat ke seluruh portofolio — angka 20–30 klien adalah hasil proses terstandar, bukan sihir.</p>
+    </div>
+    <div class="shot"><img src="images/08-partner-approval.png" alt="Persetujuan partner dengan audit trail empat reviewer"><div class="cap"><span class="pill pill-green">Kunci final</span><span>Empat reviewer berjejak → jurnal dikunci APPROVED → masuk laporan</span></div></div>
+  </div>
+</section>
+
+<!-- ═══ 11 · CTA ═══ -->
+<section class="slide center dark" data-title="Penutup" role="region" aria-label="Penutup">
+  <div style="position:absolute;inset:0;background:radial-gradient(800px 460px at 50% 110%,rgba(245,197,24,.22),transparent 60%)"></div>
+  <p class="kicker anim-fade-up">Praktis</p>
+  <h1 class="h1 tc anim-fade-up" style="max-width:15ch">Mulai dari <span class="grad-text">satu klien pilot</span>.</h1>
+  <p class="lede tc anim-fade-up" style="max-width:52ch">Dalam 30 hari: ukur sendiri penurunan waktu entry, exception rate, dan cycle laporan — lalu putuskan dengan data.</p>
+  <div class="row mt-l anim-fade-up" style="gap:16px">
+    <span class="pill pill-gold">Demo langsung</span>
+    <span class="pill pill-green">Pilot 1 klien · 30 hari</span>
+    <span class="pill">[kontak Anda]</span>
+  </div>
+  <div class="deck-footer"><span>Praktis · Deck Penawaran 2026</span><span class="slide-number" data-current="13" data-total="13"></span></div>
+</section>
+
+</main>
+
+<script>
+/* ============ Deck runtime: scale-to-fit + keyboard + progress ============ */
+(function(){
+  var deck=document.querySelector('.deck');
+  var slides=Array.prototype.slice.call(document.querySelectorAll('.slide'));
+  var total=slides.length, cur=0;
+
+  function fit(){
+    var s=Math.min(window.innerWidth/1920, window.innerHeight/1080);
+    document.documentElement.style.setProperty('--deck-scale', s);
+  }
+  window.addEventListener('resize', fit); fit();
+
+  function go(i){
+    cur=Math.max(0, Math.min(total-1, i));
+    slides.forEach(function(sl, idx){
+      sl.classList.toggle('is-active', idx===cur);
+      sl.classList.toggle('is-prev', idx<cur);
+    });
+    var nums=document.querySelectorAll('.slide-number');
+    nums.forEach(function(n){ n.setAttribute('data-current', cur+1); });
+    var bar=document.querySelector('.progress-bar > span');
+    if(bar) bar.style.width=((cur+1)/total*100)+'%';
+    // re-trigger animasi fade-up di slide aktif
+    slides[cur].querySelectorAll('.anim-fade-up').forEach(function(el){
+      el.style.animation='none'; void el.offsetWidth; el.style.animation='';
+    });
+  }
+
+  document.addEventListener('keydown', function(e){
+    if(e.key==='ArrowRight'||e.key==='PageDown'||e.key===' '){e.preventDefault();go(cur+1);}
+    else if(e.key==='ArrowLeft'||e.key==='PageUp'){e.preventDefault();go(cur-1);}
+    else if(e.key==='Home'){e.preventDefault();go(0);}
+    else if(e.key==='End'){e.preventDefault();go(total-1);}
+  });
+  // zona klik: kanan/kiri untuk maju/mundur
+  deck.addEventListener('click', function(e){
+    if(e.target.closest('a,button')) return;
+    var x=e.clientX / Math.max(1,window.innerWidth);
+    go(x > 0.85 ? cur+1 : x < 0.15 ? cur-1 : cur);
+  });
+  go(0);
+})();
+</script>
+</body>
+</html>
