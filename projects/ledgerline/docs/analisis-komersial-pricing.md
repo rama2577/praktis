@@ -89,3 +89,56 @@ Dengan **1 firma saja**, infrastruktur Rp 1,5jt/bln belum ter-amortisasi:
 3. **Komitmen 3–6 bulan** untuk tier 4–5 (mengunci volume, menurunkan churn).
 4. **Pilot pricing** (3 bulan pertama): Tier 1 flat Rp 750rb + setup fee diskon 50% — tarik firma pertama, kumpulkan case study.
 5. Naikkan ke Rp 400rb floor hanya bila harga model AI turun signifikan atau batch processing menurunkan COGS.
+
+
+---
+
+## 7. Alternatif: Pricing Berbasis Jumlah Transaksi (Usage-Based)
+
+### 7a. Rumus dasar
+
+COGS AI aman per transaksi (termasuk retry & dokumen kotor): **±Rp 100/transaksi**.
+Harga per transaksi agar GP 85%: `100 / 0,15 = ±Rp 667` → **Rp 700/transaksi**.
+
+Biaya tetap per klien (storage + laporan + dukungan minimal): ±Rp 23rb → **base fee Rp 200rb/klien/bln** (menutup klien sepi & biaya onboarding berjalan).
+
+### 7b. Model paket kuota (base + kuota transaksi)
+
+| Paket | Kuota | Harga/bln | COGS | GP |
+|---|---|---|---|---|
+| **Mikro** | 100 tx | **Rp 250rb** | ±Rp 18rb | 93% |
+| **Kecil** | 500 tx | **Rp 500rb** | ±Rp 58rb | 88% |
+| **Menengah** | 2.000 tx | **Rp 1,5jt** | ±Rp 210rb | 86% |
+| **Over-quota** | per tx | **Rp 700/tx** | ±Rp 100/tx | 86% |
+
+Semua ≥85% ✓ (asumsi firma ≥10–15 klien sehingga share infra per klien kecil).
+
+### 7c. Perbandingan dua model
+
+| Segmen | Per klien flat | Per transaksi (paket) | Kesan |
+|---|---|---|---|
+| Mikro 100 tx | Rp 400rb | Rp 250rb | usage lebih murah & adil |
+| Kecil 400–500 tx | Rp 650rb | Rp 500rb | usage lebih murah |
+| Menengah 1.500–2.000 tx | Rp 1,1–1,2jt | Rp 1,25–1,5jt | sebanding/lebih mahal sesuai volume |
+
+### 7d. Risiko & mitigasi usage-based
+
+| Risiko | Mitigasi |
+|---|---|
+| Revenue volatil (transaksi naik-turun) | Base fee Rp 200rb + paket kuota (bukan murni per tx) |
+| Klien sepi → revenue kecil | Base fee menutup biaya tetap |
+| Metering tidak akurat → dispute | Sumber tunggal: JournalLine APPROVED + Document diproses; tampilkan usage real-time di dashboard klien |
+| Free-rider (upload sedikit, minta banyak laporan) | Laporan/export dihitung terpisah atau dibatasi paket |
+
+### 7e. Implementasi teknis di Praktis
+
+1. **Sumber metering** (data sudah ada, tanpa migrasi):
+   - `COUNT(JournalLine)` per klien per bulan dari jurnal `APPROVED/FINALIZED` (transaksi yang benar-benar diproses).
+   - `COUNT(Document)` per klien per bulan (dokumen masuk pipeline, termasuk yang direview).
+2. **Tabel `UsageMeter`**: `clientId, period, transactionCount, documentCount, aiTokens` — di-update pipeline worker (batch harian) + job penutup bulan.
+3. **API billing**: `GET /api/billing/usage?clientId&period` → dipakai halaman Klien (progress kuota) & invoice bulanan otomatis.
+4. **Notifikasi** saat 80%/100% kuota terpakai (outbox/notifikasi existing).
+
+### 7f. Rekomendasi
+
+Gunakan **model hybrid**: tiering per firma (Bagian 3) sebagai harga dasar + opsi paket per-transaksi untuk firma yang lebih suka transparansi. Atau jadikan usage-based sebagai **paket "Pay-as-you-go"** untuk klien menengah (≥1.000 tx) yang selama ini sulit dipatok flat.
