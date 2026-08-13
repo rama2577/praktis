@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { ErrorState } from "@/components/ui/error-state";
 import { EmptyState } from "@/components/ui/empty-state";
+import { applyRounding, ROUNDING_LABELS, type RoundingMode } from "@/lib/rounding";
 
 type Client = { id: string; name: string };
 
@@ -27,6 +28,7 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
   const [clientId, setClientId] = useState(initialClients[0]?.id ?? "");
   const [period, setPeriod] = useState("2026-08");
   const [tab, setTab] = useState("labarugi");
+  const [rounding, setRounding] = useState<RoundingMode>("none");
   const [stmt, setStmt] = useState<Statement | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -56,7 +58,18 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
 
   const exportCsv = () => {
     if (!clientId) return;
-    window.location.href = `/api/clients/${clientId}/financial-statements?period=${period}&type=${tab}&format=csv`;
+    window.location.href = `/api/clients/${clientId}/financial-statements?period=${period}&type=${tab}&format=csv&rounding=${rounding}`;
+  };
+
+  const displayLines = stmt ? applyRounding(stmt.lines, rounding) : [];
+  const displayFmt = (n: number) => {
+    const divisor = rounding === "juta" ? 1_000_000 : rounding === "ribu" ? 1_000 : 1;
+    const v = n / divisor;
+    return new Intl.NumberFormat("id-ID", {
+      style: "currency",
+      currency: "IDR",
+      maximumFractionDigits: 0,
+    }).format(v);
   };
 
   return (
@@ -92,6 +105,18 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
             className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100"
           />
         </label>
+        <label className="flex flex-col gap-1 text-xs text-slate-400">
+          Pembulatan
+          <select
+            value={rounding}
+            onChange={(e) => setRounding(e.target.value as RoundingMode)}
+            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100"
+          >
+            {ROUNDING_LABELS.map((r) => (
+              <option key={r.value} value={r.value}>{r.label}</option>
+            ))}
+          </select>
+        </label>
         <div className="flex flex-wrap gap-2">
           {TABS.map((t) => (
             <button
@@ -125,7 +150,7 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
             </p>
           </div>
           <div className="mx-auto max-w-xl space-y-1">
-            {stmt.lines.map((l, i) => (
+            {displayLines.map((l, i) => (
               <div
                 key={i}
                 className={`flex items-baseline justify-between gap-4 rounded px-2 py-1 ${
@@ -134,7 +159,7 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
                 style={{ paddingLeft: `${16 + (l.indent ?? 0) * 20}px` }}
               >
                 <span className="text-sm">{l.label}</span>
-                <span className={`whitespace-nowrap text-sm ${l.amount < 0 ? "text-rose-300" : ""}`}>{fmt(l.amount)}</span>
+                <span className={`whitespace-nowrap text-sm ${l.amount < 0 ? "text-rose-300" : ""}`}>{displayFmt(l.amount)}</span>
               </div>
             ))}
           </div>

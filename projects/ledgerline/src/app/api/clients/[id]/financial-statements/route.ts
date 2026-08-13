@@ -3,6 +3,7 @@ import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { withTenantApi } from "@/lib/tenant-api";
+import { applyRounding, ROUNDING_DIVISOR, type RoundingMode } from "@/lib/rounding";
 import { getTrialBalance } from "@/server/trial-balance";
 import { getEquityActivity } from "@/server/equity";
 import {
@@ -38,6 +39,10 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
   const period = url.searchParams.get("period") ?? undefined;
   const type = (url.searchParams.get("type") ?? "labarugi") as StatementType;
   const format = url.searchParams.get("format") ?? "json";
+  const rounding = (url.searchParams.get("rounding") ?? "none") as RoundingMode;
+  if (!(rounding in ROUNDING_DIVISOR)) {
+    return NextResponse.json({ error: "rounding harus none | ribu | juta" }, { status: 400 });
+  }
   if (!period) return NextResponse.json({ error: "Parameter period (YYYY-MM) wajib." }, { status: 400 });
   if (!(TYPES as readonly string[]).includes(type)) {
     return NextResponse.json({ error: `type harus salah satu dari: ${TYPES.join(", ")}` }, { status: 400 });
@@ -69,7 +74,7 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
   }
 
   if (format === "csv") {
-    const csv = "\uFEFF" + statementCsv(stmt);
+    const csv = "\uFEFF" + statementCsv({ ...stmt, lines: applyRounding(stmt.lines, rounding) });
     return new NextResponse(csv, {
       headers: {
         "Content-Type": "text/csv; charset=utf-8",
