@@ -142,3 +142,52 @@ Semua ≥85% ✓ (asumsi firma ≥10–15 klien sehingga share infra per klien k
 ### 7f. Rekomendasi
 
 Gunakan **model hybrid**: tiering per firma (Bagian 3) sebagai harga dasar + opsi paket per-transaksi untuk firma yang lebih suka transparansi. Atau jadikan usage-based sebagai **paket "Pay-as-you-go"** untuk klien menengah (≥1.000 tx) yang selama ini sulit dipatok flat.
+
+
+---
+
+## 8. Model Hybrid Final (Rekomendasi)
+
+Dua lapis: **Platform Fee per firma** (menutup infra & platform) + **Paket per klien** (flat ATAU kuota transaksi). Klien menengah **wajib kuota** karena margin flat-nya tipis.
+
+### 8a. Lapis 1 — Platform Fee per firma/bln (tier by jumlah klien aktif)
+
+| Klien aktif | Platform fee |
+|---|---|
+| 1–10 | Rp 1jt |
+| 11–25 | Rp 1,5jt |
+| 26–50 | Rp 2jt |
+| 51+ | Rp 2,5jt (cap) |
+
+### 8b. Lapis 2 — Paket per klien/bln
+
+| Paket | Batas | Flat | Kuota | Over-quota |
+|---|---|---|---|---|
+| **Mikro** | ≤150 tx/bln | Rp 400rb | Rp 250rb / 100 tx | Rp 700/tx |
+| **Kecil** | ≤600 tx/bln | Rp 650rb | Rp 500rb / 500 tx | Rp 700/tx |
+| **Menengah** | >600 tx/bln | — (wajib kuota) | Rp 1,5jt / 2.000 tx | Rp 700/tx |
+
+### 8c. Cek margin semua kombinasi (asumsi 15 firma aktif → share infra ±Rp 100rb/firma)
+
+| Skenario firma | Revenue/bln | COGS/bln | GP |
+|---|---|---|---|
+| A · 8 klien (5 mikro flat + 3 kecil flat) | Rp 4,95jt | Rp 0,29jt | **94%** |
+| B · 20 klien (8 mikro + 10 kecil + 2 menengah, kuota) | Rp 11,5jt | Rp 0,94jt | **92%** |
+| C · 60 klien (40/40/20, kuota) | Rp 38,5jt | Rp 3,3jt | **91%** |
+
+Semua ≥85% ✓ — kuncinya: **menengah selalu usage-based**, jadi tidak ada kombinasi yang margin-nya tipis.
+
+### 8d. Mekanisme billing hybrid
+
+1. Setiap klien punya `billingMode: FLAT | QUOTA` + `package: MIKRO | KECIL | MENENGAH` (dari rata-rata transaksi 3 bulan terakhir).
+2. Setiap bulan: tagihan = platform fee (tier # klien aktif) + Σ paket klien + over-quota `(transaksi − kuota) × Rp 700`.
+3. Metering dari `UsageMeter` (COUNT JournalLine APPROVED/FINALIZED per klien-periode) — tampil sebagai progress kuota di halaman klien.
+4. Invoice otomatis berisi rincian per klien: paket, kuota terpakai, over-quota.
+
+### 8e. Ilustrasi tagihan Firma B (20 klien)
+
+- Platform fee: Rp 1,5jt
+- 8 mikro kuota: Rp 2jt (800 tx, terpakai 780 → 0 over)
+- 10 kecil kuota: Rp 5jt (5.000 tx, terpakai 5.240 → 240 × Rp 700 = Rp 168rb)
+- 2 menengah kuota: Rp 3jt (4.000 tx, terpakai 3.900 → 0 over)
+- **Total tagihan bulan: Rp 11,67jt** (COGS ±Rp 0,94jt → GP 92%)
