@@ -5,11 +5,13 @@ import { FinancialStatementsView } from "@/components/reports/financial-statemen
 import { AnalysisView, CalkView, TaxAnalysisView, AnnualReportView } from "@/components/reports/analytics-views";
 import { MultiPeriodView } from "@/components/reports/multi-period-view";
 import { ManagementLetterView } from "@/components/reports/management-letter-view";
+import { MonthlyMatrixView } from "@/components/reports/monthly-matrix-view";
 
 type Client = { id: string; name: string };
 
 const TABS = [
   { key: "ikhtisar", label: "Ikhtisar" },
+  { key: "matrix", label: "Matrix 12 Bulan" },
   { key: "laporan", label: "Laporan" },
   { key: "mgmt-letter", label: "Mgmt Letter" },
   { key: "analisa", label: "Analisa" },
@@ -51,6 +53,7 @@ export function FinancialReportsPage({ initialClients = [] }: { initialClients?:
       </div>
 
       {tab === "ikhtisar" && <MultiPeriodView {...shared} />}
+      {tab === "matrix" && <MonthlyMatrixView {...shared} />}
       {tab === "mgmt-letter" && <ManagementLetterView {...shared} />}
       {tab === "laporan" && <FinancialStatementsView initialClients={initialClients} />}
       {tab === "analisa" && <AnalysisView {...shared} />}
