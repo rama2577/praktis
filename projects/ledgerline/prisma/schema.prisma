@@ -118,6 +118,7 @@ model Firm {
   clientNotifications ClientNotification[]
   fixedAssets         FixedAsset[]
   bankMutations       BankMutation[]
+  subledgers          Subledger[]
 }
 
 model User {
@@ -174,8 +175,42 @@ model Client {
   clientNotifications ClientNotification[]
   fixedAssets         FixedAsset[]
   bankMutations       BankMutation[]
+  subledgers          Subledger[]
 
   @@index([firmId, status])
+}
+
+// Gap #1: buku besar pembantu (subledger) — kode bantu dari kertas kerja
+// akuntan (CT-* pelanggan, AP-* pemasok, SH-* pemegang saham, dll).
+model Subledger {
+  id            String          @id @default(cuid())
+  firmId        String
+  clientId      String
+  code          String // "CT-001"
+  name          String
+  type          SubledgerType   @default(OTHER)
+  status        SubledgerStatus @default(ACTIVE)
+  openingBalance Decimal        @default(0) // saldo awal (debit positif = piutang)
+  createdAt     DateTime        @default(now())
+  updatedAt     DateTime        @updatedAt
+
+  firm   Firm   @relation(fields: [firmId], references: [id])
+  client Client @relation(fields: [clientId], references: [id])
+
+  @@unique([clientId, code])
+  @@index([firmId, clientId, type])
+}
+
+enum SubledgerType {
+  CUSTOMER // CT-* piutang dagang
+  VENDOR // AP-* hutang dagang
+  SHAREHOLDER // SH-* piutang/hutang pemegang saham
+  OTHER
+}
+
+enum SubledgerStatus {
+  ACTIVE
+  INACTIVE
 }
 
 model Document {

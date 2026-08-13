@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { UploadForm } from "@/components/documents/upload-form";
 import { ClientProfilePanel } from "@/components/clients/client-profile-panel";
+import { SubledgerView } from "@/components/clients/subledger-view";
 import { formatBytes } from "@/lib/format";
 import Link from "next/link";
 import { Role, type DocumentStatus } from "@prisma/client";
@@ -83,6 +84,10 @@ export default async function ClientDetailPage({
         clientId={client.id}
         canEdit={PROFILE_EDITORS.includes(session.user.role)}
       />
+
+      <div className="mt-6">
+        <SubledgerView clientId={client.id} />
+      </div>
 
       <div className="mt-6">
         <h2 className="text-sm font-semibold">Dokumen Legalitas &amp; Referensi</h2>

@@ -1,0 +1,42 @@
+name: CI
+
+# Gerbang kualitas (change management / SOC 2 CC8.1): setiap push & PR ke main
+# harus lulus typecheck + unit test + build + secret scan sebelum deploy.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22   # sama dengan produksi (NIXPACKS_NODE_VERSION=22)
+          cache: npm
+      - run: npm ci
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Unit tests
+        run: npm test
+      - name: Production build
+        run: npm run build
+      - name: Lint (non-blocking)
+        run: npm run lint
+        continue-on-error: true
+
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Gitleaks — secret scan (blocking)
+        run: |
+          curl -sSfL https://github.com/gitleaks/gitleaks/releases/download/v8.18.4/gitleaks_8.18.4_linux_x64.tar.gz | tar -xz gitleaks
+          ./gitleaks detect --source . --no-banner --redact
+      - name: Dependency audit (non-blocking — 2 known: next upgrade pending)
+        run: npm audit --audit-level=high
+        continue-on-error: true

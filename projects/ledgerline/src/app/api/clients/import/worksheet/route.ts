@@ -46,6 +46,26 @@ async function persistImport(
     },
   });
 
+  // Master subledger dari sheet Kode (CT-* pelanggan, AP-* pemasok, SH-* saham).
+  const subledgerType = (code: string, group: string): "CUSTOMER" | "VENDOR" | "SHAREHOLDER" | "OTHER" => {
+    if (group.toLowerCase().includes("hutang") || code.startsWith("AP-")) return "VENDOR";
+    if (group.toLowerCase().includes("piutang") || code.startsWith("CT-")) return "CUSTOMER";
+    if (code.startsWith("SH-")) return "SHAREHOLDER";
+    return "OTHER";
+  };
+  if (result.subledgerCodes.length > 0) {
+    await prisma.subledger.createMany({
+      data: result.subledgerCodes.map((s) => ({
+        firmId,
+        clientId: client.id,
+        code: s.code,
+        name: s.name,
+        type: subledgerType(s.code, s.group),
+        openingBalance: s.openingBalance,
+      })),
+    });
+  }
+
   // Jurnal: opening balance + jurnal historis (batch 20, status APPROVED agar masuk laporan).
   const allJournals: ImportJournal[] = [...buildOpeningJournals(result.coa, year), ...result.journals];
   let journalCreated = 0;
@@ -63,7 +83,16 @@ async function persistImport(
             createdByAi: false,
             journalType: "MANUAL",
             entryDate: new Date(j.date),
-            lines: { create: j.lines.map((l) => ({ accountCode: l.code, accountName: l.name, debit: l.debit, credit: l.credit, notes: j.bukti || null })) },
+            lines: {
+              create: j.lines.map((l) => ({
+                accountCode: l.code,
+                accountName: l.name,
+                debit: l.debit,
+                credit: l.credit,
+                notes: j.bukti || null,
+                dimension: l.subledgerCode ? { subledgerCode: l.subledgerCode } : undefined,
+              })),
+            },
           },
         });
         journalCreated++;

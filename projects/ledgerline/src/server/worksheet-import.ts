@@ -14,7 +14,7 @@ export type ImportCoaRow = {
   openingCredit: number;
 };
 
-export type ImportJournalLine = { code: string; name: string; debit: number; credit: number };
+export type ImportJournalLine = { code: string; name: string; debit: number; credit: number; subledgerCode?: string };
 
 export type ImportJournal = {
   date: string; // YYYY-MM-DD
@@ -31,7 +31,7 @@ export type WorksheetParseResult = {
   year: number | null;
   coa: ImportCoaRow[];
   journals: ImportJournal[];
-  subledgerCodes: { code: string; name: string; group: string }[];
+  subledgerCodes: { code: string; name: string; group: string; openingBalance: number }[];
   warnings: string[];
   stats: {
     coaCount: number;
@@ -201,8 +201,9 @@ function parseJournals(ws: ExcelJS.Worksheet): { journals: ImportJournal[]; warn
   const cName = colIndex(hr, "nama akun");
   const cDebit = colIndex(hr, "debet");
   const cCredit = colIndex(hr, "kredit");
+  const cBantu = colIndex(hr, "bantu");
 
-  type Raw = { date: string; bukti: string; ket: string; code: string; name: string; debit: number; credit: number };
+  type Raw = { date: string; bukti: string; ket: string; code: string; name: string; debit: number; credit: number; bantu: string };
   const raws: Raw[] = [];
   for (let i = h + 1; i < rows.length; i++) {
     const vals = rows[i]!.values as unknown[];
@@ -214,6 +215,7 @@ function parseJournals(ws: ExcelJS.Worksheet): { journals: ImportJournal[]; warn
     const name = cellText(vals[cName]);
     const bukti = cellText(vals[cBukti]);
     const ket = cellText(vals[cKet]);
+    const bantu = cBantu >= 0 ? cellText(vals[cBantu]) : "";
     // Skip baris sampah/footer (tanpa identitas apa pun, mis. baris TOTAL D=K).
     if (!code && !name && !bukti && !ket) continue;
     // Tanggal wajib ada; jika sel berupa teks tanggal, konversi.
@@ -229,7 +231,7 @@ function parseJournals(ws: ExcelJS.Worksheet): { journals: ImportJournal[]; warn
       }
     }
     if (!date) continue;
-    raws.push({ date, bukti, ket, code, name, debit: d, credit: k });
+    raws.push({ date, bukti, ket, code, name, debit: d, credit: k, bantu });
   }
 
   const balanceOf = (items: Raw[]) => {
@@ -244,7 +246,7 @@ function parseJournals(ws: ExcelJS.Worksheet): { journals: ImportJournal[]; warn
       date: items[0]!.date,
       bukti,
       keterangan: ket,
-      lines: items.map((r) => ({ code: r.code, name: r.name, debit: r.debit, credit: r.credit })),
+      lines: items.map((r) => ({ code: r.code, name: r.name, debit: r.debit, credit: r.credit, subledgerCode: r.bantu || undefined })),
       balanced: true,
       totalDebit: d,
       totalCredit: k,
@@ -322,7 +324,7 @@ function parseJournals(ws: ExcelJS.Worksheet): { journals: ImportJournal[]; warn
   };
 }
 
-function parseSubledger(ws: ExcelJS.Worksheet | undefined): { code: string; name: string; group: string }[] {
+function parseSubledger(ws: ExcelJS.Worksheet | undefined): { code: string; name: string; group: string; openingBalance: number }[] {
   if (!ws) return [];
   const rows = getRows(ws);
   const h = detectHeaderRow(rows, ["kode", "status", "saldo awal"]);
@@ -331,13 +333,14 @@ function parseSubledger(ws: ExcelJS.Worksheet | undefined): { code: string; name
   const cCode = colIndex(hr, "kode");
   const cName = colIndex(hr, "piutang") >= 0 ? colIndex(hr, "piutang") : colIndex(hr, "hutang");
   const cGroup = colIndex(hr, "status");
-  const out: { code: string; name: string; group: string }[] = [];
+  const cSaldo = colIndex(hr, "saldo awal");
+  const out: { code: string; name: string; group: string; openingBalance: number }[] = [];
   for (let i = h + 1; i < rows.length; i++) {
     const vals = rows[i]!.values as unknown[];
     const code = cellText(vals[cCode]);
     const name = cellText(vals[cName]);
     if (!code || !name || !/^[A-Z0-9]{2}-\d+$/.test(code)) continue;
-    out.push({ code, name, group: cellText(vals[cGroup]) });
+    out.push({ code, name, group: cellText(vals[cGroup]), openingBalance: cSaldo >= 0 ? num(vals[cSaldo]) : 0 });
   }
   return out;
 }

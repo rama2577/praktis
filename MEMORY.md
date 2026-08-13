@@ -59,12 +59,15 @@ lessons:
 - **Emoji**: 🦞
 
 ## 当前项目
-- **Proyek aktif: build aplikasi dari mockup (chat.z.ai/space/m1ak5692s8r1-art) — Phase 2 dimulai 2026-08-07**
-- **Keputusan produk (2026-08-07): single-firm first, schema tenant-aware; dokumen: invoice + rekening koran; format: PDF, JPG, XLSX**
-- **Workflow produksi (2026-08-09, lanjut 2026-08-13): sebelum produksi, siapkan digital imaging yang menggambarkan app bekerja di masing-masing proses (seperti mockup); imaging/screenshot di-embed ke slide V4 Praktis Deck (menggantikan/melengkapi mockup statis); demo di-export dan di-host online**
-- **Ambil alih proyek Mio ERP dari Claude (2026-08-09): Mio FnB, POS, Accounting App, dll — rangkuman handoff diterima dan disimpan di workspace**
-- **代码仓库**: _(待补充)_
-- **主要分支**: _(待补充)_
+- **MBS (Mile Business Suite) — ERP multi-tenant UMKM; Wave A+B SELESAI + LIVE di produksi (2026-08-13)**
+- **Repo**: github.com/rama2577/MBS (origin) · branch `main` · commit author `rama@mile.app`
+- **Produksi**: Web https://mbs-sage.vercel.app (Vercel) · API https://mbs-production-52da.up.railway.app (Railway, Docker nginx+php-fpm, Postgres 16) · Railway project `alert-sparkle` (service MBS)
+- **Login demo**: `admin@mbs.test` / `password`; tenant kargo `cargo@demo.test`
+- **Wave A+B**: Fase 0 hardening, Kargo Shipment, Month-End cockpit, Dockable Workspace, PSAK 71 ECL, Global search ⌘K, Outline agreements+PO binding, E2E Playwright 7/7 (5 spec)
+- **Deploy lesson**: migrasi prod di `api/docker/start.sh` (`migrate --force` tiap boot); Railway "Pre-deploy Command" tidak jalan utk git-triggered deploy; file >100MB di history → filter-branch + force push
+- **Local preview**: API 127.0.0.1:8011 (sqlite, RATE_LIMIT_DISABLED=true) + web 127.0.0.1:3100
+- **E2E**: `cd web && npm run test:e2e` (port 8011/3100; jangan 3000/8001 — bentrok app lain)
+- **Sisa backlog**: cutover PostingRuleEngine shadow→live (multi-week)
 
 ## 系统架构
 - **Gateway**: _(待补充)_
