@@ -5,16 +5,17 @@ di tiap tahap proses. Siap di-embed ke deck.
 
 ## Deck selesai ✅
 
-**`V4 Praktis Deck.html`** (aktif) — 13 slide 16:9 (1920×1080), **hybrid** (cover & CTA dark, isi light),
-Bahasa Indonesia. Upgrade dari V3 (base): +2 slide portal klien (10 · 11), angka produktivitas v4
-(25–30 klien/junior, overhead −77%, 1.850→298 mnt −84%, revenue Rp 45–75 jt), 16 image ter-embed
-(10 internal + 6 portal klien). Buka langsung di browser.
+**`V5 Praktis Deck.html`** (aktif) — 18 slide 16:9 (1920×1080), **hybrid** (cover & CTA dark, isi light),
+Bahasa Indonesia. Upgrade dari V4: **+5 slide modul baru** (10–14) memakai 10 screenshot retina
+`images-modul/` — Migrasi Kertas Kerja (Import Wizard), Subledger & Aging, COA Template 17 Industri,
+Matrix 12 Bulan & Rounding, SPT 1771 & Perubahan Ekuitas; slide analisa memakai ikhtisar bulanan.
+V4 (13 slide) tetap tersedia sebagai arsip.
 
 **Navigasi:** `→`/`Space` maju · `←` mundur · `Home`/`End` lompat · klik kanan/tepi kiri layar juga berpindah.  
 **Print/PDF:** `Cmd/Ctrl+P` → ukuran sudah di-set landscape 1920×1080 per slide (format deck).  
 **Scale-to-fit:** otomatis menyesuaikan layar (body di-scale, tidak ada scrollbar).
 
-### Peta slide (V4)
+### Peta slide (V5)
 
 | # | Slide | Embed |
 |---|---|---|
@@ -27,12 +28,17 @@ Bahasa Indonesia. Upgrade dari V3 (base): +2 slide portal klien (10 · 11), angk
 | 7 | Simulasi 1 klien — 1.850 → 298 mnt (−84%) | bar manual vs Praktis+portal |
 | 8 | Bottleneck senior → confidence scoring | 09-exception, 05-review-junior |
 | 9 | Fitur kunci — traceability, SLA, RBAC | 01-dashboard, 07-tax-review |
-| 10 | **Portal klien** — upload sendiri, status real-time | 12-beranda-klien, 13-upload-klien |
-| 11 | **Analisa & Wawasan AI** — chart, rasio, komentar AI | 15-analisa-klien, 16-wawasan-ai |
-| 12 | Kepercayaan & adopsi — enkripsi, akses terisolasi | 08-partner-approval |
-| 13 | CTA — pilot 1 klien 30 hari | — |
+| 10 | **Migrasi kertas kerja** — Import Wizard Excel | mod-01, mod-02 |
+| 11 | **Subledger & Aging** — 4 bucket, buku besar pembantu | mod-03, mod-04 |
+| 12 | **COA Template** — 17 industri, auto-provision | mod-05, mod-06 |
+| 13 | **Matrix 12 Bulan & Rounding** — pola 1-12, ribuan/jutaan | mod-07, mod-10 |
+| 14 | **SPT 1771 & Perubahan Ekuitas** — koreksi fiskal | mod-08, mod-09 |
+| 15 | **Portal klien** — upload sendiri, status real-time | 12-beranda-klien, 13-upload-klien |
+| 16 | **Analisa & Wawasan AI** — ikhtisar Tahunan⇄Bulanan, komentar AI | mod-11, 16-wawasan-ai |
+| 17 | Kepercayaan & adopsi — enkripsi, akses terisolasi | 08-partner-approval |
+| 18 | CTA — pilot 1 klien 30 hari | — |
 
-Screenshot tiap slide: `shots-v4/slide-01.png … slide-13.png` (regenerasi via `scripts/screenshot-deck.js`).
+Screenshot tiap slide: `shots-v5/slide-01.png … slide-18.png` (regenerasi via `scripts/screenshot-deck.js`).
 Versi terdahulu diarsipkan: `archive/` berisi V1 (dark), V2 (light), V3 (hybrid 11 slide).
 
 **Navigasi:** `→`/`Space` maju · `←` mundur · `Home`/`End` lompat · klik kanan/tepi kiri layar juga berpindah.  
