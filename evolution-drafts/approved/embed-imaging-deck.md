@@ -1,3 +1,30 @@
+# Evolution Proposal: Memperbarui catatan workflow produksi dengan progres terbaru — imaging/screenshot di-embed ke slide V4 Praktis Deck (menggantikan/melengkapi mockup statis) dan demo di-export/host online.
+
+- Proposal-ID: evo-2026-08-13-embed-imaging-deck
+- Status: approved
+- Signature: embed-imaging-deck
+- Created-At: 2026-08-13 11:34
+- Last-Seen-At: 2026-08-13 11:34
+- Target-File: MEMORY.md
+- Trigger-Type: preference
+- Confidence: medium
+
+## Why This Matters
+- Memperbarui catatan workflow produksi dengan progres terbaru — imaging/screenshot di-embed ke slide V4 Praktis Deck (menggantikan/melengkapi mockup statis) dan demo di-export/host online.
+
+## Evidence
+- Interactive proposal card was present in the session UI.
+- The original pending draft file was unavailable at approval time.
+- AutoClaw reconstructed this draft from the proposal payload so the review result can still be recorded.
+
+## Duplicate Check
+- Checked: pending draft path + signature/proposal fallback
+- Result: original draft file missing
+- Decision: create surrogate draft from proposal payload
+
+## Proposed Change
+### MEMORY.md
+
 ---
 summary: "Long-term memory record"
 autoclaw.schema: "agent-profile/v1"
@@ -93,3 +120,12 @@ OpenClaw 三层记忆：
 
 ## 技能索引
 见 workspace/.agents/skills/ 目录下的 SKILL.md 文件
+
+## Apply Plan
+1. Keep this reconstructed draft as the approval artifact.
+2. Record the proposal content exactly as shown in the interactive card.
+3. Append an audit note after approval or rejection.
+
+## User Approval
+- Approve: 批准 evo-2026-08-13-embed-imaging-deck
+- Reject: 拒绝 evo-2026-08-13-embed-imaging-deck
