@@ -34,7 +34,7 @@ function Delta({ current, prev }: { current: number; prev?: number }) {
   return <span className={`ml-1 text-[10px] ${color}`}>{arrow}{Math.abs(pct).toFixed(0)}%</span>;
 }
 
-export function HighlightsTable({ data, loading }: { data: MultiPeriodHighlights | null; loading: boolean }) {
+export function HighlightsTable({ data, loading, formatPeriod }: { data: MultiPeriodHighlights | null; loading: boolean; formatPeriod?: (period: string) => string }) {
   if (loading) {
     return (
       <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-6 text-center text-sm text-slate-400">
@@ -63,7 +63,7 @@ export function HighlightsTable({ data, loading }: { data: MultiPeriodHighlights
             <th className="px-3 py-2 font-medium">Pos</th>
             {periods.map((p) => (
               <th key={p.period} className={`px-3 py-2 text-right font-medium ${p.period === latest.period ? "text-yellow-300" : ""}`}>
-                {p.period}
+                {formatPeriod ? formatPeriod(p.period) : p.period}
               </th>
             ))}
           </tr>

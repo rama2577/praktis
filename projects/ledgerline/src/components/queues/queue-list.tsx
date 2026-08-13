@@ -66,6 +66,9 @@ export function QueueList() {
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
   const noteRef = useRef<HTMLTextAreaElement>(null);
+  // Filter klien: akuntan memilih 1 klien agar tabel kerja tidak menampilkan semua klien.
+  const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
+  const [clientFilter, setClientFilter] = useState("");
 
   // Auto-focus note textarea saat panel review terbuka
   useEffect(() => {
@@ -91,6 +94,15 @@ export function QueueList() {
   useEffect(() => {
     async function start() {
       await load();
+      try {
+        const res = await fetch("/api/clients", { cache: "no-store" });
+        if (res.ok) {
+          const j = (await res.json()) as { data?: { id: string; name: string }[] };
+          setClients(j.data ?? []);
+        }
+      } catch {
+        // filter klien opsional — abaikan bila gagal
+      }
     }
     void start();
   }, [load]);
@@ -143,12 +155,13 @@ export function QueueList() {
   const grouped = useMemo(() => {
     const map = new Map<string, QueueTask[]>();
     for (const t of data?.data ?? []) {
+      if (clientFilter && t.journalEntry.client.id !== clientFilter) continue;
       const arr = map.get(t.stage) ?? [];
       arr.push(t);
       map.set(t.stage, arr);
     }
     return STAGE_ORDER.filter((s) => map.has(s)).map((s) => ({ stage: s, tasks: map.get(s)! }));
-  }, [data]);
+  }, [data, clientFilter]);
 
   const submitAction = useCallback(
     async (taskId: string, a: string) => {
@@ -245,10 +258,35 @@ export function QueueList() {
         </div>
       )}
 
-      <p className="text-xs text-slate-500">
-        💡 Batch approve: centang task dengan confidence ≥ {Math.round(BATCH_CONFIDENCE_MIN * 100)}%, lalu setujui
-        sekaligus — tetap lewat state machine & tercatat di SLA/aktivitas.
-      </p>
+      {/* Filter klien — agar tidak semua klien tampil dalam satu tabel kerja */}
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="flex flex-col gap-1 text-xs text-slate-400">
+          Sortir klien
+          <select
+            value={clientFilter}
+            onChange={(e) => setClientFilter(e.target.value)}
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+          >
+            <option value="">Semua klien ({data?.data.length ?? 0})</option>
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </label>
+        {clientFilter && (
+          <button
+            type="button"
+            onClick={() => setClientFilter("")}
+            className="mt-4 rounded-md border border-slate-700 px-2 py-1.5 text-xs text-slate-400 hover:text-slate-200"
+          >
+            ✕ Hapus filter
+          </button>
+        )}
+        <p className="mt-4 text-xs text-slate-500">
+          💡 Batch approve: centang task dengan confidence ≥ {Math.round(BATCH_CONFIDENCE_MIN * 100)}%, lalu setujui
+          sekaligus — tetap lewat state machine & tercatat di SLA/aktivitas.
+        </p>
+      </div>
 
       {grouped.map(({ stage, tasks }) => (
         <section key={stage}>

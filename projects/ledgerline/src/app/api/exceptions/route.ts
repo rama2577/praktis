@@ -22,6 +22,7 @@ export const GET = withTenantApi(async () => {
   return NextResponse.json({
     data: rows.map((r) => ({
       id: r.id,
+      clientId: r.client.id,
       clientName: r.client.name,
       description: r.description,
       exceptionFlag: r.exceptionFlag,

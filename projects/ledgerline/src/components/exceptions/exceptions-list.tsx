@@ -9,6 +9,7 @@ import { formatCurrencyRp, formatBytes } from "@/lib/format";
 
 type ExceptionItem = {
   id: string;
+  clientId: string;
   clientName: string;
   description: string | null;
   exceptionFlag: string | null;
@@ -53,6 +54,9 @@ export function ExceptionsList() {
   const [note, setNote] = useState("");
   const [busy, setBusy] = useState(false);
   const [flash, setFlash] = useState<string | null>(null);
+  // Filter klien
+  const [clients, setClients] = useState<{ id: string; name: string }[]>([]);
+  const [clientFilter, setClientFilter] = useState("");
 
   const load = useCallback(async () => {
     try {
@@ -70,6 +74,15 @@ export function ExceptionsList() {
   useEffect(() => {
     async function start() {
       await load();
+      try {
+        const res = await fetch("/api/clients", { cache: "no-store" });
+        if (res.ok) {
+          const j = (await res.json()) as { data?: { id: string; name: string }[] };
+          setClients(j.data ?? []);
+        }
+      } catch {
+        // filter opsional
+      }
     }
     void start();
   }, [load]);
@@ -137,8 +150,33 @@ export function ExceptionsList() {
           {flash}
         </div>
       )}
+      {/* Filter klien */}
+      <div className="flex flex-wrap items-center gap-3">
+        <label className="flex flex-col gap-1 text-xs text-slate-400">
+          Sortir klien
+          <select
+            value={clientFilter}
+            onChange={(e) => setClientFilter(e.target.value)}
+            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+          >
+            <option value="">Semua klien ({items.length})</option>
+            {clients.map((c) => (
+              <option key={c.id} value={c.id}>{c.name}</option>
+            ))}
+          </select>
+        </label>
+        {clientFilter && (
+          <button
+            type="button"
+            onClick={() => setClientFilter("")}
+            className="mt-4 rounded-md border border-slate-700 px-2 py-1.5 text-xs text-slate-400 hover:text-slate-200"
+          >
+            ✕ Hapus filter
+          </button>
+        )}
+      </div>
       <ul className="space-y-3">
-        {items.map((item) => (
+        {items.filter((item) => !clientFilter || item.clientId === clientFilter).map((item) => (
           <li key={item.id} className="rounded-xl border border-red-500/30 bg-card/60 p-4">
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">

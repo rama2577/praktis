@@ -4,6 +4,7 @@ import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TH, TD, TR, Table } from "@/components/ui/table";
+import { OutboxClientFilter } from "@/components/outbox/client-filter";
 
 export const dynamic = "force-dynamic";
 
@@ -23,18 +24,25 @@ const STATUS_TONE: Record<string, "positive" | "warning" | "danger" | "neutral">
   FAILED: "danger",
 };
 
-export default async function OutboxPage() {
+export default async function OutboxPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ client?: string }>;
+}) {
   const session = await requireRole(OPERATIONAL_ROLES);
+  const { client: clientFilter } = await searchParams;
 
   const events = await prisma.outboxEvent.findMany({
-    where: { firmId: session.user.firmId },
+    where: { firmId: session.user.firmId, ...(clientFilter ? { clientId: clientFilter } : {}) },
     orderBy: { createdAt: "desc" },
     take: 100,
   });
-  const clientIds = [...new Set(events.map((e) => e.clientId).filter(Boolean))] as string[];
-  const clients = clientIds.length
-    ? await prisma.client.findMany({ where: { id: { in: clientIds } }, select: { id: true, name: true } })
-    : [];
+  // Semua klien firma untuk dropdown sortir (bukan hanya yang punya event).
+  const clients = await prisma.client.findMany({
+    where: { firmId: session.user.firmId },
+    select: { id: true, name: true },
+    orderBy: { name: "asc" },
+  });
   const clientName = new Map(clients.map((c) => [c.id, c.name]));
   const summary = {
     pending: events.filter((e) => e.status === "PENDING").length,
@@ -64,6 +72,19 @@ export default async function OutboxPage() {
           <div className="text-xs text-slate-400">Gagal</div>
           <div className="font-display text-xl font-bold text-rose-300">{summary.failed}</div>
         </Card>
+      </div>
+
+      {/* Filter klien */}
+      <div className="flex flex-wrap items-center gap-3">
+        <OutboxClientFilter clients={clients} value={clientFilter ?? ""} total={events.length} />
+        {clientFilter && (
+          <a
+            href="/dashboard/outbox"
+            className="mt-4 rounded-md border border-slate-700 px-2 py-1.5 text-xs text-slate-400 hover:text-slate-200"
+          >
+            ✕ Hapus filter
+          </a>
+        )}
       </div>
 
       <Card className="p-4">

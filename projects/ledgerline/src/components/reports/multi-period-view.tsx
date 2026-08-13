@@ -12,6 +12,12 @@ import { SelectClient, PeriodInput } from "./analytics-views";
 import { EmptyState } from "@/components/ui/empty-state";
 import type { MultiPeriodHighlights } from "@/server/multi-period";
 
+const MONTH_LABELS = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+const monthlyLabel = (period: string) => {
+  const [, m] = period.split("-").map(Number);
+  return MONTH_LABELS[(m ?? 1) - 1] ?? period;
+};
+
 type Client = { id: string; name: string };
 
 type AnalysisData = {
@@ -36,21 +42,28 @@ export function MultiPeriodView({
   const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  // Mode perbandingan: "tahunan" = 5 tahun terakhir; "bulanan" = 12 bulan dalam tahun yang sama.
+  const [mode, setMode] = useState<"tahunan" | "bulanan">("tahunan");
 
   const load = useCallback(async () => {
     if (!clientId) return;
     setLoading(true);
     setError(null);
     try {
-      // Generate 5-year range (current period − 48 months)
       const [y, m] = period.split("-").map(Number);
       const periods: string[] = [];
-      for (let i = 0; i < 5; i++) {
-        let ym = y! - i;
-        if (ym < 2020) break; // oldest 2020
-        periods.push(`${ym}-${String(m!).padStart(2, "0")}`);
+      if (mode === "bulanan") {
+        // Periodik bulanan: Jan–Des pada tahun yang sama dengan periode aktif.
+        for (let i = 1; i <= 12; i++) periods.push(`${y}-${String(i).padStart(2, "0")}`);
+      } else {
+        // Tahunan: 5 tahun terakhir, dibandingkan pada bulan yang sama.
+        for (let i = 0; i < 5; i++) {
+          let ym = y! - i;
+          if (ym < 2020) break; // oldest 2020
+          periods.push(`${ym}-${String(m!).padStart(2, "0")}`);
+        }
+        periods.reverse(); // oldest → newest
       }
-      periods.reverse(); // oldest → newest
 
       const [hlRes, anRes] = await Promise.all([
         fetch(`/api/clients/${clientId}/multi-period?periods=${encodeURIComponent(periods.join(","))}`),
@@ -70,7 +83,7 @@ export function MultiPeriodView({
     } finally {
       setLoading(false);
     }
-  }, [clientId, period]);
+  }, [clientId, period, mode]);
 
   useEffect(() => { void load(); }, [load]);
 
@@ -82,6 +95,21 @@ export function MultiPeriodView({
       <div className="flex flex-wrap items-end gap-3">
         <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
         <PeriodInput period={period} setPeriod={setPeriod} />
+        {/* Toggle mode perbandingan */}
+        <div className="flex items-end gap-1 rounded-lg border border-slate-800 bg-slate-950 p-1">
+          {(["tahunan", "bulanan"] as const).map((md) => (
+            <button
+              key={md}
+              type="button"
+              onClick={() => setMode(md)}
+              className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
+                mode === md ? "bg-accent text-[#0b1120]" : "text-slate-400 hover:text-slate-200"
+              }`}
+            >
+              {md === "tahunan" ? "📅 Tahunan" : "🗓️ Bulanan"}
+            </button>
+          ))}
+        </div>
       </div>
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/20 p-3 text-xs text-red-400">{error}</div>}
@@ -90,10 +118,12 @@ export function MultiPeriodView({
       <div className="rounded-xl border border-slate-800 bg-slate-900/50">
         <div className="border-b border-slate-800 px-4 py-3">
           <h3 className="text-sm font-medium text-slate-100">📊 Ikhtisar Keuangan Multi-Periode</h3>
-          <p className="text-xs text-slate-400">5 tahun terakhir · benchmark Unilever Annual Report</p>
+          <p className="text-xs text-slate-400">
+            {mode === "tahunan" ? "5 tahun terakhir · benchmark Unilever Annual Report" : "12 bulan dalam tahun yang sama · perbandingan periodik"}
+          </p>
         </div>
         <div className="p-2">
-          <HighlightsTable data={highlights} loading={loading} />
+          <HighlightsTable data={highlights} loading={loading} formatPeriod={mode === "bulanan" ? monthlyLabel : undefined} />
         </div>
       </div>
 

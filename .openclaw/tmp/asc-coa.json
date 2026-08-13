@@ -1,0 +1,1570 @@
+[
+ {
+  "code": "Akun",
+  "name": "",
+  "posSaldo": "Saldo",
+  "posLaporan": "Laporan",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "100000000",
+  "name": "AKTIVA",
+  "posSaldo": "",
+  "posLaporan": "",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "1-100-000",
+  "name": "AKTIVA LANCAR",
+  "posSaldo": "",
+  "posLaporan": "",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "1-101-000",
+  "name": "Kas dan Bank",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "1-101-001",
+  "name": "Petty Cash",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-101-010",
+  "name": "CIMB Niaga - Acc. No: 800171592300",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 3043241.0
+ },
+ {
+  "code": "1-101-011",
+  "name": "Bank 2",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-101-012",
+  "name": "Bank 3",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-101-013",
+  "name": "BAnk 4",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-101-100",
+  "name": "Bank Deposit",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-101-101",
+  "name": "Others Deposit",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-101-200",
+  "name": "Cash In Transit",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-102-000",
+  "name": "Account Receivable",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-102-001",
+  "name": "Receivable - Trade",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 13548978.0
+ },
+ {
+  "code": "1-102-002",
+  "name": "Employee Receivable",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-102-003",
+  "name": "Prepayment / Uang Muka",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-102-004",
+  "name": "Other Receivable",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-103-000",
+  "name": "Persediaan",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-104-000",
+  "name": "Shareholder's - Receivable",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-105-000",
+  "name": "Due To/From Subsidiary/Affiliate Company",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-105-001",
+  "name": "Jaya Impian Abadi PT",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-105-002",
+  "name": "Citra Perkasa CV",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-106-000",
+  "name": "Prepaid Expenses",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-106-001",
+  "name": "Work In Progress",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-106-010",
+  "name": "Prepaid Insurance",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-106-011",
+  "name": "Prepaid Office Rental",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-106-099",
+  "name": "Prepaid - Others",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-107-000",
+  "name": "Prepaid Taxes",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-107-001",
+  "name": "Prepaid PPh 22",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-107-002",
+  "name": "Prepaid PPh 23",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-107-003",
+  "name": "Prepaid PPh 25",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-108-000",
+  "name": "Value Added Tax",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-108-001",
+  "name": "Input",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-108-010",
+  "name": "Output",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-109-000",
+  "name": "Investment",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-10999",
+  "name": "Mekari Pay Escrow Account",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-000",
+  "name": "Fixed Assets",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-001",
+  "name": "Building",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-002",
+  "name": "Building Improvement",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-003",
+  "name": "Motor Vehicles",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-004",
+  "name": "Office Furniture & Equipment",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-005",
+  "name": "Electronics & IT Equipment",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 9550321.0
+ },
+ {
+  "code": "1-120-101",
+  "name": "Acc. Depreciation - Land & Building",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-102",
+  "name": "Acc. Depreciation - Building Improvement",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-103",
+  "name": "Acc. Depreciation - Motor Vehicles",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-104",
+  "name": "Acc. Depreciation - Office Furniture & Equipment",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "1-120-105",
+  "name": "Acc. Depreciation - Electronics & IT Equipment",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": -476032.0
+ },
+ {
+  "code": "1-120-999",
+  "name": "Other Asset",
+  "posSaldo": "Db",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0.0
+ },
+ {
+  "code": "2-130-000",
+  "name": "Account Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-130-001",
+  "name": "Account Payable - Trade",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-000",
+  "name": "Other Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-001",
+  "name": "Salary Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-010",
+  "name": "BPJS Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-020",
+  "name": "Accrued Expenses - General",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-021",
+  "name": "Accrued Expenses - Project",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-030",
+  "name": "Tax Payable - PPh Ps 21/26",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-031",
+  "name": "Tax Payable - PPh Ps 23",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-032",
+  "name": "Tax Payable - PPh Ps 29",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-033",
+  "name": "Tax Payable - PPh Ps 4 (2)",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-040",
+  "name": "Dividend Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-050",
+  "name": "Interest Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-140-099",
+  "name": "Others Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-150-000",
+  "name": "Shareholder's Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-151-000",
+  "name": "Advance Payment/Accrued Income",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-151-001",
+  "name": "Advance Payment from Client",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-151-002",
+  "name": "Overpayment from Client",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-151-003",
+  "name": "Doubtful Payable",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-160-000",
+  "name": "Third Party Loan",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-170-000",
+  "name": "Bank & Financial Institution Loan",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-170-001",
+  "name": "Bank BRI",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-170-002",
+  "name": "Bank 2",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-170-003",
+  "name": "Fin. Institution 1",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-170-004",
+  "name": "Fin. Institution 2",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-170-005",
+  "name": "Hutang Belum Ditagih",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "2-170-006",
+  "name": "PPN Keluaran",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-100-000",
+  "name": "Equities & Retained Earnings",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-101-000",
+  "name": "Shareholdership",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-101-001",
+  "name": "Paid-up Capital",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-102-000",
+  "name": "Retained Earnings",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-102-001",
+  "name": "Accumulated Profit/(Loss)",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-102-002",
+  "name": "Prior Year's Adjustment",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-102-003",
+  "name": "Current Year Profit/(Loss)",
+  "posSaldo": "Kr",
+  "posLaporan": "NRC",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "3-102-004",
+  "name": "Ekuitas Lainnya",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-100-000",
+  "name": "Total Revenue",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-000",
+  "name": "Total Event Management Services Income",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-001",
+  "name": "Pendapatan Usaha",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-002",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-003",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-004",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-005",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-006",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-007",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-008",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-020",
+  "name": "Pendapatan ....",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-101-100",
+  "name": "Agency Service Fee",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-102-000",
+  "name": "Total Exhibition, Conference & Sponsorship Income",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-102-001",
+  "name": "Exhibition Revenue",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-102-002",
+  "name": "Conference Revenue",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-102-003",
+  "name": "Sponsorship Revenue",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-103-000",
+  "name": "Total Other Income",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-103-001",
+  "name": "Additional Power",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-103-002",
+  "name": "Additional Furniture",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-103-003",
+  "name": "Additional Equipment",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-103-004",
+  "name": "Entrance Ticket",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-103-100",
+  "name": "Others",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-106-000",
+  "name": "Discount/Sales Return & Commissions",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-106-001",
+  "name": "Sales Discount",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-106-002",
+  "name": "Sales Return & Allowance",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-106-003",
+  "name": "Sales Commisions - Agent",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-106-004",
+  "name": "Sales Commisions - Staff",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "4-402-001",
+  "name": "Pendapatan Belum Ditagih",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-100-000",
+  "name": "Total Sales Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-101-000",
+  "name": "Total Sales Cost ASC",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-101-001",
+  "name": "Operational Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-101-002",
+  "name": "Tour & Surfing Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-101-003",
+  "name": "Transaction Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-101-004",
+  "name": "Licence & Permit Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-101-005",
+  "name": "Product Purchase Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-101-006",
+  "name": "Other Operating Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-000",
+  "name": "Total Exhibition & Conference Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-001",
+  "name": "Space Rental - Exhibition",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-002",
+  "name": "Shell Scheme Rental - Exhibition",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-003",
+  "name": "Conference Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-004",
+  "name": "Man Power Cost - Exhibiton",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-005",
+  "name": "Sponsorship Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-006",
+  "name": "Other Operating Cost - Exhibition",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-007",
+  "name": "Pengiriman & Pengangkutan",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "5-111-008",
+  "name": "Biaya Produksi",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-100-000",
+  "name": "Office Overhead",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-000",
+  "name": "Staff Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-001",
+  "name": "Salary & Allowance",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-002",
+  "name": "13th Month Salary",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-003",
+  "name": "Bonus",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-004",
+  "name": "Overtime",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-005",
+  "name": "Medical Allowance",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-006",
+  "name": "BPJS - Pension",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-007",
+  "name": "BPJS - Health",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-020",
+  "name": "PPh - 21",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-031",
+  "name": "Recruitmen",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-032",
+  "name": "Training & Development",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-033",
+  "name": "Uniform",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-034",
+  "name": "Meals (Food & Snack)",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-035",
+  "name": "Staff Party",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-101-040",
+  "name": "Retreat/Outing",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-000",
+  "name": "Office Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-001",
+  "name": "Office Rental",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-002",
+  "name": "Service Charge",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-003",
+  "name": "Building repair & maintenance",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-004",
+  "name": "Office equipment repair & maintenance",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-005",
+  "name": "Cleaning, garbage pickup & security",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-006",
+  "name": "Electricity & Water",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-011",
+  "name": "Internet & Telephone",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-012",
+  "name": "Postage, Courier & Stamp Duty",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-013",
+  "name": "Office Supplies & Printing",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-021",
+  "name": "Petrol,Tol, Parking & repair/service",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-022",
+  "name": "Meals & Groceries",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-023",
+  "name": "Travel & Accomodation",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-024",
+  "name": "Donation",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-025",
+  "name": "Insurance",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-026",
+  "name": "Entertaiment/Marketing",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-027",
+  "name": "Moving Expenses",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-102-099",
+  "name": "Miscellaneous Expenses",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-000",
+  "name": "Professional & Finance Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-001",
+  "name": "Legal Expenses",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-002",
+  "name": "Tax / Business Consultancy",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-003",
+  "name": "Accounting Services/System",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-004",
+  "name": "Association Fee",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-005",
+  "name": "Debt collection fee",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-006",
+  "name": "Advertisement cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-103-007",
+  "name": "Bad Debt expenses",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-201-000",
+  "name": "Depreciation & Amortization",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-201-001",
+  "name": "Depr. Expenses - Builidng",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-201-002",
+  "name": "Depr. Expenses - Building Improvement",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-201-003",
+  "name": "Depr. Expenses - Motor Vehicles",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-201-004",
+  "name": "Depr. Expenses - Office Furniture",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-201-005",
+  "name": "Depr. Expenses - IT Equipment",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "6-60216",
+  "name": "Pengeluaran Barang Rusak",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "7-101-000",
+  "name": "Non operating Income",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "7-101-001",
+  "name": "Interest Income",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "7-101-002",
+  "name": "Profit From Forex",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "7-101-003",
+  "name": "Profit from disposal/sales of fixed assets",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "7-70003",
+  "name": "Rounding",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "7-70099",
+  "name": "Pendapatan Lain - lain",
+  "posSaldo": "Kr",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-000",
+  "name": "Non operating Expenses",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-001",
+  "name": "Bank Admin Charges",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-002",
+  "name": "Bank Provisional Cost",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-003",
+  "name": "Tax on interest earned",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-004",
+  "name": "Interest Expenses",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-005",
+  "name": "Loss from disposal of assets",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-006",
+  "name": "Loss from forex",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-101-007",
+  "name": "Other Tax and Retribution",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "8-80100",
+  "name": "Penyesuaian Persediaan",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "9-101-000",
+  "name": "Corporate Income Tax",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "9-101-001",
+  "name": "Income Tax - PPh Ps 29",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "9-102-000",
+  "name": "Dividend",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ },
+ {
+  "code": "9-102-001",
+  "name": "Dividend Expense",
+  "posSaldo": "Db",
+  "posLaporan": "LR",
+  "saldoAwalDebit": 0,
+  "saldoAwalKredit": 0
+ }
+]
