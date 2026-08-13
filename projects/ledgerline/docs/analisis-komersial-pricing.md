@@ -320,3 +320,82 @@ COGS = AI + storage + **support ±Rp 50rb/klien/bln (1 CS utk ±100 klien)** + *
 ### 10e. Implementasi (ringkas)
 
 `Client.billingMode: MONTHLY | ANNUAL` · `plan: MIKRO|KECIL|MENENGAH` + `billing: FLAT|QUOTA` · invoice bulanan (periodik) & di muka (tahunan) · metering `UsageMeter` (JournalLine APPROVED) · dashboard firma: **MRR terpisah dari pipeline penugasan** · alert kuota 80%/100% + auto over-quota Rp 500/tx.
+
+
+---
+
+## 11. MODEL FINAL TERPILIH: Kuota-Only per Klien (tanpa platform fee)
+
+Keputusan Rama (2026-08-13): buang harga per firma; harga murni per klien; tanpa paket flat;
+3 segmen: Mikro / Low / Middle; over-quota **Rp 300/transaksi**; tahunan pakai perlakuan sama;
+modul PPh Tahunan di-gate: terbuka hanya setelah biaya tahunan dibayar.
+
+### 11a. Struktur harga
+
+**Periodik (per klien/bulan) — kuota:**
+
+| Segmen | Kuota | Harga | COGS penuh | GP |
+|---|---|---|---|---|
+| Mikro | 100 tx | **Rp 350rb** | 66rb + 3% | 78% |
+| Low | 500 tx | **Rp 650rb** | 96rb + 3% | 82% |
+| Middle | 2.000 tx | **Rp 1,5jt** | 210rb + 3% | 83% |
+| Over-quota | per tx | **Rp 300** | 100 + 3% | 64%* |
+
+**Tahunan (per penugasan, dibayar di muka) — kuota:**
+
+| Segmen | Kuota | Harga | COGS penuh | GP |
+|---|---|---|---|---|
+| Mikro tahunan | 1.200 tx | **Rp 1,5jt** | 206rb + 3% | 83% |
+| Low tahunan | 6.000 tx | **Rp 4jt** | 686rb + 3% | 80% |
+| Middle tahunan | 24.000 tx | **Rp 12jt** | 2,51jt + 3% | 76% |
+| Over-quota | per tx | **Rp 300** | 100 + 3% | 64%* |
+
+*Over-quota: GP penuh 64% di bawah floor 70%, TAPI biaya tetap (support/storage/infra) sudah tertutup
+kuota — yang tersisa hanya AI + payment. **Margin kontribusi 67%** (Rp 200/tx bersih). Posisi sehat:
+harga "kelebihan" tidak perlu menanggung biaya tetap. Opsi ketat: Rp 350/tx → GP 71% (masuk band).
+
+### 11b. Analisa GP agregat per skenario
+
+Mix klien asumsi 40% mikro / 40% low / 20% middle → ARPU ±**Rp 700rb/klien/bln**,
+COGS rata-rata ±107rb + 3% payment → **GP per klien 81,7%** (dalam band 70–85% ✓).
+
+**Tanpa platform fee, infra Rp 1,5jt/bln ditutup dari margin klien — GP agregat vs jumlah firma:**
+
+| Firma aktif (10 klien/firma) | Share infra/klien | GP agregat |
+|---|---|---|
+| 1 | 150rb | 53% |
+| 3 | 50rb | 66% |
+| 5 | 30rb | 70% ✓ |
+| 10 | 15rb | 72% |
+| 20 | 7,5rb | 74% |
+
+**Kesimpulan jujur**: band 70–85% tercapai saat ≥5 firma aktif. Fase 1–4 firma = GP 53–66%
+(di bawah floor) — ini trade-off penghapusan platform fee; mitigasi: **setup fee one-time per firma
+(Rp 3jt, dipertahankan)** + terima fase investasi singkat.
+
+### 11c. Paywall modul PPh Tahunan (gating)
+
+- **Mekanisme**: `Client.annualPaidAt` di-set saat invoice tahunan lunas. API SPT 1771 & rekapitulasi
+  tahunan **cek di server**: tidak ada `annualPaidAt` valid → 403 + UI menampilkan lock & CTA bayar.
+- **Dampak bisnis**:
+  - Konversi tinggi: klien yang butuh SPT Tahunan **wajib** ambil paket tahunan (gating keras = 100% konversi kebutuhan itu).
+  - Upsell alami: dorong klien bulanan konversi ke tahunan sebelum Jan (reminder Okt–Des + invoice di muka).
+  - Mengunci engagement 1 tahun → churn tahunan rendah.
+  - Risiko: friction di masa kritis (Jan–Mar) → mitigasi **grace period 14 hari** + notifikasi bertahap (H-60/H-30/H-7) + lock hanya untuk modul SPT, laporan bulanan tetap jalan.
+- **Catatan produk**: klien yang HANYA butuh SPT (tanpa bookkeeping) masuk paket Mikro tahunan (entry termurah).
+
+### 11d. Unit economics baru
+
+- ARPU Rp 700rb · COGS rata-rata ±107rb+3% → **GP per klien ±Rp 570rb/bln (81,7%)**
+- Break-even infra: ±3 klien; **GP 70% tercapai ≥5 firma**; GP 74% saat 20 firma (tak pernah >85% — harga tetap kompetitif)
+- Churn 2,5%/bln → LTV ±Rp 28jt (700rb × 40 bln) · CAC 1,5–3jt → **LTV:CAC 9–18×**
+- Potensi: 50 firma × 30 klien = 1.500 klien × Rp 700rb = **±Rp 1,05 M/bln MRR**
+- Over-quota: klien over 10–20% → tambahan ±Rp 150–500rb/firma/bln (margin kontribusi 67%)
+
+### 11e. Rekomendasi implementasi (tahap berikutnya)
+
+1. `Client.plan: MIKRO|LOW|MIDDLE` + `billingMode: MONTHLY|ANNUAL` + `annualPaidAt`
+2. `UsageMeter` (COUNT JournalLine APPROVED per klien-periode, batch harian)
+3. Gate server-side modul SPT 1771 & rekapitulasi tahunan (403 + lock UI + CTA bayar)
+4. Invoice: bulanan (paket+over-quota) & tahunan (di muka, kuota tahunan+over-quota)
+5. Dashboard firma: MRR + pipeline penugasan terpisah; alert kuota 80%/100%
