@@ -5,11 +5,18 @@ di tiap tahap proses. Siap di-embed ke deck.
 
 ## Deck selesai ✅
 
-**`V5 Praktis Deck.html`** (aktif) — 18 slide 16:9 (1920×1080), **hybrid** (cover & CTA dark, isi light),
+**`V6 Praktis Deck.html`** (aktif) — 18 slide 16:9 (1920×1080), **hybrid** (cover & CTA dark, isi light),
 Bahasa Indonesia. Upgrade dari V4: **+5 slide modul baru** (10–14) memakai 10 screenshot retina
 `images-modul/` — Migrasi Kertas Kerja (Import Wizard), Subledger & Aging, COA Template 17 Industri,
 Matrix 12 Bulan & Rounding, SPT 1771 & Perubahan Ekuitas; slide analisa memakai ikhtisar bulanan.
-V4 (13 slide) tetap tersedia sebagai arsip.
+V5 (13 slide) tetap tersedia di `archive/`.
+
+### Enhancement V6 (autoclaw-design-capability)
+- Emoji diganti **SVG linear icons** (stroke 1.7, currentColor, gold) — anti AI-slop
+- **Speaker notes** lengkap 18/18 (`<aside class="notes">`, siap untuk presenter mode / PPTX)
+- Keterbacaan: h2 52→56, h4 20→22, tabel 15→16, caption 12.5→15, pill 13→15; kontras `--text-3` dinaikkan (#64748b)
+- `<meta auto-designer-preview-device=slide>` + `data-slide`/`data-screen-label` per halaman
+- Arsitektur versi: V1–V5 di `archive/`, aktif = V6
 
 **Navigasi:** `→`/`Space` maju · `←` mundur · `Home`/`End` lompat · klik kanan/tepi kiri layar juga berpindah.  
 **Print/PDF:** `Cmd/Ctrl+P` → ukuran sudah di-set landscape 1920×1080 per slide (format deck).  
