@@ -4,6 +4,7 @@ import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { withTenantApi } from "@/lib/tenant-api";
 import { getTrialBalance } from "@/server/trial-balance";
+import { getEquityActivity } from "@/server/equity";
 import {
   buildBalanceSheet,
   buildCashFlowStatement,
@@ -58,7 +59,8 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
     }
     case "ekuitas": {
       const laba = buildIncomeStatement(rows, client.name, period).lines.find((l) => l.label.includes("LABA (RUGI)"))?.amount ?? 0;
-      stmt = buildEquityStatement(rows, client.name, period, laba);
+      const activity = await getEquityActivity(client.id, period);
+      stmt = buildEquityStatement(rows, client.name, period, laba, activity);
       break;
     }
     case "aruskas":

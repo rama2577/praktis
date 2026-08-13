@@ -100,18 +100,60 @@ export function buildBalanceSheet(rows: TrialBalanceRow[], clientName: string, p
 
 // ── Perubahan Ekuitas ────────────────────────────────────────────────────────
 
-export function buildEquityStatement(rows: TrialBalanceRow[], clientName: string, period: string, laba: number): FinancialStatement {
+/** Apakah akun = Laba Berjalan (tidak masuk saldo awal, diisi baris laba). */
+export function isLabaBerjalan(r: { accountCode: string; accountName: string }): boolean {
+  const code = r.accountCode.trim();
+  const name = r.accountName.toLowerCase();
+  if (name.includes("laba berjalan") || name.includes("laba tahun berjalan")) return true;
+  // Template base: 3300/3301; ASC: 3301
+  return /^330[01]/.test(code) || code.includes("-3301");
+}
+
+/** Aktivitas ekuitas periode (setoran modal & prive) — dihitung dari jurnal. */
+export type EquityActivity = { setoranModal: number; prive: number };
+
+/**
+ * Laporan Perubahan Ekuitas (Gap #5, v2):
+ * - Saldo awal = akun ekuitas tanpa Laba Berjalan (hindari dobel hitung).
+ * - Baris setoran modal & prive/dividen dari aktivitas periode.
+ * - Saldo akhir = awal + setoran + laba − prive.
+ */
+export function buildEquityStatement(
+  rows: TrialBalanceRow[],
+  clientName: string,
+  period: string,
+  laba: number,
+  activity: EquityActivity = { setoranModal: 0, prive: 0 },
+): FinancialStatement {
   const lines: StatementLine[] = [];
   const ekuitas = rows.filter((r) => r.classification === "EKUITAS");
-  const modalAwal = ekuitas.reduce((s, r) => s + r.balance, 0);
+  const ekuitasTanpaLabaBerjalan = ekuitas.filter((r) => !isLabaBerjalan(r));
+  const saldoAwal = ekuitasTanpaLabaBerjalan.reduce((s, r) => s + r.balance, 0);
+  const saldoAkhir = saldoAwal + activity.setoranModal + laba - activity.prive;
 
-  section(lines, "SALDO AWAL EKUITAS", modalAwal);
-  for (const r of ekuitas) {
+  section(lines, "SALDO AWAL EKUITAS", saldoAwal);
+  for (const r of ekuitasTanpaLabaBerjalan) {
     if (r.balance === 0) continue;
     lines.push({ label: `  ${r.accountName}`, amount: r.balance, indent: 1 });
   }
+  if (activity.setoranModal !== 0) {
+    section(lines, "SETORAN MODAL PERIODE BERJALAN", activity.setoranModal);
+  }
+  if (activity.prive !== 0) {
+    section(lines, "PRIVE / DIVIDEN", -activity.prive);
+  }
   section(lines, "LABA (RUGI) PERIODE BERJALAN", laba);
-  section(lines, "SALDO AKHIR EKUITAS", modalAwal + laba, true);
+  section(lines, "SALDO AKHIR EKUITAS", saldoAkhir, true);
+
+  // Validasi silang: saldo akhir harus sama dengan total akun ekuitas di neraca.
+  const totalEkuitasNeraca = ekuitas.reduce((s, r) => s + r.balance, 0);
+  if (Math.abs(saldoAkhir - totalEkuitasNeraca) > 1) {
+    lines.push({
+      label: "CATATAN: selisih dengan neraca (periksa akun Laba Berjalan)",
+      amount: Math.round((saldoAkhir - totalEkuitasNeraca) * 100) / 100,
+      indent: 0,
+    });
+  }
   return { title: "LAPORAN PERUBAHAN EKUITAS", clientName, period, lines };
 }
 
