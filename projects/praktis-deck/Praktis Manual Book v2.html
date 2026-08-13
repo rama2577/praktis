@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Praktis · Manual Book — AI Bookkeeping untuk Firma Akuntansi</title>
+<style>
+:root{
+  --ink:#0f172a; --ink-2:#334155; --ink-3:#64748b;
+  --bg:#ffffff; --bg-soft:#f1f5f9; --bg-soft-2:#e2e8f0;
+  --border:#dbe2ec; --border-strong:#b6c2d4;
+  --accent:#c98a00; --accent-soft:rgba(245,197,24,.14);
+  --good:#047857; --good-soft:rgba(5,150,105,.1);
+  --warn:#b45309; --warn-soft:rgba(217,119,6,.12);
+  --bad:#b91c1c;
+  --font-sans:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --font-mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#eef1f6;color:var(--ink);font-family:var(--font-sans);line-height:1.6;-webkit-font-smoothing:antialiased;font-size:15px}
+img{max-width:100%;display:block}
+a{color:#0369a1}
+@page{size:A4;margin:14mm 13mm 16mm}
+@media print{
+  body{background:#fff;font-size:11.5pt}
+  .page{box-shadow:none;margin:0;padding:0;break-after:page}
+  .no-print{display:none!important}
+  a{color:inherit;text-decoration:none}
+}
+/* layout */
+.page{max-width:900px;margin:22px auto;background:#fff;padding:44px 52px;box-shadow:0 2px 18px rgba(15,23,42,.08);border-radius:6px}
+h1{font-size:30px;line-height:1.2;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:22px;margin:0 0 8px;letter-spacing:-.01em;border-bottom:2px solid var(--border);padding-bottom:8px}
+h3{font-size:17px;margin:26px 0 8px}
+h4{font-size:15px;margin:18px 0 6px}
+p{margin:8px 0}
+.cover{text-align:center;padding:70px 40px}
+.cover .logo{display:inline-block;width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#8a6d00,#d99e00);color:#0b1120;font-weight:900;font-size:34px;line-height:64px;margin-bottom:18px}
+.cover h1{font-size:40px}
+.cover .sub{color:var(--ink-2);font-size:18px}
+.cover .meta{margin-top:34px;color:var(--ink-3);font-size:13px}
+.toc{columns:2;column-gap:34px;font-size:14px}
+.toc ol{padding-left:22px;margin:8px 0}
+.toc li{margin:4px 0;break-inside:avoid}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 4px}
+.shot{border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;margin:12px 0;background:var(--bg-soft)}
+.shot img{width:100%}
+.shot .cap{padding:9px 13px;font-size:12.5px;color:var(--ink-2);background:#fff;border-top:1px solid var(--border)}
+.steps{margin:10px 0;padding-left:0;list-style:none;counter-reset:step}
+.steps li{counter-increment:step;margin:7px 0;padding-left:34px;position:relative}
+.steps li::before{content:counter(step);position:absolute;left:0;top:2px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}
+th{text-align:left;background:var(--bg-soft);color:var(--ink-2);padding:8px 10px;border:1px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:8px 10px;border:1px solid var(--border);vertical-align:top}
+.note{background:var(--accent-soft);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+.tip{background:var(--good-soft);border-left:3px solid var(--good);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+.warn{background:var(--warn-soft);border-left:3px solid var(--warn);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+code{font-family:var(--font-mono);font-size:12.5px;background:var(--bg-soft);padding:1px 6px;border-radius:5px;border:1px solid var(--border)}
+.pagebreak{break-before:page}
+.footer-note{margin-top:26px;padding-top:10px;border-top:1px solid var(--border);font-size:12px;color:var(--ink-3)}
+@media print{.footer-note{display:none}}
+@media screen{.footer-note{display:none}}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ COVER ═══════════ -->
+<section class="page cover">
+  <div class="logo">P</div>
+  <p class="kicker">AI Bookkeeping untuk Firma Akuntansi</p>
+  <h1>Manual Book Praktis</h1>
+  <p class="sub">Panduan penggunaan modul — dari klien baru sampai laporan &amp; SPT</p>
+  <p class="meta">Versi 1.0 · Agustus 2026<br>Mencakup: Dashboard · Klien &amp; COA Industri · Import Kertas Kerja · Subledger &amp; Aging · Laporan (Ikhtisar, Matrix 12 Bulan, Ekuitas, Pembulatan) · SPT 1771 · Antrian Kerja</p>
+</section>
+
+<!-- ═══════════ DAFTAR ISI ═══════════ -->
+<section class="page">
+  <p class="kicker">Isi</p>
+  <h2>Daftar Isi</h2>
+  <div class="toc">
+    <ol>
+      <li>Pendahuluan &amp; Alur Kerja</li>
+      <li>Login &amp; Dashboard Workspace</li>
+      <li>Manajemen Klien &amp; Industri</li>
+      <li>COA Template per Industri</li>
+      <li>Import Kertas Kerja Excel</li>
+      <li>Subledger &amp; Aging Piutang</li>
+      <li>Laporan — Ikhtisar (Tahunan/Bulanan)</li>
+      <li>Laporan — Matrix 12 Bulan</li>
+      <li>Laporan — Laba Rugi, Neraca, Ekuitas</li>
+      <li>Pembulatan Laporan (Rounding)</li>
+      <li>SPT 1771 &amp; Koreksi Fiskal</li>
+      <li>Antrian Kerja &amp; Filter Klien</li>
+      <li>Tips, Batasan &amp; Referensi</li>
+    </ol>
+  </div>
+  <div class="tip">Manual ini disusun berdasarkan aplikasi versi produksi lokal (localhost:3000) dengan data demo klien <b>ARYA USAHA TIRTA, CV</b> hasil import kertas kerja ASC_2026.</div>
+</section>
+
+<!-- ═══════════ 1 · PENDAHULUAN ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 1</p>
+  <h2>Pendahuluan &amp; Alur Kerja</h2>
+  <p>Praktis adalah platform <b>AI bookkeeping</b> untuk firma akuntansi. Dokumen klien masuk, AI menyusun draft jurnal, tim Anda mereview dalam 4 lapis (Junior → Senior → Tax → Partner), dan laporan keuangan ter-generate otomatis dari jurnal yang disetujui.</p>
+  <h3>Alur Kerja Inti</h3>
+  <table>
+    <tr><th>Tahap</th><th>Aktivitas</th><th>Modul</th></tr>
+    <tr><td>1</td><td>Buat klien + pilih industri → COA otomatis terpasang</td><td>Klien &amp; Industri</td></tr>
+    <tr><td>2</td><td>Migrasi data lama (opsional): import kertas kerja Excel</td><td>Import Wizard</td></tr>
+    <tr><td>3</td><td>Dokumen diproses AI → draft jurnal → review</td><td>Pipeline &amp; Queues</td></tr>
+    <tr><td>4</td><td>Subledger &amp; aging dipantau per klien</td><td>Subledger</td></tr>
+    <tr><td>5</td><td>Laporan disusun: ikhtisar, matrix, SPT, ekuitas</td><td>Laporan Keuangan</td></tr>
+    <tr><td>6</td><td>Export CSV / PDF untuk penyampaian ke klien</td><td>Laporan &amp; Portal</td></tr>
+  </table>
+  <div class="note"><b>Catatan konsep:</b> Trial balance Praktis bersifat <b>per periode</b> (bukan akumulasi). Saat membuka laporan, pilih periode yang memuat data (mis. 2026-01 untuk data demo ARYA).</div>
+</section>
+
+<!-- ═══════════ 2 · LOGIN & DASHBOARD ═══════════ -->
+<section class="page pagebreak">
+  <p class="kicker">Bagian 2</p>
+  <h2>Login &amp; Dashboard Workspace</h2>
+  <h3>Login</h3>
+  <ol class="steps">
+    <li>Buka alamat aplikasi (mis. <code>http://localhost:3000</code>).</li>
+    <li>Masukkan email &amp; password akun yang diberikan administrator firma.</li>
+    <li>Klik <b>Masuk</b> — Anda diarahkan ke dashboard.</li>
+  </ol>
+  <div class="tip">Akun demo: <code>admin@ledgerline.dev</code> / <code>password123</code> (hanya untuk lingkungan demo).</div>
+  <h3>Dashboard Workspace (Dockable)</h3>
+  <p>Dashboard terdiri dari panel-panel yang bisa diatur bebas (drag &amp; drop): KPI, Pipeline, SLA, Kualitas, dan lainnya.</p>
+  <div class="shot"><img src="images-app/app-01-dashboard-dockable.png" alt="Dashboard dockable: panel KPI, pipeline, SLA, kualitas"><div class="cap">Gambar 1 · Dashboard workspace — panel bisa di-drag, di-resize, dan disusun ulang.</div></div>
+  <ol class="steps">
+    <li><b>Susun panel</b> sesuai preferensi dengan menyeret tab panel.</li>
+    <li>Layout tersimpan <b>otomatis per pengguna</b> — saat login lagi, tata letak Anda tetap.</li>
+    <li>Gunakan <b>preset per peran</b> (mis. layout Senior vs Junior) dari switcher di pojok dashboard.</li>
+    <li>Klik tombol <b>Reset</b> untuk kembali ke layout default bila berantakan.</li>
+  </ol>
+  <div class="tip">Panel kartu KPI bisa diklik untuk membuka halaman modul terkait (mis. kartu pipeline → halaman Pipeline).</div>
+</section>
+
+<!-- ═══════════ 3 · KLIEN & INDUSTRI ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 3</p>
+  <h2>Manajemen Klien &amp; Industri</h2>
+  <h3>Membuat Klien Baru</h3>
+  <ol class="steps">
+    <li>Buka menu <b>Klien</b> di sidebar.</li>
+    <li>Klik tombol <b>+ Tambah Klien</b>.</li>
+    <li>Isi <b>Nama Klien</b> (wajib) dan data pelengkap lainnya.</li>
+    <li>Pilih <b>Industri</b> dari 17 opsi — ini menentukan template COA yang terpasang.</li>
+    <li>Simpan — klien langsung memiliki <b>coaMapping siap pakai</b> (status READY).</li>
+  </ol>
+  <div class="shot"><img src="images-modul/mod-05-client-form-industri.png" alt="Form tambah klien dengan dropdown 17 industri"><div class="cap">Gambar 2 · Form klien dengan dropdown industri (17 opsi).</div></div>
+  <h3>Daftar Klien &amp; Sortir</h3>
+  <p>Halaman Klien menampilkan daftar klien firma; gunakan pencarian untuk menemukan klien cepat. Setiap klien punya halaman detail berisi profil, COA, subledger, dan laporan.</p>
+</section>
+
+<!-- ═══════════ 4 · COA TEMPLATE ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 4</p>
+  <h2>COA Template per Industri</h2>
+  <p>Praktis menyediakan <b>17 template Chart of Accounts</b>: Retail, Jasa, F&amp;B, Manufaktur, Konstruksi &amp; Developer (PSAK 72), Properti, Hotel &amp; Pariwisata, Kesehatan, Pendidikan, Koperasi (SHU), Yayasan/Nirlaba (ISAK 35), Agrikultur (PSAK 69), Transportasi, Teknologi, Fintech (Escrow), Event, dan Lainnya.</p>
+  <div class="shot"><img src="images-modul/mod-06-client-coa-template.png" alt="Panel Lihat COA Klien menampilkan akun hasil template industri"><div class="cap">Gambar 3 · Halaman klien — panel "Lihat COA Klien (n akun)" menampilkan akun hasil template (contoh: 193 akun hasil import ASC_2026).</div></div>
+  <ol class="steps">
+    <li>Buka halaman detail klien.</li>
+    <li>Klik <b>Lihat COA Klien (n akun)</b> untuk membuka daftar kode &amp; nama akun.</li>
+    <li>COA dipakai AI untuk mengklasifikasi dokumen sejak hari pertama — tidak perlu menunggu "pembelajaran".</li>
+  </ol>
+  <div class="note">Template berisi ±41 akun umum + akun khas industri (mis. konstruksi: Piutang Termin, Retensi, Contract Liability; koperasi: Simpanan Pokok/Wajib/Sukarela, SHU).</div>
+</section>
+
+<!-- ═══════════ 5 · IMPORT KERTAS KERJA ═══════════ -->
+<section class="page pagebreak">
+  <p class="kicker">Bagian 5</p>
+  <h2>Import Kertas Kerja Excel</h2>
+  <p>Wizard <b>Import Kertas Kerja</b> memigrasi data dari file Excel kertas kerja akuntan (mis. format ASC_2026) menjadi klien lengkap: COA, saldo awal, dan jurnal historis — tanpa menulis ulang manual.</p>
+  <h3>Langkah 1 — Upload</h3>
+  <ol class="steps">
+    <li>Buka halaman <b>Klien</b>.</li>
+    <li>Klik tombol <b>Import Kertas Kerja</b>.</li>
+    <li>Pilih file Excel (<code>.xlsx</code>) — drag &amp; drop atau klik untuk memilih.</li>
+  </ol>
+  <div class="shot"><img src="images-modul/mod-01-import-wizard-upload.png" alt="Wizard import langkah 1: upload file Excel kertas kerja"><div class="cap">Gambar 4 · Wizard Import — langkah 1: upload file kertas kerja Excel.</div></div>
+  <h3>Langkah 2 — Preview</h3>
+  <div class="shot"><img src="images-modul/mod-02-import-wizard-preview.png" alt="Wizard import langkah 2: preview COA dan jurnal sebelum diimpor"><div class="cap">Gambar 5 · Preview: COA terdeteksi (contoh 193 akun), jurnal ter-parse, peringatan ditampilkan transparan.</div></div>
+  <ol class="steps">
+    <li>Periksa <b>jumlah akun COA</b> dan <b>baris jurnal</b> yang terdeteksi.</li>
+    <li>Perhatikan <b>peringatan</b>: jurnal yang tidak balance per bukti akan diimpor sebagai <b>agregat bulanan</b> (label "Agregat YYYY-MM (kertas kerja)").</li>
+    <li>Pastikan kolom saldo awal terbaca benar (debit/kredit dinormalisasi otomatis).</li>
+  </ol>
+  <h3>Langkah 3 — Import</h3>
+  <ol class="steps">
+    <li>Klik <b>Import</b> — sistem membuat Client + COA mapping + jurnal opening + jurnal historis (status APPROVED).</li>
+    <li>Buka klien baru → cek <b>Trial Balance</b> periode yang memuat data: harus seimbang (total debit = kredit).</li>
+  </ol>
+  <div class="tip">Sheet <b>Kode</b> pada kertas kerja otomatis menjadi master subledger (CT→Pelanggan, AP→Pemasok, SH→Pemegang Saham) lengkap dengan saldo awal.</div>
+  <div class="warn">Jurnal asli yang tidak memakai kode bantu akan tampil tanpa kode subledger — aging baru terisi bila data memuat kode bantu.</div>
+</section>
+
+<!-- ═══════════ 6 · SUBLEDGER & AGING ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 6</p>
+  <h2>Subledger &amp; Aging Piutang</h2>
+  <p>Modul buku besar pembantu menyediakan <b>master kode bantu</b> (Pelanggan, Pemasok, Pemegang Saham, Lainnya) dan <b>aging piutang 4 bucket</b>: Current · 31–60 hari · 61–90 hari · 90+ hari. Saldo dihitung <b>langsung dari jurnal</b> — tidak ada sistem paralel yang bisa selisih.</p>
+  <div class="shot"><img src="images-modul/mod-03-subledger-aging.png" alt="Tabel aging piutang 4 bucket dan master kode bantu"><div class="cap">Gambar 6 · Subledger &amp; Aging — tabel aging 4 bucket + master kode bantu (bucket 90+ ditandai merah).</div></div>
+  <h3>Menggunakan</h3>
+  <ol class="steps">
+    <li>Buka halaman detail klien → bagian <b>Aging Piutang / Subledger</b>.</li>
+    <li>Filter master berdasarkan tipe (Pelanggan / Pemasok / Pemegang Saham / Lainnya).</li>
+    <li><b>Tambah master manual</b> bila perlu (kode unik per klien).</li>
+    <li>Klik baris kode bantu → <b>Buku Besar Pembantu</b> menampilkan seluruh transaksi + <b>running balance</b>.</li>
+  </ol>
+  <div class="shot"><img src="images-modul/mod-04-subledger-ledger.png" alt="Buku besar pembantu satu pelanggan dengan running balance"><div class="cap">Gambar 7 · Buku Besar Pembantu — invoice, pembayaran, dan running balance per kode bantu.</div></div>
+  <div class="note">Kolom <b>Kode Bantu</b> di jurnal menentukan subledger. Pada import kertas kerja, kolom kode bantu jurnal otomatis dipetakan ke <code>dimension.subledgerCode</code>.</div>
+</section>
+
+<!-- ═══════════ 7 · IKHTISAR ═══════════ -->
+<section class="page pagebreak">
+  <p class="kicker">Bagian 7</p>
+  <h2>Laporan — Ikhtisar (Tahunan / Bulanan)</h2>
+  <p>Tab <b>Ikhtisar</b> di Laporan Keuangan menampilkan ringkasan multi-periode dengan dua mode:</p>
+  <table>
+    <tr><th>Mode</th><th>Tampilan</th><th>Kegunaan</th></tr>
+    <tr><td><b>Tahunan</b> (default)</td><td>5 tahun berdampingan</td><td>Trend jangka panjang, rasio GPM/OPM/NPM/ROA/ROE</td></tr>
+    <tr><td><b>Bulanan</b></td><td>12 kolom Jan–Des dalam tahun aktif</td><td>Pola kertas kerja akuntan (1-12), musiman</td></tr>
+  </table>
+  <div class="shot"><img src="images-modul/mod-11-ikhtisar-bulanan.png" alt="Ikhtisar mode bulanan 12 kolom dengan rasio keuangan"><div class="cap">Gambar 8 · Ikhtisar mode Bulanan — 12 kolom Jan–Des lengkap dengan rasio.</div></div>
+  <ol class="steps">
+    <li>Buka <b>Laporan Keuangan → Ikhtisar</b>.</li>
+    <li>Pilih klien.</li>
+    <li>Toggle <b>Tahunan / Bulanan</b> sesuai kebutuhan; pada mode bulanan pilih tahun pada input periode.</li>
+    <li>Tabel ikhtisar &amp; grafik menyesuaikan mode secara otomatis.</li>
+  </ol>
+</section>
+
+<!-- ═══════════ 8 · MATRIX 12 BULAN ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 8</p>
+  <h2>Laporan — Matrix 12 Bulan</h2>
+  <p>Tab <b>Matrix 12 Bulan</b> menyajikan dua tabel persis pola kertas kerja <code>LR/NRC (1-12)</code>:</p>
+  <ul>
+    <li><b>Laba Rugi per Bulan</b> — transaksi bulan berjalan (non-kumulatif) + kolom Total setahun.</li>
+    <li><b>Neraca Posisi Akhir Bulan</b> — kumulatif Januari–bulan berjalan, laba YTD masuk ekuitas, sehingga <b>aset = liabilitas + ekuitas</b> di setiap kolom.</li>
+  </ul>
+  <div class="shot"><img src="images-modul/mod-07-matrix-12-bulan.png" alt="Tabel matrix 12 bulan: laba rugi per bulan dan neraca kumulatif"><div class="cap">Gambar 9 · Matrix 12 Bulan — LR per bulan (Jan–Des + Total) dan Neraca posisi akhir bulan.</div></div>
+  <ol class="steps">
+    <li>Buka <b>Laporan Keuangan → Matrix 12 Bulan</b>.</li>
+    <li>Pilih klien &amp; tahun (input periode).</li>
+    <li>Baca kolom per bulan; kolom <b>Total</b> (LR) / <b>Des</b> (Neraca) = akumulasi setahun.</li>
+  </ol>
+</section>
+
+<!-- ═══════════ 9 · LAPORAN DASAR ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 9</p>
+  <h2>Laporan — Laba Rugi, Neraca, Perubahan Ekuitas</h2>
+  <p>Tab <b>Laporan</b> menyediakan 4 jenis laporan akhir format Indonesia (SAK ETAP) yang dihitung dari jurnal APPROVED/FINALIZED: <b>Laba Rugi</b>, <b>Neraca</b>, <b>Perubahan Ekuitas</b>, <b>Arus Kas</b>.</p>
+  <div class="shot"><img src="images-modul/mod-09-ekuitas.png" alt="Laporan perubahan ekuitas dengan saldo awal, laba, saldo akhir"><div class="cap">Gambar 10 · Perubahan Ekuitas — Saldo Awal → Setoran Modal → Laba → Prive → Saldo Akhir (terkunci dengan neraca).</div></div>
+  <ol class="steps">
+    <li>Buka <b>Laporan Keuangan → Laporan</b>.</li>
+    <li>Pilih klien &amp; periode (format <code>YYYY-MM</code>).</li>
+    <li>Klik tab jenis laporan: <b>Laba Rugi</b> / <b>Neraca</b> / <b>Perubahan Ekuitas</b> / <b>Arus Kas</b>.</li>
+    <li>Gunakan tombol <b>CSV</b> untuk export.</li>
+  </ol>
+  <div class="note"><b>Perubahan Ekuitas (EQ v2):</b> saldo awal tidak lagi menghitung ulang laba berjalan (anti dobel hitung); setoran modal &amp; prive terdeteksi otomatis dari jurnal; bila ada selisih dengan neraca muncul baris catatan.</div>
+</section>
+
+<!-- ═══════════ 10 · PEMBULATAN ═══════════ -->
+<section class="page pagebreak">
+  <p class="kicker">Bagian 10</p>
+  <h2>Pembulatan Laporan (Rounding Engine)</h2>
+  <p>Dropdown <b>Pembulatan</b> di tab Laporan menyajikan angka dalam satuan lebih ringkas (SAK ETAP par. 24):</p>
+  <table>
+    <tr><th>Opsi</th><th>Contoh tampilan</th></tr>
+    <tr><td>Rupiah penuh</td><td>Rp 51.313.016</td></tr>
+    <tr><td>Ribuan (Rp'000)</td><td>Rp 51.313</td></tr>
+    <tr><td>Jutaan (Rp'000.000)</td><td>Rp 51</td></tr>
+  </table>
+  <div class="shot"><img src="images-modul/mod-10-rounding-ribuan.png" alt="Laba rugi dengan pembulatan ribuan yang tetap konsisten"><div class="cap">Gambar 11 · Pembulatan Ribuan — LABA = TOTAL PENDAPATAN − TOTAL BEBAN tetap konsisten (tidak ada selisih Rp1).</div></div>
+  <ol class="steps">
+    <li>Buka <b>Laporan</b> → pilih klien &amp; periode.</li>
+    <li>Pilih mode pembulatan pada dropdown <b>Pembulatan</b>.</li>
+    <li>Semua baris akun dibulatkan; <b>baris total dihitung ulang dari baris yang dibulatkan</b> sehingga total = Σ baris.</li>
+    <li>Export CSV mengikuti mode pembulatan yang aktif.</li>
+  </ol>
+</section>
+
+<!-- ═══════════ 11 · SPT 1771 ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 11</p>
+  <h2>SPT 1771 &amp; Koreksi Fiskal</h2>
+  <p>Tab <b>SPT 1771</b> menyusun rekonsiliasi fiskal tahunan lengkap dengan <b>kolom koreksi yang bisa diedit</b>:</p>
+  <ul>
+    <li><b>Lampiran I — Rekonsiliasi Fiskal</b>: per akun Komersial → Koreksi + → Koreksi − → Fiskal; koreksi otomatis dari heuristik (beban pajak/denda/entertainment, pendapatan final) dan bisa diubah manual.</li>
+    <li><b>Lampiran II — Penyusutan &amp; Amortisasi</b>: komersial vs fiskal per aset (kelompok K1–K4/BP).</li>
+    <li><b>Lampiran III — Perhitungan PPh</b>: tarif UU HPP (22% 2020–2022, 20% 2023+), fasilitas Pasal 31E, PP 23/2018 (0,5%), kredit pajak, kurang/(lebih) bayar.</li>
+  </ul>
+  <div class="shot"><img src="images-modul/mod-08-spt-1771.png" alt="SPT 1771 Lampiran I rekonsiliasi fiskal dengan kolom koreksi"><div class="cap">Gambar 12 · SPT 1771 — Lampiran I rekonsiliasi fiskal: kolom koreksi editable, Laba Fiskal dihitung ulang live.</div></div>
+  <ol class="steps">
+    <li>Buka <b>Laporan Keuangan → SPT 1771</b>.</li>
+    <li>Pilih klien &amp; tahun.</li>
+    <li>Pilih <b>mode perhitungan</b>: Pasal 31E / PP 23 / Normal.</li>
+    <li>Edit kolom <b>Koreksi + / −</b> sesuai penyesuaian fiskal (nilai fiskal ter-update otomatis).</li>
+    <li>Klik <b>Export CSV</b> per lampiran (format Excel Indonesia).</li>
+  </ol>
+  <div class="note">Lampiran IV (kompensasi kerugian) &amp; V (struktur permodalan) belum tersedia di versi ini.</div>
+</section>
+
+<!-- ═══════════ 12 · ANTRIAN KERJA ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 12</p>
+  <h2>Antrian Kerja &amp; Filter Klien</h2>
+  <p>Modul kerja (Queues, Exceptions, Outbox) kini mendukung <b>sortir per klien</b> agar tim fokus pada satu klien pada satu waktu.</p>
+  <div class="shot"><img src="images-modul/mod-12-queues-filter.png" alt="Halaman antrian dengan filter klien"><div class="cap">Gambar 13 · Queues — dropdown filter klien (contoh: ARYA USAHA TIRTA, CV).</div></div>
+  <div class="shot"><img src="images-modul/mod-13-outbox-filter.png" alt="Halaman outbox dengan filter klien"><div class="cap">Gambar 14 · Outbox — filter klien (server-side) untuk melihat item kiriman per klien.</div></div>
+  <ol class="steps">
+    <li>Buka <b>Queues</b> / <b>Exceptions</b> — filter klien di bagian atas daftar.</li>
+    <li>Buka <b>Outbox</b> — pilih klien dari dropdown; daftar item langsung tersaring.</li>
+    <li>Pilih "Semua klien" untuk kembali ke tampilan penuh.</li>
+  </ol>
+</section>
+
+<!-- ═══════════ 13 · TIPS & REFERENSI ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 13</p>
+  <h2>Tips, Batasan &amp; Referensi</h2>
+  <h3>Tips Penggunaan</h3>
+  <ul>
+    <li>Selalu <b>pilih periode yang memuat data</b> — laporan bersifat per periode.</li>
+    <li>Untuk data demo: klien <b>ARYA USAHA TIRTA, CV</b> (import ASC_2026) memiliki 193 akun COA, 8 subledger, dan jurnal balance Rp 336.981.340; aging terisi lewat seed demo (CT-001 Rp 7 jt, CT-002 Rp 5 jt).</li>
+    <li>Gunakan <b>Pembulatan Ribuan</b> untuk presentasi ringkas ke klien; <b>Rupiah penuh</b> untuk file kerja.</li>
+    <li>Pada SPT 1771, koreksi otomatis hanyalah <b>awalan</b> — keputusan akhir tetap di tangan akuntan.</li>
+  </ul>
+  <h3>Batasan Versi Ini</h3>
+  <ul>
+    <li>Lampiran IV/V SPT 1771 belum tersedia (butuh data kompensasi rugi &amp; struktur modal).</li>
+    <li>Multi-currency ditunda (kebijakan produk).</li>
+    <li>Jurnal kertas kerja yang tidak balance per bukti diimpor sebagai agregat bulanan — detail per invoice hilang.</li>
+  </ul>
+  <h3>Referensi</h3>
+  <table>
+    <tr><th>Topik</th><th>Sumber</th></tr>
+    <tr><td>Pemetaan laporan ke SPT 1771</td><td>Knowledge Base: mapping-laporan-spt-1771</td></tr>
+    <tr><td>COA per industri (18 model bisnis)</td><td>docs/riset-model-bisnis-coa.md</td></tr>
+    <tr><td>Penyusutan komersial vs fiskal</td><td>Knowledge Base: perlakuan-penyusutan-aset-tetap</td></tr>
+    <tr><td>Siklus kertas kerja Excel akuntan</td><td>Knowledge Base: siklus-kertas-kerja-excel-akuntan</td></tr>
+  </table>
+  <div class="footer-note">Praktis Manual Book v2.0 · Dokumen internal firma · Screenshot aplikasi live</div>
+</section>
+
+<!-- ═══════════ 14 · PORTAL KLIEN ═══════════ -->
+<section class="page">
+  <p class="kicker">Bagian 14</p>
+  <h2>Portal Klien &amp; Berbagi Link</h2>
+  <p>Setiap klien punya <b>portal pribadi</b> untuk mengunggah bukti transaksi &amp; dokumen legalitas,
+  melacak status pemrosesan, dan melihat laporan — tanpa login ke workspace firma.</p>
+
+  <h3>Membagikan Link Portal (Akuntan)</h3>
+  <ul>
+    <li>Buka <b>Klien → klik nama klien</b> → klik tombol <b>Salin Link Portal</b>.</li>
+    <li>Link otomatis tersalin ke clipboard — tinggal kirim ke klien via WhatsApp/email.</li>
+    <li>Setiap klik membuat token baru (berlaku 30 hari); token lama otomatis tidak berlaku.</li>
+  </ul>
+  <div class="shot"><img src="images-modul/mod-14-client-portal-button.png" alt="Tombol Salin Link Portal di halaman klien"></div>
+
+  <h3>Halaman Portal Klien</h3>
+  <ul>
+    <li><b>Upload Dokumen Baru</b> — bukti transaksi (faktur, kuitansi, bukti transfer) &amp; dokumen legalitas (NIB, Akta, NPWP). Format PDF / JPG / XLSX.</li>
+    <li><b>Status Dokumen</b> — alur Diterima → Diproses AI → Selesai / Gagal, plus review akuntan.</li>
+    <li><b>Dokumen, transaksi, laporan &amp; versi</b> — klien bisa melihat perkembangan pembukuan secara transparan.</li>
+    <li>Data dienkripsi (AES-256-GCM) &amp; dikirim lewat koneksi aman (TLS).</li>
+  </ul>
+  <div class="shot"><img src="images-modul/mod-15-portal-landing.png" alt="Landing page portal klien"></div>
+</section>
+
+</body>
+</html>
