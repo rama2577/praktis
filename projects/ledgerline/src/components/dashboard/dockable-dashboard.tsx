@@ -67,21 +67,25 @@ type PanelProps = {
 function KpiPanel({ kpi }: PanelProps) {
   if (!kpi) return <div className="p-4 text-sm text-slate-500">Data tidak tersedia</div>;
   const cards = [
-    { label: "FIRST-PASS RATE", value: `${kpi.firstPassRate}%`, sub: "jurnal langsung disetujui" },
-    { label: "KLIEN AKTIF", value: `${kpi.activeClients}`, sub: `+${kpi.newClientsThisMonth} bulan ini` },
-    { label: "AI AUTOMATION", value: `${kpi.aiAutomationPct}%`, sub: "jurnal AI tanpa exception" },
-    { label: "JOBS IN PROGRESS", value: `${kpi.jobsInProgress}`, sub: `${kpi.aiDraftJobs} draft · ${kpi.reviewJobs} review` },
-    { label: "TRANSAKSI HARI INI", value: `${kpi.transactionsToday}`, sub: kpi.transactionsDeltaPct !== null ? `${kpi.transactionsDeltaPct >= 0 ? "+" : ""}${kpi.transactionsDeltaPct}% vs rata-rata` : "" },
-    { label: "SLA BREACHES", value: `${kpi.slaBreachCount}`, sub: "melewati batas waktu review" },
+    { label: "FIRST-PASS RATE", value: `${kpi.firstPassRate}%`, sub: "jurnal langsung disetujui", href: "/dashboard/quality" },
+    { label: "KLIEN AKTIF", value: `${kpi.activeClients}`, sub: `+${kpi.newClientsThisMonth} bulan ini`, href: "/dashboard/clients" },
+    { label: "AI AUTOMATION", value: `${kpi.aiAutomationPct}%`, sub: "jurnal AI tanpa exception", href: "/dashboard/pipeline" },
+    { label: "JOBS IN PROGRESS", value: `${kpi.jobsInProgress}`, sub: `${kpi.aiDraftJobs} draft · ${kpi.reviewJobs} review`, href: "/dashboard/pipeline" },
+    { label: "TRANSAKSI HARI INI", value: `${kpi.transactionsToday}`, sub: kpi.transactionsDeltaPct !== null ? `${kpi.transactionsDeltaPct >= 0 ? "+" : ""}${kpi.transactionsDeltaPct}% vs rata-rata` : "", href: "/dashboard/journals" },
+    { label: "SLA BREACHES", value: `${kpi.slaBreachCount}`, sub: "melewati batas waktu review", href: "/dashboard/sla" },
   ];
   return (
     <div className="grid h-full grid-cols-2 gap-3 overflow-y-auto p-4 lg:grid-cols-3">
       {cards.map((c) => (
-        <div key={c.label} className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+        <a
+          key={c.label}
+          href={c.href}
+          className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 transition hover:border-yellow-400/40 hover:bg-slate-900"
+        >
           <p className="text-[11px] text-slate-400">{c.label}</p>
           <p className="mt-1 font-mono text-2xl font-semibold text-yellow-300">{c.value}</p>
           <p className="mt-1 text-[11px] text-slate-500">{c.sub}</p>
-        </div>
+        </a>
       ))}
     </div>
   );
@@ -124,8 +128,12 @@ function SlaPanel({ sla }: PanelProps) {
         </thead>
         <tbody>
           {sla.rows.map((r) => (
-            <tr key={r.stage} className="border-b border-slate-800/50 text-slate-300">
-              <td className="py-1.5">{r.stage}</td>
+            <tr key={r.stage} className="border-b border-slate-800/50 text-slate-300 transition hover:bg-slate-900/60">
+              <td className="py-1.5">
+                <a href="/dashboard/sla" className="block text-slate-200 hover:text-yellow-300">
+                  {r.stage}
+                </a>
+              </td>
               <td className="py-1.5 text-right font-mono">{r.pending}</td>
               <td className="py-1.5 text-right font-mono text-rose-400">{r.overdue}</td>
               <td className="py-1.5 text-right font-mono">{r.completed}</td>
@@ -149,14 +157,14 @@ function QualityPanel({ insights }: PanelProps) {
         <p className="mb-2 text-xs font-medium text-slate-400">Tren Mingguan (jurnal vs exception %)</p>
         <div className="space-y-1">
           {insights.weeklyTrend.map((t) => (
-            <div key={t.weekLabel} className="flex items-center gap-2">
+            <a key={t.weekLabel} href="/dashboard/quality" className="flex items-center gap-2 rounded transition hover:bg-slate-900/60">
               <span className="w-16 text-[10px] text-slate-500">{t.weekLabel}</span>
               <div className="h-3 flex-1 overflow-hidden rounded bg-slate-800">
                 <div className="h-full bg-yellow-400/70" style={{ width: `${(t.totalJournals / max) * 100}%` }} />
               </div>
               <span className="w-16 text-right font-mono text-[10px] text-slate-400">{t.totalJournals}</span>
               {t.exceptionRate > 0 && <span className="font-mono text-[10px] text-rose-400">⚠{t.exceptionRate}%</span>}
-            </div>
+            </a>
           ))}
         </div>
       </div>
@@ -164,10 +172,14 @@ function QualityPanel({ insights }: PanelProps) {
         <p className="mb-2 text-xs font-medium text-slate-400">Per Industri</p>
         <div className="space-y-1">
           {insights.industry.map((ind) => (
-            <div key={ind.industry} className="flex justify-between rounded border border-slate-800 bg-slate-900/40 px-2 py-1 text-[11px]">
+            <a
+              key={ind.industry}
+              href="/dashboard/quality"
+              className="flex justify-between rounded border border-slate-800 bg-slate-900/40 px-2 py-1 text-[11px] transition hover:border-yellow-400/40 hover:bg-slate-900"
+            >
               <span className="text-slate-300">{ind.industry}</span>
               <span className="font-mono text-slate-500">{ind.totalJournals} jurnal · exc {ind.exceptionRate}% · fp {ind.firstPassRate}%</span>
-            </div>
+            </a>
           ))}
         </div>
       </div>
