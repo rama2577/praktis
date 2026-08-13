@@ -106,3 +106,13 @@ Upload (PDF/JPG/XLSX)
 - HSTS aktif otomatis saat `NODE_ENV=production` (F0).
 - Dokumen upload: magic bytes + ukuran + MIME + sanitasi nama (sudah, SE-02) — virus scan opsional saat object storage dipasang.
 - Jangan commit `.env`; secret scanning di CI (SE-06) — gate npm audit masih `continue-on-error`.
+
+## Praktis — Production Demo (Railway, 2026-08-13)
+
+- **Web**: https://web-production-7a593.up.railway.app (service `web`, region Southeast Asia)
+- **Worker pipeline**: service `worker` (BullMQ, `npx tsx src/server/pipeline-worker.ts` via `WORKER_MODE=1`)
+- **Postgres 16** + **Redis**: Railway plugins (private network `*.railway.internal`)
+- **Volume**: `web-volume` → `/app/uploads` (dokumen terenkripsi AES-256-GCM)
+- **Deploy**: `railway up -d -y` (Dockerfile multi-stage; `prisma migrate deploy` tiap boot; `output: standalone`)
+- **Login demo**: `admin@ledgerline.dev` / `password123` (seed via `railway ssh -s web "cd /app && npx prisma db seed"`)
+- **Pelajaran**: (1) plugin Postgres/Redis TIDAK auto-inject `DATABASE_URL`/`REDIS_URL` ke service — set manual; (2) `railway run` jalan lokal → tak bisa akses host private; seed via SSH ke container; (3) `RAILWAY_START_COMMAND` tidak efektif → pakai `WORKER_MODE` env + branch di CMD Dockerfile; (4) SSH host key berubah tiap deploy → `railway ssh config` + `ssh -o StrictHostKeyChecking=accept-new railway-web`.
