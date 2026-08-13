@@ -124,3 +124,10 @@ cd projects/ledgerline && npx tsx scripts/screenshot-mockups.ts
 - Angka di mockup (28 klien, 1.847 transaksi, dll.) adalah **data demo** untuk bercerita —
   konsisten dengan skenario full-automation di `analysis.md` (20–30 klien/junior).
 - Semua teks Bahasa Indonesia, tema dark navy `#0b1120` + aksen `#f5c518` (identitas produk).
+
+## Manual Book ✅
+
+**`Praktis Manual Book v1.html`** + **`Praktis Manual Book v1.pdf`** (20 hal A4) — panduan 13 bagian
+dengan 14 screenshot (images-modul/ + images-app/): pendahuluan & alur kerja, login & dashboard,
+klien & industri, COA template, import kertas kerja, subledger & aging, ikhtisar, matrix 12 bulan,
+laporan dasar, pembulatan, SPT 1771, antrian kerja, tips & referensi. Export PDF: `node scripts/export-pdf-a4.js`.
