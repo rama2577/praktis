@@ -69,8 +69,10 @@ export async function seedSubledgerDemo(clientId: string) {
 // Standalone: jalankan sebagai script.
 if (import.meta.url === `file://${process.argv[1]}`) {
   const target = process.argv[2];
-  prisma.client
-    .findFirst(target ? { where: { id: target } } : { where: { name: { contains: "ARYA USAHA TIRTA" } } })
+  const finder = target
+    ? prisma.client.findFirst({ where: { id: target } })
+    : prisma.client.findFirst({ where: { name: { contains: "ARYA USAHA TIRTA" } } });
+  finder
     .then(async (c) => {
       if (!c) throw new Error("Klien tidak ditemukan");
       const r = await seedSubledgerDemo(c.id);
