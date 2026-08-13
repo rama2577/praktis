@@ -31,4 +31,4 @@ COPY --from=deps /app/next.config.ts ./next.config.ts
 RUN mkdir -p uploads
 
 EXPOSE 3000
-CMD ["sh", "-c", "npx prisma migrate deploy && node server.js"]
+CMD ["sh", "-c", "npx prisma migrate deploy && if [ \"$WORKER_MODE\" = \"1\" ]; then echo \"[worker] starting pipeline-worker...\"; npx tsx src/server/pipeline-worker.ts; else echo \"[web] starting Next.js server...\"; node server.js; fi"]
