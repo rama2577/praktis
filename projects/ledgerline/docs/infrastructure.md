@@ -125,3 +125,11 @@ Upload (PDF/JPG/XLSX)
 - **Verifikasi**: tesseract.js jalan di Node ESM (tsx lokal hang — quirk tooling, bukan runtime); unit test 371/371 (mock local-ocr); build OK; **terbukti di container Railway** (OCR faktur lengkap tanpa LLM).
 - **Dampak biaya**: mayoritas dokumen selesai di OCR lokal (gratis) — LLM vision & strong model hanya cadangan; GLM hanya dipakai utk drafting jurnal.
 - Catatan: PaddleOCR/EasyOCR (referensi user) butuh Python+PyTorch — tidak praktis di container Node; tesseract.js wasm mencapai tujuan sama (OCR khusus sebelum AI) dengan footprint kecil.
+
+## Observability Metrik OCR Hybrid (2026-08-14)
+
+- Tabel `OcrMetric` (firmId, engine, usedVision/Strong, pageCount, durationMs, textChars, estTokens, estCostUsd) — ditulis pipeline tiap dokumen (non-kritis: gagal catat ≠ gagal pipeline).
+- Estimasi biaya: `src/lib/ocr-cost.ts` (pure) — vision ±1.200 token/halaman @ glm-4.5 $0,7/M, strong $2,8/M, teks ±0,25 token/karakter; OCR lokal = $0.
+- API `GET /api/metrics/ocr?days=30` (Admin/Senior) → fallback rate, strong rate, avg duration, biaya, seri per hari.
+- UI: panel "Metrik OCR Hybrid" di halaman Metrik Kualitas (`/dashboard/quality`).
+- E2E `scripts/e2e-ocr-metrics.ts` PASS di prod. Chromium path berubah: chromium-1234 (`chrome-mac-arm64/Google Chrome for Testing`).

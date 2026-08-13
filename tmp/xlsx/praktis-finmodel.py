@@ -11,6 +11,8 @@ from openpyxl import Workbook
 from openpyxl.styles import Font, PatternFill, Alignment, Border, Side
 from openpyxl.utils import get_column_letter
 from openpyxl.chart import BarChart, LineChart, Reference
+from openpyxl.chart.series import SeriesLabel
+from openpyxl.chart.data_source import StrRef
 from openpyxl.comments import Comment
 from templates.base import (
     FONT_NAME, HEADER_BOLD, PRIMARY, PRIMARY_LIGHT, NEUTRAL_900, NEUTRAL_600,
@@ -194,9 +196,9 @@ def build_scenario(name, arpu_ref, churn_ref, new_customers, marketing_schedule,
         ws2.cell(row=row, column=11, value=f"=H{row}+I{row}+J{row}")
         # Net Cash Flow
         ws2.cell(row=row, column=12, value=f"=G{row}-K{row}")
-        # Kumulatif
+        # Kumulatif (termasuk investasi awal Rp 40jt di bulan 0)
         if m == 0:
-            ws2.cell(row=row, column=13, value=f"=L{row}")
+            ws2.cell(row=row, column=13, value=f"=-SUM(Asumsi!$C$39:$C$41)+L{row}")
         else:
             ws2.cell(row=row, column=13, value=f"=M{row-1}+L{row}")
         # CAC = marketing / pelanggan baru
@@ -229,6 +231,11 @@ def build_scenario(name, arpu_ref, churn_ref, new_customers, marketing_schedule,
     ws2.cell(row=br3, column=2, value="=SUM(G4:G15)")
     ws2.cell(row=br3, column=2).number_format = FMT_RP
 
+    br4 = br + 3
+    ws2.cell(row=br4, column=1, value="Investasi awal (bulan 0)").font = Font(name=FONT_NAME, color=NEUTRAL_600)
+    ws2.cell(row=br4, column=2, value="=SUM(Asumsi!C39:C41)")
+    ws2.cell(row=br4, column=2).number_format = FMT_RP
+
     ws2.freeze_panes = "A4"
     return ws2
 
@@ -245,9 +252,9 @@ new_kons = [3]*12
 new_mod  = [5,5,5,5, 8,8,8,8, 12,12,12,12]
 new_opt  = [10,10,10,10, 18,18,18,18, 25,25,25,25]
 
-ws_kons = build_scenario("Konservatif", "Asumsi!$C$15", "Asumsi!$C$18", new_kons, mkt_kons)
-ws_mod  = build_scenario("Moderat", "Asumsi!$C$16", "Asumsi!$C$19", new_mod, mkt_mod)
-ws_opt  = build_scenario("Optimis", "Asumsi!$C$17", "Asumsi!$C$20", new_opt, mkt_opt)
+ws_kons = build_scenario("Konservatif", "Asumsi!$C$18", "Asumsi!$C$21", new_kons, mkt_kons)
+ws_mod  = build_scenario("Moderat", "Asumsi!$C$19", "Asumsi!$C$22", new_mod, mkt_mod)
+ws_opt  = build_scenario("Optimis", "Asumsi!$C$20", "Asumsi!$C$23", new_opt, mkt_opt)
 
 # ═══════════════════════════════════════════════════════════
 # SHEET — UNIT ECONOMICS
@@ -261,13 +268,13 @@ ws3["A1"] = "UNIT ECONOMICS (SKENARIO MODERAT)"
 style_title(ws3["A1"], 14)
 
 rows = [
-    ("ARPU (Rp/bulan)", "=Asumsi!$C$16", FMT_RP),
-    ("Churn bulanan", "=Asumsi!$C$19", FMT_PCT),
-    ("Gross margin (1 - AI cost %)", "=1-0.14", FMT_PCT),
-    ("CAC (Rp, rata-rata)", "=AVERAGE(Moderat!N4:N15)", FMT_RP),
-    ("LTV (Rp)", "=IFERROR(B2*B4/B3,0)", FMT_RP),
-    ("LTV : CAC", '=IFERROR(B5/B6,0)&"x"', None),
-    ("Payback (bulan)", "=IFERROR(B6/(B2*B4),0)", FMT_2D),
+    ("ARPU (Rp/bulan)", "=Asumsi!$C$19", FMT_RP),
+    ("Churn bulanan", "=Asumsi!$C$22", FMT_PCT),
+    ("Gross margin (1 - AI cost %)", "=1-Asumsi!$C$15/(Asumsi!$C$8/Asumsi!$C$7)", FMT_PCT),
+    ("CAC (Rp, rata-rata)", "=IFERROR(AVERAGE(Moderat!N4:N15),0)", FMT_RP),
+    ("LTV (Rp)", "=IFERROR(B4*B6/B5,0)", FMT_RP),
+    ("LTV : CAC", '=IFERROR(B8/B7,0)&"x"', None),
+    ("Payback (bulan)", "=IFERROR(B7/(B4*B6),0)", FMT_2D),
     ("MRR bulan 12", "=Moderat!F15", FMT_RP),
     ("Revenue kumulatif 12 bln", "=Moderat!G16", FMT_RP),
 ]
@@ -304,20 +311,20 @@ for i in range(2, 7):
 ws4["A1"] = "RINGKASAN ANALISA BISNIS — PRAKTIS"
 style_title(ws4["A1"], 16)
 ws4["A2"] = "AI Bookkeeping: PDF/foto/Excel/CSV → draft jurnal + laporan keuangan · Agustus 2026"
-style_note(ws4["A2"], "")
+style_note(ws4["A2"], "AI Bookkeeping: PDF/foto/Excel/CSV → draft jurnal + laporan keuangan · Agustus 2026")
 
 ws4["A4"] = "Metrik Kunci"; ws4["B4"] = "Konservatif"; ws4["C4"] = "Moderat"; ws4["D4"] = "Optimis"
 for c in ("A4", "B4", "C4", "D4"):
     style_header(ws4[c])
 
 metrics = [
-    ("Investasi awal (Rp)", "=SUM(Asumsi!C28:C30)", "=SUM(Asumsi!C28:C30)", "=SUM(Asumsi!C28:C30)", FMT_RP),
+    ("Investasi awal (Rp)", "=SUM(Asumsi!C39:C41)", "=SUM(Asumsi!C39:C41)", "=SUM(Asumsi!C39:C41)", FMT_RP),
     ("Pelanggan akhir (bln 12)", "=Konservatif!E15", "=Moderat!E15", "=Optimis!E15", FMT_INT),
     ("MRR bulan 12 (Rp)", "=Konservatif!F15", "=Moderat!F15", "=Optimis!F15", FMT_RP),
     ("Revenue kumulatif 12 bln", "=Konservatif!G16", "=Moderat!G16", "=Optimis!G16", FMT_RP),
     ("Net cash kumulatif (bln 12)", "=Konservatif!M15", "=Moderat!M15", "=Optimis!M15", FMT_RP),
     ("Break-even (bulan ke-)", "=Konservatif!B17", "=Moderat!B17", "=Optimis!B17", FMT_INT),
-    ("CAC rata-rata (Rp)", "=AVERAGE(Konservatif!N4:N15)", "=AVERAGE(Moderat!N4:N15)", "=AVERAGE(Optimis!N4:N15)", FMT_RP),
+    ("CAC rata-rata (Rp)", "=IFERROR(AVERAGE(Konservatif!N4:N15),0)", "=IFERROR(AVERAGE(Moderat!N4:N15),0)", "=IFERROR(AVERAGE(Optimis!N4:N15),0)", FMT_RP),
 ]
 for i, (label, f1, f2, f3, fmt) in enumerate(metrics):
     r = 5 + i
@@ -352,9 +359,9 @@ for data, title in ((data_k, "Konservatif"), (data_m, "Moderat"), (data_o, "Opti
     chart.series[-1].tx = None  # will fix titles below
 chart.set_categories(cats)
 # rename series via explicit series titles
-chart.series[0].tx = Reference(ws4, min_col=2, min_row=4)
-chart.series[1].tx = Reference(ws4, min_col=3, min_row=4)
-chart.series[2].tx = Reference(ws4, min_col=4, min_row=4)
+chart.series[0].tx = SeriesLabel(strRef=StrRef(f="Ringkasan!$B$4"))
+chart.series[1].tx = SeriesLabel(strRef=StrRef(f="Ringkasan!$C$4"))
+chart.series[2].tx = SeriesLabel(strRef=StrRef(f="Ringkasan!$D$4"))
 ws4.add_chart(chart, "A16")
 
 # Chart 2: Net cash kumulatif (line)
@@ -369,9 +376,9 @@ lo = Reference(ws_opt, min_col=13, min_row=3, max_row=15)
 for data in (lk, lm, lo):
     line.add_data(data, titles_from_data=True)
 line.set_categories(cats)
-line.series[0].tx = Reference(ws4, min_col=2, min_row=4)
-line.series[1].tx = Reference(ws4, min_col=3, min_row=4)
-line.series[2].tx = Reference(ws4, min_col=4, min_row=4)
+line.series[0].tx = SeriesLabel(strRef=StrRef(f="Ringkasan!$B$4"))
+line.series[1].tx = SeriesLabel(strRef=StrRef(f="Ringkasan!$C$4"))
+line.series[2].tx = SeriesLabel(strRef=StrRef(f="Ringkasan!$D$4"))
 ws4.add_chart(line, "A33")
 
 # ═══════════════════════════════════════════════════════════
