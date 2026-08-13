@@ -15,6 +15,8 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   poweredByHeader: false,
+  // Railway/Vercel production: server standalone (output tracing otomatis)
+  output: "standalone",
   // PDFKit memakai __dirname node_modules — jangan di-bundle webpack
   serverExternalPackages: ["pdfkit"],
   // PDFKit font data perlu disertakan di standalone output
