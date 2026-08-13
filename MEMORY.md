@@ -59,6 +59,13 @@ lessons:
 - **Emoji**: 🦞
 
 ## 当前项目
+- **Praktis (LedgerLine) — AI bookkeeping utk firma akuntansi (Next.js 16.3, Prisma, Postgres) — LIVE demo di Railway (2026-08-13)**
+- **Repo**: github.com/rama2577/praktis (ledgerline) · branch `main`
+- **Demo production**: Web https://web-production-7a593.up.railway.app · service `web` + `worker` (pipeline BullMQ) · Postgres+Redis Railway plugins · volume web-volume → /app/uploads · Railway project `praktis-demo`
+- **Login demo**: `admin@ledgerline.dev` / `password123` (firma KAP LedgerLine Demo, 3 klien, 35 KB items)
+- **Deploy**: `railway up -d -y` (Dockerfile, output standalone, `prisma migrate deploy` tiap boot); seed via `railway ssh -s web "cd /app && npx prisma db seed"`
+- **Deploy lessons Praktis**: DATABASE_URL/REDIS_URL harus di-set manual dari plugin (tidak auto-inject); `railway run` lokal tak bisa akses `*.railway.internal` → seed via SSH container; `RAILWAY_START_COMMAND` tidak efektif → `WORKER_MODE=1` env + branch CMD Dockerfile; SSH key Railway perlu register (`railway ssh keys add`) + host key berubah tiap deploy (`accept-new`)
+- **Pricing final (disetujui Rama)**: kuota-only per klien — bulanan Mikro 100tx/Rp300rb · Low 500tx/Rp500rb · Middle 1.000tx/Rp700rb; tahunan Mikro 2.000tx/Rp1jt · Low 5.000tx/Rp3jt · Middle 14.000tx/Rp5jt; over-quota Rp350/tx; target GP 75–85% (asumsi AI Rp70/tx via model routing); paywall modul SPT Tahunan via `annualPaidAt`; analisa lengkap di `docs/analisis-komersial-pricing.md`
 - **MBS (Mile Business Suite) — ERP multi-tenant UMKM; Wave A+B SELESAI + LIVE di produksi (2026-08-13)**
 - **Repo**: github.com/rama2577/MBS (origin) · branch `main` · commit author `rama@mile.app`
 - **Produksi**: Web https://mbs-sage.vercel.app (Vercel) · API https://mbs-production-52da.up.railway.app (Railway, Docker nginx+php-fpm, Postgres 16) · Railway project `alert-sparkle` (service MBS)

@@ -1,7 +1,7 @@
 import { PDFParse } from "pdf-parse";
 import ExcelJS from "exceljs";
 import path from "node:path";
-import { isLLMConfigured, visionCompletion } from "@/ai/llm";
+import { getLlmConfig, isLLMConfigured, visionCompletion } from "@/ai/llm";
 import { readStoredFile } from "@/lib/storage";
 import type { Document } from "@prisma/client";
 
@@ -56,18 +56,44 @@ async function parseXlsx(buffer: Buffer): Promise<string> {
   return text;
 }
 
+/**
+ * Heuristik kualitas hasil OCR. Retry kuat diperlukan bila:
+ * - hasil terlalu pendek (kemungkinan scan gagal / model menolak), atau
+ * - rasio karakter alfanumerik rendah (garbage/hallucination).
+ */
+export const MIN_OCR_CHARS = 24;
+export function looksLikeFailedOcr(text: string): boolean {
+  const t = text.trim();
+  if (t.length < MIN_OCR_CHARS) return true;
+  const alphaNum = t.replace(/[^a-zA-Z0-9\u00C0-\u024F%.,:;()/\- ]/g, "").length;
+  return alphaNum / t.length < 0.4;
+}
+
 async function parseImage(buffer: Buffer): Promise<string> {
   if (!isLLMConfigured()) {
     throw new Error("Dokumen gambar memerlukan LLM vision — atur LLM_API_KEY terlebih dahulu");
   }
+  const cfg = getLlmConfig();
   const base64 = buffer.toString("base64");
   const mime = "image/jpeg";
 
-  const content = await visionCompletion({
+  // Pass 1: model vision default (hemat).
+  let content = await visionCompletion({
     imageBase64: base64,
     mime,
     timeoutMs: 90_000,
   });
+
+  // Pass 2: hasil mencurigakan → ulangi dengan strong model (glm-4.6).
+  if (looksLikeFailedOcr(content) && cfg.strongModel && cfg.strongModel !== cfg.visionModel) {
+    content = await visionCompletion({
+      imageBase64: base64,
+      mime,
+      model: cfg.strongModel,
+      timeoutMs: 120_000,
+    });
+  }
+
   const text = content.trim();
   if (!text) throw new Error("LLM vision tidak mengembalikan teks");
   return text;

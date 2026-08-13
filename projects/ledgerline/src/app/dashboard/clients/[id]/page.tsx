@@ -5,6 +5,7 @@ import { StatusBadge } from "@/components/ui/status-badge";
 import { UploadForm } from "@/components/documents/upload-form";
 import { ClientProfilePanel } from "@/components/clients/client-profile-panel";
 import { SubledgerView } from "@/components/clients/subledger-view";
+import { PortalLinkButton } from "@/components/clients/portal-link-button";
 import { formatBytes } from "@/lib/format";
 import Link from "next/link";
 import { Role, type DocumentStatus } from "@prisma/client";
@@ -70,10 +71,13 @@ export default async function ClientDetailPage({
             {client._count.journals} jurnal · {client.documents.length} dokumen
           </p>
         </div>
-        <StatusBadge
-          label={client.status === "ACTIVE" ? "Aktif" : "Nonaktif"}
-          tone={client.status === "ACTIVE" ? "positive" : "neutral"}
-        />
+        <div className="flex items-center gap-2">
+          <PortalLinkButton clientId={client.id} />
+          <StatusBadge
+            label={client.status === "ACTIVE" ? "Aktif" : "Nonaktif"}
+            tone={client.status === "ACTIVE" ? "positive" : "neutral"}
+          />
+        </div>
       </div>
 
       <div className="mt-6">

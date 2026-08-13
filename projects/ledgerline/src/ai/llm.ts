@@ -95,6 +95,19 @@ export async function chatCompletion(opts: ChatOptions): Promise<string> {
 }
 
 /**
+ * Prompt OCR akuntansi — dipakai utk semua jalur vision (default & retry).
+ * Instruksi eksplisit: lengkap, presisi angka/PPN, tanpa ringkasan.
+ */
+export const OCR_SYSTEM_PROMPT = `Kamu adalah ekstraktor dokumen akuntansi presisi tinggi.
+Ekstrak SEMUA teks dari gambar dokumen ini SECARA LENGKAP dan berurutan, termasuk:
+- angka nominal & jumlah (perhatikan pemisah ribuan/desimal),
+- tanggal, nomor faktur/kuitansi/PO, nama pihak, NPWP, alamat,
+- rincian PPN (DPP, PPN, total), diskon, dan keterangan lain.
+JANGAN meringkas, mengoreksi, atau menebak angka yang tidak terbaca — tulis persis seperti di dokumen.
+Jika ada bagian tidak jelas, beri tanda [??] pada posisinya.
+Jawab hanya dengan teks hasil ekstraksi, tanpa pembuka/penutup.`;
+
+/**
  * Vision OCR — default `glm-4v-flash` (gratis). Gambar dikirim base64 inline
  * (format OpenAI-compatible, didukung GLM API).
  */
@@ -102,14 +115,14 @@ export async function visionCompletion(opts: {
   imageBase64: string;
   mime: string;
   system?: string;
+  /** Override model OCR (mis. strongModel utk retry kualitas). */
+  model?: string;
   timeoutMs?: number;
 }): Promise<string> {
   return chatCompletion({
-    system:
-      opts.system ??
-      "Kamu adalah ekstraktor dokumen akuntansi. Ekstrak SEMUA teks dari gambar dokumen ini secara lengkap dan rapi, termasuk angka nominal, tanggal, nama pihak, dan keterangan PPN. Jawab hanya dengan teks hasil ekstraksi.",
+    system: opts.system ?? OCR_SYSTEM_PROMPT,
     user: `[gambar:${opts.mime};base64:${opts.imageBase64}]`,
-    model: getLlmConfig().visionModel,
+    model: opts.model ?? getLlmConfig().visionModel,
     timeoutMs: opts.timeoutMs ?? 90_000,
   });
 }

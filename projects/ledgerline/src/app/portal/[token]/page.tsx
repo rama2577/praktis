@@ -45,54 +45,112 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
 
   return (
     <div className="mx-auto max-w-3xl px-4 py-10">
-      {/* Header */}
+      {/* Header — landing klien */}
       <div className="mb-8">
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-100">
-          Portal {client.name}
+        <div className="flex items-center gap-2">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-yellow-300">
+            <svg
+              width="12"
+              height="12"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              strokeWidth="2"
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              aria-hidden="true"
+            >
+              <path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83" />
+            </svg>
+            Praktis · Portal Klien
+          </span>
+        </div>
+        <h1 className="mt-3 text-2xl font-semibold tracking-tight text-slate-100">
+          Portal Dokumen — {client.name}
         </h1>
-        <p className="mt-1 text-sm text-slate-400">
-          Pantau status dokumen & upload dokumen baru. Semua data diproses oleh tim akuntan Anda.
+        <p className="mt-1.5 text-sm leading-relaxed text-slate-400">
+          Unggah bukti transaksi & dokumen legalitas Anda di sini. Dokumen diproses otomatis oleh AI,
+          lalu diverifikasi tim akuntan Anda. Pantau statusnya kapan saja.
         </p>
       </div>
 
       {/* Upload */}
       <div className="rounded-xl border border-slate-700 bg-slate-900/40 p-5">
-        <h2 className="mb-3 text-sm font-semibold">Upload Dokumen Baru</h2>
-        <p className="mb-3 text-xs leading-relaxed text-slate-400">
-          Selain bukti transaksi, Anda juga dapat mengunggah <strong>dokumen legalitas</strong> (NIB, Akta,
-          NPWP, TDP, SIUP), <strong>struktur organisasi</strong>, atau <strong>artikel</strong> yang memperkuat
-          pemahaman tim akuntan tentang bisnis Anda — dokumen ini diindeks otomatis sebagai pengetahuan klien.
+        <h2 className="text-sm font-semibold">Upload Dokumen Baru</h2>
+        <p className="mb-4 mt-1 text-xs leading-relaxed text-slate-400">
+          Selain bukti transaksi (faktur, kuitansi, bukti transfer), Anda juga dapat mengunggah{" "}
+          <strong>dokumen legalitas</strong> (NIB, Akta, NPWP, TDP, SIUP),{" "}
+          <strong>struktur organisasi</strong>, atau <strong>artikel</strong> yang memperkuat pemahaman
+          tim akuntan tentang bisnis Anda — dokumen ini diindeks otomatis sebagai pengetahuan klien.
         </p>
         <form
           action={`/api/portal/${token}/documents`}
           method="POST"
           encType="multipart/form-data"
-          className="flex flex-wrap items-end gap-3"
+          className="rounded-lg border border-dashed border-slate-700 bg-slate-950/40 p-4"
         >
-          <select
-            name="docType"
-            defaultValue="BANK_STATEMENT"
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
-          >
-            {ACTIVE_DOC_TYPES.map((value) => (
-              <option key={value} value={value}>
-                {DOC_TYPE_LABELS[value]}
-              </option>
-            ))}
-          </select>
-          <input
-            type="file"
-            name="file"
-            accept=".pdf,.jpg,.jpeg,.xlsx"
-            className="flex-1 text-sm text-slate-300 file:mr-3 file:rounded-lg file:border-0 file:bg-yellow-400 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-slate-950 hover:file:bg-yellow-300"
-          />
-          <button
-            type="submit"
-            className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-yellow-300"
-          >
-            Upload
-          </button>
+          <div className="flex flex-wrap items-end gap-3">
+            <select
+              name="docType"
+              defaultValue="BANK_STATEMENT"
+              aria-label="Jenis dokumen"
+              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+            >
+              {ACTIVE_DOC_TYPES.map((value) => (
+                <option key={value} value={value}>
+                  {DOC_TYPE_LABELS[value]}
+                </option>
+              ))}
+            </select>
+            <input
+              type="file"
+              name="file"
+              required
+              accept=".pdf,.jpg,.jpeg,.xlsx"
+              aria-label="Pilih berkas"
+              className="min-w-0 flex-1 text-sm text-slate-300 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-yellow-400 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-slate-950 hover:file:bg-yellow-300"
+            />
+            <button
+              type="submit"
+              className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-yellow-300"
+            >
+              Upload
+            </button>
+          </div>
+          <p className="mt-3 text-[11px] text-slate-500">
+            Format didukung: PDF, JPG/JPEG, XLSX · Maksimal satu berkas per upload · Data dienkripsi
+            (AES-256-GCM) &amp; dikirim lewat koneksi aman.
+          </p>
         </form>
+      </div>
+
+      {/* Cara kerja */}
+      <div className="mt-6 grid gap-3 sm:grid-cols-3">
+        {[
+          {
+            step: "1",
+            title: "Unggah",
+            desc: "Kirim bukti transaksi atau dokumen legalitas (PDF/JPG/XLSX).",
+          },
+          {
+            step: "2",
+            title: "AI memproses",
+            desc: "Praktis mengekstrak & menyusun draft jurnal secara otomatis.",
+          },
+          {
+            step: "3",
+            title: "Akuntan memverifikasi",
+            desc: "Tim akuntan mereview sebelum dicatat — hasilnya bisa Anda lihat di sini.",
+          },
+        ].map((item) => (
+          <div key={item.step} className="rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-400/15 text-xs font-bold text-yellow-300">
+              {item.step}
+            </div>
+            <p className="mt-2 text-sm font-medium text-slate-200">{item.title}</p>
+            <p className="mt-1 text-xs leading-relaxed text-slate-400">{item.desc}</p>
+          </div>
+        ))}
       </div>
 
       {/* Notifikasi (K4) */}
