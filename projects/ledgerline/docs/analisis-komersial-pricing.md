@@ -246,3 +246,77 @@ Cash flow nyata: **spike Q1** (Rp 13,5jt masuk Jan–Mar) — sehat, tapi perlu 
 
 - Diskon tahunan opsional: 12× bulanan (Rp 6jt utk kecil kuota) vs paket tahunan Rp 4,5jt = diskon 25% — alat jual untuk konversi klien bulanan jadi tahunan (mengunci engagement & mengurangi churn).
 - Jangan pernah mengunci seluruh revenue pada penugasan tahunan — baseline MRR (platform + retainer bulanan) adalah penopang break-even.
+
+
+---
+
+## 10. Final: Dua Jalur Pricing + Band GP 70–85%
+
+### 10a. Keputusan: bedakan jalur periodik vs tahunan
+
+| Dimensi | Jalur Periodik (bulanan) | Jalur Tahunan (penugasan) |
+|---|---|---|
+| Pekerjaan | Bookkeeping bulanan, retainer | Tutup buku, SPT Tahunan, audit |
+| **Deliverable kunci** | Laporan bulanan, TB, rekonsiliasi | **SPT Tahunan + rekapitulasi laporan periodik → tahunan** |
+| Volume | 100–2.000 tx/bln | 1.200–18.000 tx/thn (diproses 1–3 bulan) |
+| Billing | Bulanan | **Di muka per penugasan** |
+| Risiko churn | Tinggi (tiap bulan) | Rendah (terkunci per tahun) |
+| Basis MRR | Ya (penopang break-even) | Tidak (pipeline/cash spike) |
+
+**Target GP: band 70–85%** (bukan lagi ≥85%). Rumus harga: `COGS penuh / (1 − GP)`.
+
+### 10b. COGS penuh per produk (baru — termasuk support & payment fee)
+
+COGS = AI + storage + **support ±Rp 50rb/klien/bln (1 CS utk ±100 klien)** + **payment fee 3%**.
+
+| Produk | COGS tetap | + 3% payment |
+|---|---|---|
+| Mikro (100 tx/bln) | Rp 66rb | ya |
+| Kecil (400–500 tx/bln) | Rp 96rb | ya |
+| Menengah (2.000 tx/bln) | Rp 210rb | ya |
+| Over-quota (per tx) | Rp 100/tx | ya |
+| Tahunan mikro (1.200 tx) | Rp 181rb | ya |
+| Tahunan kecil (4.800 tx) | Rp 541rb | ya |
+| Tahunan menengah (18.000 tx) | Rp 1,885jt | ya |
+| Add-on SPT Tahunan | Rp 65rb | ya |
+
+### 10c. Tabel harga final (semua GP dalam band 70–85% ✓)
+
+**Jalur Periodik — per klien/bln:**
+
+| Paket | Harga | GP |
+|---|---|---|
+| Mikro flat | Rp 400rb | 80% |
+| Mikro kuota 100 tx | Rp 300rb | 75% |
+| Kecil flat | Rp 650rb | 82% |
+| Kecil kuota 500 tx | Rp 550rb | 79% |
+| Menengah kuota 2.000 tx | Rp 1,1jt | 78% |
+| Over-quota | Rp 500/tx | 78% |
+
+**Jalur Tahunan — per penugasan (di muka):**
+
+| Paket | Harga | GP |
+|---|---|---|
+| Mikro tahunan 1.200 tx | Rp 1,2jt | 82% |
+| Kecil tahunan 4.800 tx | Rp 3,5jt | 81% |
+| Menengah tahunan 18.000 tx | Rp 10jt | 78% |
+| Add-on SPT Tahunan (1771 + rekapitulasi tahunan) | Rp 400rb | 81% |
+
+**Platform fee — per firma/bln (menutup infra):**
+
+| Klien aktif | Fee | GP |
+|---|---|---|
+| 1–10 | Rp 700rb | ±82% |
+| 11–25 | Rp 900rb | ±83% |
+| 26–50 | Rp 1,2jt | ±84% |
+| 51+ | Rp 1,5jt | ±85% |
+
+### 10d. Mengapa band 70–85% justru lebih sehat
+
+- **Batas atas 85%** = disiplin harga: mencegah harga terlalu mahal vs nilai; COGS rendah bukan alasan menaikkan harga di atas nilai pasar (klien mikro 100 tx tetap layak Rp 300–400rb karena value bookkeeping, bukan karena biaya).
+- **Batas bawah 70%** = proteksi: menolak pekerjaan yang margin-nya tergerus (mis. klien menengah flat tanpa kuota, diskon berlebihan).
+- Kunci teknis di Praktis: jalur tahunan memakai **modul SPT 1771 + rekapitulasi multi-periode/tahunan + sign-off** — produk yang sudah ada.
+
+### 10e. Implementasi (ringkas)
+
+`Client.billingMode: MONTHLY | ANNUAL` · `plan: MIKRO|KECIL|MENENGAH` + `billing: FLAT|QUOTA` · invoice bulanan (periodik) & di muka (tahunan) · metering `UsageMeter` (JournalLine APPROVED) · dashboard firma: **MRR terpisah dari pipeline penugasan** · alert kuota 80%/100% + auto over-quota Rp 500/tx.
