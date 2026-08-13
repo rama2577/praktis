@@ -399,3 +399,59 @@ COGS rata-rata ±107rb + 3% payment → **GP per klien 81,7%** (dalam band 70–
 3. Gate server-side modul SPT 1771 & rekapitulasi tahunan (403 + lock UI + CTA bayar)
 4. Invoice: bulanan (paket+over-quota) & tahunan (di muka, kuota tahunan+over-quota)
 5. Dashboard firma: MRR + pipeline penugasan terpisah; alert kuota 80%/100%
+
+
+---
+
+## 12. HARGA FINAL (Revisi Rama 2026-08-13) — Kuota-Only, Tanpa Flat
+
+### 12a. Struktur harga (persis keputusan)
+
+**Periodik (per klien/bulan):**
+
+| Segmen | Kuota | Harga | COGS penuh | GP |
+|---|---|---|---|---|
+| Mikro | 100 tx | **Rp 300rb** | 63rb + 3% | 76% |
+| Low | 500 tx | **Rp 500rb** | 103rb + 3% | 76% |
+| Middle | 1.000 tx | **Rp 700rb** | 155rb + 3% | 75% |
+| Over-quota | per tx | **Rp 350** | 100 + 3% | 68%* |
+
+**Tahunan (per penugasan, di muka):**
+
+| Segmen | Kuota | Harga | COGS penuh | GP |
+|---|---|---|---|---|
+| Mikro tahunan | 2.000 tx* | **Rp 1jt** | 261rb + 3% | 71% |
+| Low tahunan | 5.000 tx | **Rp 3jt** | 561rb + 3% | 78% |
+| Middle tahunan | 15.000 tx | **Rp 5jt** | 1,585jt + 3% | 65%** |
+| Over-quota | per tx | **Rp 350** | 100 + 3% | 68%* |
+
+\* Kuota mikro tahunan diasumsikan **2.000 tx** (tidak disebut user; sesuaikan bila perlu).
+\** Middle tahunan GP 65% — di bawah floor 70% (diskon volume 333/tx ≈ harga over-quota 350).
+Margin kontribusi tetap positif (+3,2jt); terima sebagai paket flagship volume, ATAU kuota diturunkan
+ke 12.000 tx (416/tx → GP 71% masuk band).
+
+### 12b. GP agregat & unit economics
+
+Mix 40/40/20 → **ARPU ±Rp 460rb/klien/bln** · COGS rata-rata ±111rb + 3% → **GP per klien 75,8%** (band 70–85% ✓)
+
+**GP agregat vs jumlah firma (10 klien/firma, tanpa platform fee):**
+
+| Firma aktif | GP agregat |
+|---|---|
+| 1 | 43% |
+| 3 | 62% |
+| 5 | 69% |
+| 6 | **70% ✓** |
+| 10 | 73% |
+| 20 | 74% |
+
+- Break-even infra: ±5 klien · LTV ±Rp 18,4jt (churn 2,5%) · **LTV:CAC 6–12×**
+- Potensi: 50 firma × 30 klien = **±Rp 690jt/bln MRR**
+- Insentif tahunan (diskon + kuota lebih besar): Mikro 3,6jt→1jt · Low 6jt→3jt · Middle 8,4jt→5jt
+  (vs 12× bulanan) — cash di muka, lock-in 1 tahun, churn turun.
+
+### 12c. Implementasi (menunggu konfirmasi)
+
+`Client.plan: MIKRO|LOW|MIDDLE` + `billingMode: MONTHLY|ANNUAL` + `annualPaidAt` + `UsageMeter`
+(COUNT JournalLine APPROVED) + **gate server-side modul SPT 1771** (`annualPaidAt` valid → 403/lock)
++ invoice bulanan (paket + over-quota 350/tx) & tahunan di muka + alert kuota 80%/100%.
