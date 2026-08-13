@@ -17,12 +17,24 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Railway/Vercel production: server standalone (output tracing otomatis)
   output: "standalone",
-  // PDFKit & mupdf (wasm) memakai __dirname node_modules — jangan di-bundle webpack
-  serverExternalPackages: ["pdfkit", "mupdf"],
-  // PDFKit font data & mupdf wasm perlu disertakan di standalone output
+  // PDFKit, mupdf (wasm) & tesseract.js (OCR lokal) — jangan di-bundle webpack
+  serverExternalPackages: ["pdfkit", "mupdf", "tesseract.js", "tesseract.js-core"],
+  // Font PDFKit, wasm mupdf/tesseract & tessdata perlu ikut di standalone output
   outputFileTracingIncludes: {
-    "/api/documents/*": ["./node_modules/pdfkit/js/data/*.afm", "./node_modules/mupdf/dist/*.wasm"],
-    "/api/portal/*": ["./node_modules/pdfkit/js/data/*.afm", "./node_modules/mupdf/dist/*.wasm"],
+    "/api/documents/*": [
+      "./node_modules/pdfkit/js/data/*.afm",
+      "./node_modules/mupdf/dist/*.wasm",
+      "./node_modules/tesseract.js-core/*.wasm",
+      "./node_modules/tesseract.js/src/worker-script/**/*",
+      "./src/ai/tessdata/*.gz",
+    ],
+    "/api/portal/*": [
+      "./node_modules/pdfkit/js/data/*.afm",
+      "./node_modules/mupdf/dist/*.wasm",
+      "./node_modules/tesseract.js-core/*.wasm",
+      "./node_modules/tesseract.js/src/worker-script/**/*",
+      "./src/ai/tessdata/*.gz",
+    ],
     "/api/clients/import/*": ["./node_modules/mupdf/dist/*.wasm"],
   },
   async headers() {

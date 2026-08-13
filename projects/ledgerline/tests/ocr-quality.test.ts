@@ -1,5 +1,5 @@
-import { describe, expect, it, vi } from "vitest";
-import { looksLikeFailedOcr, MIN_OCR_CHARS } from "@/ai/parsers";
+import { describe, expect, it, vi, beforeEach } from "vitest";
+import { MIN_OCR_CHARS } from "@/ai/parsers";
 
 // ── Mock LLM utk menguji jalur OCR PDF scan (render mupdf → vision) ──
 vi.mock("@/ai/llm", () => ({
@@ -8,9 +8,26 @@ vi.mock("@/ai/llm", () => ({
   visionCompletion: vi.fn(async () => "INVOICE MOCK 12345\nDPP: Rp 25.000.000\nTotal: Rp 27.750.000"),
 }));
 
+// ── Mock OCR lokal (tesseract.js tidak di-load di vitest) ──
+vi.mock("@/ai/local-ocr", () => ({
+  ocrEngineMode: vi.fn(() => "auto"),
+  ocrImageLocal: vi.fn(async () => ""),
+}));
+
 import PDFDocument from "pdfkit";
-import { ocrScannedPdf, parseDocument } from "@/ai/parsers";
+import { ocrScannedPdf, parseDocument, looksLikeFailedOcr } from "@/ai/parsers";
 import { visionCompletion } from "@/ai/llm";
+import { ocrEngineMode, ocrImageLocal } from "@/ai/local-ocr";
+
+const mockedVision = vi.mocked(visionCompletion);
+const mockedOcrLocal = vi.mocked(ocrImageLocal);
+const mockedEngine = vi.mocked(ocrEngineMode);
+
+beforeEach(() => {
+  mockedVision.mockClear();
+  mockedOcrLocal.mockClear();
+  mockedEngine.mockReturnValue("auto");
+});
 
 async function makePdf(): Promise<Buffer> {
   const doc = new PDFDocument({ size: "A4" });
@@ -41,6 +58,31 @@ describe("ocrScannedPdf — PDF scan (render halaman → vision OCR)", () => {
     const buf = await makePdf();
     const text = await ocrNoLlm(buf);
     expect(text).toContain("INVOICE MOCK");
+  });
+
+  it("mode auto: OCR lokal bagus → vision TIDAK dipanggil (hemat biaya)", async () => {
+    mockedOcrLocal.mockResolvedValueOnce("FAKTUR NO: 010.000-22.98765432\nDPP: Rp 25.000.000");
+    const buf = await makePdf();
+    const text = await ocrScannedPdf(buf);
+    expect(text).toContain("FAKTUR NO:");
+    expect(mockedVision).not.toHaveBeenCalled();
+  });
+
+  it("mode auto: OCR lokal jelek → fallback vision LLM", async () => {
+    mockedOcrLocal.mockResolvedValueOnce("xx");
+    const buf = await makePdf();
+    const text = await ocrScannedPdf(buf);
+    expect(text).toContain("INVOICE MOCK 12345");
+    expect(mockedVision).toHaveBeenCalled();
+  });
+
+  it("mode local murni: hasil lokal dipakai apa adanya tanpa vision", async () => {
+    mockedEngine.mockReturnValue("local");
+    mockedOcrLocal.mockResolvedValueOnce("teks singkat");
+    const buf = await makePdf();
+    const text = await ocrScannedPdf(buf);
+    expect(text).toContain("teks singkat");
+    expect(mockedVision).not.toHaveBeenCalled();
   });
 });
 

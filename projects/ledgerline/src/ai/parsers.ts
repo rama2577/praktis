@@ -2,6 +2,7 @@ import { PDFParse } from "pdf-parse";
 import ExcelJS from "exceljs";
 import path from "node:path";
 import { getLlmConfig, isLLMConfigured, visionCompletion } from "@/ai/llm";
+import { ocrEngineMode, ocrImageLocal } from "@/ai/local-ocr";
 import { readStoredFile } from "@/lib/storage";
 import type { Document } from "@prisma/client";
 
@@ -43,10 +44,6 @@ export const MAX_OCR_PDF_PAGES = 10;
  * vision LLM — dengan heuristik kualitas + retry strong model (sama spt gambar).
  */
 export async function ocrScannedPdf(buffer: Buffer): Promise<string> {
-  if (!isLLMConfigured()) {
-    throw new Error("PDF scan memerlukan LLM vision — atur LLM_API_KEY terlebih dahulu");
-  }
-  const cfg = getLlmConfig();
   const mupdf = await import("mupdf");
   const doc = mupdf.Document.openDocument(new Uint8Array(buffer), "application/pdf");
   const total = doc.countPages();
@@ -58,23 +55,15 @@ export async function ocrScannedPdf(buffer: Buffer): Promise<string> {
     const page = doc.loadPage(i);
     const pixmap = page.toPixmap(matrix, mupdf.ColorSpace.DeviceRGB, false, true);
     const png = Buffer.from(pixmap.asPNG());
-    const base64 = png.toString("base64");
 
-    let content = await visionCompletion({
-      imageBase64: base64,
-      mime: "image/png",
-      timeoutMs: 90_000,
-    });
-    if (looksLikeFailedOcr(content) && cfg.strongModel && cfg.strongModel !== cfg.visionModel) {
-      content = await visionCompletion({
-        imageBase64: base64,
-        mime: "image/png",
-        model: cfg.strongModel,
-        timeoutMs: 120_000,
-      });
+    let trimmed: string;
+    try {
+      // OCR berlapis: lokal (tesseract) → fallback vision LLM bila jelek.
+      trimmed = await ocrBufferWithFallback(png, "image/png");
+    } catch (err) {
+      console.warn(`[ocr] halaman ${i + 1} gagal:`, (err as Error).message);
+      trimmed = "";
     }
-
-    const trimmed = content.trim();
     parts.push(trimmed ? `--- Halaman ${i + 1} ---\n${trimmed}` : `--- Halaman ${i + 1} ---\n[tidak terbaca]`);
   }
 
@@ -118,22 +107,39 @@ export function looksLikeFailedOcr(text: string): boolean {
   return alphaNum / t.length < 0.4;
 }
 
-async function parseImage(buffer: Buffer): Promise<string> {
-  if (!isLLMConfigured()) {
-    throw new Error("Dokumen gambar memerlukan LLM vision — atur LLM_API_KEY terlebih dahulu");
+/**
+ * OCR berlapis: OCR lokal (tesseract, gratis) dulu — LLM vision hanya fallback
+ * saat hasil lokal jelek (mode auto) atau saat OCR_ENGINE=vision.
+ * Bila LLM tidak dikonfigurasi & mode local, hasil lokal dipakai apa adanya.
+ */
+async function ocrBufferWithFallback(buffer: Buffer, mime: string): Promise<string> {
+  const engine = ocrEngineMode();
+  let text = "";
+
+  if (engine !== "vision") {
+    try {
+      text = await ocrImageLocal(buffer);
+    } catch (err) {
+      console.warn("[ocr] local gagal, fallback vision:", (err as Error).message);
+    }
   }
+
+  const canVision = isLLMConfigured();
+  const needBetter = engine === "vision" || (engine === "auto" && (!text || looksLikeFailedOcr(text)));
+  if (canVision && needBetter) {
+    text = await ocrVisionWithRetry(buffer, mime);
+  }
+
+  const trimmed = text.trim();
+  if (!trimmed) throw new Error("OCR tidak menghasilkan teks");
+  return trimmed;
+}
+
+/** Vision LLM + retry strong model saat hasil mencurigakan (jalur fallback). */
+async function ocrVisionWithRetry(buffer: Buffer, mime: string): Promise<string> {
   const cfg = getLlmConfig();
   const base64 = buffer.toString("base64");
-  const mime = "image/jpeg";
-
-  // Pass 1: model vision default (hemat).
-  let content = await visionCompletion({
-    imageBase64: base64,
-    mime,
-    timeoutMs: 90_000,
-  });
-
-  // Pass 2: hasil mencurigakan → ulangi dengan strong model (glm-4.6).
+  let content = await visionCompletion({ imageBase64: base64, mime, timeoutMs: 90_000 });
   if (looksLikeFailedOcr(content) && cfg.strongModel && cfg.strongModel !== cfg.visionModel) {
     content = await visionCompletion({
       imageBase64: base64,
@@ -142,8 +148,9 @@ async function parseImage(buffer: Buffer): Promise<string> {
       timeoutMs: 120_000,
     });
   }
+  return content.trim();
+}
 
-  const text = content.trim();
-  if (!text) throw new Error("LLM vision tidak mengembalikan teks");
-  return text;
+async function parseImage(buffer: Buffer): Promise<string> {
+  return ocrBufferWithFallback(buffer, "image/jpeg");
 }
