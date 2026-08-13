@@ -1,10 +1,11 @@
 import { requireRole } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
-import { getClerkMetrics, getFirmMetrics, getQualityMetrics, getCorrectionInsights, correctionFieldLabel, pct } from "@/server/metrics";
+import { getClerkMetrics, getFirmMetrics, getQualityMetrics, getCorrectionInsights, correctionFieldLabel, pct, getOcrMetrics } from "@/server/metrics";
 import type { StatusConfidence, StageBreachRate } from "@/server/metrics";
 import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
 import { Table, THead, TBody, TR, TH, TD } from "@/components/ui/table";
+import { usdToIdr } from "@/lib/ocr-cost";
 
 export const dynamic = "force-dynamic";
 
@@ -270,6 +271,65 @@ export default async function QualityPage() {
           </div>
         )}
       </Card>
+
+      {/* Observability: metrik OCR hybrid (lokal → vision fallback) */}
+      <OcrMetricsPanel firmId={session.user.firmId} />
     </div>
+  );
+}
+
+async function OcrMetricsPanel({ firmId }: { firmId: string }) {
+  const ocr = await getOcrMetrics(firmId, 30);
+  const idr = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
+  const ocrCards = [
+    { label: "Dokumen Diproses (30 hr)", value: String(ocr.totalDocuments), hint: `${ocr.localCount} OCR lokal · ${ocr.pdfTextCount} PDF digital · ${ocr.xlsxCount} XLSX`, tone: "text-slate-100" },
+    { label: "Fallback Vision", value: `${ocr.visionFallbackRate.toLocaleString("id-ID")}%`, hint: `${ocr.visionCount} dokumen ke vision LLM`, tone: ocr.visionFallbackRate > 30 ? "text-amber-400" : "text-emerald-400" },
+    { label: "Strong Model", value: `${ocr.strongRate.toLocaleString("id-ID")}%`, hint: "retry glm-4.6 utk hasil jelek", tone: "text-sky-400" },
+    { label: "Est. Biaya OCR", value: ocr.totalEstCostUsd === 0 ? "Rp 0" : `Rp ${idr.format(ocr.totalEstCostIdr)}`, hint: `$${ocr.totalEstCostUsd.toFixed(4)} · ${idr.format(ocr.totalEstTokens)} token`, tone: "text-violet-400" },
+  ];
+
+  return (
+    <Card className="border-trust/20">
+      <CardHeader
+        title="Metrik OCR Hybrid"
+        description="Pipeline OCR internal (tesseract.js, gratis) dulu — vision LLM hanya fallback. Ukur fallback rate, latency, dan estimasi biaya per dokumen."
+      />
+      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {ocrCards.map((c) => (
+          <div key={c.label} className="rounded-xl border border-line bg-card p-5">
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{c.label}</p>
+            <p className={`mt-2 text-3xl font-semibold tabular-nums ${c.tone}`}>{c.value}</p>
+            <p className="mt-1 text-xs text-slate-500">{c.hint}</p>
+          </div>
+        ))}
+      </div>
+
+      {ocr.totalDocuments === 0 ? (
+        <p className="mt-5 rounded-lg border border-dashed border-slate-700 bg-slate-900/40 px-4 py-6 text-center text-sm text-slate-400">
+          Belum ada dokumen diproses — metrik muncul otomatis setelah dokumen pertama melalui pipeline (upload → OCR → draft).
+        </p>
+      ) : (
+        <div className="mt-5 overflow-hidden rounded-lg border border-line">
+          <Table>
+            <THead>
+              <TH>Tanggal</TH>
+              <TH className="text-right">Dokumen</TH>
+              <TH className="text-right">Vision</TH>
+              <TH className="text-right">Est. Biaya</TH>
+            </THead>
+            <TBody>
+              {ocr.perDay.slice(-14).reverse().map((d) => (
+                <TR key={d.date}>
+                  <TD className="tabular-nums text-slate-300">{d.date}</TD>
+                  <TD className="text-right tabular-nums">{d.total}</TD>
+                  <TD className="text-right tabular-nums">{d.vision}</TD>
+                  <TD className="text-right tabular-nums">Rp {idr.format(usdToIdr(d.costUsd))}</TD>
+                </TR>
+              ))}
+            </TBody>
+          </Table>
+        </div>
+      )}
+    </Card>
   );
 }

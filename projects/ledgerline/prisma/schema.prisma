@@ -693,3 +693,23 @@ model NotificationLog {
   @@index([outboxId])
   @@index([sentAt])
 }
+
+// ── Observability: metrik OCR hybrid (lokal vs vision fallback) ─────────
+model OcrMetric {
+  id          String   @id @default(cuid())
+  firmId      String
+  documentId  String
+  fileName    String
+  engine      String // local | vision | pdf-text | xlsx | unknown
+  usedVision  Boolean  @default(false)
+  usedStrong  Boolean  @default(false)
+  pageCount   Int      @default(1)
+  durationMs  Int      @default(0)
+  textChars   Int      @default(0)
+  estTokens   Int      @default(0)
+  estCostUsd  Float    @default(0)
+  createdAt   DateTime @default(now())
+
+  @@index([firmId, createdAt])
+  @@index([engine])
+}

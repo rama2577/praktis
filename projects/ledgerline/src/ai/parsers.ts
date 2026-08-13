@@ -11,29 +11,54 @@ import type { Document } from "@prisma/client";
  * (dekripsi AES-256-GCM otomatis di `readStoredFile`). Lempar error jika gagal.
  */
 export async function parseDocument(doc: Document): Promise<string> {
+  return (await parseDocumentDetailed(doc)).text;
+}
+
+/** Meta hasil parse — dipakai observability (biaya & kualitas hybrid OCR). */
+export type OcrMeta = {
+  engine: "local" | "vision" | "pdf-text" | "xlsx" | "unknown";
+  usedVision: boolean;
+  usedStrong: boolean;
+  pageCount: number;
+  durationMs: number;
+  textChars: number;
+};
+
+/**
+ * Parse + metrik (hybrid OCR): teks digital/xlsx tanpa OCR; gambar & PDF scan
+ * lewat OCR lokal (tesseract) dulu, vision LLM hanya fallback.
+ */
+export async function parseDocumentDetailed(doc: Document): Promise<{ text: string; meta: OcrMeta }> {
   const ext = path.extname(doc.fileName).toLowerCase();
   const buffer = await readStoredFile(doc.filePath);
+  const started = Date.now();
 
   switch (ext) {
-    case ".pdf":
-      return parsePdf(buffer);
-    case ".xlsx":
-      return parseXlsx(buffer);
+    case ".pdf": {
+      const parser = new PDFParse({ data: buffer });
+      const result = await parser.getText();
+      const text = result.text?.trim() ?? "";
+      if (text) {
+        return {
+          text,
+          meta: { engine: "pdf-text", usedVision: false, usedStrong: false, pageCount: 1, durationMs: Date.now() - started, textChars: text.length },
+        };
+      }
+      const scanned = await ocrScannedPdf(buffer);
+      return { text: scanned.text, meta: { ...scanned.meta, engine: scanned.meta.usedVision ? "vision" : "local", durationMs: Date.now() - started } };
+    }
+    case ".xlsx": {
+      const text = await parseXlsx(buffer);
+      return { text, meta: { engine: "xlsx", usedVision: false, usedStrong: false, pageCount: 1, durationMs: Date.now() - started, textChars: text.length } };
+    }
     case ".jpg":
-    case ".jpeg":
-      return parseImage(buffer);
+    case ".jpeg": {
+      const parsed = await parseImage(buffer);
+      return { text: parsed.text, meta: { ...parsed.meta, durationMs: Date.now() - started } };
+    }
     default:
       throw new Error(`Format tidak didukung: ${ext}`);
   }
-}
-
-async function parsePdf(buffer: Buffer): Promise<string> {
-  const parser = new PDFParse({ data: buffer });
-  const result = await parser.getText();
-  const text = result.text?.trim() ?? "";
-  if (text) return text;
-  // PDF digital tanpa teks (hasil scan) → render halaman → OCR vision.
-  return ocrScannedPdf(buffer);
 }
 
 /** Batas halaman yang di-OCR utk PDF scan (demo/performance guard). */
@@ -43,13 +68,15 @@ export const MAX_OCR_PDF_PAGES = 10;
  * OCR PDF scan: render tiap halaman ke PNG (mupdf wasm) lalu ekstrak via
  * vision LLM — dengan heuristik kualitas + retry strong model (sama spt gambar).
  */
-export async function ocrScannedPdf(buffer: Buffer): Promise<string> {
+export async function ocrScannedPdf(buffer: Buffer): Promise<{ text: string; meta: OcrMeta }> {
   const mupdf = await import("mupdf");
   const doc = mupdf.Document.openDocument(new Uint8Array(buffer), "application/pdf");
   const total = doc.countPages();
   const pages = Math.min(total, MAX_OCR_PDF_PAGES);
   const parts: string[] = [];
   const matrix = mupdf.Matrix.scale(2, 2);
+  let usedVision = false;
+  let usedStrong = false;
 
   for (let i = 0; i < pages; i++) {
     const page = doc.loadPage(i);
@@ -58,8 +85,10 @@ export async function ocrScannedPdf(buffer: Buffer): Promise<string> {
 
     let trimmed: string;
     try {
-      // OCR berlapis: lokal (tesseract) → fallback vision LLM bila jelek.
-      trimmed = await ocrBufferWithFallback(png, "image/png");
+      const result = await ocrBufferWithFallback(png, "image/png");
+      trimmed = result.text;
+      usedVision = usedVision || result.usedVision;
+      usedStrong = usedStrong || result.usedStrong;
     } catch (err) {
       console.warn(`[ocr] halaman ${i + 1} gagal:`, (err as Error).message);
       trimmed = "";
@@ -69,7 +98,17 @@ export async function ocrScannedPdf(buffer: Buffer): Promise<string> {
 
   const text = parts.join("\n\n").trim();
   if (!text) throw new Error("OCR PDF scan tidak menghasilkan teks");
-  return text;
+  return {
+    text,
+    meta: {
+      engine: usedVision ? "vision" : "local",
+      usedVision,
+      usedStrong,
+      pageCount: pages,
+      durationMs: 0,
+      textChars: text.length,
+    },
+  };
 }
 
 async function parseXlsx(buffer: Buffer): Promise<string> {
@@ -112,9 +151,11 @@ export function looksLikeFailedOcr(text: string): boolean {
  * saat hasil lokal jelek (mode auto) atau saat OCR_ENGINE=vision.
  * Bila LLM tidak dikonfigurasi & mode local, hasil lokal dipakai apa adanya.
  */
-async function ocrBufferWithFallback(buffer: Buffer, mime: string): Promise<string> {
+async function ocrBufferWithFallback(buffer: Buffer, mime: string): Promise<{ text: string; usedVision: boolean; usedStrong: boolean }> {
   const engine = ocrEngineMode();
   let text = "";
+  let usedVision = false;
+  let usedStrong = false;
 
   if (engine !== "vision") {
     try {
@@ -127,19 +168,23 @@ async function ocrBufferWithFallback(buffer: Buffer, mime: string): Promise<stri
   const canVision = isLLMConfigured();
   const needBetter = engine === "vision" || (engine === "auto" && (!text || looksLikeFailedOcr(text)));
   if (canVision && needBetter) {
-    text = await ocrVisionWithRetry(buffer, mime);
+    const vision = await ocrVisionWithRetry(buffer, mime);
+    text = vision.text;
+    usedVision = true;
+    usedStrong = vision.usedStrong;
   }
 
   const trimmed = text.trim();
   if (!trimmed) throw new Error("OCR tidak menghasilkan teks");
-  return trimmed;
+  return { text: trimmed, usedVision, usedStrong };
 }
 
 /** Vision LLM + retry strong model saat hasil mencurigakan (jalur fallback). */
-async function ocrVisionWithRetry(buffer: Buffer, mime: string): Promise<string> {
+async function ocrVisionWithRetry(buffer: Buffer, mime: string): Promise<{ text: string; usedStrong: boolean }> {
   const cfg = getLlmConfig();
   const base64 = buffer.toString("base64");
   let content = await visionCompletion({ imageBase64: base64, mime, timeoutMs: 90_000 });
+  let usedStrong = false;
   if (looksLikeFailedOcr(content) && cfg.strongModel && cfg.strongModel !== cfg.visionModel) {
     content = await visionCompletion({
       imageBase64: base64,
@@ -147,10 +192,22 @@ async function ocrVisionWithRetry(buffer: Buffer, mime: string): Promise<string>
       model: cfg.strongModel,
       timeoutMs: 120_000,
     });
+    usedStrong = true;
   }
-  return content.trim();
+  return { text: content.trim(), usedStrong };
 }
 
-async function parseImage(buffer: Buffer): Promise<string> {
-  return ocrBufferWithFallback(buffer, "image/jpeg");
+async function parseImage(buffer: Buffer): Promise<{ text: string; meta: OcrMeta }> {
+  const result = await ocrBufferWithFallback(buffer, "image/jpeg");
+  return {
+    text: result.text,
+    meta: {
+      engine: result.usedVision ? "vision" : "local",
+      usedVision: result.usedVision,
+      usedStrong: result.usedStrong,
+      pageCount: 1,
+      durationMs: 0,
+      textChars: result.text.length,
+    },
+  };
 }

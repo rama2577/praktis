@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { logger } from "@/lib/logger";
-import { parseDocument } from "@/ai/parsers";
+import { parseDocumentDetailed } from "@/ai/parsers";
+import { estimateOcrCostUsd, estimateOcrTokens } from "@/lib/ocr-cost";
 import { draftJournalFromText } from "@/ai/drafting";
 import { validateDraftLines } from "@/ai/validation";
 import { getClientProfile, coaMappingHint } from "@/server/client-profile";
@@ -33,7 +34,28 @@ export async function processDocument(documentId: string, traceId?: string) {
 
   let text: string;
   try {
-    text = await parseDocument(doc);
+    const parsed = await parseDocumentDetailed(doc);
+    text = parsed.text;
+    // Observability OCR hybrid — non-kritis: kegagalan mencatat metrik tidak menggagalkan pipeline.
+    try {
+      await prisma.ocrMetric.create({
+        data: {
+          firmId: doc.firmId,
+          documentId: doc.id,
+          fileName: doc.fileName,
+          engine: parsed.meta.engine,
+          usedVision: parsed.meta.usedVision,
+          usedStrong: parsed.meta.usedStrong,
+          pageCount: parsed.meta.pageCount,
+          durationMs: parsed.meta.durationMs,
+          textChars: parsed.meta.textChars,
+          estTokens: estimateOcrTokens(parsed.meta),
+          estCostUsd: estimateOcrCostUsd(parsed.meta),
+        },
+      });
+    } catch (metricErr) {
+      logger.warn({ traceId: trace, documentId, event: "ocr.metric_error" }, "gagal mencatat metrik OCR");
+    }
   } catch (e) {
     const reason = (e as Error).message.slice(0, 300);
     await prisma.document.update({

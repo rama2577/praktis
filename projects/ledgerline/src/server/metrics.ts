@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import type { JournalStatus, ReviewStage, SlaEvent } from "@prisma/client";
+import { usdToIdr } from "@/lib/ocr-cost";
 
 /** Ringkasan SLA yang dipilih untuk metrik. */
 type SlaKey = Pick<SlaEvent, "stage" | "status" | "journalEntryId">;
@@ -368,5 +369,69 @@ export async function getCorrectionInsights(firmId: string): Promise<CorrectionI
       .map(([userId, count]) => ({ userId, name: nameById.get(userId) ?? "—", count }))
       .sort((a, b) => b.count - a.count)
       .slice(0, 10),
+  };
+}
+
+// ── Metrik OCR hybrid (observability biaya & kualitas) ───────────────────
+
+export type OcrMetricsSummary = {
+  totalDocuments: number;
+  localCount: number;
+  visionCount: number;
+  pdfTextCount: number;
+  xlsxCount: number;
+  visionFallbackRate: number; // 0–100, % dokumen yang pakai vision
+  strongRate: number; // 0–100, % dokumen yang pakai strong model
+  avgDurationMs: number | null;
+  totalEstTokens: number;
+  totalEstCostUsd: number;
+  totalEstCostIdr: number;
+  perDay: Array<{ date: string; total: number; vision: number; costUsd: number }>;
+};
+
+/** Ringkasan 30 hari (default) OCR hybrid per firma — lokal vs vision fallback. */
+export async function getOcrMetrics(firmId: string, days = 30): Promise<OcrMetricsSummary> {
+  const since = new Date(Date.now() - days * 86_400_000);
+  const rows = await prisma.ocrMetric.findMany({
+    where: { firmId, createdAt: { gte: since } },
+    orderBy: { createdAt: "asc" },
+  });
+  const total = rows.length;
+  const count = (pred: (r: (typeof rows)[number]) => boolean) => rows.filter(pred).length;
+  const localCount = count((r) => r.engine === "local");
+  const visionCount = count((r) => r.usedVision);
+  const strongCount = count((r) => r.usedStrong);
+  const pdfTextCount = count((r) => r.engine === "pdf-text");
+  const xlsxCount = count((r) => r.engine === "xlsx");
+  const avgDurationMs = total ? Math.round(rows.reduce((a, r) => a + r.durationMs, 0) / total) : null;
+  const totalEstTokens = rows.reduce((a, r) => a + r.estTokens, 0);
+  const totalEstCostUsd = Math.round(rows.reduce((a, r) => a + r.estCostUsd, 0) * 10_000) / 10_000;
+  const perDayMap = new Map<string, { total: number; vision: number; costUsd: number }>();
+  for (const r of rows) {
+    const key = r.createdAt.toISOString().slice(0, 10);
+    const d = perDayMap.get(key) ?? { total: 0, vision: 0, costUsd: 0 };
+    d.total += 1;
+    if (r.usedVision) d.vision += 1;
+    d.costUsd += r.estCostUsd;
+    perDayMap.set(key, d);
+  }
+  return {
+    totalDocuments: total,
+    localCount,
+    visionCount,
+    pdfTextCount,
+    xlsxCount,
+    visionFallbackRate: pct(visionCount, total),
+    strongRate: pct(strongCount, total),
+    avgDurationMs,
+    totalEstTokens,
+    totalEstCostUsd,
+    totalEstCostIdr: usdToIdr(totalEstCostUsd),
+    perDay: [...perDayMap.entries()].map(([date, v]) => ({
+      date,
+      total: v.total,
+      vision: v.vision,
+      costUsd: Math.round(v.costUsd * 10_000) / 10_000,
+    })),
   };
 }
