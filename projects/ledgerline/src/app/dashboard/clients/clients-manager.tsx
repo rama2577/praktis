@@ -5,6 +5,7 @@ import Link from "next/link";
 import { ClientForm, type ClientFormData } from "@/components/clients/client-form";
 import { ClientStatusAction } from "@/components/clients/client-status-action";
 import { StatusBadge } from "@/components/ui/status-badge";
+import { WorksheetImportWizard } from "@/components/clients/worksheet-import";
 
 type ClientRow = {
   id: string;
@@ -25,11 +26,19 @@ export function ClientsManager({
   industryLabels: Record<string, string>;
 }) {
   const [showForm, setShowForm] = useState(false);
+  const [showImport, setShowImport] = useState(false);
   const [editing, setEditing] = useState<ClientRow | null>(null);
 
   function openCreate() {
     setEditing(null);
     setShowForm(true);
+    setShowImport(false);
+  }
+
+  function openImport() {
+    setEditing(null);
+    setShowForm(false);
+    setShowImport(true);
   }
 
   function openEdit(client: ClientRow) {
@@ -44,7 +53,9 @@ export function ClientsManager({
 
   return (
     <div className="mt-6 flex flex-col gap-4">
-      {showForm ? (
+      {showImport ? (
+        <WorksheetImportWizard onDone={() => setShowImport(false)} />
+      ) : showForm ? (
         <ClientForm
           mode={editing ? "edit" : "create"}
           initial={
@@ -62,13 +73,22 @@ export function ClientsManager({
         />
       ) : (
         <div>
-          <button
-            type="button"
-            onClick={openCreate}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#0b1120] transition hover:bg-yellow-300"
-          >
-            + Tambah Klien
-          </button>
+          <div className="flex gap-2">
+            <button
+              type="button"
+              onClick={openCreate}
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#0b1120] transition hover:bg-yellow-300"
+            >
+              + Tambah Klien
+            </button>
+            <button
+              type="button"
+              onClick={openImport}
+              className="rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-yellow-400/50"
+            >
+              📥 Import Kertas Kerja
+            </button>
+          </div>
         </div>
       )}
 
