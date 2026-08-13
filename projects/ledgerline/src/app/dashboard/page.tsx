@@ -12,6 +12,7 @@ import {
 } from "@/server/dashboard";
 import { KpiCards } from "@/components/dashboard/kpi-cards";
 import { DashboardPanels, type DashboardFocus } from "@/components/dashboard/dashboard-panels";
+import { DockableDashboard } from "@/components/dashboard/dockable-dashboard";
 
 export const dynamic = "force-dynamic";
 
@@ -56,6 +57,28 @@ export default async function DashboardPage() {
       </div>
 
       <KpiCards data={kpi} />
+
+      {/* PoC: Dockable Workspace (Dockview) */}
+      <DockableDashboard
+        data={{
+          kpi: {
+            firstPassRate: kpi.firstPassRate,
+            activeClients: kpi.activeClients,
+            newClientsThisMonth: kpi.newClientsThisMonth,
+            aiAutomationPct: kpi.aiAutomationPct,
+            jobsInProgress: kpi.jobsInProgress,
+            aiDraftJobs: kpi.aiDraftJobs,
+            reviewJobs: kpi.reviewJobs,
+            transactionsToday: kpi.transactionsToday,
+            avgDailyTransactions: kpi.avgDailyTransactions,
+            transactionsDeltaPct: kpi.transactionsDeltaPct,
+            slaBreachCount: kpi.slaBreachCount,
+          },
+          pipeline,
+          sla: { rows: sla },
+          insights: { weeklyTrend: trend, industry, reasons: insights },
+        }}
+      />
 
       <DashboardPanels initial={{ pipeline, sla, confidence, activity, industry, trend, insights }} focus={focus} />
     </div>
