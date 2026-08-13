@@ -191,3 +191,58 @@ Semua ≥85% ✓ — kuncinya: **menengah selalu usage-based**, jadi tidak ada k
 - 10 kecil kuota: Rp 5jt (5.000 tx, terpakai 5.240 → 240 × Rp 700 = Rp 168rb)
 - 2 menengah kuota: Rp 3jt (4.000 tx, terpakai 3.900 → 0 over)
 - **Total tagihan bulan: Rp 11,67jt** (COGS ±Rp 0,94jt → GP 92%)
+
+
+---
+
+## 9. Menangani Klien Tahunan / Musiman (Engagement)
+
+Firma akuntansi punya 2 tipe pekerjaan: (1) retainer bulanan (bookkeeping) dan (2) penugasan tahunan
+(tutup buku, laporan tahunan, SPT Tahunan, audit) — klien hanya "datang" sekali setahun. Model bulanan
+tidak berlaku; gunakan **paket penugasan (engagement)**.
+
+### 9a. Prinsip
+
+- Klien tahunan = satu penugasan dengan volume transaksi tahunan yang diproses dalam 1–3 bulan.
+- Tagihan **di muka saat penugasan dimulai** (cash flow sehat, tanpa retainer yang dibenci klien tahunan).
+- Metering tetap sama (transaksi diproses saat bulan pengerjaan) — `UsageMeter` tidak berubah.
+
+### 9b. Paket Tahunan (per penugasan)
+
+| Paket | Volume/thn | COGS | Harga min (GP85%) | Harga jual | GP |
+|---|---|---|---|---|---|
+| Mikro tahunan | 1.200 tx | Rp 156rb | Rp 1,04jt | **Rp 2,5jt** | 94% |
+| Kecil tahunan | 4.800 tx | Rp 520rb | Rp 3,47jt | **Rp 4,5jt** | 88% |
+| Menengah tahunan | 18.000 tx | Rp 1,86jt | Rp 12,4jt | **Rp 13jt** | 86% |
+
++ Add-on opsional: **penyusunan SPT Tahunan / laporan tahunan Rp 1jt** (COGS kecil → margin tebal).
+
+### 9c. Penyesuaian platform fee & tiering firma campuran
+
+- Platform fee dihitung dari **klien aktif bulan ini** (bukan total terdaftar) — klien tahunan hanya aktif saat dikerjakan.
+- Firma campuran: bulanan (paket §8) + tahunan (paket §9b) jalan berdampingan.
+
+**Ilustrasi Firma D** (8 klien terdaftar: 5 bulanan + 3 tahunan kecil, dikerjakan Jan–Mar):
+
+| Komponen | Revenue rata-rata/bln |
+|---|---|
+| Platform fee (≤10 aktif) | Rp 1jt |
+| 3 mikro flat + 2 kecil kuota (bulanan) | Rp 2,2jt |
+| 3 tahunan kecil (3 × Rp 4,5jt ÷ 12) | Rp 1,125jt |
+| **Total** | **±Rp 4,3jt** (COGS ±Rp 0,5jt → GP 88%) |
+
+Cash flow nyata: **spike Q1** (Rp 13,5jt masuk Jan–Mar) — sehat, tapi perlu pengelolaan:
+- Tagih klien tahunan **di muka** (kontrak penugasan).
+- Jangan jadikan klien tahunan sebagai basis MRR — MRR datang dari paket bulanan + platform fee.
+
+### 9d. Implementasi di Praktis
+
+1. `Client.billingMode: MONTHLY | ANNUAL` — ANNUAL punya `annualPackage` + `engagementMonths` (bulan pengerjaan).
+2. Invoice penugasan dibuat di muka (rincian: paket tahunan + add-on + over-quota bila volume melampaui kuota tahunan, tetap Rp 700/tx).
+3. Platform fee tier memakai **klien aktif** (billingMode MONTHLY + ANNUAL yang sedang dalam bulan pengerjaan).
+4. Dashboard firma menampilkan **MRR (bulanan) terpisah dari pipeline penugasan (tahunan)** — dua angka revenue yang jangan dicampur.
+
+### 9e. Catatan strategis
+
+- Diskon tahunan opsional: 12× bulanan (Rp 6jt utk kecil kuota) vs paket tahunan Rp 4,5jt = diskon 25% — alat jual untuk konversi klien bulanan jadi tahunan (mengunci engagement & mengurangi churn).
+- Jangan pernah mengunci seluruh revenue pada penugasan tahunan — baseline MRR (platform + retainer bulanan) adalah penopang break-even.
