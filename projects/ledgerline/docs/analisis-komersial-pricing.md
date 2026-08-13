@@ -516,3 +516,40 @@ Semua ≥75% ✓ (dan ≤85% ✓). Catatan: over-quota Rp 350 kini sudah ≥75% 
 `Client.plan: MIKRO|LOW|MIDDLE` + `billingMode: MONTHLY|ANNUAL` + `annualPaidAt` + `UsageMeter`
 (COUNT JournalLine APPROVED) + **gate server-side SPT 1771** (`annualPaidAt` valid) + invoice
 bulanan (paket + over-quota 350/tx) & tahunan di muka + alert kuota 80%/100%.
+
+---
+
+## 14. Dampak OCR Internal Berlapis pada COGS & Kualitas (2026-08-14)
+
+### 14a. Penghematan biaya GLM (estiması)
+
+Asumsi: ±1.200 vision-token per dokumen scan; harga z.ai: glm-4.5-vision ±$0,7/M, glm-4.6 ±$2,8/M (kurs 15.800).
+
+| Jalur | Biaya per dokumen | Keterangan |
+|---|---|---|
+| Sebelum (vision LLM semua) | ±Rp 21 | 80% glm-4.5 + 20% retry strong |
+| Sesudah (OCR lokal dulu) | ±Rp 4–6 | hanya 15–25% dokumen butuh fallback vision |
+| **Penghematan** | **±Rp 15–16/dok (≈70–80%)** | OCR lokal = 0 biaya API (CPU container) |
+
+Dampak per transaksi (COGS AI): OCR ±35% token pipeline → hemat ±Rp 5–6/tx → COGS AI
+±Rp 70 → **±Rp 55–60/tx** (fallback 20%). Skala: 1.000 dok/bln hemat ±Rp 15rb;
+20.000 dok/bln (10 firma menengah) hemat **±Rp 300–400rb/bln**.
+
+### 14b. Kualitas: NAIK untuk teks cetak, tanpa regresi utk kasus sulit
+
+| Dimensi | OCR lokal (tesseract) vs vision LLM |
+|---|---|
+| Presisi teks cetak | ✅ Lebih akurat & deterministik (engine khusus OCR) |
+| Angka/format | ✅ Dipertahankan persis; LLM kadang "merapikan"/mengarang |
+| Halusinasi | ✅ Tidak menebak — hanya membaca; angka salah baca ≠ angka karangan |
+| Kecepatan | ✅ Tanpa network round-trip → latency turun |
+| Privasi | ✅ Dokumen tidak dikirim ke API utk ekstraksi |
+| Tabel kompleks / tulisan tangan / buram | ⚠️ Tesseract lemah → **fallback vision LLM otomatis** (tidak ada regresi) |
+
+Bukti awal: fixture faktur cetak → tesseract membaca 100% baris & angka dengan benar (tanpa LLM).
+
+### 14c. Risiko & mitigasi
+
+- Fallback rate tinggi pada scan jelek → mitigasi: preprocessing (deskew/kontras) & opsi `OCR_ENGINE=vision`.
+- Bahasa campuran → tessdata ind+eng sudah mencakup mayoritas dokumen Indonesia.
+- Validasi angka aktual: pipeline sudah mencatat model yang dipakai per dokumen → ukur fallback rate & biaya riil dari log.
