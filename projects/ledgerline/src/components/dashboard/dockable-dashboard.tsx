@@ -9,6 +9,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { DockviewReadyEvent } from "dockview-core";
+import { getPresetLabel, getRolePreset, type DockPanelDef } from "@/server/dashboard-presets";
 import "dockview/dist/styles/dockview.css";
 
 // ── Data types (mirror server/dashboard.ts) ─────────────────────────────────
@@ -91,13 +92,17 @@ function PipelinePanel({ pipeline }: PanelProps) {
   return (
     <div className="space-y-2 overflow-y-auto p-4">
       {pipeline.stages.map((s) => (
-        <div key={s.key} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/40 px-3 py-2">
+        <a
+          key={s.key}
+          href="/dashboard/pipeline"
+          className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/40 px-3 py-2 transition hover:border-yellow-400/40 hover:bg-slate-900"
+        >
           <div>
             <p className="text-sm font-medium text-slate-200">{s.label}</p>
             <p className="text-[11px] text-slate-500">{s.hint}</p>
           </div>
           <span className="rounded-full bg-yellow-400/15 px-2.5 py-1 font-mono text-sm text-yellow-300">{s.count}</span>
-        </div>
+        </a>
       ))}
     </div>
   );
@@ -177,12 +182,13 @@ const DockviewReact = dynamic(
   { ssr: false },
 );
 
-export function DockableDashboard({ data }: { data: PanelProps }) {
+export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; role?: string }) {
   const [ready, setReady] = useState<{ layout: string | null } | null>(null);
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
   const apiRef = useRef<DockviewReadyEvent["api"] | null>(null);
   const loadedRef = useRef(false);
+  const preset = getRolePreset(role);
 
   // Muat layout tersimpan per user SEBELUM DockviewReact mount (hindari race async di onReady).
   useEffect(() => {
@@ -203,21 +209,25 @@ export function DockableDashboard({ data }: { data: PanelProps }) {
     };
   }, []);
 
-  const buildDefaultLayout = useCallback((api: DockviewReadyEvent["api"]) => {
-    const add = (id: string, component: string, title: string, ref?: string, dir: "right" | "below" | "within" = "right") => {
-      if (api.getPanel(id)) return; // idempotent — aman dari double-mount StrictMode
-      api.addPanel({
-        id,
-        component,
-        title,
-        position: ref ? { referencePanel: ref, direction: dir } : { direction: "right" },
+  const buildDefaultLayout = useCallback(
+    (api: DockviewReadyEvent["api"], defs: DockPanelDef[]) => {
+      let prevId: string | undefined;
+      defs.forEach((d, i) => {
+        if (api.getPanel(d.id)) return; // idempotent — aman dari double-mount StrictMode
+        api.addPanel({
+          id: d.id,
+          component: d.component,
+          title: d.title,
+          position:
+            i === 0
+              ? { direction: "right" }
+              : { referencePanel: prevId, direction: i % 2 === 1 ? "below" : "right" },
+        });
+        prevId = d.id;
       });
-    };
-    add("kpi", "kpi", "KPI Ringkasan");
-    add("pipeline", "pipeline", "Pipeline Produksi", "kpi", "below");
-    add("sla", "sla", "Monitoring SLA", "pipeline", "right");
-    add("quality", "quality", "Insight Kualitas", "sla", "below");
-  }, []);
+    },
+    [],
+  );
 
   const saveLayout = useCallback(async () => {
     const api = apiRef.current;
@@ -243,15 +253,15 @@ export function DockableDashboard({ data }: { data: PanelProps }) {
       if (api.panels.length > 0 || !ready) return;
       loadedRef.current = false;
 
-      // Muat layout tersimpan; fallback ke default.
+      // Muat layout tersimpan; fallback ke preset role.
       try {
         if (ready.layout) {
           api.fromJSON(JSON.parse(ready.layout));
         } else {
-          buildDefaultLayout(api);
+          buildDefaultLayout(api, preset);
         }
       } catch {
-        buildDefaultLayout(api);
+        buildDefaultLayout(api, preset);
       }
       loadedRef.current = true;
 
@@ -260,7 +270,7 @@ export function DockableDashboard({ data }: { data: PanelProps }) {
         void saveLayout();
       });
     },
-    [buildDefaultLayout, saveLayout, ready],
+    [buildDefaultLayout, saveLayout, ready, preset],
   );
 
   const resetLayout = useCallback(async () => {
@@ -270,12 +280,12 @@ export function DockableDashboard({ data }: { data: PanelProps }) {
     try {
       await fetch("/api/dashboard/layout", { method: "DELETE" });
       api.clear();
-      buildDefaultLayout(api);
+      buildDefaultLayout(api, preset);
       setLastSaved(null);
     } finally {
       setSaving(false);
     }
-  }, [buildDefaultLayout]);
+  }, [buildDefaultLayout, preset]);
 
   if (!ready) {
     return <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center text-sm text-slate-500">Memuat workspace…</div>;
@@ -286,6 +296,7 @@ export function DockableDashboard({ data }: { data: PanelProps }) {
       <div className="mb-2 flex items-center justify-between">
         <div className="flex items-center gap-2 text-[11px] text-slate-500">
           <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">Workspace Dockable</span>
+          <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">{getPresetLabel(role)}</span>
           {lastSaved && <span className="px-1">Tersimpan {lastSaved}</span>}
         </div>
         <button

@@ -60,6 +60,7 @@ export default async function DashboardPage() {
 
       {/* PoC: Dockable Workspace (Dockview) */}
       <DockableDashboard
+        role={role}
         data={{
           kpi: {
             firstPassRate: kpi.firstPassRate,
