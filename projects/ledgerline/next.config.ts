@@ -17,11 +17,13 @@ const nextConfig: NextConfig = {
   poweredByHeader: false,
   // Railway/Vercel production: server standalone (output tracing otomatis)
   output: "standalone",
-  // PDFKit memakai __dirname node_modules — jangan di-bundle webpack
-  serverExternalPackages: ["pdfkit"],
-  // PDFKit font data perlu disertakan di standalone output
+  // PDFKit & mupdf (wasm) memakai __dirname node_modules — jangan di-bundle webpack
+  serverExternalPackages: ["pdfkit", "mupdf"],
+  // PDFKit font data & mupdf wasm perlu disertakan di standalone output
   outputFileTracingIncludes: {
-    "/api/portal/*": ["./node_modules/pdfkit/js/data/*.afm"],
+    "/api/documents/*": ["./node_modules/pdfkit/js/data/*.afm", "./node_modules/mupdf/dist/*.wasm"],
+    "/api/portal/*": ["./node_modules/pdfkit/js/data/*.afm", "./node_modules/mupdf/dist/*.wasm"],
+    "/api/clients/import/*": ["./node_modules/mupdf/dist/*.wasm"],
   },
   async headers() {
     const headers = [...securityHeaders];

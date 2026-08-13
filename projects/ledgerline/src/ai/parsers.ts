@@ -30,7 +30,56 @@ async function parsePdf(buffer: Buffer): Promise<string> {
   const parser = new PDFParse({ data: buffer });
   const result = await parser.getText();
   const text = result.text?.trim() ?? "";
-  if (!text) throw new Error("Tidak ada teks yang dapat diekstrak dari PDF");
+  if (text) return text;
+  // PDF digital tanpa teks (hasil scan) → render halaman → OCR vision.
+  return ocrScannedPdf(buffer);
+}
+
+/** Batas halaman yang di-OCR utk PDF scan (demo/performance guard). */
+export const MAX_OCR_PDF_PAGES = 10;
+
+/**
+ * OCR PDF scan: render tiap halaman ke PNG (mupdf wasm) lalu ekstrak via
+ * vision LLM — dengan heuristik kualitas + retry strong model (sama spt gambar).
+ */
+export async function ocrScannedPdf(buffer: Buffer): Promise<string> {
+  if (!isLLMConfigured()) {
+    throw new Error("PDF scan memerlukan LLM vision — atur LLM_API_KEY terlebih dahulu");
+  }
+  const cfg = getLlmConfig();
+  const mupdf = await import("mupdf");
+  const doc = mupdf.Document.openDocument(new Uint8Array(buffer), "application/pdf");
+  const total = doc.countPages();
+  const pages = Math.min(total, MAX_OCR_PDF_PAGES);
+  const parts: string[] = [];
+  const matrix = mupdf.Matrix.scale(2, 2);
+
+  for (let i = 0; i < pages; i++) {
+    const page = doc.loadPage(i);
+    const pixmap = page.toPixmap(matrix, mupdf.ColorSpace.DeviceRGB, false, true);
+    const png = Buffer.from(pixmap.asPNG());
+    const base64 = png.toString("base64");
+
+    let content = await visionCompletion({
+      imageBase64: base64,
+      mime: "image/png",
+      timeoutMs: 90_000,
+    });
+    if (looksLikeFailedOcr(content) && cfg.strongModel && cfg.strongModel !== cfg.visionModel) {
+      content = await visionCompletion({
+        imageBase64: base64,
+        mime: "image/png",
+        model: cfg.strongModel,
+        timeoutMs: 120_000,
+      });
+    }
+
+    const trimmed = content.trim();
+    parts.push(trimmed ? `--- Halaman ${i + 1} ---\n${trimmed}` : `--- Halaman ${i + 1} ---\n[tidak terbaca]`);
+  }
+
+  const text = parts.join("\n\n").trim();
+  if (!text) throw new Error("OCR PDF scan tidak menghasilkan teks");
   return text;
 }
 

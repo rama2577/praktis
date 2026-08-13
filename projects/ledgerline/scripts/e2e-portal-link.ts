@@ -58,10 +58,11 @@ async function main() {
   await btn.click();
   await page.getByRole("button", { name: /tersalin/i }).waitFor({ timeout: 15000 });
   if (!portalUrl) throw new Error("API portal-token tidak merespons URL");
-  console.log("PORTAL URL:", portalUrl);
+  const resolved: string = portalUrl;
+  console.log("PORTAL URL:", resolved);
 
   // 4) Buka portal klien (landing page)
-  const target = portalUrl.startsWith("http") ? portalUrl : `${BASE}${portalUrl}`;
+  const target = resolved.startsWith("http") ? resolved : `${BASE}${resolved}`;
   await page.goto(target, { waitUntil: "networkidle", timeout: 45000 });
   await page.getByText(/portal dokumen/i).first().waitFor({ timeout: 15000 });
   const title = await page.title();
