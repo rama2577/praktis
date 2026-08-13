@@ -455,3 +455,64 @@ Mix 40/40/20 → **ARPU ±Rp 460rb/klien/bln** · COGS rata-rata ±111rb + 3% �
 `Client.plan: MIKRO|LOW|MIDDLE` + `billingMode: MONTHLY|ANNUAL` + `annualPaidAt` + `UsageMeter`
 (COUNT JournalLine APPROVED) + **gate server-side modul SPT 1771** (`annualPaidAt` valid → 403/lock)
 + invoice bulanan (paket + over-quota 350/tx) & tahunan di muka + alert kuota 80%/100%.
+
+
+---
+
+## 13. FLOOR GP NAIK → 75% (Revisi 2026-08-13)
+
+Keputusan: minimal GP 75% (band 75–85%). Kunci penyesuaian: **asumsi biaya AI per transaksi
+diturunkan Rp 100 → Rp 70** (model routing: dokumen bersih → model murah, dokumen sulit → premium;
+buffer 2x → 1,3x) + kuota Middle tahunan 15.000 → **14.000 tx** (satu-satunya perubahan kuota).
+Harga & kuota lain TETAP seperti keputusan user.
+
+### 13a. Tabel final (proyeksi, AI Rp 70/tx)
+
+**Bulanan:**
+
+| Segmen | Kuota | Harga | COGS | GP |
+|---|---|---|---|---|
+| Mikro | 100 tx | Rp 300rb | 40rb + 3% | **83,7%** |
+| Low | 500 tx | Rp 500rb | 78rb + 3% | **81,4%** |
+| Middle | 1.000 tx | Rp 700rb | 125rb + 3% | **79,1%** |
+| Over-quota | — | Rp 350/tx | 70 + 3% | **77%** |
+
+**Tahunan:**
+
+| Segmen | Kuota | Harga | COGS | GP |
+|---|---|---|---|---|
+| Mikro tahunan | 2.000 tx | Rp 1jt | 201rb + 3% | **76,9%** |
+| Low tahunan | 5.000 tx | Rp 3jt | 411rb + 3% | **83,3%** |
+| Middle tahunan | **14.000 tx** | Rp 5jt | 1,065jt + 3% | **75,7%** |
+| Over-quota | — | Rp 350/tx | 70 + 3% | **77%** |
+
+Semua ≥75% ✓ (dan ≤85% ✓). Catatan: over-quota Rp 350 kini sudah ≥75% — tidak perlu naik.
+
+### 13b. Risiko & skenario konservatif (kalau AI aktual tetap Rp 100/tx)
+
+| Produk | GP @70/tx | GP @100/tx |
+|---|---|---|
+| Mikro bulanan | 83,7% | 76% |
+| Low bulanan | 81,4% | 76% |
+| Middle bulanan | 79,1% | 75% |
+| Mikro tahunan | 76,9% | 71% ✗ |
+| Low tahunan | 83,3% | 78% |
+| Middle tahunan | 75,7% | 65% ✗ |
+| Over-quota | 77% | 68% ✗ |
+
+**Syarat struktur ini sehat: biaya AI rute-rata ≤ Rp 70/tx.** Mitigasi: (1) model routing (murah/sulit),
+(2) prompt & caching dokumen berulang, (3) kalau real cost >80/tx → turunkan kuota tahunan
+(mikro 1.500 tx / middle 10.000 tx) atau naikkan over-quota ke Rp 400.
+
+### 13c. GP agregat & unit economics (asumsi AI 70/tx)
+
+- ARPU ±Rp 460rb/klien (mix 40/40/20) · COGS rata-rata ±86rb + 3% → **GP per klien 81,3%** ✓
+- GP agregat ≥75% tercapai saat **≥6 firma aktif** (10 klien/firma): 1 firma 49% · 3 = 70% · 5 = 75% · 6 = 76% · 10 = 78% · 20 = 80%
+- Margin per klien ±Rp 374rb/bln · break-even infra ±4 klien · LTV ±Rp 18,4jt · **LTV:CAC 6–12×**
+- Potensi: 50 firma × 30 klien = ±Rp 690jt/bln MRR
+
+### 13d. Implementasi (menunggu OK)
+
+`Client.plan: MIKRO|LOW|MIDDLE` + `billingMode: MONTHLY|ANNUAL` + `annualPaidAt` + `UsageMeter`
+(COUNT JournalLine APPROVED) + **gate server-side SPT 1771** (`annualPaidAt` valid) + invoice
+bulanan (paket + over-quota 350/tx) & tahunan di muka + alert kuota 80%/100%.
