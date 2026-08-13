@@ -41,6 +41,21 @@ async function main() {
   await page.click("text=Reset Layout");
   await page.waitForTimeout(800);
 
+  // 2b. Preset switcher: ganti ke JUNIOR → badge & jumlah panel berubah, persist setelah reload
+  await page.selectOption("select[aria-label='Ganti preset layout']", "JUNIOR");
+  await page.waitForTimeout(1200);
+  const juniorBadge = await page.getByText("Preset Junior — fokus antrian").count();
+  const juniorTabs = await page.locator(".dv-tab").count();
+  say(juniorBadge > 0 ? "✓ preset JUNIOR aktif (badge)" : "✗ badge preset JUNIOR tidak muncul");
+  say(juniorTabs === 3 ? "✓ preset JUNIOR = 3 panel (pipeline/sla/kpi)" : `✗ preset JUNIOR panel=${juniorTabs} (harus 3)`);
+  await page.reload();
+  await page.waitForSelector(".dv-dockview", { timeout: 20000 });
+  await page.waitForTimeout(1500);
+  const juniorAfterReload = await page.getByText("Preset Junior — fokus antrian").count();
+  say(juniorAfterReload > 0 ? "✓ setelah reload, preset JUNIOR tetap (persist)" : "✗ preset JUNIOR hilang setelah reload");
+  await page.selectOption("select[aria-label='Ganti preset layout']", "ADMIN");
+  await page.waitForTimeout(1000);
+
   // 3. Tutup panel "Monitoring SLA" lewat tombol close tab-nya
   const slaTab = page.locator(".dv-tab", { hasText: "Monitoring SLA" }).first();
   const closeBtn = slaTab.locator("[role=button]").first();

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getPresetLabel, getRolePreset, panelIds } from "@/server/dashboard-presets";
+import { getPresetLabel, getRolePreset, PRESET_OPTIONS, panelIds } from "@/server/dashboard-presets";
 
 describe("dashboard-presets (layout Dockview per role)", () => {
   it("ADMIN: 4 panel, KPI paling prioritas", () => {
@@ -46,5 +46,16 @@ describe("dashboard-presets (layout Dockview per role)", () => {
       expect(getPresetLabel(role).length).toBeGreaterThan(5);
     }
     expect(getPresetLabel("UNKNOWN")).toBe(getPresetLabel("ADMIN"));
+  });
+
+  it("PRESET_OPTIONS: 5 opsi dropdown, role valid & label unik", () => {
+    expect(PRESET_OPTIONS).toHaveLength(5);
+    const roles = PRESET_OPTIONS.map((o) => o.role);
+    expect(roles).toEqual(["ADMIN", "JUNIOR", "SENIOR", "TAX", "PARTNER"]);
+    const labels = new Set(PRESET_OPTIONS.map((o) => o.label));
+    expect(labels.size).toBe(5);
+    for (const o of PRESET_OPTIONS) {
+      expect(getRolePreset(o.role).length).toBeGreaterThan(0);
+    }
   });
 });

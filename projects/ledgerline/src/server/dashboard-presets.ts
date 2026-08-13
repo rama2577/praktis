@@ -40,6 +40,15 @@ export function getPresetLabel(role: string | null | undefined): string {
   return PRESET_LABEL[role ?? "ADMIN"] ?? PRESET_LABEL.ADMIN;
 }
 
+/** Opsi dropdown preset switcher (urutan tampilan). */
+export const PRESET_OPTIONS: { role: string; label: string }[] = [
+  { role: "ADMIN", label: PRESET_LABEL.ADMIN },
+  { role: "JUNIOR", label: PRESET_LABEL.JUNIOR },
+  { role: "SENIOR", label: PRESET_LABEL.SENIOR },
+  { role: "TAX", label: PRESET_LABEL.TAX },
+  { role: "PARTNER", label: PRESET_LABEL.PARTNER },
+];
+
 export function panelIds(defs: DockPanelDef[]): string[] {
   return defs.map((d) => d.id);
 }

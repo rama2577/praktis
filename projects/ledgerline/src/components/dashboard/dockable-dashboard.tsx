@@ -9,7 +9,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import dynamic from "next/dynamic";
 import type { DockviewReadyEvent } from "dockview-core";
-import { getPresetLabel, getRolePreset, type DockPanelDef } from "@/server/dashboard-presets";
+import { getPresetLabel, getRolePreset, PRESET_OPTIONS, type DockPanelDef } from "@/server/dashboard-presets";
 import "dockview/dist/styles/dockview.css";
 
 // ── Data types (mirror server/dashboard.ts) ─────────────────────────────────
@@ -198,9 +198,10 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
   const [ready, setReady] = useState<{ layout: string | null } | null>(null);
   const [saving, setSaving] = useState(false);
   const [lastSaved, setLastSaved] = useState<string | null>(null);
+  const [activeRole, setActiveRole] = useState<string>(role);
   const apiRef = useRef<DockviewReadyEvent["api"] | null>(null);
   const loadedRef = useRef(false);
-  const preset = getRolePreset(role);
+  const preset = getRolePreset(activeRole);
 
   // Muat layout tersimpan per user SEBELUM DockviewReact mount (hindari race async di onReady).
   useEffect(() => {
@@ -299,25 +300,54 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
     }
   }, [buildDefaultLayout, preset]);
 
+  /** Ganti preset langsung: rebuild layout + simpan (persist), tanpa Reset. */
+  const applyPreset = useCallback(
+    (nextRole: string) => {
+      const api = apiRef.current;
+      if (!api) return;
+      const next = getRolePreset(nextRole);
+      setActiveRole(nextRole);
+      api.clear();
+      buildDefaultLayout(api, next);
+      // Auto-save via onDidLayoutChange akan menyimpan; panggil langsung agar pasti.
+      void saveLayout();
+    },
+    [buildDefaultLayout, saveLayout],
+  );
+
   if (!ready) {
     return <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center text-sm text-slate-500">Memuat workspace…</div>;
   }
 
   return (
     <div>
-      <div className="mb-2 flex items-center justify-between">
-        <div className="flex items-center gap-2 text-[11px] text-slate-500">
+      <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
           <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">Workspace Dockable</span>
-          <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">{getPresetLabel(role)}</span>
+          <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">{getPresetLabel(activeRole)}</span>
           {lastSaved && <span className="px-1">Tersimpan {lastSaved}</span>}
         </div>
-        <button
-          onClick={resetLayout}
-          disabled={saving}
-          className="rounded-md border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300 transition hover:border-rose-500/50 hover:text-rose-300 disabled:opacity-50"
-        >
-          {saving ? "Mereset…" : "Reset Layout"}
-        </button>
+        <div className="flex items-center gap-2">
+          <select
+            aria-label="Ganti preset layout"
+            value={activeRole}
+            onChange={(e) => applyPreset(e.target.value)}
+            className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 text-[11px] text-slate-300 transition hover:border-yellow-400/50"
+          >
+            {PRESET_OPTIONS.map((o) => (
+              <option key={o.role} value={o.role}>
+                {o.label}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={resetLayout}
+            disabled={saving}
+            className="rounded-md border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300 transition hover:border-rose-500/50 hover:text-rose-300 disabled:opacity-50"
+          >
+            {saving ? "Mereset…" : "Reset Layout"}
+          </button>
+        </div>
       </div>
       <div className="h-[70vh] overflow-hidden rounded-xl border border-slate-800">
         <DockviewReact
