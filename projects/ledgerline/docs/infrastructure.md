@@ -116,3 +116,12 @@ Upload (PDF/JPG/XLSX)
 - **Deploy**: `railway up -d -y` (Dockerfile multi-stage; `prisma migrate deploy` tiap boot; `output: standalone`)
 - **Login demo**: `admin@ledgerline.dev` / `password123` (seed via `railway ssh -s web "cd /app && npx prisma db seed"`)
 - **Pelajaran**: (1) plugin Postgres/Redis TIDAK auto-inject `DATABASE_URL`/`REDIS_URL` ke service — set manual; (2) `railway run` jalan lokal → tak bisa akses host private; seed via SSH ke container; (3) `RAILWAY_START_COMMAND` tidak efektif → pakai `WORKER_MODE` env + branch di CMD Dockerfile; (4) SSH host key berubah tiap deploy → `railway ssh config` + `ssh -o StrictHostKeyChecking=accept-new railway-web`.
+
+## Pipeline OCR Berlapis (2026-08-14) — OCR internal dulu, AI sebagai fallback
+
+- **Lokal (gratis)**: tesseract.js wasm, bahasa `ind+eng` (tessdata_fast 2,6MB di `src/ai/tessdata/`, worker singleton di `src/ai/local-ocr.ts`) — untuk gambar (JPG/PNG) & PDF scan (render halaman via mupdf → PNG → OCR lokal).
+- **Fallback vision LLM** (mode `auto`, default): hanya saat hasil lokal jelek (`looksLikeFailedOcr`) atau `OCR_ENGINE=vision`.
+- **Env**: `OCR_ENGINE=auto|local|vision` (default `auto`).
+- **Verifikasi**: tesseract.js jalan di Node ESM (tsx lokal hang — quirk tooling, bukan runtime); unit test 371/371 (mock local-ocr); build OK; **terbukti di container Railway** (OCR faktur lengkap tanpa LLM).
+- **Dampak biaya**: mayoritas dokumen selesai di OCR lokal (gratis) — LLM vision & strong model hanya cadangan; GLM hanya dipakai utk drafting jurnal.
+- Catatan: PaddleOCR/EasyOCR (referensi user) butuh Python+PyTorch — tidak praktis di container Node; tesseract.js wasm mencapai tujuan sama (OCR khusus sebelum AI) dengan footprint kecil.
