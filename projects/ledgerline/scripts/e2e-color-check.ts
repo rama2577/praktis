@@ -9,16 +9,12 @@ async function main() {
   await page.waitForURL("**/dashboard", { timeout: 20000 });
   await page.waitForSelector("text=Hari Ini", { timeout: 20000 }).catch(()=>{});
   const out = await page.evaluate(`(() => {
+    const root = getComputedStyle(document.documentElement);
     const g = (s) => { const n = document.querySelector(s); return n ? getComputedStyle(n).color : null; };
-    const gb = (s) => { const n = document.querySelector(s); return n ? getComputedStyle(n).backgroundColor : null; };
     return JSON.stringify({
-      slate600: g(".text-slate-600"),
-      slate900: g(".text-slate-900"),
-      muted: g(".text-muted"),
-      accentBtn: gb(".bg-accent"),
-      accentText: g(".text-accent"),
-      positive: g(".text-emerald-600"),
-      danger: g(".text-red-600")
+      ai: root.getPropertyValue("--ai").trim(),
+      slate700: g(".text-slate-700"),
+      muted: g(".text-muted")
     });
   })()`);
   console.log(out);
