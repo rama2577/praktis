@@ -56,12 +56,12 @@ export function AiCommandPalette() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-lg border border-line bg-black/5 px-3 py-1.5 text-xs text-slate-700 transition hover:border-accent/50 hover:text-accent"
+        className="inline-flex items-center gap-2 rounded-lg border border-line bg-black/5 px-3 py-1.5 text-xs text-slate-700 transition hover:border-ai/50 hover:text-ai"
         title="Tanya AI (⌘K)"
       >
         <span aria-hidden>✨</span>
         <span className="hidden sm:inline">Tanya AI</span>
-        <kbd className="rounded border border-line bg-black/5 px-1.5 py-0.5 text-[10px] text-slate-600">⌘K</kbd>
+        <kbd className="rounded border border-line bg-black/5 px-1.5 py-0.5 text-[10px] text-slate-700">⌘K</kbd>
       </button>
 
       {open && (
@@ -74,13 +74,13 @@ export function AiCommandPalette() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder='Contoh: "Berapa klien aktif & transaksi hari ini?"'
-                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none"
+                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-700 focus:outline-none"
                 aria-label="Pertanyaan ke AI"
               />
               <button
                 type="submit"
                 disabled={loading || !query.trim()}
-                className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-[#ffdf6b] disabled:opacity-50"
+                className="shrink-0 rounded-lg bg-ai px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#6a4ae0] disabled:opacity-50"
               >
                 {loading ? "…" : "Kirim"}
               </button>
@@ -97,7 +97,7 @@ export function AiCommandPalette() {
                   <p className="whitespace-pre-wrap text-slate-800">{result.answer}</p>
                 </div>
               ) : (
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-slate-700">
                   Tanya apa saja soal data firma, minta draft jurnal, atau minta penjelasan istilah akuntansi/pajak. AI tidak melakukan aksi tulis — Anda tetap yang menyetujui.
                 </p>
               )}

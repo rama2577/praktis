@@ -76,13 +76,13 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-slate-900">Laporan Keuangan</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-700">
           Laporan akhir format Indonesia (SAK ETAP): Laba Rugi, Neraca, Perubahan Ekuitas, Arus Kas — dari jurnal APPROVED/FINALIZED.
         </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Klien
           <select
             value={clientId}
@@ -96,7 +96,7 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Periode
           <input
             type="month"
@@ -105,7 +105,7 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
             className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Pembulatan
           <select
             value={rounding}
@@ -145,7 +145,7 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
         <Card className="p-6">
           <div className="mb-4 text-center">
             <h2 className="font-display text-lg font-bold text-slate-900">{stmt.title}</h2>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-700">
               {stmt.clientName} — Periode {stmt.period}
             </p>
           </div>

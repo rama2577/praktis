@@ -45,7 +45,7 @@ export function DonutChart({ data, title, size = 160 }: { data: ChartItem[]; tit
 
   return (
     <div className="flex flex-col items-center gap-3">
-      {title && <p className="text-xs font-medium text-slate-600">{title}</p>}
+      {title && <p className="text-xs font-medium text-slate-700">{title}</p>}
       <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`}>
         {slices.map((s, i) => <path key={i} d={s.d} fill={s.color} opacity={0.9} />)}
         <text x={cx} y={cy - 6} textAnchor="middle" className="text-[10px]" fill="#f1f5f9">
@@ -55,7 +55,7 @@ export function DonutChart({ data, title, size = 160 }: { data: ChartItem[]; tit
       </svg>
       <div className="flex flex-wrap justify-center gap-x-4 gap-y-1">
         {data.slice(0, 5).map((d, i) => (
-          <div key={i} className="flex items-center gap-1.5 text-[11px] text-slate-600">
+          <div key={i} className="flex items-center gap-1.5 text-[11px] text-slate-700">
             <span className="inline-block h-2 w-2 rounded-full" style={{ background: d.color }} />
             {d.label} ({((d.value / total) * 100).toFixed(0)}%)
           </div>
@@ -74,7 +74,7 @@ export function HBarChart({ data, title, width = 360, height }: { data: ChartIte
 
   return (
     <div className="flex flex-col items-center gap-2">
-      {title && <p className="text-xs font-medium text-slate-600">{title}</p>}
+      {title && <p className="text-xs font-medium text-slate-700">{title}</p>}
       <svg width={width} height={h} viewBox={`0 0 ${width} ${h}`} className="text-[10px]">
         {data.map((d, i) => {
           const y = pad.top + i * (barH + gap);
@@ -103,7 +103,7 @@ export function VBarChart({ data, title, height = 120 }: { data: ChartItem[]; ti
 
   return (
     <div className="flex flex-col items-center gap-2">
-      {title && <p className="text-xs font-medium text-slate-600">{title}</p>}
+      {title && <p className="text-xs font-medium text-slate-700">{title}</p>}
       <svg width={w} height={height + pad.top + pad.bottom} viewBox={`0 0 ${w} ${height + pad.top + pad.bottom}`} className="text-[10px]">
         {data.map((d, i) => {
           const x = pad.left + i * (barW + gap);
@@ -145,7 +145,7 @@ export function TrendChart({ data, title, height = 40, width = 200 }: { data: { 
 
   return (
     <div className="flex flex-col items-center gap-1">
-      {title && <p className="text-xs font-medium text-slate-600">{title}</p>}
+      {title && <p className="text-xs font-medium text-slate-700">{title}</p>}
       <svg width={width} height={height + pad.top + pad.bottom} viewBox={`0 0 ${width} ${height + pad.top + pad.bottom}`} className="text-[9px]">
         <path d={lineD} fill="none" stroke={isUp ? "#34d399" : "#fb7185"} strokeWidth={2} />
         {points.map((p, i) => (
@@ -164,8 +164,8 @@ export function TrendChart({ data, title, height = 40, width = 200 }: { data: { 
 function EmptyChart({ title }: { title?: string }) {
   return (
     <div className="flex flex-col items-center gap-1 py-4">
-      {title && <p className="text-xs font-medium text-slate-600">{title}</p>}
-      <p className="text-xs text-slate-600">Data tidak tersedia</p>
+      {title && <p className="text-xs font-medium text-slate-700">{title}</p>}
+      <p className="text-xs text-slate-700">Data tidak tersedia</p>
     </div>
   );
 }

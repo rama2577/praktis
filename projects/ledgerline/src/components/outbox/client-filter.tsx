@@ -17,7 +17,7 @@ export function OutboxClientFilter({
 }) {
   const router = useRouter();
   return (
-    <label className="flex flex-col gap-1 text-xs text-slate-600">
+    <label className="flex flex-col gap-1 text-xs text-slate-700">
       Sortir klien
       <select
         value={value}

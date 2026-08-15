@@ -55,7 +55,7 @@ export function ClientStatusAction({
         disabled={busy}
         className={`rounded-lg border px-2.5 py-1 text-xs transition disabled:opacity-40 ${
           isActive
-            ? "border-line text-slate-600 hover:border-red-500/40 hover:text-red-600"
+            ? "border-line text-slate-700 hover:border-red-500/40 hover:text-red-600"
             : "border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
         }`}
       >

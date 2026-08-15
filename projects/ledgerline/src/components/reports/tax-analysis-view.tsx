@@ -31,28 +31,28 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Card className="p-4">
-              <p className="text-xs text-slate-600">Tax Ratio</p>
+              <p className="text-xs text-slate-700">Tax Ratio</p>
               <p className="mt-1 font-mono text-2xl text-amber-600">
                 {data.taxRatio.value === null ? "N/A" : `${(data.taxRatio.value * 100).toFixed(1)}%`}
               </p>
-              <p className="mt-1 text-xs text-slate-600">{data.taxRatio.formula}</p>
+              <p className="mt-1 text-xs text-slate-700">{data.taxRatio.formula}</p>
             </Card>
             <Card className="p-4">
-              <p className="text-xs text-slate-600">PPN Kurang Bayar</p>
+              <p className="text-xs text-slate-700">PPN Kurang Bayar</p>
               <p className="mt-1 font-mono text-2xl text-slate-900">{rp(Math.max(data.ppn.kurangBayar, 0))}</p>
-              <p className="mt-1 text-xs text-slate-600">{data.ppn.note}</p>
+              <p className="mt-1 text-xs text-slate-700">{data.ppn.note}</p>
             </Card>
             <Card className="p-4">
-              <p className="text-xs text-slate-600">Total PPh</p>
+              <p className="text-xs text-slate-700">Total PPh</p>
               <p className="mt-1 font-mono text-2xl text-slate-900">{rp(data.pph.totalPPh)}</p>
-              <p className="mt-1 text-xs text-slate-600">{data.pph.note}</p>
+              <p className="mt-1 text-xs text-slate-700">{data.pph.note}</p>
             </Card>
             <Card className="p-4">
-              <p className="text-xs text-slate-600">Effective Tax Rate</p>
+              <p className="text-xs text-slate-700">Effective Tax Rate</p>
               <p className="mt-1 font-mono text-2xl text-slate-900">
                 {data.pph.effectiveTaxRate === null ? "N/A" : `${(data.pph.effectiveTaxRate * 100).toFixed(1)}%`}
               </p>
-              <p className="mt-1 text-xs text-slate-600">Total PPh ÷ laba</p>
+              <p className="mt-1 text-xs text-slate-700">Total PPh ÷ laba</p>
             </Card>
           </div>
           <Card className="p-5">
@@ -60,7 +60,7 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-200 text-xs text-slate-600">
+                  <tr className="border-b border-slate-200 text-xs text-slate-700">
                     <th className="px-3 py-2">Pos</th>
                     <th className="px-3 py-2 text-right">Nilai</th>
                     <th className="px-3 py-2">Keterangan</th>
@@ -71,7 +71,7 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
                     <tr key={b.label} className="border-b border-slate-200/60 text-slate-700">
                       <td className="px-3 py-2">{b.label}</td>
                       <td className="px-3 py-2 text-right font-mono">{rp(b.value)}</td>
-                      <td className="px-3 py-2 text-xs text-slate-600">{b.note}</td>
+                      <td className="px-3 py-2 text-xs text-slate-700">{b.note}</td>
                     </tr>
                   ))}
                 </tbody>
@@ -121,7 +121,7 @@ function StmtBlock({ title, lines }: { title: string; lines: { label: string; am
           <div
             key={i}
             className={`flex justify-between gap-3 text-xs ${
-              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-600"
+              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-700"
             }`}
             style={{ paddingLeft: `${(l.indent ?? 0) * 14}px` }}
           >

@@ -50,16 +50,16 @@ export function PortalJournals({ token }: { token: string }) {
     <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="mb-3">
         <h2 className="text-sm font-semibold">Transaksi Saya</h2>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="mt-1 text-xs text-slate-700">
           Ringkasan pencatatan yang sudah disetujui tim akuntan — dalam bahasa sederhana.
         </p>
       </div>
 
-      {loading && <p className="text-sm text-slate-600">Memuat transaksi…</p>}
+      {loading && <p className="text-sm text-slate-700">Memuat transaksi…</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && items.length === 0 && (
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-700">
           Belum ada transaksi tercatat. Setelah dokumen Anda diproses, ringkasan transaksi akan
           muncul di sini.
         </p>
@@ -69,7 +69,7 @@ export function PortalJournals({ token }: { token: string }) {
         <ul className="space-y-3">
           {items.map((j) => (
             <li key={j.id} className="rounded-lg border border-slate-200 bg-slate-50/40 p-3">
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-700">
                 <span className="font-medium text-slate-800">{j.description ?? "Transaksi"}</span>
                 <span className="rounded bg-slate-100 px-1.5 py-0.5">
                   {TYPE_LABELS[j.journalType] ?? j.journalType}
@@ -81,7 +81,7 @@ export function PortalJournals({ token }: { token: string }) {
                 <summary className="cursor-pointer text-xs text-amber-600/90 hover:text-yellow-200">
                   Lihat penjelasan lengkap
                 </summary>
-                <p className="mt-2 text-sm leading-relaxed text-slate-600">{j.explanation}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-700">{j.explanation}</p>
               </details>
             </li>
           ))}

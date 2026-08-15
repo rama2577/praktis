@@ -50,18 +50,18 @@ export function Breadcrumb() {
       {crumbs.map((c, i) => (
         <span key={c.href} className="flex items-center gap-1">
           {i > 0 && (
-            <span className="text-slate-600" aria-hidden>
+            <span className="text-slate-700" aria-hidden>
               /
             </span>
           )}
           {i === crumbs.length - 1 ? (
-            <span className="text-sm text-slate-600" aria-current="page">
+            <span className="text-sm text-slate-700" aria-current="page">
               {c.label}
             </span>
           ) : (
             <Link
               href={c.href}
-              className="text-sm text-slate-600 transition hover:text-slate-800"
+              className="text-sm text-slate-700 transition hover:text-slate-800"
             >
               {c.label}
             </Link>

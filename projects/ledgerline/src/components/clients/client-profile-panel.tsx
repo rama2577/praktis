@@ -117,7 +117,7 @@ export function ClientProfilePanel({
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold">Profil Klien (AI Mapping)</h2>
-          <p className="mt-0.5 text-xs text-slate-600">
+          <p className="mt-0.5 text-xs text-slate-700">
             Mapping COA klien → akun standar supaya transaksi langsung terklasifikasi benar.
           </p>
         </div>
@@ -145,7 +145,7 @@ export function ClientProfilePanel({
           <div className="mt-2 grid max-h-64 grid-cols-2 gap-x-4 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-[11px] leading-relaxed text-slate-700 md:grid-cols-3">
             {entries.map(([kode, v]) => (
               <div key={kode} className="truncate" title={`${kode} — ${v.accountName}`}>
-                <span className="text-slate-600">{kode}</span> {v.accountName}
+                <span className="text-slate-700">{kode}</span> {v.accountName}
               </div>
             ))}
           </div>
@@ -169,7 +169,7 @@ export function ClientProfilePanel({
       )}
 
       {!loading && status === "READY" && (
-        <div className="mt-3 text-xs text-slate-600">
+        <div className="mt-3 text-xs text-slate-700">
           {entries.length > 0 ? (
             <>
               {entries.length} akun klien sudah dipetakan
@@ -185,7 +185,7 @@ export function ClientProfilePanel({
       {canEdit && status !== "READY" && (
         <form onSubmit={learn} className="mt-4 space-y-3 border-t border-slate-200 pt-4">
           <div>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-slate-700">
               <span className="font-medium text-slate-800">Belajar dari daftar akun klien:</span>{" "}
               tempel daftar akun (dari COA klien, format: kode pipe nama per baris) — AI akan
               memetakan ke akun standar, lalu Anda review.
@@ -216,7 +216,7 @@ export function ClientProfilePanel({
         </form>
       )}
 
-      {loading && <div className="mt-3 text-xs text-slate-600">Memuat profil…</div>}
+      {loading && <div className="mt-3 text-xs text-slate-700">Memuat profil…</div>}
     </div>
   );
 }

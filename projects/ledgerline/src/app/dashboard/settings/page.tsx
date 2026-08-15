@@ -35,22 +35,22 @@ export default async function SettingsPage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-slate-900">Pengaturan</h1>
-        <p className="text-sm text-slate-600">Profil firma, pengguna, dan informasi workspace.</p>
+        <p className="text-sm text-slate-700">Profil firma, pengguna, dan informasi workspace.</p>
       </div>
 
       <Card className="p-4">
         <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Profil Firma</h2>
         <dl className="grid gap-2 text-sm sm:grid-cols-2">
           <div>
-            <dt className="text-xs text-slate-600">Nama</dt>
+            <dt className="text-xs text-slate-700">Nama</dt>
             <dd className="text-slate-800">{firm?.name ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-600">Klien aktif</dt>
+            <dt className="text-xs text-slate-700">Klien aktif</dt>
             <dd className="text-slate-800">{clients}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-600">Sesi Anda</dt>
+            <dt className="text-xs text-slate-700">Sesi Anda</dt>
             <dd className="text-slate-800">
               {session.user.name} · {session.user.email} ·{" "}
               <Badge label={ROLE_LABEL[session.user.role] ?? session.user.role} tone="accent" />

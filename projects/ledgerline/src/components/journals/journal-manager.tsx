@@ -238,7 +238,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
           <button
             type="button"
             onClick={() => setShowForm((v) => !v)}
-            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-[#ffdf6b]"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-[#2b63f2]"
           >
             {showForm ? "Tutup Form" : "+ Jurnal Manual"}
           </button>
@@ -251,7 +251,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
             >
               <div className="grid gap-4 sm:grid-cols-2">
                 <label className="block text-sm">
-                  <span className="mb-1 block text-slate-600">Klien *</span>
+                  <span className="mb-1 block text-slate-700">Klien *</span>
                   <select
                     value={clientId}
                     onChange={(e) => handleClientChange(e.target.value)}
@@ -266,7 +266,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                   </select>
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-slate-600">Tanggal transaksi *</span>
+                  <span className="mb-1 block text-slate-700">Tanggal transaksi *</span>
                   <input
                     type="date"
                     value={entryDate}
@@ -277,7 +277,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
               </div>
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <label className="block text-sm">
-                  <span className="mb-1 block text-slate-600">Deskripsi *</span>
+                  <span className="mb-1 block text-slate-700">Deskripsi *</span>
                   <div className="flex items-center gap-2">
                     <input
                       value={description}
@@ -290,7 +290,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                       onClick={generateDescription}
                       disabled={descBusy}
                       title="Buat deskripsi otomatis dengan AI dari baris jurnal"
-                      className="shrink-0 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-medium text-accent transition hover:bg-accent/20 disabled:opacity-50"
+                      className="shrink-0 rounded-lg border border-ai/40 bg-ai/10 px-3 py-2 text-sm font-medium text-ai transition hover:bg-ai/20 disabled:opacity-50"
                     >
                       {descBusy ? "…" : "✨ AI"}
                     </button>
@@ -302,7 +302,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                   )}
                 </label>
                 <label className="block text-sm">
-                  <span className="mb-1 block text-slate-600">Jenis</span>
+                  <span className="mb-1 block text-slate-700">Jenis</span>
                   <select
                     value={journalType}
                     onChange={(e) => setJournalType(e.target.value as "MANUAL" | "ADJUSTING")}
@@ -315,9 +315,9 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
               </div>
               <div className="mt-2 text-xs">
                 {coaLoading ? (
-                  <span className="text-slate-600">Memuat COA klien…</span>
+                  <span className="text-slate-700">Memuat COA klien…</span>
                 ) : coaAccounts.length > 0 ? (
-                  <span className="text-slate-600">
+                  <span className="text-slate-700">
                     COA klien terpetakan: <span className="font-semibold text-accent">{coaAccounts.length} akun</span> —
                     baris jurnal hanya bisa memilih akun dari daftar ini.
                   </span>
@@ -333,7 +333,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
 
               <div className="mt-5">
                 <div className="mb-2 flex items-center justify-between">
-                  <p className="text-sm text-slate-600">Baris jurnal (debit = kredit)</p>
+                  <p className="text-sm text-slate-700">Baris jurnal (debit = kredit)</p>
                   <button
                     type="button"
                     onClick={() => setLines((p) => [...p, emptyLine()])}
@@ -345,7 +345,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                 <div className="overflow-x-auto rounded-lg border border-line">
                   <table className="w-full min-w-[640px] text-sm">
                     <thead>
-                      <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-600">
+                      <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-700">
                         <th className="px-3 py-2">Kode Akun</th>
                         <th className="px-3 py-2">Nama Akun</th>
                         <th className="px-3 py-2 text-right">Debit</th>
@@ -433,7 +433,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                               type="button"
                               onClick={() => setLines((p) => (p.length > 1 ? p.filter((_, idx) => idx !== i) : p))}
                               disabled={lines.length <= 1}
-                              className="rounded border border-line px-2 py-1 text-xs text-slate-600 transition hover:border-red-500/40 hover:text-red-600 disabled:opacity-40"
+                              className="rounded border border-line px-2 py-1 text-xs text-slate-700 transition hover:border-red-500/40 hover:text-red-600 disabled:opacity-40"
                               aria-label={`Hapus baris ${i + 1}`}
                             >
                               ✕
@@ -444,7 +444,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                     </tbody>
                     <tfoot>
                       <tr className="border-t border-line bg-white/[0.02]">
-                        <td colSpan={2} className="px-3 py-2 text-xs font-semibold text-slate-600">
+                        <td colSpan={2} className="px-3 py-2 text-xs font-semibold text-slate-700">
                           Total
                         </td>
                         <td className="px-3 py-2 text-right font-mono text-xs text-slate-800">{formatCurrencyRp(totals.debit)}</td>
@@ -470,11 +470,11 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                 <button
                   type="submit"
                   disabled={busy}
-                  className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-[#ffffff] transition hover:bg-[#ffdf6b] disabled:opacity-50"
+                  className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-[#ffffff] transition hover:bg-[#2b63f2] disabled:opacity-50"
                 >
                   {busy ? "Menyimpan…" : "Simpan Jurnal"}
                 </button>
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-slate-700">
                   Jurnal langsung tercatat (status disetujui) + riwayat aktivitas.
                 </p>
               </div>
@@ -486,11 +486,11 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
       <div>
         <h2 className="mb-3 text-sm font-semibold text-slate-800">Daftar Jurnal Manual & Penyesuaian</h2>
         {loading ? (
-          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-600">
+          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-700">
             Memuat jurnal…
           </div>
         ) : journals.length === 0 ? (
-          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-600">
+          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-700">
             Belum ada jurnal manual. Gunakan tombol + Jurnal Manual untuk mencatat jurnal yang
             kurang atau jurnal penyesuaian.
           </div>
@@ -498,7 +498,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
           <div className="overflow-x-auto rounded-xl border border-line bg-card/40">
             <table className="w-full min-w-[720px] text-sm">
               <thead>
-                <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-600">
+                <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-700">
                   <th className="px-4 py-3">Tanggal</th>
                   <th className="px-4 py-3">Klien</th>
                   <th className="px-4 py-3">Deskripsi</th>
@@ -524,7 +524,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                     <td className="px-4 py-3">
                       <StatusBadge label="Disetujui" tone="positive" />
                     </td>
-                    <td className="px-4 py-3 text-right font-mono text-xs text-slate-600">{j.lines.length}</td>
+                    <td className="px-4 py-3 text-right font-mono text-xs text-slate-700">{j.lines.length}</td>
                   </tr>
                 ))}
               </tbody>

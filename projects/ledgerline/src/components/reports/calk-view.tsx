@@ -44,7 +44,7 @@ export function CalkView({ clients, period, clientId, setClientId, setPeriod }: 
         <Card className="p-6">
           <div className="mb-5 text-center">
             <h2 className="font-display text-lg font-bold text-slate-900">CATATAN ATAS LAPORAN KEUANGAN</h2>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-700">
               {data.clientName} — Periode yang berakhir {data.period}
             </p>
           </div>
@@ -63,7 +63,7 @@ export function CalkView({ clients, period, clientId, setClientId, setPeriod }: 
                   <dl className="mt-2 grid gap-1 sm:grid-cols-2">
                     {s.items.map((it) => (
                       <div key={it.label} className="flex justify-between gap-3 border-b border-slate-200 py-1 text-sm">
-                        <dt className="text-slate-600">{it.label}</dt>
+                        <dt className="text-slate-700">{it.label}</dt>
                         <dd className="font-mono text-slate-800">{it.value}</dd>
                       </div>
                     ))}

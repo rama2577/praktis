@@ -71,7 +71,7 @@ export default async function PipelinePage() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-slate-900">Pipeline Produksi</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-700">
           Alur dokumen klien: upload → ekstraksi AI → draft jurnal → review berjenjang → persetujuan partner → final.
         </p>
       </div>
@@ -102,7 +102,7 @@ export default async function PipelinePage() {
                         {n > 0 ? (
                           <Badge label={String(n)} tone={s === "EXCEPTION" ? "danger" : s === "APPROVED" || s === "FINALIZED" ? "positive" : "neutral"} />
                         ) : (
-                          <span className="text-slate-600">·</span>
+                          <span className="text-slate-700">·</span>
                         )}
                       </TD>
                     );
@@ -119,7 +119,7 @@ export default async function PipelinePage() {
         <Card className="p-4">
           <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Antrian Review Pending</h2>
           {tasks.length === 0 ? (
-            <p className="text-sm text-slate-600">Tidak ada task pending.</p>
+            <p className="text-sm text-slate-700">Tidak ada task pending.</p>
           ) : (
             <div className="space-y-2">
               {tasks.map((t) => (
@@ -135,7 +135,7 @@ export default async function PipelinePage() {
         <Card className="p-4">
           <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Dokumen Masuk</h2>
           {documents.length === 0 ? (
-            <p className="text-sm text-slate-600">Belum ada dokumen.</p>
+            <p className="text-sm text-slate-700">Belum ada dokumen.</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>

@@ -53,7 +53,7 @@ const TYPE_TONE: Record<string, string> = {
   CUSTOMER: "text-sky-600",
   VENDOR: "text-amber-600",
   SHAREHOLDER: "text-violet-600",
-  OTHER: "text-slate-600",
+  OTHER: "text-slate-700",
 };
 
 export function SubledgerView({ clientId }: { clientId: string }) {
@@ -127,7 +127,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
     }
   }, [clientId, form, load]);
 
-  if (loading) return <div className="p-6 text-sm text-slate-600">Memuat buku besar pembantu…</div>;
+  if (loading) return <div className="p-6 text-sm text-slate-700">Memuat buku besar pembantu…</div>;
   if (error) return <ErrorState message={error} onRetry={() => void load()} />;
 
   const filtered = typeFilter ? (rows ?? []).filter((r) => r.type === typeFilter) : (rows ?? []);
@@ -138,16 +138,16 @@ export function SubledgerView({ clientId }: { clientId: string }) {
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-4 py-3">
           <h3 className="text-sm font-medium text-slate-900">⏳ Aging Piutang (Pelanggan)</h3>
-          <p className="text-xs text-slate-600">Umur piutang per pelanggan — dari jurnal dengan kode bantu.</p>
+          <p className="text-xs text-slate-700">Umur piutang per pelanggan — dari jurnal dengan kode bantu.</p>
         </div>
         {!aging || aging.length === 0 ? (
-          <p className="p-4 text-xs text-slate-600">
+          <p className="p-4 text-xs text-slate-700">
             Belum ada pelanggan dengan transaksi. Impor kertas kerja (sheet Kode + Jurnal) untuk mengisi.
           </p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-50 text-slate-600">
+              <thead className="bg-slate-50 text-slate-700">
                 <tr>
                   <th className="px-4 py-2">Pelanggan</th>
                   {aging[0]!.buckets.map((b) => (
@@ -160,7 +160,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                 {aging.map((a) => (
                   <tr key={a.code} className="border-t border-slate-200/60 text-slate-700">
                     <td className="px-4 py-2">
-                      <span className="font-mono text-[10px] text-slate-600">{a.code}</span> {a.name}
+                      <span className="font-mono text-[10px] text-slate-700">{a.code}</span> {a.name}
                     </td>
                     {a.buckets.map((b) => (
                       <td key={b.bucket} className={`px-3 py-2 text-right font-mono ${b.amount > 0 && b.bucket === "90+" ? "text-rose-600" : ""}`}>
@@ -181,7 +181,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
           <div>
             <h3 className="text-sm font-medium text-slate-900">📒 Buku Besar Pembantu</h3>
-            <p className="text-xs text-slate-600">Master kode bantu (CT-* pelanggan, AP-* pemasok, SH-* saham).</p>
+            <p className="text-xs text-slate-700">Master kode bantu (CT-* pelanggan, AP-* pemasok, SH-* saham).</p>
           </div>
           <div className="flex items-center gap-2">
             <select
@@ -247,7 +247,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-50 text-slate-600">
+            <thead className="bg-slate-50 text-slate-700">
               <tr>
                 <th className="px-4 py-2">Kode</th>
                 <th className="px-4 py-2">Nama</th>
@@ -263,7 +263,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
             <tbody>
               {filtered.map((r) => (
                 <tr key={r.id} className="border-t border-slate-200/60 text-slate-700">
-                  <td className="px-4 py-2 font-mono text-slate-600">{r.code}</td>
+                  <td className="px-4 py-2 font-mono text-slate-700">{r.code}</td>
                   <td className="px-4 py-2">{r.name}</td>
                   <td className={`px-3 py-2 ${TYPE_TONE[r.type] ?? ""}`}>{TYPE_LABEL[r.type] ?? r.type}</td>
                   <td className="px-3 py-2 text-right font-mono">{r.openingBalance ? formatCurrencyRp(r.openingBalance) : "—"}</td>
@@ -272,7 +272,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                   <td className={`px-3 py-2 text-right font-mono font-semibold ${r.balance < 0 ? "text-amber-600" : "text-slate-900"}`}>
                     {formatCurrencyRp(r.balance)}
                   </td>
-                  <td className="px-3 py-2 text-slate-600">{r.lastActivity ?? "—"}</td>
+                  <td className="px-3 py-2 text-slate-700">{r.lastActivity ?? "—"}</td>
                   <td className="px-3 py-2">
                     <button
                       type="button"
@@ -286,7 +286,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
               ))}
               {filtered.length === 0 && (
                 <tr>
-                  <td colSpan={9} className="px-4 py-6 text-center text-slate-600">
+                  <td colSpan={9} className="px-4 py-6 text-center text-slate-700">
                     Belum ada subledger. Import kertas kerja Excel (sheet Kode) otomatis membuat master ini.
                   </td>
                 </tr>
@@ -306,19 +306,19 @@ export function SubledgerView({ clientId }: { clientId: string }) {
             <button
               type="button"
               onClick={() => { setActiveCode(null); setLedger(null); }}
-              className="text-xs text-slate-600 hover:text-slate-700"
+              className="text-xs text-slate-700 hover:text-slate-700"
             >
               ✕ Tutup
             </button>
           </div>
           {ledgerLoading ? (
-            <p className="p-4 text-xs text-slate-600">Memuat…</p>
+            <p className="p-4 text-xs text-slate-700">Memuat…</p>
           ) : !ledger || ledger.length === 0 ? (
-            <p className="p-4 text-xs text-slate-600">Belum ada transaksi untuk subledger ini.</p>
+            <p className="p-4 text-xs text-slate-700">Belum ada transaksi untuk subledger ini.</p>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-50 text-slate-600">
+                <thead className="bg-slate-50 text-slate-700">
                   <tr>
                     <th className="px-4 py-2">Tanggal</th>
                     <th className="px-3 py-2">Bukti</th>
@@ -332,10 +332,10 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                 <tbody>
                   {ledger.map((l, i) => (
                     <tr key={i} className="border-t border-slate-200/60 text-slate-700">
-                      <td className="px-4 py-2 font-mono text-slate-600">{l.date}</td>
-                      <td className="px-3 py-2 font-mono text-slate-600">{l.bukti ?? "—"}</td>
+                      <td className="px-4 py-2 font-mono text-slate-700">{l.date}</td>
+                      <td className="px-3 py-2 font-mono text-slate-700">{l.bukti ?? "—"}</td>
                       <td className="px-3 py-2">{l.description}</td>
-                      <td className="px-3 py-2 font-mono text-slate-600">{l.accountCode}</td>
+                      <td className="px-3 py-2 font-mono text-slate-700">{l.accountCode}</td>
                       <td className="px-3 py-2 text-right font-mono">{l.debit ? formatCurrencyRp(l.debit) : ""}</td>
                       <td className="px-3 py-2 text-right font-mono">{l.credit ? formatCurrencyRp(l.credit) : ""}</td>
                       <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">{formatCurrencyRp(l.balance)}</td>

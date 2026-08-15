@@ -11,9 +11,10 @@
   --positive: #34c724;      /* Lark success green */
   --warning: #ff8800;       /* Lark warning orange */
   --danger: #f54a45;        /* Lark danger red */
-  --muted: #646a73;         /* text secondary */
-  --muted-fg: #8f959e;      /* text tertiary */
+  --muted: #51565d;         /* text secondary (gelap, jelas terbaca) */
+  --muted-fg: #6b7078;      /* text tertiary */
   --hover: #f2f3f5;         /* hover fill */
+  --ai: #7b5cff;            /* Lark AI purple — penanda fitur AI */
 
   /* Typography: DM Sans (body) + Space Grotesk (heading, tabular numbers) */
   --font-sans: var(--font-dm-sans), system-ui, sans-serif;
@@ -34,6 +35,7 @@
   --color-muted: var(--muted);
   --color-muted-fg: var(--muted-fg);
   --color-hover: var(--hover);
+  --color-ai: var(--ai);
   --font-sans: var(--font-sans);
   --font-heading: var(--font-heading);
   --font-mono: var(--font-mono);

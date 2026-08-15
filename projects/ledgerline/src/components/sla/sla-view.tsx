@@ -76,22 +76,22 @@ export function SlaView() {
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-slate-900">Monitoring SLA</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-700">
           Service Level Agreement per tahap review — target waktu, rata-rata aktual, dan pelanggaran.
         </p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-4">
-          <div className="text-xs text-slate-600">Tepat waktu</div>
+          <div className="text-xs text-slate-700">Tepat waktu</div>
           <div className="font-display text-xl font-bold text-emerald-600">{counts.MET ?? 0}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-xs text-slate-600">Menjelang batas</div>
+          <div className="text-xs text-slate-700">Menjelang batas</div>
           <div className="font-display text-xl font-bold text-amber-600">{counts.AT_RISK ?? 0}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-xs text-slate-600">Terlambat</div>
+          <div className="text-xs text-slate-700">Terlambat</div>
           <div className="font-display text-xl font-bold text-rose-600">{counts.BREACHED ?? 0}</div>
         </Card>
       </div>
@@ -148,7 +148,7 @@ export function SlaView() {
                   const st = STATUS_LABEL[e.status] ?? { label: e.status, tone: "neutral" as const };
                   return (
                     <TR key={e.id}>
-                      <TD className="whitespace-nowrap text-slate-600">{e.createdAt.slice(0, 16).replace("T", " ")}</TD>
+                      <TD className="whitespace-nowrap text-slate-700">{e.createdAt.slice(0, 16).replace("T", " ")}</TD>
                       <TD>{e.clientName ?? "—"}</TD>
                       <TD className="max-w-[220px] truncate">{e.journalDescription ?? "—"}</TD>
                       <TD>{STAGE_LABEL[e.stage] ?? e.stage}</TD>

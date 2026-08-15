@@ -33,7 +33,7 @@ export function FinancialReportsPage({ initialClients = [] }: { initialClients?:
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-slate-900">Laporan Keuangan</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-700">
           Laporan akhir (SAK ETAP) + analisa: rasio & grafik, CALK, analisa pajak (tax ratio), dan dokumen penyampaian.
         </p>
       </div>

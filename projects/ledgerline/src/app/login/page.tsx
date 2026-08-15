@@ -15,7 +15,7 @@ export default async function LoginPage() {
           </div>
           <div>
             <h1 className="text-xl font-semibold tracking-tight">Praktis</h1>
-            <p className="text-sm text-slate-600">
+            <p className="text-sm text-slate-700">
               Masuk untuk melanjutkan
             </p>
           </div>

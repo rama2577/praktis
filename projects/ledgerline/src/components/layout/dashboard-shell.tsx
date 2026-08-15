@@ -64,11 +64,11 @@ export function DashboardShell({
             </button>
             <h2 className="truncate text-sm font-medium text-slate-700">Operations Dashboard</h2>
           </div>
-          <div className="flex items-center gap-3 text-xs text-slate-600">
+          <div className="flex items-center gap-3 text-xs text-slate-700">
             <AiCommandPalette />
             <span className="hidden sm:inline">{today}</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 font-medium text-emerald-600">
-              <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-[#7b5cff]/30 bg-[#7b5cff]/10 px-2.5 py-0.5 font-medium text-[#7b5cff]">
+              <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-[#7b5cff]" />
               AI Online
             </span>
           </div>

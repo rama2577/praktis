@@ -11,7 +11,7 @@ export default async function ClientsPage() {
   return (
     <div>
       <h1 className="text-xl font-semibold tracking-tight">Klien</h1>
-      <p className="mt-1 text-sm text-slate-600">
+      <p className="mt-1 text-sm text-slate-700">
         Kelola klien kantor akuntan. Industri menentukan COA yang dipakai saat
         AI menyusun draft jurnal.
       </p>
@@ -30,7 +30,7 @@ export default async function ClientsPage() {
       />
 
       {clients.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-600">
+        <div className="mt-6 rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-700">
           Belum ada klien. Klik <span className="font-medium text-accent">+ Tambah Klien</span>{" "}
           untuk mulai.
         </div>

@@ -96,11 +96,11 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
       <div className="mb-4 flex items-center justify-between">
         <div>
           <h3 className="font-heading text-base font-semibold text-slate-900">📥 Import Kertas Kerja Excel</h3>
-          <p className="mt-0.5 text-xs text-slate-600">
+          <p className="mt-0.5 text-xs text-slate-700">
             Langkah {step} dari 3 — {step === 1 ? "unggah file" : step === 2 ? "tinjau hasil parse" : "selesai"}
           </p>
         </div>
-        <button onClick={onDone} className="text-xs text-slate-600 hover:text-slate-700">✕ Tutup</button>
+        <button onClick={onDone} className="text-xs text-slate-700 hover:text-slate-700">✕ Tutup</button>
       </div>
 
       {step === 1 && (
@@ -120,7 +120,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
             >
               {file ? `📎 ${file.name}` : "Pilih file .xlsx"}
             </button>
-            <p className="mt-2 text-[11px] text-slate-600">
+            <p className="mt-2 text-[11px] text-slate-700">
               Format kertas kerja akuntan: sheet <b>Akun</b> (COA + saldo awal) & <b>Jurnal</b> (jurnal umum). Auto-detect kolom.
             </p>
           </div>
@@ -152,7 +152,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
               { label: "Kode Bantu", value: String(preview.subledgerCodes.length) },
             ].map((c) => (
               <div key={c.label} className="rounded-lg border border-slate-200 bg-white p-2.5">
-                <p className="text-[10px] text-slate-600">{c.label}</p>
+                <p className="text-[10px] text-slate-700">{c.label}</p>
                 <p className="mt-0.5 truncate font-mono text-sm text-slate-800">{c.value}</p>
               </div>
             ))}
@@ -173,10 +173,10 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
 
           {/* COA pratinjau */}
           <div>
-            <p className="mb-1.5 text-xs font-medium text-slate-600">COA (contoh {Math.min(6, preview.coa.length)} dari {preview.coa.length})</p>
+            <p className="mb-1.5 text-xs font-medium text-slate-700">COA (contoh {Math.min(6, preview.coa.length)} dari {preview.coa.length})</p>
             <div className="overflow-hidden rounded-lg border border-slate-200">
               <table className="w-full text-left text-[11px]">
-                <thead className="bg-slate-50 text-slate-600">
+                <thead className="bg-slate-50 text-slate-700">
                   <tr>
                     <th className="px-2 py-1.5">Kode</th>
                     <th className="px-2 py-1.5">Nama Akun</th>
@@ -203,7 +203,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
           {/* Konfigurasi import */}
           <div className="grid gap-3 rounded-lg border border-slate-200 bg-white p-3 md:grid-cols-3">
             <label className="text-xs">
-              <span className="text-slate-600">Nama Klien</span>
+              <span className="text-slate-700">Nama Klien</span>
               <input
                 value={clientName}
                 onChange={(e) => setClientName(e.target.value)}
@@ -211,7 +211,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
               />
             </label>
             <label className="text-xs">
-              <span className="text-slate-600">Industri</span>
+              <span className="text-slate-700">Industri</span>
               <select
                 value={industry}
                 onChange={(e) => setIndustry(e.target.value as typeof industry)}
@@ -227,7 +227,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
                 ))}
               </select>
             </label>
-            <div className="flex items-end text-[11px] text-slate-600">
+            <div className="flex items-end text-[11px] text-slate-700">
               Jurnal historis masuk sebagai <b className="mx-1 text-slate-700">APPROVED/MANUAL</b> + jurnal opening balance (saldo awal).
             </div>
           </div>
@@ -250,7 +250,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
         <div className="space-y-3 text-center">
           <p className="text-3xl">🎉</p>
           <h4 className="font-heading text-lg font-semibold text-slate-900">Import selesai</h4>
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-700">
             <b className="text-slate-800">{result.clientName}</b> dibuat — {result.coaImported} akun COA,{" "}
             {fmt(result.journalCreated)} jurnal (termasuk opening balance).
           </p>

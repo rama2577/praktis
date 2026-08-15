@@ -22,7 +22,7 @@ export default function Home() {
               <h1 className="text-2xl font-semibold tracking-tight">
                 Praktis
               </h1>
-              <p className="text-sm text-slate-600">AI Bookkeeping Platform</p>
+              <p className="text-sm text-slate-700">AI Bookkeeping Platform</p>
             </div>
           </div>
           <StatusBadge label="Fase 1 · Foundation" tone="accent" />
@@ -57,7 +57,7 @@ export default function Home() {
           >
             Masuk ke Dashboard
           </button>
-          <p className="text-xs leading-relaxed text-slate-600">
+          <p className="text-xs leading-relaxed text-slate-700">
             Autentikasi hadir di Task 3 (login per-reviewer + akun admin dev).
             <br />
             Sementara itu, verifikasi dengan{" "}

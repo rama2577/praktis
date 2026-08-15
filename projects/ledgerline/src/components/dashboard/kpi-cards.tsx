@@ -65,7 +65,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
       value: fmt(data.transactionsToday),
       valueTone: "text-slate-900",
       hint: deltaHint,
-      hintTone: delta !== null && delta < 0 ? "text-red-600" : "text-slate-600",
+      hintTone: delta !== null && delta < 0 ? "text-red-600" : "text-slate-700",
       icon: "📄",
     },
     {
@@ -76,7 +76,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
         data.breachesByStage.length === 0
           ? "tidak ada pelanggaran"
           : data.breachesByStage.map((b) => `${STAGE_LABEL[b.stage] ?? b.stage} ${b.count}`).join(" · "),
-      hintTone: data.slaBreachCount > 0 ? "text-red-600/80" : "text-slate-600",
+      hintTone: data.slaBreachCount > 0 ? "text-red-600/80" : "text-slate-700",
       icon: "⏱️",
     },
   ];
@@ -95,13 +95,13 @@ export function KpiCards({ data }: { data: DashboardData }) {
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{card.label}</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-700">{card.label}</p>
               <span aria-hidden className="text-base opacity-80">
                 {card.icon}
               </span>
             </div>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${card.valueTone}`}>{card.value}</p>
-            <p className={`mt-1 text-xs ${card.hintTone ?? "text-slate-600"}`}>{card.hint}</p>
+            <p className={`mt-1 text-xs ${card.hintTone ?? "text-slate-700"}`}>{card.hint}</p>
           </div>
         );
       })}

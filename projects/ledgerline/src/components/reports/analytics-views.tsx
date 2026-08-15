@@ -102,9 +102,9 @@ export function RatioCard({ r }: {
         }`}>{r.verdict}</span>
       </div>
       <p className="mt-2 font-mono text-xl text-slate-900">{r.value === null ? "N/A" : r.value.toFixed(2)}</p>
-      <p className="mt-1 text-xs text-slate-600">{r.formula}</p>
-      <p className="text-xs text-slate-600">Benchmark: {r.benchmark}</p>
-      <p className="mt-2 text-xs text-slate-600">{r.note}</p>
+      <p className="mt-1 text-xs text-slate-700">{r.formula}</p>
+      <p className="text-xs text-slate-700">Benchmark: {r.benchmark}</p>
+      <p className="mt-2 text-xs text-slate-700">{r.note}</p>
     </div>
   );
 }
@@ -115,7 +115,7 @@ export function BarChart({ series, color }: { series: { label: string; value: nu
     <div className="space-y-2">
       {series.map((s) => (
         <div key={s.label} className="flex items-center gap-2">
-          <span className="w-40 truncate text-xs text-slate-600" title={s.label}>{s.label}</span>
+          <span className="w-40 truncate text-xs text-slate-700" title={s.label}>{s.label}</span>
           <div className="h-5 flex-1 overflow-hidden rounded bg-slate-100">
             <div className="h-full rounded transition-all" style={{ width: `${Math.max((Math.abs(s.value) / max) * 100, 2)}%`, backgroundColor: color }} />
           </div>
@@ -128,7 +128,7 @@ export function BarChart({ series, color }: { series: { label: string; value: nu
 
 export function SelectClient({ clients, clientId, setClientId }: { clients: Client[]; clientId: string; setClientId: (v: string) => void }) {
   return (
-    <label className="flex flex-col gap-1 text-xs text-slate-600">
+    <label className="flex flex-col gap-1 text-xs text-slate-700">
       Klien
       <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900">
         {clients.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
@@ -139,7 +139,7 @@ export function SelectClient({ clients, clientId, setClientId }: { clients: Clie
 
 export function PeriodInput({ period, setPeriod }: { period: string; setPeriod: (v: string) => void }) {
   return (
-    <label className="flex flex-col gap-1 text-xs text-slate-600">
+    <label className="flex flex-col gap-1 text-xs text-slate-700">
       Periode
       <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900" />
     </label>

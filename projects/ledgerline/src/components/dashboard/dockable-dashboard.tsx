@@ -65,7 +65,7 @@ type PanelProps = {
 // ── Panel Components ─────────────────────────────────────────────────────────
 
 function KpiPanel({ kpi }: PanelProps) {
-  if (!kpi) return <div className="p-4 text-sm text-slate-600">Data tidak tersedia</div>;
+  if (!kpi) return <div className="p-4 text-sm text-slate-700">Data tidak tersedia</div>;
   const cards = [
     { label: "FIRST-PASS RATE", value: `${kpi.firstPassRate}%`, sub: "jurnal langsung disetujui", href: "/dashboard/quality" },
     { label: "KLIEN AKTIF", value: `${kpi.activeClients}`, sub: `+${kpi.newClientsThisMonth} bulan ini`, href: "/dashboard/clients" },
@@ -82,9 +82,9 @@ function KpiPanel({ kpi }: PanelProps) {
           href={c.href}
           className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-yellow-400/40 hover:bg-slate-50"
         >
-          <p className="text-[11px] text-slate-600">{c.label}</p>
+          <p className="text-[11px] text-slate-700">{c.label}</p>
           <p className="mt-1 font-mono text-2xl font-semibold text-amber-600">{c.value}</p>
-          <p className="mt-1 text-[11px] text-slate-600">{c.sub}</p>
+          <p className="mt-1 text-[11px] text-slate-700">{c.sub}</p>
         </a>
       ))}
     </div>
@@ -92,7 +92,7 @@ function KpiPanel({ kpi }: PanelProps) {
 }
 
 function PipelinePanel({ pipeline }: PanelProps) {
-  if (!pipeline) return <div className="p-4 text-sm text-slate-600">Data tidak tersedia</div>;
+  if (!pipeline) return <div className="p-4 text-sm text-slate-700">Data tidak tersedia</div>;
   return (
     <div className="space-y-2 overflow-y-auto p-4">
       {pipeline.stages.map((s) => (
@@ -103,7 +103,7 @@ function PipelinePanel({ pipeline }: PanelProps) {
         >
           <div>
             <p className="text-sm font-medium text-slate-800">{s.label}</p>
-            <p className="text-[11px] text-slate-600">{s.hint}</p>
+            <p className="text-[11px] text-slate-700">{s.hint}</p>
           </div>
           <span className="rounded-full bg-yellow-400/15 px-2.5 py-1 font-mono text-sm text-amber-600">{s.count}</span>
         </a>
@@ -113,12 +113,12 @@ function PipelinePanel({ pipeline }: PanelProps) {
 }
 
 function SlaPanel({ sla }: PanelProps) {
-  if (!sla) return <div className="p-4 text-sm text-slate-600">Data tidak tersedia</div>;
+  if (!sla) return <div className="p-4 text-sm text-slate-700">Data tidak tersedia</div>;
   return (
     <div className="overflow-y-auto p-4">
       <table className="w-full text-left text-xs">
         <thead>
-          <tr className="border-b border-slate-200 text-slate-600">
+          <tr className="border-b border-slate-200 text-slate-700">
             <th className="py-2 font-medium">Tahap</th>
             <th className="py-2 text-right font-medium">Antre</th>
             <th className="py-2 text-right font-medium">Terlambat</th>
@@ -149,27 +149,27 @@ function SlaPanel({ sla }: PanelProps) {
 }
 
 function QualityPanel({ insights }: PanelProps) {
-  if (!insights) return <div className="p-4 text-sm text-slate-600">Data tidak tersedia</div>;
+  if (!insights) return <div className="p-4 text-sm text-slate-700">Data tidak tersedia</div>;
   const max = Math.max(...insights.weeklyTrend.map((t) => t.totalJournals), 1);
   return (
     <div className="space-y-4 overflow-y-auto p-4">
       <div>
-        <p className="mb-2 text-xs font-medium text-slate-600">Tren Mingguan (jurnal vs exception %)</p>
+        <p className="mb-2 text-xs font-medium text-slate-700">Tren Mingguan (jurnal vs exception %)</p>
         <div className="space-y-1">
           {insights.weeklyTrend.map((t) => (
             <a key={t.weekLabel} href="/dashboard/quality" className="flex items-center gap-2 rounded transition hover:bg-white">
-              <span className="w-16 text-[10px] text-slate-600">{t.weekLabel}</span>
+              <span className="w-16 text-[10px] text-slate-700">{t.weekLabel}</span>
               <div className="h-3 flex-1 overflow-hidden rounded bg-slate-100">
                 <div className="h-full bg-yellow-400/70" style={{ width: `${(t.totalJournals / max) * 100}%` }} />
               </div>
-              <span className="w-16 text-right font-mono text-[10px] text-slate-600">{t.totalJournals}</span>
+              <span className="w-16 text-right font-mono text-[10px] text-slate-700">{t.totalJournals}</span>
               {t.exceptionRate > 0 && <span className="font-mono text-[10px] text-rose-600">⚠{t.exceptionRate}%</span>}
             </a>
           ))}
         </div>
       </div>
       <div>
-        <p className="mb-2 text-xs font-medium text-slate-600">Per Industri</p>
+        <p className="mb-2 text-xs font-medium text-slate-700">Per Industri</p>
         <div className="space-y-1">
           {insights.industry.map((ind) => (
             <a
@@ -178,7 +178,7 @@ function QualityPanel({ insights }: PanelProps) {
               className="flex justify-between rounded border border-slate-200 bg-white px-2 py-1 text-[11px] transition hover:border-yellow-400/40 hover:bg-slate-50"
             >
               <span className="text-slate-700">{ind.industry}</span>
-              <span className="font-mono text-slate-600">{ind.totalJournals} jurnal · exc {ind.exceptionRate}% · fp {ind.firstPassRate}%</span>
+              <span className="font-mono text-slate-700">{ind.totalJournals} jurnal · exc {ind.exceptionRate}% · fp {ind.firstPassRate}%</span>
             </a>
           ))}
         </div>
@@ -316,13 +316,13 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
   );
 
   if (!ready) {
-    return <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">Memuat workspace…</div>;
+    return <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-700">Memuat workspace…</div>;
   }
 
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
-        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-600">
+        <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-700">
           <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">Workspace Dockable</span>
           <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">{getPresetLabel(activeRole)}</span>
           {lastSaved && <span className="px-1">Tersimpan {lastSaved}</span>}

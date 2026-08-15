@@ -69,7 +69,7 @@ export function AnalysisView({ clients, period, clientId, setClientId, setPeriod
                         className="w-full rounded-t-lg transition-all"
                         style={{ height: `${Math.max((b.value / max) * 100, 3)}%`, backgroundColor: b.color }}
                       />
-                      <span className="text-xs text-slate-600">{b.label}</span>
+                      <span className="text-xs text-slate-700">{b.label}</span>
                     </div>
                   );
                 })}

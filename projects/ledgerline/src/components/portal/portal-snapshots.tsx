@@ -45,16 +45,16 @@ export function PortalSnapshots({ token }: { token: string }) {
     <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="mb-3">
         <h2 className="text-sm font-semibold">Laporan & Versi</h2>
-        <p className="mt-1 text-xs text-slate-600">
+        <p className="mt-1 text-xs text-slate-700">
           Setiap periode yang dikunci tim akuntan tersimpan sebagai versi — bisa diunduh kapan saja.
         </p>
       </div>
 
-      {loading && <p className="text-sm text-slate-600">Memuat laporan…</p>}
+      {loading && <p className="text-sm text-slate-700">Memuat laporan…</p>}
       {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && items.length === 0 && (
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-700">
           Belum ada laporan. Laporan akan muncul setelah periode tutup buku dikunci oleh tim akuntan.
         </p>
       )}
@@ -69,9 +69,9 @@ export function PortalSnapshots({ token }: { token: string }) {
               <div>
                 <p className="text-sm text-slate-800">
                   {TYPE_LABELS[s.type] ?? s.type} — Periode {s.period}{" "}
-                  <span className="text-xs text-slate-600">v{s.version}</span>
+                  <span className="text-xs text-slate-700">v{s.version}</span>
                 </p>
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-slate-700">
                   {new Date(s.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                 </p>
               </div>

@@ -50,7 +50,7 @@ function StmtBlock({ title, stmt }: { title: string; stmt: Statement }) {
           <div
             key={i}
             className={`flex justify-between gap-3 text-xs ${
-              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-600"
+              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-700"
             }`}
             style={{ paddingLeft: `${(l.indent ?? 0) * 14}px` }}
           >
@@ -115,7 +115,7 @@ export function PortalFinancial({ token }: { token: string }) {
         )}
         {data && <Badge label="🔒 Periode terkunci" tone="accent" />}
       </div>
-      <p className="text-xs text-slate-600">
+      <p className="text-xs text-slate-700">
         Laporan disusun dari jurnal yang telah disetujui & dikunci oleh akuntan — identik dengan yang dilihat sisi firma.
       </p>
 
@@ -145,7 +145,7 @@ export function PortalFinancial({ token }: { token: string }) {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[820px] text-left text-xs">
                 <thead>
-                  <tr className="border-b border-slate-200 text-slate-600">
+                  <tr className="border-b border-slate-200 text-slate-700">
                     <th className="px-2 py-1.5">No</th>
                     <th className="px-2 py-1.5">Akun</th>
                     <th className="px-2 py-1.5 text-right" colSpan={2}>Neraca Saldo</th>
@@ -156,7 +156,7 @@ export function PortalFinancial({ token }: { token: string }) {
                 <tbody>
                   {data.worksheet.lines.map((l) => (
                     <tr key={l.no} className={`border-b border-slate-200/60 ${l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold" : "text-slate-700"}`}>
-                      <td className="px-2 py-1.5 text-slate-600">{l.no}</td>
+                      <td className="px-2 py-1.5 text-slate-700">{l.no}</td>
                       <td className="px-2 py-1.5">{l.accountName}</td>
                       <td className="px-2 py-1.5 text-right font-mono">{l.nsDebit ? rp(l.nsDebit) : ""}</td>
                       <td className="px-2 py-1.5 text-right font-mono">{l.nsCredit ? rp(l.nsCredit) : ""}</td>
@@ -182,9 +182,9 @@ export function PortalFinancial({ token }: { token: string }) {
             <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {data.analysis.ratios.map((r) => (
                 <div key={r.label} className="rounded-lg border border-slate-200 px-3 py-2 text-xs">
-                  <span className="text-slate-600">{r.label}: </span>
+                  <span className="text-slate-700">{r.label}: </span>
                   <span className="font-mono text-slate-800">{r.value === null ? "N/A" : r.value.toFixed(2)}</span>
-                  <span className="ml-1 text-slate-600">({r.verdict})</span>
+                  <span className="ml-1 text-slate-700">({r.verdict})</span>
                 </div>
               ))}
             </div>
@@ -215,7 +215,7 @@ export function PortalFinancial({ token }: { token: string }) {
                     {s.number}. {s.title}
                   </h5>
                   {s.paragraphs.map((p, i) => (
-                    <p key={i} className="text-xs leading-relaxed text-slate-600">
+                    <p key={i} className="text-xs leading-relaxed text-slate-700">
                       {p}
                     </p>
                   ))}

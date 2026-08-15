@@ -43,7 +43,7 @@ export function ClientEnrichButton({ clientId }: { clientId: string }) {
         onClick={enrich}
         disabled={state === "loading"}
         title="Lengkapi NPWP & industri klien otomatis dari dokumen referensi (AI)"
-        className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-1.5 text-sm font-medium text-accent transition hover:bg-accent/20 disabled:opacity-50"
+        className="rounded-lg border border-ai/40 bg-ai/10 px-3 py-1.5 text-sm font-medium text-ai transition hover:bg-ai/20 disabled:opacity-50"
       >
         {state === "loading" ? "Menganalisis…" : "✨ Enrich"}
       </button>
@@ -57,7 +57,7 @@ export function ClientEnrichButton({ clientId }: { clientId: string }) {
         </span>
       )}
       {result?.enrichment.confidence != null && state === "done" && (
-        <span className="text-[11px] text-slate-600">conf {(result.enrichment.confidence * 100).toFixed(0)}%</span>
+        <span className="text-[11px] text-slate-700">conf {(result.enrichment.confidence * 100).toFixed(0)}%</span>
       )}
     </div>
   );

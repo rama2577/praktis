@@ -42,7 +42,7 @@ function StatusConfidenceBars({ rows }: { rows: StatusConfidence[] }) {
             <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100">
               <div className={`h-full rounded-full ${STATUS_TONE[r.status] ?? "bg-slate-500"}`} style={{ width: `${pctVal}%` }} />
             </div>
-            <span className="w-24 shrink-0 text-right tabular-nums text-xs text-slate-600">
+            <span className="w-24 shrink-0 text-right tabular-nums text-xs text-slate-700">
               {r.avgConfidence === null ? "—" : `${pctVal}%`} · {r.count} jurnal
             </span>
           </div>
@@ -66,7 +66,7 @@ function BreachBars({ rows }: { rows: StageBreachRate[] }) {
               style={{ width: `${Math.min(100, r.rate)}%` }}
             />
           </div>
-          <span className="w-28 shrink-0 text-right tabular-nums text-xs text-slate-600">
+          <span className="w-28 shrink-0 text-right tabular-nums text-xs text-slate-700">
             {r.breached}/{r.total} breach · {r.rate.toLocaleString("id-ID")}%
           </span>
         </div>
@@ -93,7 +93,7 @@ export default async function QualityPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Metrik Kualitas</h1>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-slate-700">
           Akurasi AI vs hasil review manusia, korelasi confidence, dan breach rate per stage.
         </p>
       </div>
@@ -101,9 +101,9 @@ export default async function QualityPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map((c) => (
           <div key={c.label} className="rounded-xl border border-line bg-card p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{c.label}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-700">{c.label}</p>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${c.tone}`}>{c.value}</p>
-            <p className="mt-1 text-xs text-slate-600">{c.hint}</p>
+            <p className="mt-1 text-xs text-slate-700">{c.hint}</p>
           </div>
         ))}
       </div>
@@ -134,29 +134,29 @@ export default async function QualityPage() {
 
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-600">Task Selesai</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-700">Task Selesai</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">{firm.totalTasks}</p>
           </div>
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-600">Rata-rata Review</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-700">Rata-rata Review</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">
               {firm.avgReviewMinutes === null ? "—" : `${firm.avgReviewMinutes} mnt`}
             </p>
           </div>
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-600">SLA Met</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-700">SLA Met</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-600">
               {firm.avgSlaRate === null ? "—" : `${firm.avgSlaRate.toLocaleString("id-ID")}%`}
             </p>
           </div>
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-600">Disetujui</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-700">Disetujui</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">{firm.totalApproved}</p>
           </div>
         </div>
 
         {clerks.length === 0 ? (
-          <p className="text-sm text-slate-600">Belum ada data review per clerk.</p>
+          <p className="text-sm text-slate-700">Belum ada data review per clerk.</p>
         ) : (
           <div className="overflow-hidden rounded-lg border border-line">
             <Table>
@@ -173,7 +173,7 @@ export default async function QualityPage() {
                 {clerks.map((c) => (
                   <TR key={c.userId}>
                     <TD className="font-medium text-slate-800">{c.name}</TD>
-                    <TD className="text-xs text-slate-600">{c.role}</TD>
+                    <TD className="text-xs text-slate-700">{c.role}</TD>
                     <TD numeric className="text-right text-slate-700">{c.totalReviews}</TD>
                     <TD numeric className="text-right text-emerald-600">{c.approved}</TD>
                     <TD numeric className="text-right text-red-600">{c.rejected}</TD>
@@ -201,7 +201,7 @@ export default async function QualityPage() {
           }
         />
         {m.exceptions.length === 0 ? (
-          <p className="text-sm text-slate-600">Tidak ada jurnal berstatus exception.</p>
+          <p className="text-sm text-slate-700">Tidak ada jurnal berstatus exception.</p>
         ) : (
           <ul className="divide-y divide-line">
             {m.exceptions.map((e) => (
@@ -212,7 +212,7 @@ export default async function QualityPage() {
                   </p>
                   <p className="mt-0.5 text-xs text-red-600/80">🚩 {e.exceptionFlag}</p>
                 </div>
-                <span className="text-xs tabular-nums text-slate-600">
+                <span className="text-xs tabular-nums text-slate-700">
                   confidence {e.confidence === null ? "—" : `${pct(e.confidence * 100, 100)}%`}
                 </span>
               </li>
@@ -228,26 +228,26 @@ export default async function QualityPage() {
           description={`Feedback loop KB — ${corrections.totalCorrections} koreksi dari ${corrections.totalEditedJournals} jurnal tercatat sebagai data belajar (EN-03).`}
         />
         {corrections.totalCorrections === 0 ? (
-          <p className="text-sm text-slate-600">
+          <p className="text-sm text-slate-700">
             Belum ada koreksi. Saat reviewer mengubah baris jurnal di panel review, koreksi otomatis tercatat di sini.
           </p>
         ) : (
           <div className="grid gap-6 lg:grid-cols-2">
             <div>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-600">Berdasarkan Akun</p>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-700">Berdasarkan Akun</p>
               <div className="space-y-2">
                 {corrections.topAccounts.map((a) => (
                   <div key={a.accountCode} className="flex items-center gap-3 text-sm">
                     <span className="w-24 shrink-0 font-mono text-xs text-sky-600">{a.accountCode}</span>
                     <span className="flex-1 truncate text-slate-800">{a.accountName}</span>
-                    <span className="w-16 shrink-0 text-right tabular-nums text-xs text-slate-600">{a.count}×</span>
+                    <span className="w-16 shrink-0 text-right tabular-nums text-xs text-slate-700">{a.count}×</span>
                   </div>
                 ))}
               </div>
             </div>
             <div className="space-y-6">
               <div>
-                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-600">Berdasarkan Field</p>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-700">Berdasarkan Field</p>
                 <div className="flex flex-wrap gap-2">
                   {corrections.byField.map((f) => (
                     <span key={f.field} className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs text-slate-700">
@@ -257,12 +257,12 @@ export default async function QualityPage() {
                 </div>
               </div>
               <div>
-                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-600">Reviewer Aktif Mengoreksi</p>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-700">Reviewer Aktif Mengoreksi</p>
                 <div className="space-y-1.5">
                   {corrections.byUser.map((u) => (
                     <div key={u.userId} className="flex items-center justify-between text-sm">
                       <span className="text-slate-700">{u.name}</span>
-                      <span className="tabular-nums text-xs text-slate-600">{u.count} koreksi</span>
+                      <span className="tabular-nums text-xs text-slate-700">{u.count} koreksi</span>
                     </div>
                   ))}
                 </div>
@@ -297,15 +297,15 @@ async function OcrMetricsPanel({ firmId }: { firmId: string }) {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {ocrCards.map((c) => (
           <div key={c.label} className="rounded-xl border border-line bg-card p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{c.label}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-700">{c.label}</p>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${c.tone}`}>{c.value}</p>
-            <p className="mt-1 text-xs text-slate-600">{c.hint}</p>
+            <p className="mt-1 text-xs text-slate-700">{c.hint}</p>
           </div>
         ))}
       </div>
 
       {ocr.totalDocuments === 0 ? (
-        <p className="mt-5 rounded-lg border border-dashed border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
+        <p className="mt-5 rounded-lg border border-dashed border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-700">
           Belum ada dokumen diproses — metrik muncul otomatis setelah dokumen pertama melalui pipeline (upload → OCR → draft).
         </p>
       ) : (

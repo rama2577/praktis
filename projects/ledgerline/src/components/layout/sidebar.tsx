@@ -80,7 +80,7 @@ export function Sidebar({
       <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Navigasi utama">
         {NAV_GROUPS.map(({ group, items }) => (
           <div key={group} className="mb-5">
-            <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-600">
+            <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-700">
               {group}
             </p>
             <ul className="flex flex-col gap-0.5">
@@ -91,10 +91,10 @@ export function Sidebar({
                     <li key={item.href}>
                       <span
                         title={`Modul ini hadir di ${item.task}`}
-                        className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-600 opacity-60"
+                        className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 opacity-60"
                       >
                         {item.label}
-                        <span className="rounded border border-line px-1.5 py-0.5 text-[10px] text-slate-600">
+                        <span className="rounded border border-line px-1.5 py-0.5 text-[10px] text-slate-700">
                           {item.task}
                         </span>
                       </span>
@@ -125,11 +125,11 @@ export function Sidebar({
 
       {/* ── Security badge strip ── */}
       <div className="border-t border-line px-4 py-2.5">
-        <div className="flex items-center justify-center gap-3 text-[10px] text-slate-600">
+        <div className="flex items-center justify-center gap-3 text-[10px] text-slate-700">
           <span title="Enkripsi AES-256-GCM">🔒 AES-256</span>
-          <span className="text-slate-600">·</span>
+          <span className="text-slate-700">·</span>
           <span title="Transport Layer Security">🔐 TLS 1.3</span>
-          <span className="text-slate-600">·</span>
+          <span className="text-slate-700">·</span>
           <span title="ISO 27001 ready">🛡️ SOC2-ready</span>
         </div>
       </div>
@@ -141,7 +141,7 @@ export function Sidebar({
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{userName}</p>
-            <p className="truncate text-[11px] text-slate-600">
+            <p className="truncate text-[11px] text-slate-700">
               {ROLE_LABELS[userRole]}
             </p>
           </div>
@@ -149,7 +149,7 @@ export function Sidebar({
             type="button"
             onClick={() => signOut({ callbackUrl: "/login" })}
             title="Keluar"
-            className="rounded-lg border border-line px-2 py-1 text-xs text-slate-600 transition hover:border-red-500/40 hover:text-red-600"
+            className="rounded-lg border border-line px-2 py-1 text-xs text-slate-700 transition hover:border-red-500/40 hover:text-red-600"
           >
             Keluar
           </button>

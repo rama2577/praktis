@@ -17,12 +17,12 @@ export default async function LedgerPage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-xl font-semibold text-slate-900">Buku Besar</h1>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-slate-700">
           Seluruh jurnal satu akun per periode dengan saldo berjalan. Selama periode terbuka,
           Senior/Partner dapat mereclass jurnal APPROVED.
         </p>
       </div>
-      <Suspense fallback={<div className="p-8 text-center text-sm text-slate-600">Memuat…</div>}>
+      <Suspense fallback={<div className="p-8 text-center text-sm text-slate-700">Memuat…</div>}>
         <LedgerView canEdit={canEdit} />
       </Suspense>
     </div>

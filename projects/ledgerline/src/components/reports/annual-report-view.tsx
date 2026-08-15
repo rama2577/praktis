@@ -22,7 +22,7 @@ function StmtBlock({ title, lines }: { title: string; lines: { label: string; am
           <div
             key={i}
             className={`flex justify-between gap-3 text-xs ${
-              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-600"
+              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-700"
             }`}
             style={{ paddingLeft: `${(l.indent ?? 0) * 14}px` }}
           >
@@ -74,12 +74,12 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
         <Card className="print:p-0 p-6">
           {/* Halaman judul */}
           <div className="mb-8 border-b-2 border-yellow-400 pb-6 text-center">
-            <p className="text-xs uppercase tracking-widest text-slate-600">Penyampaian Laporan Keuangan</p>
+            <p className="text-xs uppercase tracking-widest text-slate-700">Penyampaian Laporan Keuangan</p>
             <h2 className="mt-2 font-display text-2xl font-bold text-slate-900">{data.legalName}</h2>
-            <p className="mt-1 text-sm text-slate-600">
+            <p className="mt-1 text-sm text-slate-700">
               Laporan Keuangan untuk periode yang berakhir {data.period} beserta Catatan atas Laporan Keuangan
             </p>
-            <p className="mt-1 text-xs text-slate-600">
+            <p className="mt-1 text-xs text-slate-700">
               Bidang usaha: {data.industry} · Disusun per {data.preparedAt}
             </p>
           </div>
@@ -90,7 +90,7 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
             <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
               {data.highlights.map((h) => (
                 <div key={h.label} className="rounded-lg border border-slate-200 bg-slate-50 p-3 text-center">
-                  <p className="text-xs text-slate-600">{h.label}</p>
+                  <p className="text-xs text-slate-700">{h.label}</p>
                   <p className="mt-1 font-mono text-sm font-semibold text-slate-900">{h.value}</p>
                 </div>
               ))}
@@ -108,9 +108,9 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
             <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
               {data.analysis.ratios.map((r) => (
                 <div key={r.label} className="rounded-lg border border-slate-200 px-3 py-2 text-xs">
-                  <span className="text-slate-600">{r.label}: </span>
+                  <span className="text-slate-700">{r.label}: </span>
                   <span className="font-mono text-slate-800">{r.value === null ? "N/A" : r.value.toFixed(2)}</span>
-                  <span className="ml-1 text-slate-600">({r.verdict})</span>
+                  <span className="ml-1 text-slate-700">({r.verdict})</span>
                 </div>
               ))}
             </div>
@@ -147,7 +147,7 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
                     {s.number}. {s.title}
                   </h4>
                   {s.paragraphs.map((p, i) => (
-                    <p key={i} className="text-xs leading-relaxed text-slate-600">
+                    <p key={i} className="text-xs leading-relaxed text-slate-700">
                       {p}
                     </p>
                   ))}
@@ -159,7 +159,7 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
           {/* Pernyataan tanggung jawab */}
           <section className="rounded-xl border border-slate-200 p-5 text-center">
             <h3 className="mb-2 font-display text-sm font-bold text-amber-600">6. Pernyataan Tanggung Jawab</h3>
-            <p className="text-xs text-slate-600">
+            <p className="text-xs text-slate-700">
               Laporan keuangan di atas telah disusun sesuai SAK ETAP dan merupakan tanggung jawab manajemen entitas.
             </p>
           </section>

@@ -101,7 +101,7 @@ export function ManagementLetterView({
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
                 <h3 className="font-display text-lg font-bold text-slate-900">Surat Kepada Manajemen</h3>
-                <p className="text-sm text-slate-600">Management Letter — Standar Big 4</p>
+                <p className="text-sm text-slate-700">Management Letter — Standar Big 4</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {ml.summary.high > 0 && <Badge label={`${ml.summary.high} Tinggi`} tone="danger" />}
@@ -110,7 +110,7 @@ export function ManagementLetterView({
                 {ml.summary.resolved > 0 && <Badge label={`${ml.summary.resolved} Selesai`} tone="positive" />}
               </div>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-600 sm:grid-cols-3">
+            <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-700 sm:grid-cols-3">
               <div><span className="font-medium text-slate-700">Kepada:</span> {ml.preparedFor}</div>
               <div><span className="font-medium text-slate-700">Dari:</span> {ml.preparedBy}</div>
               <div><span className="font-medium text-slate-700">Tanggal:</span> {ml.date}</div>
@@ -141,7 +141,7 @@ export function ManagementLetterView({
                   <div key={sev} className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-100/30 px-3 py-2">
                     <span>{meta.emoji}</span>
                     <span className="text-sm text-slate-700">{count}</span>
-                    <span className="text-xs text-slate-600">{meta.label}</span>
+                    <span className="text-xs text-slate-700">{meta.label}</span>
                   </div>
                 );
               })}
@@ -156,7 +156,7 @@ export function ManagementLetterView({
               if (fList.length === 0) return null;
               return (
                 <div key={sev} className="space-y-2">
-                  <h5 className="text-xs font-medium text-slate-600">{SEV_META[sev].emoji} {SEV_META[sev].label} ({fList.length})</h5>
+                  <h5 className="text-xs font-medium text-slate-700">{SEV_META[sev].emoji} {SEV_META[sev].label} ({fList.length})</h5>
                   {fList.map((f) => (
                     <FindingCard key={f.id} finding={f} expanded={expanded.has(f.id)} onToggle={() => toggle(f.id)} />
                   ))}
@@ -171,7 +171,7 @@ export function ManagementLetterView({
             <ul className="space-y-1 text-sm text-slate-700">
               {ml.narrative.map((n, i) => <li key={i}>• {n}</li>)}
             </ul>
-            <p className="mt-4 text-xs text-slate-600">
+            <p className="mt-4 text-xs text-slate-700">
               Surat ini dibuat berdasarkan data yang tersedia dalam sistem Praktis per tanggal pelaporan.
               Manajemen bertanggung jawab untuk meninjau, menanggapi, dan menindaklanjuti setiap temuan.
             </p>
@@ -196,24 +196,24 @@ function FindingCard({ finding, expanded, onToggle }: { finding: Finding; expand
       <div className="flex items-start justify-between gap-3 px-4 py-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] text-slate-600">{finding.id}</span>
+            <span className="font-mono text-[11px] text-slate-700">{finding.id}</span>
             <Badge label={AREA_META[finding.area] || finding.area} tone="neutral" />
             <Badge label={sev.label} tone={sev.tone} />
             {finding.status === "RESOLVED" && <Badge label="✓ Selesai" tone="positive" />}
           </div>
           <p className="mt-1 text-sm font-medium text-slate-800">{finding.title}</p>
         </div>
-        <span className="text-xs text-slate-600">{expanded ? "▲" : "▼"}</span>
+        <span className="text-xs text-slate-700">{expanded ? "▲" : "▼"}</span>
       </div>
 
       {expanded && (
         <div className="border-t border-slate-200 px-4 py-3 space-y-3 text-sm">
           <div>
-            <p className="text-xs font-medium text-slate-600">Deskripsi</p>
+            <p className="text-xs font-medium text-slate-700">Deskripsi</p>
             <p className="text-slate-700">{finding.description}</p>
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-600">Dampak</p>
+            <p className="text-xs font-medium text-slate-700">Dampak</p>
             <p className="text-slate-700">{finding.impact}</p>
           </div>
           <div>

@@ -187,7 +187,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
     <div className="space-y-5">
       {/* Filter bar */}
       <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Klien
           <select
             value={clientId}
@@ -197,7 +197,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
             {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Periode
           <input
             type="month" value={period}
@@ -236,7 +236,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
       {error && <ErrorState message={error} onRetry={() => void load()} />}
 
       {loading && (
-        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-700">
           Menghitung neraca percobaan…
         </div>
       )}
@@ -256,7 +256,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
               ["Indikator", report.unusualCount === 0 ? "Semua wajar" : `${report.unusualCount} akun perlu cek`],
             ] as const).map(([label, val]) => (
               <div key={label} className="rounded-xl border border-slate-200 bg-white p-4">
-                <p className="text-xs text-slate-600">{label}</p>
+                <p className="text-xs text-slate-700">{label}</p>
                 <div className="mt-2">
                   {label === "Status" ? (
                     <Badge label={val} tone={report.balanced ? "positive" : "danger"} />
@@ -278,7 +278,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                   <h3 className="text-sm font-medium text-slate-900">
                     Neraca Lajur — {worksheet.clientName}
                   </h3>
-                  <p className="text-xs text-slate-600">
+                  <p className="text-xs text-slate-700">
                     {worksheet.period}
                     {worksheet.prevPeriodLabel ? ` · vs ${worksheet.prevPeriodLabel}` : ""}
                   </p>
@@ -287,10 +287,10 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                   {worksheet.balanced && <Badge label="Seimbang" tone="positive" />}
                   {!worksheet.balanced && <Badge label="Tidak seimbang" tone="danger" />}
                   {report.periodStatus === "CLOSED" && <Badge label="🔒 Terkunci" tone="accent" />}
-                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
+                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">
                     💰 {new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0}).format(worksheet.labaBersih)}
                   </span>
-                  <span className="text-xs text-slate-600">{worksheet.lines.length} akun</span>
+                  <span className="text-xs text-slate-700">{worksheet.lines.length} akun</span>
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -298,7 +298,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                 <table className="w-full min-w-[1400px] text-left text-sm">
                   {/* Row 1: main groups */}
                   <thead>
-                    <tr className="border-b border-slate-200 text-[11px] text-slate-600">
+                    <tr className="border-b border-slate-200 text-[11px] text-slate-700">
                       <th className="sticky left-0 z-20 bg-slate-50 px-2 py-1.5" rowSpan={2}>No</th>
                       <th className="sticky left-[40px] z-20 bg-slate-50 px-2 py-1.5" rowSpan={2}>Kode</th>
                       <th className="px-2 py-1.5" rowSpan={2}>Nama Akun</th>
@@ -310,7 +310,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                       <th className="px-2 py-1.5 text-center" colSpan={2}>vs Bln Lalu</th>
                     </tr>
                     {/* Row 2: D/K sub-headers */}
-                    <tr className="border-b border-slate-200 text-[10px] text-slate-600">
+                    <tr className="border-b border-slate-200 text-[10px] text-slate-700">
                       <th className="px-2 py-1 text-right">D</th>
                       <th className="px-2 py-1 text-right">K</th>
                       <th className="px-2 py-1 text-right bg-slate-100/20">D</th>
@@ -336,8 +336,8 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                             isLaba ? "bg-yellow-400/10 font-semibold text-slate-900" : "text-slate-700"
                           } ${l.isAdjusting ? "ring-1 ring-inset ring-amber-400/30" : ""}`}
                         >
-                          <td className={`sticky left-0 z-10 px-2 py-1.5 text-slate-600 ${rowBg}`}>{l.no}</td>
-                          <td className={`sticky left-[40px] z-10 px-2 py-1.5 font-mono text-[11px] text-slate-600 ${rowBg}`}>{l.accountCode}</td>
+                          <td className={`sticky left-0 z-10 px-2 py-1.5 text-slate-700 ${rowBg}`}>{l.no}</td>
+                          <td className={`sticky left-[40px] z-10 px-2 py-1.5 font-mono text-[11px] text-slate-700 ${rowBg}`}>{l.accountCode}</td>
                           <td className="px-2 py-1.5">
                             {l.accountCode ? (
                               <a
@@ -357,12 +357,12 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.lrCredit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.neracaDebit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.neracaCredit)}</td>
-                          <td className="px-2 py-1.5 text-right font-mono text-[11px] text-slate-600">
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px] text-slate-700">
                             {l.prevBalance !== null ? formatCurrencyRp(l.prevBalance) : ""}
                           </td>
                           <td className={`px-2 py-1.5 text-right font-mono text-[11px] ${
                             l.variancePct !== null
-                              ? l.variancePct > 20 ? "text-emerald-600" : l.variancePct < -20 ? "text-rose-600" : "text-slate-600"
+                              ? l.variancePct > 20 ? "text-emerald-600" : l.variancePct < -20 ? "text-rose-600" : "text-slate-700"
                               : ""
                           }`}>
                             {l.variancePct !== null ? `${l.variancePct >= 0 ? "↑" : "↓"}${Math.abs(l.variancePct).toFixed(0)}%` : ""}
@@ -400,7 +400,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                 <h3 className="text-sm font-medium text-slate-900">
                   Neraca Percobaan — {report.clientName}
                 </h3>
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-slate-700">
                   Periode {report.period}
                   {report.prevPeriod ? ` · komparatif vs ${report.prevPeriod}` : ""} · {report.rows.length} akun
                 </p>
@@ -444,14 +444,14 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                     <TD className="text-right font-mono text-slate-700">{r.debit > 0 ? formatCurrencyRp(r.debit) : "—"}</TD>
                     <TD className="text-right font-mono text-slate-700">{r.credit > 0 ? formatCurrencyRp(r.credit) : "—"}</TD>
                     <TD className="text-right font-mono text-slate-900">{formatCurrencyRp(r.balance)}</TD>
-                    <TD className="text-right font-mono text-slate-600">{r.prevBalance === null ? "—" : formatCurrencyRp(r.prevBalance)}</TD>
+                    <TD className="text-right font-mono text-slate-700">{r.prevBalance === null ? "—" : formatCurrencyRp(r.prevBalance)}</TD>
                     <TD>{r.unusualReason && <span className="text-xs text-red-600" title={r.unusualReason}>⚠ {r.unusualReason}</span>}</TD>
                   </TR>
                 ))}
               </TBody>
             </Table>
             <div className="flex justify-between border-t border-slate-200 px-4 py-3 text-sm">
-              <span className="text-slate-600">Total</span>
+              <span className="text-slate-700">Total</span>
               <span className="font-mono text-slate-800">
                 {formatCurrencyRp(report.totalDebit)} = {formatCurrencyRp(report.totalCredit)}
               </span>

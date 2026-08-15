@@ -4,17 +4,19 @@ import type { ButtonHTMLAttributes, ReactNode } from "react";
  * EN-07 — Button: varian konsisten (blue Lark primary, outline secondary, ghost, danger).
  * Aksesibilitas: focus-visible blue outline (global), disabled state jelas.
  */
-type Variant = "primary" | "secondary" | "ghost" | "danger";
+type Variant = "primary" | "secondary" | "ghost" | "danger" | "ai";
 type Size = "sm" | "md";
 
 const VARIANT_CLASSES: Record<Variant, string> = {
   primary:
-    "bg-accent text-white font-semibold hover:bg-[#2b63f2] active:bg-[#2458dd] disabled:bg-slate-200 disabled:text-slate-600",
+    "bg-accent text-white font-semibold hover:bg-[#2b63f2] active:bg-[#2458dd] disabled:bg-slate-200 disabled:text-slate-700",
   secondary:
     "border border-line bg-card text-foreground hover:border-slate-400 hover:bg-hover disabled:opacity-50",
   ghost: "text-muted hover:bg-hover hover:text-foreground disabled:opacity-50",
   danger:
     "border border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 disabled:opacity-50",
+  ai:
+    "bg-ai text-white font-semibold hover:bg-[#6a4ae0] active:bg-[#5a3cd6] disabled:bg-slate-200 disabled:text-slate-700",
 };
 
 const SIZE_CLASSES: Record<Size, string> = {

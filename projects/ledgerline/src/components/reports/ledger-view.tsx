@@ -192,7 +192,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
       {error && <ErrorState message={error} onRetry={() => void load()} />}
 
       {loading && (
-        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-700">
           Memuat buku besar…
         </div>
       )}
@@ -211,9 +211,9 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
               <div>
                 <h2 className="text-sm font-medium text-slate-900">
                   Buku Besar — {report.accountName}{" "}
-                  <span className="font-mono text-slate-600">({report.accountCode})</span>
+                  <span className="font-mono text-slate-700">({report.accountCode})</span>
                 </h2>
-                <p className="mt-1 text-xs text-slate-600">
+                <p className="mt-1 text-xs text-slate-700">
                   {report.clientName} · Periode {report.period} · {report.entries.length} jurnal · Saldo
                   akhir {formatCurrencyRp(report.closingBalance)}
                 </p>
@@ -268,7 +268,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                     </TD>
                     <TD>
                       {e.description ?? "—"}
-                      <span className="ml-2 text-xs text-slate-600">{e.reference}</span>
+                      <span className="ml-2 text-xs text-slate-700">{e.reference}</span>
                     </TD>
                     <TD>
                       <Badge label={TYPE_LABELS[e.journalType] ?? e.journalType} tone="neutral" />
@@ -296,7 +296,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
               </TBody>
             </Table>
             <div className="flex justify-between border-t border-slate-200 px-4 py-3 text-sm">
-              <span className="text-slate-600">
+              <span className="text-slate-700">
                 Total debit {formatCurrencyRp(report.totalDebit)} · total kredit{" "}
                 {formatCurrencyRp(report.totalCredit)}
               </span>
@@ -315,7 +315,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
             <div className="mb-4 flex items-center justify-between">
               <div>
                 <h3 className="text-sm font-medium text-slate-900">Reclass Jurnal</h3>
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-slate-700">
                   {report.accountName} · {new Date(editing.entryDate).toLocaleDateString("id-ID")} ·{" "}
                   {editing.description ?? "—"} — edit baris lalu simpan (audit trail tercatat)
                 </p>
@@ -323,7 +323,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
               <button
                 type="button"
                 onClick={() => setEditing(null)}
-                className="rounded p-1 text-slate-600 hover:text-slate-800"
+                className="rounded p-1 text-slate-700 hover:text-slate-800"
                 aria-label="Tutup"
               >
                 ✕
@@ -363,7 +363,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                     type="button"
                     onClick={() => removeLine(i)}
                     disabled={editLines.length <= 2}
-                    className="col-span-2 rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-600 hover:text-red-600 disabled:opacity-30"
+                    className="col-span-2 rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-700 hover:text-red-600 disabled:opacity-30"
                   >
                     Hapus
                   </button>

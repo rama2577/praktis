@@ -18,7 +18,7 @@ export function Table({ children, className = "" }: { children: ReactNode; class
 export function THead({ children }: { children: ReactNode }) {
   return (
     <thead>
-      <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-600">
+      <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-700">
         {children}
       </tr>
     </thead>

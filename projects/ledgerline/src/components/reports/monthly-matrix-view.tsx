@@ -82,7 +82,7 @@ export function MonthlyMatrixView({
 
       {error && <ErrorState message={error} onRetry={() => void load()} />}
 
-      {loading && <p className="p-4 text-sm text-slate-600">Menghitung matrix 12 bulan…</p>}
+      {loading && <p className="p-4 text-sm text-slate-700">Menghitung matrix 12 bulan…</p>}
 
       {!loading && data && (
         <div className="space-y-5">
@@ -90,11 +90,11 @@ export function MonthlyMatrixView({
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div className="border-b border-slate-200 px-4 py-3">
               <h3 className="text-sm font-medium text-slate-900">📈 Laba Rugi per Bulan — {data.year}</h3>
-              <p className="text-xs text-slate-600">Transaksi bulan berjalan (non-kumulatif), pola kertas kerja (1-12).</p>
+              <p className="text-xs text-slate-700">Transaksi bulan berjalan (non-kumulatif), pola kertas kerja (1-12).</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-600">
+                <thead className="bg-slate-50 text-slate-700">
                   <tr>
                     <th className="px-3 py-2 text-left font-medium">Pos</th>
                     {data.months.map((m) => (
@@ -128,11 +128,11 @@ export function MonthlyMatrixView({
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div className="border-b border-slate-200 px-4 py-3">
               <h3 className="text-sm font-medium text-slate-900">📊 Neraca Posisi Akhir Bulan — {data.year}</h3>
-              <p className="text-xs text-slate-600">Kumulatif Januari–bulan berjalan (laba YTD masuk ekuitas).</p>
+              <p className="text-xs text-slate-700">Kumulatif Januari–bulan berjalan (laba YTD masuk ekuitas).</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-600">
+                <thead className="bg-slate-50 text-slate-700">
                   <tr>
                     <th className="px-3 py-2 text-left font-medium">Pos</th>
                     {data.months.map((m) => (
@@ -163,7 +163,7 @@ export function MonthlyMatrixView({
             </div>
           </div>
 
-          <p className="text-[11px] text-slate-600">
+          <p className="text-[11px] text-slate-700">
             💡 Pola ini mengikuti kertas kerja akuntan (mis. LR_2025 (1-12)): kolom bulan = transaksi bulan tersebut; kolom Total/Des = akumulasi setahun.
           </p>
         </div>

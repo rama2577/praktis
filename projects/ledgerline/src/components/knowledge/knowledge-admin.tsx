@@ -136,7 +136,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold">Versi Knowledge (terkelola)</h2>
-          <p className="mt-0.5 text-xs text-slate-600">
+          <p className="mt-0.5 text-xs text-slate-700">
             {actives.length} aturan aktif · {drafts.length} draf menunggu persetujuan
           </p>
         </div>
@@ -164,7 +164,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
         >
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-600">Kategori</span>
+              <span className="mb-1 block text-slate-700">Kategori</span>
               <select
                 value={fCategory}
                 onChange={(e) => setFCategory(e.target.value)}
@@ -182,7 +182,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
               </select>
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-600">
+              <span className="mb-1 block text-slate-700">
                 Nama (slug, tanpa ekstensi — mis. tax-rules-ppn)
               </span>
               <input
@@ -195,7 +195,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-600">Judul</span>
+              <span className="mb-1 block text-slate-700">Judul</span>
               <input
                 value={fTitle}
                 onChange={(e) => setFTitle(e.target.value)}
@@ -204,7 +204,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
               />
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-600">Tanggal efektif</span>
+              <span className="mb-1 block text-slate-700">Tanggal efektif</span>
               <input
                 type="date"
                 value={fEffective}
@@ -214,7 +214,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
             </label>
           </div>
           <label className="block text-xs">
-            <span className="mb-1 block text-slate-600">Isi aturan</span>
+            <span className="mb-1 block text-slate-700">Isi aturan</span>
             <textarea
               value={fContent}
               onChange={(e) => setFContent(e.target.value)}
@@ -224,7 +224,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
             />
           </label>
           <label className="block text-xs">
-            <span className="mb-1 block text-slate-600">Catatan perubahan (audit trail)</span>
+            <span className="mb-1 block text-slate-700">Catatan perubahan (audit trail)</span>
             <input
               value={fNote}
               onChange={(e) => setFNote(e.target.value)}
@@ -243,16 +243,16 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
       )}
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-slate-600">Memuat versi knowledge…</div>
+        <div className="py-8 text-center text-sm text-slate-700">Memuat versi knowledge…</div>
       ) : items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-600">
+        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-700">
           Belum ada knowledge terkelola — seed otomatis dari file referensi.
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-600">
+              <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-700">
                 <th className="px-4 py-3 font-medium">Aturan</th>
                 <th className="px-4 py-3 font-medium">Versi</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -269,7 +269,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                 >
                   <td className="px-4 py-3">
                     <div className="font-medium">{item.title}</div>
-                    <div className="text-xs text-slate-600">
+                    <div className="text-xs text-slate-700">
                       {item.category} · {item.name}
                     </div>
                   </td>
@@ -277,8 +277,8 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                   <td className="px-4 py-3">
                     <StatusBadge label={STATUS_LABELS[item.status]} tone={STATUS_TONE[item.status]} />
                   </td>
-                  <td className="px-4 py-3 text-slate-600">{fmtDate(item.effectiveDate)}</td>
-                  <td className="max-w-[220px] truncate px-4 py-3 text-xs text-slate-600">
+                  <td className="px-4 py-3 text-slate-700">{fmtDate(item.effectiveDate)}</td>
+                  <td className="max-w-[220px] truncate px-4 py-3 text-xs text-slate-700">
                     {item.changeNote ?? "—"}
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -302,7 +302,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                         </button>
                       </div>
                     ) : (
-                      <span className="text-xs text-slate-600">—</span>
+                      <span className="text-xs text-slate-700">—</span>
                     )}
                   </td>
                 </tr>

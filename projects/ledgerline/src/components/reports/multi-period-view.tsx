@@ -103,7 +103,7 @@ export function MultiPeriodView({
               type="button"
               onClick={() => setMode(md)}
               className={`rounded-md px-3 py-1.5 text-xs font-medium transition ${
-                mode === md ? "bg-accent text-[#ffffff]" : "text-slate-600 hover:text-slate-800"
+                mode === md ? "bg-accent text-[#ffffff]" : "text-slate-700 hover:text-slate-800"
               }`}
             >
               {md === "tahunan" ? "📅 Tahunan" : "🗓️ Bulanan"}
@@ -118,7 +118,7 @@ export function MultiPeriodView({
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-4 py-3">
           <h3 className="text-sm font-medium text-slate-900">📊 Ikhtisar Keuangan Multi-Periode</h3>
-          <p className="text-xs text-slate-600">
+          <p className="text-xs text-slate-700">
             {mode === "tahunan" ? "5 tahun terakhir · benchmark Unilever Annual Report" : "12 bulan dalam tahun yang sama · perbandingan periodik"}
           </p>
         </div>
@@ -152,7 +152,7 @@ export function MultiPeriodView({
       {/* ── 3. Narasi Analisa ── */}
       {analysis && (
         <div className="rounded-xl border border-slate-200 bg-white p-4">
-          <h4 className="mb-2 text-xs font-medium text-slate-600">Narasi Analisa</h4>
+          <h4 className="mb-2 text-xs font-medium text-slate-700">Narasi Analisa</h4>
           <ul className="space-y-1">
             {analysis.narrative.map((n, i) => (
               <li key={i} className="text-xs text-slate-700">• {n}</li>
@@ -209,13 +209,13 @@ function UploadHistoricalReports({
 
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <h4 className="mb-3 text-xs font-medium text-slate-600">📤 Upload Laporan Keuangan Historis</h4>
-      <p className="mb-3 text-xs text-slate-600">
+      <h4 className="mb-3 text-xs font-medium text-slate-700">📤 Upload Laporan Keuangan Historis</h4>
+      <p className="mb-3 text-xs text-slate-700">
         Upload laporan keuangan tahun-tahun sebelumnya (PDF, XLSX, JPG) untuk ditambahkan ke ikhtisar multi-periode.
         Pipeline OCR akan mengekstrak data dan menambahkannya ke trial balance historis.
       </p>
       <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Periode Historis
           <input
             type="month" value={histPeriod}
@@ -223,7 +223,7 @@ function UploadHistoricalReports({
             className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
           />
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           File Laporan
           <input
             type="file" accept=".pdf,.xlsx,.xls,.csv,.jpg,.png"

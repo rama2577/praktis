@@ -56,7 +56,7 @@ export default async function DashboardPage() {
     <div className="animate-fade-in space-y-6">
       <div>
         <h1 className="font-heading text-2xl font-semibold tracking-tight text-slate-900">Dashboard</h1>
-        <p className="mt-1 text-sm text-slate-600">{ROLE_SUBTITLE[role] ?? ROLE_SUBTITLE.ADMIN}</p>
+        <p className="mt-1 text-sm text-slate-700">{ROLE_SUBTITLE[role] ?? ROLE_SUBTITLE.ADMIN}</p>
       </div>
 
       <KpiCards data={kpi} />

@@ -89,7 +89,7 @@ export function ClientForm({
             value={name}
             onChange={(e) => setName(e.target.value)}
             aria-invalid={!!fieldErrors.name}
-            className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm placeholder:text-slate-600 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+            className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm placeholder:text-slate-700 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
           />
           {fieldErrors.name ? (
             <p className="text-xs text-red-600">{fieldErrors.name}</p>
@@ -120,7 +120,7 @@ export function ClientForm({
 
         <div className="flex flex-col gap-1.5 sm:col-span-2">
           <label htmlFor="client-taxid" className="text-sm font-medium text-slate-700">
-            NPWP <span className="text-slate-600">(opsional)</span>
+            NPWP <span className="text-slate-700">(opsional)</span>
           </label>
           <input
             id="client-taxid"
@@ -130,7 +130,7 @@ export function ClientForm({
             value={taxId}
             onChange={(e) => setTaxId(e.target.value)}
             aria-invalid={!!fieldErrors.taxId}
-            className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm placeholder:text-slate-600 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+            className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm placeholder:text-slate-700 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
           />
           {fieldErrors.taxId ? (
             <p className="text-xs text-red-600">{fieldErrors.taxId}</p>

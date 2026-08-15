@@ -18,7 +18,7 @@ export default async function KnowledgePage() {
     <div className="space-y-6">
       <div>
         <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Knowledge Base</h1>
-        <p className="mt-1 text-sm text-slate-600">
+        <p className="mt-1 text-sm text-slate-700">
           Aturan akuntansi Indonesia (COA, PPN/PPh, PSAK, template jurnal) — versi terkelola dengan
           tanggal efektif & persetujuan Senior/Partner.
         </p>
@@ -28,7 +28,7 @@ export default async function KnowledgePage() {
 
       <div className="pt-2">
         <h2 className="text-sm font-semibold">Isi Referensi</h2>
-        <p className="mt-0.5 text-xs text-slate-600">
+        <p className="mt-0.5 text-xs text-slate-700">
           Konten lengkap aturan yang dipakai rule engine & prompt AI.
         </p>
         <div className="mt-3">

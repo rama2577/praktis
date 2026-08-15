@@ -178,13 +178,13 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
     <div className="space-y-6">
       <div>
         <h1 className="font-display text-2xl font-bold text-slate-900">Rekonsiliasi Bank</h1>
-        <p className="text-sm text-slate-600">
+        <p className="text-sm text-slate-700">
           Cocokkan mutasi bank dengan jurnal kas (1-1000/1-1100), bantuan saran AI, dan laporan outstanding.
         </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Klien
           <select
             value={clientId}
@@ -198,7 +198,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-600">
+        <label className="flex flex-col gap-1 text-xs text-slate-700">
           Periode
           <input
             type="month"
@@ -233,39 +233,39 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
         <>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Card className="p-4">
-              <div className="text-xs text-slate-600">Mutasi bank</div>
+              <div className="text-xs text-slate-700">Mutasi bank</div>
               <div className="font-display text-xl font-bold text-slate-900">
-                {s.totalMutations} <span className="text-xs font-normal text-slate-600">({s.totalMatched} tercocok)</span>
+                {s.totalMutations} <span className="text-xs font-normal text-slate-700">({s.totalMatched} tercocok)</span>
               </div>
-              <div className="mt-1 text-xs text-slate-600">
+              <div className="mt-1 text-xs text-slate-700">
                 Masuk {fmt(s.bankIn)} · Keluar {fmt(s.bankOut)}
               </div>
             </Card>
             <Card className="p-4">
-              <div className="text-xs text-slate-600">Buku kas (jurnal)</div>
+              <div className="text-xs text-slate-700">Buku kas (jurnal)</div>
               <div className="font-display text-xl font-bold text-slate-900">
-                {s.outstandingJournals.length} <span className="text-xs font-normal text-slate-600">belum di bank</span>
+                {s.outstandingJournals.length} <span className="text-xs font-normal text-slate-700">belum di bank</span>
               </div>
-              <div className="mt-1 text-xs text-slate-600">
+              <div className="mt-1 text-xs text-slate-700">
                 Masuk {fmt(s.bookIn)} · Keluar {fmt(s.bookOut)}
               </div>
             </Card>
             <Card className="p-4">
-              <div className="text-xs text-slate-600">Outstanding mutasi</div>
+              <div className="text-xs text-slate-700">Outstanding mutasi</div>
               <div className="font-display text-xl font-bold text-amber-600">{s.outstandingMutations.length}</div>
-              <div className="mt-1 text-xs text-slate-600">Mutasi bank tanpa jurnal</div>
+              <div className="mt-1 text-xs text-slate-700">Mutasi bank tanpa jurnal</div>
             </Card>
             <Card className="p-4">
-              <div className="text-xs text-slate-600">Selisih</div>
+              <div className="text-xs text-slate-700">Selisih</div>
               <div className={`font-display text-xl font-bold ${s.bankIn - s.bankOut === s.bookIn - s.bookOut ? "text-emerald-600" : "text-rose-600"}`}>
                 {money((s.bankIn - s.bankOut) - (s.bookIn - s.bookOut))}
               </div>
-              <div className="mt-1 text-xs text-slate-600">Bank − Buku periode {s.period}</div>
+              <div className="mt-1 text-xs text-slate-700">Bank − Buku periode {s.period}</div>
             </Card>
           </div>
 
           <div className="flex flex-wrap gap-2">
-            <Button onClick={() => void applyAllSuggestions()} disabled={busy || (data.suggestions.length === 0)}>
+            <Button variant="ai" onClick={() => void applyAllSuggestions()} disabled={busy || (data.suggestions.length === 0)}>
               ✨ Terapkan Saran AI ({data.suggestions.length})
             </Button>
             <Button variant="secondary" onClick={() => void finish()} disabled={busy}>
@@ -321,7 +321,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
                               </div>
                             ) : m.matchStatus !== "UNMATCHED" ? (
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-slate-600">
+                                <span className="text-xs text-slate-700">
                                   {m.matchedJournalId ? `→ ${m.matchedJournalId.slice(-6)}` : ""}
                                 </span>
                                 <Button size="sm" variant="ghost" onClick={() => void applySuggestion(m.id, null)} disabled={busy}>
@@ -329,7 +329,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
                                 </Button>
                               </div>
                             ) : (
-                              <span className="text-xs text-slate-600">—</span>
+                              <span className="text-xs text-slate-700">—</span>
                             )}
                           </TD>
                         </TR>

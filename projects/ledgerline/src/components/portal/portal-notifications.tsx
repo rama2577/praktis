@@ -66,19 +66,19 @@ export function PortalNotifications({ token }: { token: string }) {
         )}
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-slate-600">Belum ada notifikasi.</p>
+        <p className="text-sm text-slate-700">Belum ada notifikasi.</p>
       ) : (
         <ul className="space-y-2">
           {items.map((n) => (
             <li
               key={n.id}
               className={`rounded-lg border px-3 py-2 text-sm ${
-                n.readAt ? "border-slate-200 bg-slate-50/40 text-slate-600" : "border-slate-200 bg-slate-50/70 text-slate-800"
+                n.readAt ? "border-slate-200 bg-slate-50/40 text-slate-700" : "border-slate-200 bg-slate-50/70 text-slate-800"
               }`}
             >
               <span className="mr-2 text-xs text-amber-600">{n.typeLabel}</span>
               {n.message}
-              <span className="ml-2 text-xs text-slate-600">
+              <span className="ml-2 text-xs text-slate-700">
                 {new Date(n.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
               </span>
             </li>

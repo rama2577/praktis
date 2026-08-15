@@ -46,7 +46,7 @@ export default async function ClientDetailPage({
 
   if (!client) {
     return (
-      <div className="rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-600">
+      <div className="rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-700">
         Klien tidak ditemukan.{" "}
         <Link href="/dashboard/clients" className="text-accent hover:underline">
           Kembali ke daftar klien
@@ -59,7 +59,7 @@ export default async function ClientDetailPage({
     <div>
       <Link
         href="/dashboard/clients"
-        className="text-xs text-slate-600 transition hover:text-accent"
+        className="text-xs text-slate-700 transition hover:text-accent"
       >
         ← Kembali ke Klien
       </Link>
@@ -67,7 +67,7 @@ export default async function ClientDetailPage({
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">{client.name}</h1>
-          <p className="mt-0.5 text-sm text-slate-600">
+          <p className="mt-0.5 text-sm text-slate-700">
             {client.taxId ? `NPWP: ${client.taxId} · ` : ""}
             {client._count.journals} jurnal · {client.documents.length} dokumen
           </p>
@@ -98,7 +98,7 @@ export default async function ClientDetailPage({
       <div className="mt-6">
         <h2 className="text-sm font-semibold">Dokumen Legalitas &amp; Referensi</h2>
         {client.documents.filter((d) => REFERENCE_DOC_TYPES.includes(d.type)).length === 0 ? (
-          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-6 text-center text-sm text-slate-600">
+          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-6 text-center text-sm text-slate-700">
             Belum ada dokumen legalitas / struktur organisasi / artikel pengetahuan.
             Upload jenis tersebut di form di atas — teksnya otomatis diindeks sebagai pengetahuan klien.
           </div>
@@ -111,7 +111,7 @@ export default async function ClientDetailPage({
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{doc.fileName}</p>
-                      <p className="mt-0.5 text-xs text-slate-600">{DOC_TYPE_LABELS[doc.type]}</p>
+                      <p className="mt-0.5 text-xs text-slate-700">{DOC_TYPE_LABELS[doc.type]}</p>
                     </div>
                     <StatusBadge label={STATUS_LABELS[doc.status]} tone={STATUS_TONE[doc.status]} />
                   </div>
@@ -120,7 +120,7 @@ export default async function ClientDetailPage({
                       <summary className="cursor-pointer text-xs text-accent hover:underline">
                         Lihat teks terindeks ({doc.referenceText.length.toLocaleString("id-ID")} karakter)
                       </summary>
-                      <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-xs leading-relaxed text-slate-600">
+                      <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-xs leading-relaxed text-slate-700">
                         {doc.referenceText.slice(0, 4000)}
                         {doc.referenceText.length > 4000 ? "…" : ""}
                       </pre>
@@ -135,14 +135,14 @@ export default async function ClientDetailPage({
       <div className="mt-6">
         <h2 className="text-sm font-semibold">Dokumen</h2>
         {client.documents.length === 0 ? (
-          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-8 text-center text-sm text-slate-600">
+          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-8 text-center text-sm text-slate-700">
             Belum ada dokumen untuk klien ini. Upload dokumen pertama di atas.
           </div>
         ) : (
           <div className="mt-3 overflow-x-auto rounded-xl border border-line bg-card">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
-                <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-600">
+                <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-700">
                   <th className="px-4 py-3 font-medium">Berkas</th>
                   <th className="px-4 py-3 font-medium">Jenis</th>
                   <th className="px-4 py-3 font-medium">Status</th>
@@ -174,7 +174,7 @@ export default async function ClientDetailPage({
                     <td className="px-4 py-3 text-right tabular-nums text-slate-700">
                       {formatBytes(doc.sizeBytes)}
                     </td>
-                    <td className="px-4 py-3 text-slate-600">
+                    <td className="px-4 py-3 text-slate-700">
                       {doc.createdAt.toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "short",
