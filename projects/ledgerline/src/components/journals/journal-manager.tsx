@@ -37,6 +37,8 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
   const [entryDate, setEntryDate] = useState(() => new Date().toISOString().slice(0, 10));
   const [description, setDescription] = useState("");
   const [journalType, setJournalType] = useState<"MANUAL" | "ADJUSTING">("MANUAL");
+  const [descBusy, setDescBusy] = useState(false);
+  const [descSource, setDescSource] = useState<"AI" | "RULE" | null>(null);
   const [lines, setLines] = useState<JournalLine[]>([emptyLine(), emptyLine()]);
 
   // COA klien terpilih (sumber kebenaran akun untuk jurnal manual)
@@ -131,6 +133,38 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
     if (coaAccounts.length === 0) return false;
     const codes = new Set(coaAccounts.map((a) => a.accountCode));
     return lines.some((l) => l.accountCode && !codes.has(l.accountCode));
+  }
+
+  async function generateDescription() {
+    const valid = lines.filter((l) => Number(l.debit) > 0 || Number(l.credit) > 0);
+    if (valid.length === 0) {
+      setError("Isi dulu minimal satu baris debit/kredit agar AI bisa membuat deskripsi.");
+      return;
+    }
+    setDescBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/journals/describe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lines: valid.map((l) => ({
+            accountName: l.accountName,
+            debit: Number(l.debit) || 0,
+            credit: Number(l.credit) || 0,
+          })),
+        }),
+      });
+      const body = await res.json();
+      if (!res.ok) throw new Error(body?.error ?? "Gagal generate deskripsi");
+      setDescription(body.data.description);
+      setDescSource(body.data.source);
+      setFlash("Deskripsi AI terisi — periksa & edit bila perlu.");
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setDescBusy(false);
+    }
   }
 
   async function submit(e: React.FormEvent) {
@@ -244,12 +278,28 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
               <div className="mt-4 grid gap-4 sm:grid-cols-2">
                 <label className="block text-sm">
                   <span className="mb-1 block text-slate-400">Deskripsi *</span>
-                  <input
-                    value={description}
-                    onChange={(e) => setDescription(e.target.value)}
-                    placeholder="mis. Jurnal penyesuaian penyusutan Agustus"
-                    className="w-full rounded-lg border border-line bg-[#0b1120] px-3 py-2 text-sm text-slate-200 focus:border-accent/60 focus:outline-none"
-                  />
+                  <div className="flex items-center gap-2">
+                    <input
+                      value={description}
+                      onChange={(e) => setDescription(e.target.value)}
+                      placeholder="mis. Jurnal penyesuaian penyusutan Agustus"
+                      className="w-full rounded-lg border border-line bg-[#0b1120] px-3 py-2 text-sm text-slate-200 focus:border-accent/60 focus:outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={generateDescription}
+                      disabled={descBusy}
+                      title="Buat deskripsi otomatis dengan AI dari baris jurnal"
+                      className="shrink-0 rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm font-medium text-accent transition hover:bg-accent/20 disabled:opacity-50"
+                    >
+                      {descBusy ? "…" : "✨ AI"}
+                    </button>
+                  </div>
+                  {descSource && (
+                    <span className={`mt-1 inline-block rounded px-1.5 py-0.5 text-[11px] font-medium ${descSource === "AI" ? "bg-sky-500/15 text-sky-300" : "bg-slate-600/30 text-slate-300"}`}>
+                      {descSource === "AI" ? "dibuat AI — periksa sebelum simpan" : "fallback rule — periksa sebelum simpan"}
+                    </span>
+                  )}
                 </label>
                 <label className="block text-sm">
                   <span className="mb-1 block text-slate-400">Jenis</span>

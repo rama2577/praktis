@@ -79,3 +79,35 @@ export async function enrichJournalLines(lines: EnrichInputLine[]): Promise<Enri
     return lines.map((l) => ({ id: l.id, description: ruleDescription(l), confidence: 0.5, source: "RULE" as const }));
   }
 }
+
+// ── Deskripsi jurnal (level entry) ────────────────────────────────────────
+
+export type DescribeLine = { accountName: string; debit: number; credit: number; notes?: string | null };
+
+const DESCRIBE_SYSTEM = `Kamu adalah asisten akuntansi Indonesia. Buat deskripsi jurnal naratif
+singkat (SATU kalimat, maks 80 karakter) yang jelas dan siap audit, dirangkai dari
+daftar baris (nama akun + nominal) yang diberikan. Jangan mengarang angka di luar
+yang diberikan. Balas HANYA JSON: {"description":"<teks>"}`;
+
+/** Fallback deterministik saat LLM tidak ada/gagal. */
+export function fallbackDescribe(lines: DescribeLine[]): string {
+  const mains = lines.filter((l) => l.debit > 0 || l.credit > 0);
+  if (mains.length === 0) return "Jurnal umum";
+  return mains.map((l) => `${l.accountName} ${l.debit > 0 ? `+${l.debit}` : `-${l.credit}`}`).join("; ");
+}
+
+/** Buat deskripsi jurnal (entry) dari baris — 1 call LLM, fallback deterministik. */
+export async function describeJournal(lines: DescribeLine[], hint?: string): Promise<{ description: string; source: "AI" | "RULE" }> {
+  if (!isLLMConfigured()) return { description: fallbackDescribe(lines), source: "RULE" };
+  try {
+    const { json } = await chatJsonWithFallback({
+      system: DESCRIBE_SYSTEM,
+      user: JSON.stringify({ hint: hint ?? "", lines }),
+    });
+    const desc = (json as { description?: string })?.description?.trim() ?? "";
+    if (desc) return { description: desc, source: "AI" };
+    return { description: fallbackDescribe(lines), source: "RULE" };
+  } catch {
+    return { description: fallbackDescribe(lines), source: "RULE" };
+  }
+}

@@ -10,7 +10,7 @@ vi.mock("@/ai/llm", () => ({
   chatJsonWithFallback: vi.fn(async () => ({ json: [], model: "glm-4.5-air" })),
 }));
 
-import { enrichJournalLines, ruleDescription } from "@/server/ai-enrich";
+import { enrichJournalLines, ruleDescription, describeJournal, fallbackDescribe } from "@/server/ai-enrich";
 import { isLLMConfigured, chatJsonWithFallback } from "@/ai/llm";
 
 beforeEach(() => {
@@ -63,5 +63,43 @@ describe("enrichJournalLines (batch AI)", () => {
 
   it("array kosong → hasil kosong", async () => {
     expect(await enrichJournalLines([])).toEqual([]);
+  });
+});
+
+describe("describeJournal (deskripsi entry)", () => {
+  const lines = [
+    { accountName: "Kas", debit: 27_750_000, credit: 0 },
+    { accountName: "Penjualan", debit: 0, credit: 27_750_000 },
+  ];
+
+  it("memakai deskripsi AI dari LLM", async () => {
+    vi.mocked(chatJsonWithFallback).mockResolvedValueOnce({ json: { description: "Penjualan tunai" }, model: "glm-4.5-air" });
+    const r = await describeJournal(lines);
+    expect(r).toEqual({ description: "Penjualan tunai", source: "AI" });
+  });
+
+  it("fallback deterministik saat LLM off", async () => {
+    vi.mocked(isLLMConfigured).mockReturnValueOnce(false);
+    const r = await describeJournal(lines);
+    expect(r.source).toBe("RULE");
+    expect(r.description).toContain("Kas");
+  });
+
+  it("fallback saat LLM melempar error", async () => {
+    vi.mocked(chatJsonWithFallback).mockRejectedValueOnce(new Error("boom"));
+    const r = await describeJournal(lines);
+    expect(r.source).toBe("RULE");
+  });
+});
+
+describe("fallbackDescribe", () => {
+  it("merangkai akun + nominal", () => {
+    const d = fallbackDescribe([{ accountName: "Kas", debit: 1000, credit: 0 }]);
+    expect(d).toContain("Kas");
+    expect(d).toContain("1000");
+  });
+
+  it("tanpa nominal → jurnal umum", () => {
+    expect(fallbackDescribe([])).toBe("Jurnal umum");
   });
 });
