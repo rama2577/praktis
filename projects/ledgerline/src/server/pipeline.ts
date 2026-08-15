@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import { parseDocumentDetailed } from "@/ai/parsers";
+import { maybeTranslateToIndonesian } from "@/ai/translate";
 import { estimateOcrCostUsd, estimateOcrTokens } from "@/lib/ocr-cost";
 import { draftJournalFromText } from "@/ai/drafting";
 import { validateDraftLines } from "@/ai/validation";
@@ -72,10 +73,12 @@ export async function processDocument(documentId: string, traceId?: string) {
 
   // F6C — dokumen referensi (legalitas/org-chart/artikel KB): tidak membuat jurnal.
   // Teks hasil ekstraksi disimpan sebagai pengetahuan klien (referenceText).
+  // T2.2 — dokumen asing diterjemahkan dulu ke Indonesia.
   if (isReferenceDocType(doc.type)) {
+    const refText = await maybeTranslateToIndonesian(text);
     await prisma.document.update({
       where: { id: documentId },
-      data: { status: "PROCESSED", referenceText: text.slice(0, 50_000) },
+      data: { status: "PROCESSED", referenceText: refText.slice(0, 50_000) },
     });
     await logActivity(doc.firmId, "PIPELINE_REFERENCE_INDEXED", {
       documentId,
@@ -90,8 +93,10 @@ export async function processDocument(documentId: string, traceId?: string) {
     return { ok: true as const, status: "PROCESSED" as const, reference: true };
   }
 
+  // T2.2 — terjemahkan dokumen asing sebelum drafting jurnal.
+  const draftText = await maybeTranslateToIndonesian(text);
   const draft = await draftJournalFromText({
-    text,
+    text: draftText,
     industry: doc.client.industry,
     docType: doc.type,
     // EN-02: klien dengan ClientProfile READY → drafting pakai mapping COA klien

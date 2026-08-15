@@ -4,6 +4,7 @@ import path from "node:path";
 import { getLlmConfig, isLLMConfigured, visionCompletion } from "@/ai/llm";
 import { ocrEngineMode, ocrImageLocal } from "@/ai/local-ocr";
 import { readStoredFile } from "@/lib/storage";
+import { decodeQrPng, parseEfakturQr, qrToText } from "@/ai/qr";
 import type { Document } from "@prisma/client";
 
 /**
@@ -83,6 +84,15 @@ export async function ocrScannedPdf(buffer: Buffer): Promise<{ text: string; met
     const pixmap = page.toPixmap(matrix, mupdf.ColorSpace.DeviceRGB, false, true);
     const png = Buffer.from(pixmap.asPNG());
 
+    // T2.3 — coba decode QR e-Faktur dari halaman (faktur elektronik).
+    let qrText = "";
+    try {
+      const qrRaw = decodeQrPng(png);
+      if (qrRaw) qrText = qrToText(parseEfakturQr(qrRaw));
+    } catch {
+      /* QR opsional — abaikan jika gagal decode */
+    }
+
     let trimmed: string;
     try {
       const result = await ocrBufferWithFallback(png, "image/png");
@@ -93,7 +103,8 @@ export async function ocrScannedPdf(buffer: Buffer): Promise<{ text: string; met
       console.warn(`[ocr] halaman ${i + 1} gagal:`, (err as Error).message);
       trimmed = "";
     }
-    parts.push(trimmed ? `--- Halaman ${i + 1} ---\n${trimmed}` : `--- Halaman ${i + 1} ---\n[tidak terbaca]`);
+    const qrBlock = qrText ? `\n--- QR e-Faktur ---\n${qrText}` : "";
+    parts.push(trimmed ? `--- Halaman ${i + 1} ---\n${trimmed}${qrBlock}` : `--- Halaman ${i + 1} ---${qrBlock || "\n[tidak terbaca]"}`);
   }
 
   const text = parts.join("\n\n").trim();

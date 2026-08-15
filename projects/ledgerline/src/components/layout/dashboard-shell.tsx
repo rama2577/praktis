@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
+import { AiCommandPalette } from "@/components/layout/ai-command-palette";
 import type { Role } from "@prisma/client";
 
 export function DashboardShell({
@@ -64,6 +65,7 @@ export function DashboardShell({
             <h2 className="truncate text-sm font-medium text-slate-300">Operations Dashboard</h2>
           </div>
           <div className="flex items-center gap-3 text-xs text-slate-400">
+            <AiCommandPalette />
             <span className="hidden sm:inline">{today}</span>
             <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 font-medium text-emerald-400">
               <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
