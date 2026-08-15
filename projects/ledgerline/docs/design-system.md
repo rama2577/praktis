@@ -8,9 +8,9 @@ Sumber token: `src/app/globals.css` (CSS custom properties).
 
 ## 1. Prinsip
 
-1. **Data-dense, gelap, tenang** — latar navy gelap `#0b1120`, konten `#e5e9f2`; mata fokus ke angka.
-2. **Gold = aksi & AI** — emas dipakai hemat: CTA utama, highlight KPI, fokus keyboard.
-3. **Trust blue = sekunder & chart** — biru untuk data/grafik, link sekunder, status informasi.
+1. **Data-dense, terang, tenang (Lark-inspired)** — latar abu terang `#f5f6f7`, kartu putih `#ffffff`, teks `#1f2329`; mata fokus ke angka.
+2. **Blue = aksi & AI** — biru brand Lark `#3370ff` dipakai untuk CTA utama, highlight KPI, fokus keyboard.
+3. **Trust blue = sekunder & chart** — `#00a1ff` untuk data/grafik, link sekunder, status informasi.
 4. **Tipografi Indonesia-tech** — DM Sans (body), Space Grotesk (heading/tabular), JetBrains Mono (angka/kode).
 5. **Motion halus & konsisten** — stagger saat load, fade-in, progress grow; hormati `prefers-reduced-motion`.
 
@@ -18,24 +18,27 @@ Sumber token: `src/app/globals.css` (CSS custom properties).
 
 | Token | Value | Penggunaan |
 |---|---|---|
-| `--background` | `#0b1120` | Latar halaman |
-| `--foreground` | `#e5e9f2` | Teks utama |
-| `--card` | `#101a30` | Surface kartu/panel |
-| `--card-border` (`--line`) | `#1e2a45` | Border kartu |
-| `--accent` | `#f5c518` | Gold — CTA, highlight, fokus |
-| `--trust` | `#3b82f6` | Blue — chart, link sekunder |
-| `--positive` | `#22c55e` | Sukses / SLA met |
-| `--warning` | `#f59e0b` | Peringatan / at-risk |
-| `--danger` | `#ef4444` | Gagal / breach / tolak |
+| `--background` | `#f5f6f7` | Latar halaman |
+| `--foreground` | `#1f2329` | Teks utama |
+| `--card` | `#ffffff` | Surface kartu/panel |
+| `--card-border` (`--line`) | `#e5e6eb` | Border kartu |
+| `--accent` | `#3370ff` | Blue Lark — CTA, highlight, fokus |
+| `--trust` | `#00a1ff` | Blue sekunder — chart, link sekunder |
+| `--positive` | `#34c724` | Sukses / SLA met |
+| `--warning` | `#ff8800` | Peringatan / at-risk |
+| `--danger` | `#f54a45` | Gagal / breach / tolak |
+| `--muted` | `#646a73` | Teks sekunder |
+| `--muted-fg` | `#8f959e` | Teks tersier |
+| `--hover` | `#f2f3f5` | Hover fill |
 
-Utilitas Tailwind: `bg-card`, `border-line`, `text-accent`, `bg-accent`, `text-trust`, `bg-trust`, `text-positive/warning/danger`, `bg-*` dst.
+Utilitas Tailwind: `bg-card`, `border-line`, `text-accent`, `bg-accent`, `text-trust`, `bg-trust`, `text-positive/warning/danger`, `text-muted`, `bg-hover`, `bg-*` dst.
 
 ### Status tones (badge)
 - `positive` → emerald (met/approve/aktif)
 - `warning` → amber (at-risk/pending lama)
 - `danger` → red (breach/tolak/gagal)
 - `neutral` → slate (informasi)
-- `accent` → gold (AI/highlight)
+- `accent` → blue (AI/highlight)
 
 ## 3. Tipografi
 
