@@ -138,7 +138,10 @@ async function seedFiveYears(firmId: string) {
     });
     if (existing) { skipped++; continue; }
 
-    const retained = yr.rev - yr.hpp - yr.opex; // laba ditahan (aproksimasi)
+    // Laba ditahan = penyeimbang (plug) agar total debit = total kredit.
+    const retained =
+      yr.cash + yr.ar + yr.inventory + yr.fixed + yr.hpp + yr.opex -
+      (yr.accum + yr.ap + yr.modal + yr.rev);
     const lines: L[] = [
       { code: "1-1000", name: "Kas", debit: yr.cash * JT, credit: 0 },
       { code: "1-1200", name: "Piutang Usaha", debit: yr.ar * JT, credit: 0 },
