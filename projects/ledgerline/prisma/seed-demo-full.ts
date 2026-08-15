@@ -7,7 +7,7 @@
  * 3) Histori 5 tahun (FY2021–FY2025) utk klien "PT Nusantara Logistik" → "sudah berjalan lima tahun".
  *
  * Idempotent: melewati klien/periode yang sudah punya data.
- * Jalankan: npx tsx scripts/seed-demo-full.ts
+ * Jalankan: npx tsx prisma/seed-demo-full.ts
  */
 
 import { PrismaClient, Industry, JournalStatus, JournalType } from "@prisma/client";
