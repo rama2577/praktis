@@ -162,7 +162,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
           {preview.warnings.length > 0 && (
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
               <p className="mb-1 text-xs font-semibold text-amber-600">⚠ {preview.warnings.length} peringatan</p>
-              <ul className="list-inside list-disc space-y-0.5 text-[11px] text-amber-200/80">
+              <ul className="list-inside list-disc space-y-0.5 text-[11px] text-amber-700/80">
                 {preview.warnings.slice(0, 8).map((w, i) => (
                   <li key={i}>{w}</li>
                 ))}

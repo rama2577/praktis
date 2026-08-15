@@ -244,7 +244,7 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
         {suggestion && (
           <div className="mt-4 rounded-lg border border-amber-500/30 bg-amber-500/5 p-4">
             <div className="flex flex-wrap items-center gap-2">
-              <h3 className="font-display text-sm font-semibold text-amber-200">{suggestion.name}</h3>
+              <h3 className="font-display text-sm font-semibold text-amber-700">{suggestion.name}</h3>
               <Badge label={KIND_LABEL[suggestion.kind] ?? suggestion.kind} tone="accent" />
               <Badge label={`${Math.round(suggestion.confidence * 100)}% yakin`} tone="positive" />
             </div>

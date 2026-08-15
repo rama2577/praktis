@@ -131,7 +131,7 @@ export function ClientProfilePanel({
       )}
 
       {!loading && hint && (
-        <pre className="mt-3 max-h-40 overflow-auto rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 font-mono text-[11px] leading-relaxed text-emerald-200/80">
+        <pre className="mt-3 max-h-40 overflow-auto rounded-lg border border-emerald-500/20 bg-emerald-500/5 p-3 font-mono text-[11px] leading-relaxed text-emerald-700/80">
           {hint}
         </pre>
       )}

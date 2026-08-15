@@ -204,7 +204,7 @@ export function Spt1771View({
                           type="number"
                           value={r.koreksiPositif}
                           onChange={(e) => updateRow(i, "koreksiPositif", Number(e.target.value) || 0)}
-                          className="w-28 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-rose-200"
+                          className="w-28 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-rose-700"
                         />
                       </td>
                       <td className="px-2 py-1.5">
@@ -212,7 +212,7 @@ export function Spt1771View({
                           type="number"
                           value={r.koreksiNegatif}
                           onChange={(e) => updateRow(i, "koreksiNegatif", Number(e.target.value) || 0)}
-                          className="w-28 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-emerald-200"
+                          className="w-28 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-emerald-700"
                         />
                       </td>
                       <td className="px-3 py-1.5 font-mono font-medium text-slate-900">{fmt(r.fiskal)}</td>
@@ -231,7 +231,7 @@ export function Spt1771View({
                     <td className="px-3 py-2 text-left" colSpan={2}>Koreksi Fiskal Negatif</td>
                     <td className="px-2 py-2" /><td className="px-2 py-2" /><td className="px-2 py-2 font-mono text-emerald-600">{fmt(totals.korNeg)}</td><td className="px-3 py-2" />
                   </tr>
-                  <tr className="border-t border-yellow-400/30 bg-yellow-400/5 font-bold text-yellow-200">
+                  <tr className="border-t border-yellow-400/30 bg-yellow-400/5 font-bold text-yellow-700">
                     <td className="px-3 py-2 text-left" colSpan={2}>Laba Fiskal (Penghasilan Kena Pajak)</td>
                     <td className="px-2 py-2" /><td className="px-2 py-2" /><td className="px-2 py-2" />
                     <td className="px-3 py-2 font-mono">{fmt(totals.fiskal)}</td>

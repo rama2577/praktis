@@ -2,10 +2,11 @@
 
 :root {
   /* Lark-inspired light theme (Feishu palette) */
-  --background: #f5f6f7;
+  --background: #ffffff;
   --foreground: #1f2329;
   --card: #ffffff;
   --card-border: #e5e6eb;
+  --sidebar: #f2f8fe;       /* Lark sidebar tint (biru sangat muda) */
   --accent: #3370ff;        /* Lark brand blue — primary CTA/aksi */
   --trust: #00a1ff;         /* secondary blue — info/link/chart */
   --positive: #34c724;      /* Lark success green */
@@ -36,6 +37,7 @@
   --color-muted-fg: var(--muted-fg);
   --color-hover: var(--hover);
   --color-ai: var(--ai);
+  --color-sidebar: var(--sidebar);
   --font-sans: var(--font-sans);
   --font-heading: var(--font-heading);
   --font-mono: var(--font-mono);

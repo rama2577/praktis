@@ -114,7 +114,7 @@ export function MonthlyMatrixView({
                       {data.months.map((m) => (
                         <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-600" : ""}`}>{fmt(get(m))}</td>
                       ))}
-                      <td className="px-3 py-2 font-mono text-yellow-200">
+                      <td className="px-3 py-2 font-mono text-yellow-700">
                         {fmt(label === "Pendapatan" ? data.totals.pendapatan : label === "Beban" ? data.totals.beban : data.totals.laba)}
                       </td>
                     </tr>
@@ -153,7 +153,7 @@ export function MonthlyMatrixView({
                       {data.months.map((m) => (
                         <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-600" : ""}`}>{fmt(get(m))}</td>
                       ))}
-                      <td className="px-3 py-2 font-mono text-yellow-200">
+                      <td className="px-3 py-2 font-mono text-yellow-700">
                         {fmt(label === "Total Aset" ? data.totals.aset : label === "Total Liabilitas" ? data.totals.liabilitas : label === "Total Ekuitas (incl. laba YTD)" ? data.totals.ekuitas : data.months[11]?.labaKumulatif ?? 0)}
                       </td>
                     </tr>

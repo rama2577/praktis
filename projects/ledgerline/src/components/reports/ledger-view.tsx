@@ -236,7 +236,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
           </div>
 
           {report.status === "CLOSED" && (
-            <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/5 px-4 py-3 text-sm text-yellow-200">
+            <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/5 px-4 py-3 text-sm text-yellow-700">
               Periode sudah dikunci — jurnal tidak bisa di-reclass. Perbaikan hanya lewat{" "}
               <Link href="/dashboard/journals" className="underline">
                 jurnal penyesuaian

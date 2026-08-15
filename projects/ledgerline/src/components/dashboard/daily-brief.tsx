@@ -41,8 +41,8 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
               href={a.href}
               className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition ${
                 a.severity === "high"
-                  ? "border-red-500/30 bg-red-500/10 text-red-200 hover:bg-red-500/15"
-                  : "border-amber-500/30 bg-amber-500/10 text-amber-200 hover:bg-amber-500/15"
+                  ? "border-red-500/30 bg-red-500/10 text-red-700 hover:bg-red-500/15"
+                  : "border-amber-500/30 bg-amber-500/10 text-amber-700 hover:bg-amber-500/15"
               }`}
             >
               <span aria-hidden>⚠️</span>
