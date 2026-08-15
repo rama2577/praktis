@@ -71,8 +71,8 @@ export function UploadForm({ clientId }: { clientId: string }) {
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="doc-type" className="text-sm font-medium text-slate-300">
-            Jenis Dokumen <span className="text-red-400">*</span>
+          <label htmlFor="doc-type" className="text-sm font-medium text-slate-700">
+            Jenis Dokumen <span className="text-red-600">*</span>
           </label>
           <select
             id="doc-type"
@@ -89,8 +89,8 @@ export function UploadForm({ clientId }: { clientId: string }) {
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-slate-300">
-            Berkas <span className="text-red-400">*</span>
+          <span className="text-sm font-medium text-slate-700">
+            Berkas <span className="text-red-600">*</span>
           </span>
           <label
             onDragOver={(e) => {
@@ -106,7 +106,7 @@ export function UploadForm({ clientId }: { clientId: string }) {
             className={`flex cursor-pointer flex-col items-center justify-center gap-1 rounded-lg border border-dashed px-3 py-3 text-center text-xs transition ${
               dragging
                 ? "border-accent bg-accent/10 text-accent"
-                : "border-line text-slate-400 hover:border-accent/50 hover:text-slate-300"
+                : "border-line text-slate-600 hover:border-accent/50 hover:text-slate-700"
             }`}
           >
             <input
@@ -127,7 +127,7 @@ export function UploadForm({ clientId }: { clientId: string }) {
       {error ? (
         <p
           role="alert"
-          className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400"
+          className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600"
         >
           {error}
         </p>
@@ -137,7 +137,7 @@ export function UploadForm({ clientId }: { clientId: string }) {
         <button
           type="submit"
           disabled={uploading || !fileName}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#0b1120] transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {uploading ? "Mengunggah..." : "Upload & Masukkan ke Pipeline"}
         </button>

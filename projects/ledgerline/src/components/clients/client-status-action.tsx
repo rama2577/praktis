@@ -55,13 +55,13 @@ export function ClientStatusAction({
         disabled={busy}
         className={`rounded-lg border px-2.5 py-1 text-xs transition disabled:opacity-40 ${
           isActive
-            ? "border-line text-slate-400 hover:border-red-500/40 hover:text-red-400"
-            : "border-emerald-500/40 text-emerald-400 hover:bg-emerald-500/10"
+            ? "border-line text-slate-600 hover:border-red-500/40 hover:text-red-600"
+            : "border-emerald-500/40 text-emerald-600 hover:bg-emerald-500/10"
         }`}
       >
         {busy ? "Memproses..." : isActive ? "Nonaktifkan" : "Aktifkan"}
       </button>
-      {error ? <span className="text-xs text-red-400">{error}</span> : null}
+      {error ? <span className="text-xs text-red-600">{error}</span> : null}
     </span>
   );
 }

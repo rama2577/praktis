@@ -39,11 +39,11 @@ type OpsData = {
 // ── Pipeline 5 stage ─────────────────────────────────────────────────────
 
 const STAGE_STYLE: Record<string, { box: string; label: string }> = {
-  draft: { box: "border-slate-600 bg-slate-800/50", label: "text-slate-200" },
-  ruleEngine: { box: "border-yellow-400/30 bg-yellow-400/5", label: "text-yellow-400" },
-  junior: { box: "border-amber-500/30 bg-amber-500/5", label: "text-amber-300" },
-  senior: { box: "border-yellow-400/30 bg-yellow-400/5", label: "text-yellow-400" },
-  tax: { box: "border-sky-500/30 bg-sky-500/5", label: "text-sky-300" },
+  draft: { box: "border-slate-300 bg-slate-100", label: "text-slate-800" },
+  ruleEngine: { box: "border-yellow-400/30 bg-yellow-400/5", label: "text-amber-600" },
+  junior: { box: "border-amber-500/30 bg-amber-500/5", label: "text-amber-600" },
+  senior: { box: "border-yellow-400/30 bg-yellow-400/5", label: "text-amber-600" },
+  tax: { box: "border-sky-500/30 bg-sky-500/5", label: "text-sky-600" },
 };
 
 function PipelineViz({ data }: { data: PipelineData }) {
@@ -59,8 +59,8 @@ function PipelineViz({ data }: { data: PipelineData }) {
               className={`min-w-[9.5rem] flex-1 rounded-xl border p-4 transition hover:border-slate-500 ${style.box}`}
             >
               <p className={`text-xs font-medium uppercase tracking-wider ${style.label}`}>{stage.label}</p>
-              <p className="mt-1.5 text-3xl font-semibold tabular-nums text-slate-100">{stage.count}</p>
-              <p className="mt-1 truncate text-[11px] text-slate-400">{stage.hint}</p>
+              <p className="mt-1.5 text-3xl font-semibold tabular-nums text-slate-900">{stage.count}</p>
+              <p className="mt-1 truncate text-[11px] text-slate-600">{stage.hint}</p>
             </Link>
             {i < data.stages.length - 1 && (
               <span aria-hidden className="text-slate-600">
@@ -90,20 +90,20 @@ function ReviewQueues({ data }: { data: PipelineData }) {
   return (
     <div className="overflow-hidden rounded-xl border border-line">
       {data.queues.length === 0 ? (
-        <p className="bg-card/40 p-5 text-sm text-slate-400">Tidak ada antrian pending.</p>
+        <p className="bg-card/40 p-5 text-sm text-slate-600">Tidak ada antrian pending.</p>
       ) : (
         <ul className="divide-y divide-line">
           {data.queues.map((q) => (
             <li key={q.stage}>
               <Link
                 href="/dashboard/queues"
-                className="flex items-center justify-between gap-3 bg-card/40 px-4 py-3 transition hover:bg-white/5"
+                className="flex items-center justify-between gap-3 bg-card/40 px-4 py-3 transition hover:bg-black/5"
               >
                 <div className="flex items-center gap-3">
                   <StatusBadge label={QUEUE_LABEL[q.stage]} tone={QUEUE_TONE[q.stage] ?? "neutral"} />
                   {q.urgent > 0 && <StatusBadge label={`${q.urgent} urgent`} tone="danger" />}
                 </div>
-                <span className="text-sm tabular-nums text-slate-200">{q.pending} menunggu</span>
+                <span className="text-sm tabular-nums text-slate-800">{q.pending} menunggu</span>
               </Link>
             </li>
           ))}
@@ -139,16 +139,16 @@ function SlaPanel({ data }: { data: SlaStageSummary[] }) {
         return (
           <div key={row.key}>
             <div className="mb-1 flex items-center justify-between text-sm">
-              <span className="text-slate-300">
+              <span className="text-slate-700">
                 {row.label} <span className="text-xs text-slate-500">({row.target})</span>
               </span>
-              <span className="tabular-nums text-xs text-slate-400">
+              <span className="tabular-nums text-xs text-slate-600">
                 {s.pending > 0 ? `${s.pending} antre · ` : ""}
                 {s.overdue > 0 ? `${s.overdue} terlambat · ` : ""}
                 {s.completed} selesai ({s.met} OK / {s.breached} breach) · {s.avgPct.toLocaleString("id-ID")}%
               </span>
             </div>
-            <div className="h-2 overflow-hidden rounded-full bg-slate-800">
+            <div className="h-2 overflow-hidden rounded-full bg-slate-100">
               <div className={`animate-progress h-full rounded-full ${tone}`} style={{ width: `${pct}%` }} />
             </div>
           </div>
@@ -186,12 +186,12 @@ function ConfidenceChart({ data }: { data: ConfidenceBucket[] }) {
 function ActivityFeed({ data }: { data: ActivityItem[] }) {
   return (
     <ul className="space-y-0 divide-y divide-line">
-      {data.length === 0 && <li className="py-4 text-sm text-slate-400">Belum ada aktivitas.</li>}
+      {data.length === 0 && <li className="py-4 text-sm text-slate-600">Belum ada aktivitas.</li>}
       {data.map((item) => (
         <li key={item.id} className="flex items-start justify-between gap-4 py-3">
           <div className="min-w-0">
-            <p className="text-sm text-slate-200">
-              <span className="font-medium text-slate-100">{item.userName}</span> {item.label}
+            <p className="text-sm text-slate-800">
+              <span className="font-medium text-slate-900">{item.userName}</span> {item.label}
             </p>
             <p className="mt-0.5 font-mono text-[11px] text-slate-500">{item.action}</p>
           </div>
@@ -210,7 +210,7 @@ function QualityTrend({ data }: { data: WeeklyTrendPoint[] }) {
   if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada data tren.</p>;
   return (
     <div>
-      <h3 className="mb-2 text-sm font-medium text-slate-200">Tren Mingguan</h3>
+      <h3 className="mb-2 text-sm font-medium text-slate-800">Tren Mingguan</h3>
       <ResponsiveContainer width="100%" height={160}>
         <BarChart data={data}>
           <CartesianGrid stroke="#334155" strokeDasharray="3 3" />
@@ -232,11 +232,11 @@ function QualityByIndustry({ data }: { data: IndustryBreakdownItem[] }) {
   if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada data per industri.</p>;
   return (
     <div>
-      <h3 className="mb-2 text-sm font-medium text-slate-200">Per Industri</h3>
+      <h3 className="mb-2 text-sm font-medium text-slate-800">Per Industri</h3>
       <div className="max-h-44 overflow-auto">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="border-b border-slate-700 text-slate-500">
+            <tr className="border-b border-slate-200 text-slate-500">
               <th className="py-1.5 pr-2 font-medium">Industri</th>
               <th className="py-1.5 pr-2 font-medium text-right">Jurnal</th>
               <th className="py-1.5 pr-2 font-medium text-right">Exc %</th>
@@ -245,11 +245,11 @@ function QualityByIndustry({ data }: { data: IndustryBreakdownItem[] }) {
           </thead>
           <tbody>
             {data.map((d) => (
-              <tr key={d.industry} className="border-b border-slate-800/60 last:border-0">
-                <td className="py-1.5 pr-2 text-slate-200">{d.industry}</td>
-                <td className="py-1.5 pr-2 text-right tabular-nums text-slate-300">{d.totalJournals}</td>
-                <td className={`py-1.5 pr-2 text-right tabular-nums ${d.exceptionRate > 30 ? "text-amber-300" : "text-slate-300"}`}>{d.exceptionRate}%</td>
-                <td className={`py-1.5 text-right tabular-nums ${d.firstPassRate < 50 ? "text-red-300" : "text-emerald-300"}`}>{d.firstPassRate}%</td>
+              <tr key={d.industry} className="border-b border-slate-200/60 last:border-0">
+                <td className="py-1.5 pr-2 text-slate-800">{d.industry}</td>
+                <td className="py-1.5 pr-2 text-right tabular-nums text-slate-700">{d.totalJournals}</td>
+                <td className={`py-1.5 pr-2 text-right tabular-nums ${d.exceptionRate > 30 ? "text-amber-600" : "text-slate-700"}`}>{d.exceptionRate}%</td>
+                <td className={`py-1.5 text-right tabular-nums ${d.firstPassRate < 50 ? "text-red-600" : "text-emerald-600"}`}>{d.firstPassRate}%</td>
               </tr>
             ))}
           </tbody>
@@ -263,20 +263,20 @@ function QualityExceptionInsights({ data }: { data: ExceptionInsight[] }) {
   if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada pengecualian.</p>;
   return (
     <div>
-      <h3 className="mb-2 text-sm font-medium text-slate-200">Alasan Pengecualian</h3>
+      <h3 className="mb-2 text-sm font-medium text-slate-800">Alasan Pengecualian</h3>
       <div className="space-y-2">
         {data.map((d) => (
           <div
             key={d.flag}
-            className="flex items-start justify-between gap-2 rounded-lg border border-slate-700/50 bg-slate-900/30 px-3 py-2"
+            className="flex items-start justify-between gap-2 rounded-lg border border-slate-200/50 bg-slate-50/30 px-3 py-2"
           >
             <div className="min-w-0">
-              <p className="text-xs text-slate-300 truncate">{d.flag}</p>
+              <p className="text-xs text-slate-700 truncate">{d.flag}</p>
               <p className="text-[10px] text-slate-500">
                 terakhir {new Date(d.lastSeen).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium tabular-nums text-amber-300">
+            <span className="shrink-0 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium tabular-nums text-amber-600">
               {d.count}x
             </span>
           </div>
@@ -337,7 +337,7 @@ export function DashboardPanels({
       type="button"
       onClick={() => void refresh()}
       title="Coba sinkronisasi lagi"
-      className="text-red-400 underline decoration-dotted hover:text-red-300"
+      className="text-red-600 underline decoration-dotted hover:text-red-600"
     >
       {error} — Coba lagi
     </button>
@@ -355,8 +355,8 @@ export function DashboardPanels({
         <PipelineViz data={data.pipeline} />
         <div className="mt-5">
           <div className="mb-2 flex items-center justify-between">
-            <h2 className="font-medium text-slate-100">Antrian Review</h2>
-            <Link href="/dashboard/queues" className="text-xs text-yellow-400 hover:underline">
+            <h2 className="font-medium text-slate-900">Antrian Review</h2>
+            <Link href="/dashboard/queues" className="text-xs text-amber-600 hover:underline">
               Buka semua antrian →
             </Link>
           </div>

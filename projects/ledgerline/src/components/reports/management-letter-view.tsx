@@ -84,10 +84,10 @@ export function ManagementLetterView({
         <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
         <PeriodInput period={period} setPeriod={setPeriod} />
         <a href={exportUrl("md")} aria-disabled={!clientId}
-          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-slate-700 text-slate-200 hover:border-yellow-400/50" : "pointer-events-none opacity-40"}`}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-slate-200 text-slate-800 hover:border-yellow-400/50" : "pointer-events-none opacity-40"}`}
         >↓ Markdown</a>
         <a href={exportUrl("csv")} aria-disabled={!clientId}
-          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20" : "pointer-events-none opacity-40"}`}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-yellow-400/40 bg-yellow-400/10 text-amber-600 hover:bg-yellow-400/20" : "pointer-events-none opacity-40"}`}
         >↓ CSV</a>
       </div>
 
@@ -100,8 +100,8 @@ export function ManagementLetterView({
           <Card className="p-6">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
               <div>
-                <h3 className="font-display text-lg font-bold text-slate-100">Surat Kepada Manajemen</h3>
-                <p className="text-sm text-slate-400">Management Letter — Standar Big 4</p>
+                <h3 className="font-display text-lg font-bold text-slate-900">Surat Kepada Manajemen</h3>
+                <p className="text-sm text-slate-600">Management Letter — Standar Big 4</p>
               </div>
               <div className="flex flex-wrap gap-2">
                 {ml.summary.high > 0 && <Badge label={`${ml.summary.high} Tinggi`} tone="danger" />}
@@ -110,37 +110,37 @@ export function ManagementLetterView({
                 {ml.summary.resolved > 0 && <Badge label={`${ml.summary.resolved} Selesai`} tone="positive" />}
               </div>
             </div>
-            <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-400 sm:grid-cols-3">
-              <div><span className="font-medium text-slate-300">Kepada:</span> {ml.preparedFor}</div>
-              <div><span className="font-medium text-slate-300">Dari:</span> {ml.preparedBy}</div>
-              <div><span className="font-medium text-slate-300">Tanggal:</span> {ml.date}</div>
-              <div><span className="font-medium text-slate-300">Referensi:</span> {ml.reference}</div>
-              <div><span className="font-medium text-slate-300">Periode:</span> {ml.period}</div>
+            <div className="mt-4 grid grid-cols-2 gap-2 text-xs text-slate-600 sm:grid-cols-3">
+              <div><span className="font-medium text-slate-700">Kepada:</span> {ml.preparedFor}</div>
+              <div><span className="font-medium text-slate-700">Dari:</span> {ml.preparedBy}</div>
+              <div><span className="font-medium text-slate-700">Tanggal:</span> {ml.date}</div>
+              <div><span className="font-medium text-slate-700">Referensi:</span> {ml.reference}</div>
+              <div><span className="font-medium text-slate-700">Periode:</span> {ml.period}</div>
             </div>
           </Card>
 
           {/* Executive Summary */}
           <Card className="p-5">
-            <h4 className="mb-2 text-sm font-medium text-slate-200">1. Ringkasan Eksekutif</h4>
-            <p className="text-sm text-slate-300">{ml.executiveSummary}</p>
+            <h4 className="mb-2 text-sm font-medium text-slate-800">1. Ringkasan Eksekutif</h4>
+            <p className="text-sm text-slate-700">{ml.executiveSummary}</p>
           </Card>
 
           {/* Scope */}
           <Card className="p-5">
-            <h4 className="mb-2 text-sm font-medium text-slate-200">2. Ruang Lingkup & Pendekatan</h4>
-            <p className="text-sm text-slate-300">{ml.scope}</p>
+            <h4 className="mb-2 text-sm font-medium text-slate-800">2. Ruang Lingkup & Pendekatan</h4>
+            <p className="text-sm text-slate-700">{ml.scope}</p>
           </Card>
 
           {/* Summary */}
           <Card className="p-5">
-            <h4 className="mb-3 text-sm font-medium text-slate-200">3. Ikhtisar Temuan ({ml.summary.total})</h4>
+            <h4 className="mb-3 text-sm font-medium text-slate-800">3. Ikhtisar Temuan ({ml.summary.total})</h4>
             <div className="flex flex-wrap gap-3">
               {Object.entries(SEV_META).map(([sev, meta]) => {
                 const count = ml.summary[sev.toLowerCase() as keyof typeof ml.summary] as number;
                 return (
-                  <div key={sev} className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/30 px-3 py-2">
+                  <div key={sev} className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-100/30 px-3 py-2">
                     <span>{meta.emoji}</span>
-                    <span className="text-sm text-slate-300">{count}</span>
+                    <span className="text-sm text-slate-700">{count}</span>
                     <span className="text-xs text-slate-500">{meta.label}</span>
                   </div>
                 );
@@ -150,13 +150,13 @@ export function ManagementLetterView({
 
           {/* Findings */}
           <div className="space-y-3">
-            <h4 className="text-sm font-medium text-slate-200">4. Temuan & Rekomendasi</h4>
+            <h4 className="text-sm font-medium text-slate-800">4. Temuan & Rekomendasi</h4>
             {(Object.keys(SEV_META) as Severity[]).map((sev) => {
               const fList = ml.findings.filter((f) => f.severity === sev);
               if (fList.length === 0) return null;
               return (
                 <div key={sev} className="space-y-2">
-                  <h5 className="text-xs font-medium text-slate-400">{SEV_META[sev].emoji} {SEV_META[sev].label} ({fList.length})</h5>
+                  <h5 className="text-xs font-medium text-slate-600">{SEV_META[sev].emoji} {SEV_META[sev].label} ({fList.length})</h5>
                   {fList.map((f) => (
                     <FindingCard key={f.id} finding={f} expanded={expanded.has(f.id)} onToggle={() => toggle(f.id)} />
                   ))}
@@ -167,8 +167,8 @@ export function ManagementLetterView({
 
           {/* Closing */}
           <Card className="border-yellow-400/20 bg-yellow-400/5 p-5">
-            <h4 className="mb-2 text-sm font-medium text-slate-200">5. Tindak Lanjut & Rekomendasi</h4>
-            <ul className="space-y-1 text-sm text-slate-300">
+            <h4 className="mb-2 text-sm font-medium text-slate-800">5. Tindak Lanjut & Rekomendasi</h4>
+            <ul className="space-y-1 text-sm text-slate-700">
               {ml.narrative.map((n, i) => <li key={i}>• {n}</li>)}
             </ul>
             <p className="mt-4 text-xs text-slate-500">
@@ -189,7 +189,7 @@ function FindingCard({ finding, expanded, onToggle }: { finding: Finding; expand
   return (
     <div
       className={`cursor-pointer rounded-xl border transition ${
-        expanded ? "border-yellow-400/30 bg-slate-800/50" : "border-slate-800 bg-slate-900/50 hover:border-slate-700"
+        expanded ? "border-yellow-400/30 bg-slate-100" : "border-slate-200 bg-white hover:border-slate-200"
       }`}
       onClick={onToggle}
     >
@@ -201,29 +201,29 @@ function FindingCard({ finding, expanded, onToggle }: { finding: Finding; expand
             <Badge label={sev.label} tone={sev.tone} />
             {finding.status === "RESOLVED" && <Badge label="✓ Selesai" tone="positive" />}
           </div>
-          <p className="mt-1 text-sm font-medium text-slate-200">{finding.title}</p>
+          <p className="mt-1 text-sm font-medium text-slate-800">{finding.title}</p>
         </div>
         <span className="text-xs text-slate-500">{expanded ? "▲" : "▼"}</span>
       </div>
 
       {expanded && (
-        <div className="border-t border-slate-700 px-4 py-3 space-y-3 text-sm">
+        <div className="border-t border-slate-200 px-4 py-3 space-y-3 text-sm">
           <div>
-            <p className="text-xs font-medium text-slate-400">Deskripsi</p>
-            <p className="text-slate-300">{finding.description}</p>
+            <p className="text-xs font-medium text-slate-600">Deskripsi</p>
+            <p className="text-slate-700">{finding.description}</p>
           </div>
           <div>
-            <p className="text-xs font-medium text-slate-400">Dampak</p>
-            <p className="text-slate-300">{finding.impact}</p>
+            <p className="text-xs font-medium text-slate-600">Dampak</p>
+            <p className="text-slate-700">{finding.impact}</p>
           </div>
           <div>
-            <p className="text-xs font-medium text-emerald-400">Rekomendasi</p>
-            <p className="text-slate-300">{finding.recommendation}</p>
+            <p className="text-xs font-medium text-emerald-600">Rekomendasi</p>
+            <p className="text-slate-700">{finding.recommendation}</p>
           </div>
           {finding.managementResponse && (
             <div>
-              <p className="text-xs font-medium text-amber-400">Tanggapan Manajemen</p>
-              <p className="text-slate-300">{finding.managementResponse}</p>
+              <p className="text-xs font-medium text-amber-600">Tanggapan Manajemen</p>
+              <p className="text-slate-700">{finding.managementResponse}</p>
             </div>
           )}
         </div>

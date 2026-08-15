@@ -15,8 +15,8 @@ export default async function TrialBalancePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-xl font-semibold text-slate-100">Neraca Percobaan</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <h1 className="text-xl font-semibold text-slate-900">Neraca Percobaan</h1>
+        <p className="mt-1 text-sm text-slate-600">
           Saldo per akun per periode dari jurnal yang disetujui — gerbang sebelum penyusunan laporan
           keuangan. Indikator kewajaran menyorot saldo tidak wajar (aset kredit, piutang negatif).
           Klik kode akun untuk membuka buku besar; Partner dapat mengunci periode.

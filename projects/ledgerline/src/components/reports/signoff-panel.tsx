@@ -63,7 +63,7 @@ export function SignoffPanel({
 
   if (!snapshot) {
     return (
-      <div className="flex items-center gap-2 rounded-lg border border-slate-700 bg-slate-800/30 px-3 py-2">
+      <div className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-100/30 px-3 py-2">
         <Badge label="Belum ada" tone="neutral" />
         <span className="text-xs text-slate-500">Simpan laporan untuk mulai workflow</span>
       </div>
@@ -101,35 +101,35 @@ export function SignoffPanel({
         <div className="flex flex-wrap gap-2">
           {ws.canSubmit && (
             <button onClick={() => void action("submit")} disabled={acting}
-              className="rounded border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-1 text-xs text-yellow-300 hover:bg-yellow-400/20 disabled:opacity-50"
+              className="rounded border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-1 text-xs text-amber-600 hover:bg-yellow-400/20 disabled:opacity-50"
             >{acting ? "…" : "Submit for Review"}</button>
           )}
           {ws.canApprove && (
             <>
               <button onClick={() => void action("approve")} disabled={acting}
-                className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-300 hover:bg-emerald-400/20 disabled:opacity-50"
+                className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-600 hover:bg-emerald-400/20 disabled:opacity-50"
               >{acting ? "…" : "✓ Approve"}</button>
               <button onClick={() => void action("reject")} disabled={acting}
-                className="rounded border border-rose-400/30 bg-rose-400/10 px-2.5 py-1 text-xs text-rose-300 hover:bg-rose-400/20 disabled:opacity-50"
+                className="rounded border border-rose-400/30 bg-rose-400/10 px-2.5 py-1 text-xs text-rose-600 hover:bg-rose-400/20 disabled:opacity-50"
               >{acting ? "…" : "✗ Reject"}</button>
             </>
           )}
           {ws.canDeliver && (
             <button onClick={() => void action("deliver")} disabled={acting}
-              className="rounded border border-sky-400/30 bg-sky-400/10 px-2.5 py-1 text-xs text-sky-300 hover:bg-sky-400/20 disabled:opacity-50"
+              className="rounded border border-sky-400/30 bg-sky-400/10 px-2.5 py-1 text-xs text-sky-600 hover:bg-sky-400/20 disabled:opacity-50"
             >{acting ? "…" : "📤 Deliver ke Klien"}</button>
           )}
         </div>
       )}
 
-      {message && <p className={`text-xs ${message.startsWith("✅") ? "text-emerald-400" : "text-rose-400"}`}>{message}</p>}
+      {message && <p className={`text-xs ${message.startsWith("✅") ? "text-emerald-600" : "text-rose-600"}`}>{message}</p>}
     </div>
   );
 }
 
 function Timeline({ active, label }: { active: boolean; label: string }) {
   return (
-    <span className={active ? "text-yellow-300" : "text-slate-600"}>
+    <span className={active ? "text-amber-600" : "text-slate-600"}>
       {active ? "●" : "○"} {label}
     </span>
   );

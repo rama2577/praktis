@@ -15,13 +15,13 @@ export function EmptyState({
   return (
     <div
       role="status"
-      className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-700 px-6 py-10 text-center"
+      className="flex flex-col items-center justify-center rounded-xl border border-dashed border-slate-200 px-6 py-10 text-center"
     >
       <span aria-hidden className="text-3xl opacity-80">
         {icon}
       </span>
-      <p className="mt-3 font-medium text-slate-200">{title}</p>
-      {description && <p className="mt-1 max-w-md text-sm text-slate-400">{description}</p>}
+      <p className="mt-3 font-medium text-slate-800">{title}</p>
+      {description && <p className="mt-1 max-w-md text-sm text-slate-600">{description}</p>}
       {action && <div className="mt-4">{action}</div>}
     </div>
   );

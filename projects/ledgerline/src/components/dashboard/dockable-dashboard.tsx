@@ -80,10 +80,10 @@ function KpiPanel({ kpi }: PanelProps) {
         <a
           key={c.label}
           href={c.href}
-          className="rounded-xl border border-slate-800 bg-slate-900/50 p-4 transition hover:border-yellow-400/40 hover:bg-slate-900"
+          className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-yellow-400/40 hover:bg-slate-50"
         >
-          <p className="text-[11px] text-slate-400">{c.label}</p>
-          <p className="mt-1 font-mono text-2xl font-semibold text-yellow-300">{c.value}</p>
+          <p className="text-[11px] text-slate-600">{c.label}</p>
+          <p className="mt-1 font-mono text-2xl font-semibold text-amber-600">{c.value}</p>
           <p className="mt-1 text-[11px] text-slate-500">{c.sub}</p>
         </a>
       ))}
@@ -99,13 +99,13 @@ function PipelinePanel({ pipeline }: PanelProps) {
         <a
           key={s.key}
           href="/dashboard/pipeline"
-          className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/40 px-3 py-2 transition hover:border-yellow-400/40 hover:bg-slate-900"
+          className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 transition hover:border-yellow-400/40 hover:bg-slate-50"
         >
           <div>
-            <p className="text-sm font-medium text-slate-200">{s.label}</p>
+            <p className="text-sm font-medium text-slate-800">{s.label}</p>
             <p className="text-[11px] text-slate-500">{s.hint}</p>
           </div>
-          <span className="rounded-full bg-yellow-400/15 px-2.5 py-1 font-mono text-sm text-yellow-300">{s.count}</span>
+          <span className="rounded-full bg-yellow-400/15 px-2.5 py-1 font-mono text-sm text-amber-600">{s.count}</span>
         </a>
       ))}
     </div>
@@ -118,7 +118,7 @@ function SlaPanel({ sla }: PanelProps) {
     <div className="overflow-y-auto p-4">
       <table className="w-full text-left text-xs">
         <thead>
-          <tr className="border-b border-slate-800 text-slate-500">
+          <tr className="border-b border-slate-200 text-slate-500">
             <th className="py-2 font-medium">Tahap</th>
             <th className="py-2 text-right font-medium">Antre</th>
             <th className="py-2 text-right font-medium">Terlambat</th>
@@ -128,16 +128,16 @@ function SlaPanel({ sla }: PanelProps) {
         </thead>
         <tbody>
           {sla.rows.map((r) => (
-            <tr key={r.stage} className="border-b border-slate-800/50 text-slate-300 transition hover:bg-slate-900/60">
+            <tr key={r.stage} className="border-b border-slate-200/50 text-slate-700 transition hover:bg-white">
               <td className="py-1.5">
-                <a href="/dashboard/sla" className="block text-slate-200 hover:text-yellow-300">
+                <a href="/dashboard/sla" className="block text-slate-800 hover:text-amber-600">
                   {r.stage}
                 </a>
               </td>
               <td className="py-1.5 text-right font-mono">{r.pending}</td>
-              <td className="py-1.5 text-right font-mono text-rose-400">{r.overdue}</td>
+              <td className="py-1.5 text-right font-mono text-rose-600">{r.overdue}</td>
               <td className="py-1.5 text-right font-mono">{r.completed}</td>
-              <td className={`py-1.5 text-right font-mono ${r.avgPct >= 90 ? "text-emerald-400" : "text-rose-400"}`}>
+              <td className={`py-1.5 text-right font-mono ${r.avgPct >= 90 ? "text-emerald-600" : "text-rose-600"}`}>
                 {r.avgPct}%
               </td>
             </tr>
@@ -154,30 +154,30 @@ function QualityPanel({ insights }: PanelProps) {
   return (
     <div className="space-y-4 overflow-y-auto p-4">
       <div>
-        <p className="mb-2 text-xs font-medium text-slate-400">Tren Mingguan (jurnal vs exception %)</p>
+        <p className="mb-2 text-xs font-medium text-slate-600">Tren Mingguan (jurnal vs exception %)</p>
         <div className="space-y-1">
           {insights.weeklyTrend.map((t) => (
-            <a key={t.weekLabel} href="/dashboard/quality" className="flex items-center gap-2 rounded transition hover:bg-slate-900/60">
+            <a key={t.weekLabel} href="/dashboard/quality" className="flex items-center gap-2 rounded transition hover:bg-white">
               <span className="w-16 text-[10px] text-slate-500">{t.weekLabel}</span>
-              <div className="h-3 flex-1 overflow-hidden rounded bg-slate-800">
+              <div className="h-3 flex-1 overflow-hidden rounded bg-slate-100">
                 <div className="h-full bg-yellow-400/70" style={{ width: `${(t.totalJournals / max) * 100}%` }} />
               </div>
-              <span className="w-16 text-right font-mono text-[10px] text-slate-400">{t.totalJournals}</span>
-              {t.exceptionRate > 0 && <span className="font-mono text-[10px] text-rose-400">⚠{t.exceptionRate}%</span>}
+              <span className="w-16 text-right font-mono text-[10px] text-slate-600">{t.totalJournals}</span>
+              {t.exceptionRate > 0 && <span className="font-mono text-[10px] text-rose-600">⚠{t.exceptionRate}%</span>}
             </a>
           ))}
         </div>
       </div>
       <div>
-        <p className="mb-2 text-xs font-medium text-slate-400">Per Industri</p>
+        <p className="mb-2 text-xs font-medium text-slate-600">Per Industri</p>
         <div className="space-y-1">
           {insights.industry.map((ind) => (
             <a
               key={ind.industry}
               href="/dashboard/quality"
-              className="flex justify-between rounded border border-slate-800 bg-slate-900/40 px-2 py-1 text-[11px] transition hover:border-yellow-400/40 hover:bg-slate-900"
+              className="flex justify-between rounded border border-slate-200 bg-white px-2 py-1 text-[11px] transition hover:border-yellow-400/40 hover:bg-slate-50"
             >
-              <span className="text-slate-300">{ind.industry}</span>
+              <span className="text-slate-700">{ind.industry}</span>
               <span className="font-mono text-slate-500">{ind.totalJournals} jurnal · exc {ind.exceptionRate}% · fp {ind.firstPassRate}%</span>
             </a>
           ))}
@@ -316,15 +316,15 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
   );
 
   if (!ready) {
-    return <div className="rounded-xl border border-slate-800 bg-slate-900/40 p-8 text-center text-sm text-slate-500">Memuat workspace…</div>;
+    return <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-500">Memuat workspace…</div>;
   }
 
   return (
     <div>
       <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
         <div className="flex flex-wrap items-center gap-2 text-[11px] text-slate-500">
-          <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">Workspace Dockable</span>
-          <span className="rounded-full border border-slate-800 bg-slate-900/60 px-2.5 py-1">{getPresetLabel(activeRole)}</span>
+          <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">Workspace Dockable</span>
+          <span className="rounded-full border border-slate-200 bg-white px-2.5 py-1">{getPresetLabel(activeRole)}</span>
           {lastSaved && <span className="px-1">Tersimpan {lastSaved}</span>}
         </div>
         <div className="flex items-center gap-2">
@@ -332,7 +332,7 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
             aria-label="Ganti preset layout"
             value={activeRole}
             onChange={(e) => applyPreset(e.target.value)}
-            className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1 text-[11px] text-slate-300 transition hover:border-yellow-400/50"
+            className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] text-slate-700 transition hover:border-yellow-400/50"
           >
             {PRESET_OPTIONS.map((o) => (
               <option key={o.role} value={o.role}>
@@ -343,13 +343,13 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
           <button
             onClick={resetLayout}
             disabled={saving}
-            className="rounded-md border border-slate-700 px-2.5 py-1 text-[11px] text-slate-300 transition hover:border-rose-500/50 hover:text-rose-300 disabled:opacity-50"
+            className="rounded-md border border-slate-200 px-2.5 py-1 text-[11px] text-slate-700 transition hover:border-rose-500/50 hover:text-rose-600 disabled:opacity-50"
           >
             {saving ? "Mereset…" : "Reset Layout"}
           </button>
         </div>
       </div>
-      <div className="h-[70vh] overflow-hidden rounded-xl border border-slate-800">
+      <div className="h-[70vh] overflow-hidden rounded-xl border border-slate-200">
         <DockviewReact
           className="dockview-theme-dark"
           components={{

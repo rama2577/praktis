@@ -42,19 +42,19 @@ export function PortalSnapshots({ token }: { token: string }) {
   }, [load]);
 
   return (
-    <section className="rounded-xl border border-slate-700 bg-slate-900/40 p-5">
+    <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="mb-3">
         <h2 className="text-sm font-semibold">Laporan & Versi</h2>
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-xs text-slate-600">
           Setiap periode yang dikunci tim akuntan tersimpan sebagai versi — bisa diunduh kapan saja.
         </p>
       </div>
 
-      {loading && <p className="text-sm text-slate-400">Memuat laporan…</p>}
-      {error && <p className="text-sm text-red-300">{error}</p>}
+      {loading && <p className="text-sm text-slate-600">Memuat laporan…</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && items.length === 0 && (
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-600">
           Belum ada laporan. Laporan akan muncul setelah periode tutup buku dikunci oleh tim akuntan.
         </p>
       )}
@@ -64,10 +64,10 @@ export function PortalSnapshots({ token }: { token: string }) {
           {items.map((s) => (
             <li
               key={s.id}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-800 bg-slate-950/40 px-3 py-2"
+              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-slate-200 bg-slate-50/40 px-3 py-2"
             >
               <div>
-                <p className="text-sm text-slate-200">
+                <p className="text-sm text-slate-800">
                   {TYPE_LABELS[s.type] ?? s.type} — Periode {s.period}{" "}
                   <span className="text-xs text-slate-500">v{s.version}</span>
                 </p>
@@ -78,13 +78,13 @@ export function PortalSnapshots({ token }: { token: string }) {
               <div className="flex gap-2">
                 <a
                   href={`/api/portal/${token}/snapshots?id=${s.id}&format=csv`}
-                  className="rounded border border-slate-700 px-2 py-1 text-xs text-slate-300 hover:border-yellow-400/50 hover:text-yellow-300"
+                  className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600"
                 >
                   ↓ CSV
                 </a>
                 <a
                   href={`/api/portal/${token}/snapshots?id=${s.id}&format=xlsx`}
-                  className="rounded border border-slate-700 px-2 py-1 text-xs text-slate-300 hover:border-yellow-400/50 hover:text-yellow-300"
+                  className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600"
                 >
                   ↓ XLSX
                 </a>

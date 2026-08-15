@@ -68,12 +68,12 @@ export function Sidebar({
   return (
     <aside className="flex w-60 shrink-0 flex-col border-r border-line bg-card/60">
       <div className="flex items-center gap-2.5 border-b border-line px-5 py-4">
-        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent font-bold text-[#0b1120]">
+        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent font-bold text-white">
           LL
         </div>
         <div>
           <p className="font-heading text-sm font-semibold leading-tight">Praktis</p>
-          <p className="text-[11px] text-slate-400">AI Bookkeeping</p>
+          <p className="text-[11px] text-muted">AI Bookkeeping</p>
         </div>
       </div>
 
@@ -109,8 +109,8 @@ export function Sidebar({
                       aria-current={active ? "page" : undefined}
                       className={`flex items-center rounded-lg px-3 py-2 text-sm transition ${
                         active
-                          ? "bg-accent/15 font-medium text-accent"
-                          : "text-slate-300 hover:bg-white/5 hover:text-foreground"
+                          ? "bg-accent/10 font-medium text-accent"
+                          : "text-muted hover:bg-hover hover:text-foreground"
                       }`}
                     >
                       {item.label}
@@ -141,7 +141,7 @@ export function Sidebar({
           </div>
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{userName}</p>
-            <p className="truncate text-[11px] text-slate-400">
+            <p className="truncate text-[11px] text-slate-600">
               {ROLE_LABELS[userRole]}
             </p>
           </div>
@@ -149,7 +149,7 @@ export function Sidebar({
             type="button"
             onClick={() => signOut({ callbackUrl: "/login" })}
             title="Keluar"
-            className="rounded-lg border border-line px-2 py-1 text-xs text-slate-400 transition hover:border-red-500/40 hover:text-red-400"
+            className="rounded-lg border border-line px-2 py-1 text-xs text-slate-600 transition hover:border-red-500/40 hover:text-red-600"
           >
             Keluar
           </button>

@@ -208,27 +208,27 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
       type="month"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/60 focus:outline-none"
+      className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
     />
   );
 
   return (
     <div className="space-y-6">
       {flash && (
-        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
+        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600">
           {flash}
         </div>
       )}
-      {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-300">{error}</div>}
+      {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-600">{error}</div>}
 
       {/* Toolbar */}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-700 bg-slate-900/40 p-4">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Klien
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/60 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
           >
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -237,7 +237,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Periode penyusutan
           {monthInput(depreciatePeriod, setDepreciatePeriod)}
         </label>
@@ -249,7 +249,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
         </button>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="rounded-lg border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300"
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 hover:border-yellow-400/50 hover:text-amber-600"
         >
           {showForm ? "Tutup Form" : "+ Daftarkan Aset"}
         </button>
@@ -257,32 +257,32 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
 
       {/* Form aset baru */}
       {showForm && (
-        <div className="grid gap-3 rounded-xl border border-slate-700 bg-slate-900/40 p-4 sm:grid-cols-2 lg:grid-cols-4">
-          <input placeholder="Nama aset *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
-          <input placeholder="Kategori * (mis. Kendaraan)" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
-          <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-4">
+          <input placeholder="Nama aset *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
+          <input placeholder="Kategori * (mis. Kendaraan)" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
+          <label className="flex flex-col gap-1 text-xs text-slate-600">
             Tanggal perolehan *
-            <input type="date" value={form.purchaseDate} onChange={(e) => setForm({ ...form, purchaseDate: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/60 focus:outline-none" />
+            <input type="date" value={form.purchaseDate} onChange={(e) => setForm({ ...form, purchaseDate: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none" />
           </label>
-          <input placeholder="Biaya perolehan (Rp) *" type="number" min="0" value={form.purchaseCost} onChange={(e) => setForm({ ...form, purchaseCost: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
-          <input placeholder="Nilai sisa (Rp)" type="number" min="0" value={form.residualValue} onChange={(e) => setForm({ ...form, residualValue: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
-          <label className="flex flex-col gap-1 text-xs text-slate-400">
+          <input placeholder="Biaya perolehan (Rp) *" type="number" min="0" value={form.purchaseCost} onChange={(e) => setForm({ ...form, purchaseCost: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
+          <input placeholder="Nilai sisa (Rp)" type="number" min="0" value={form.residualValue} onChange={(e) => setForm({ ...form, residualValue: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
+          <label className="flex flex-col gap-1 text-xs text-slate-600">
             Metode
-            <select value={form.method} onChange={(e) => setForm({ ...form, method: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/60 focus:outline-none">
+            <select value={form.method} onChange={(e) => setForm({ ...form, method: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none">
               <option value="STRAIGHT_LINE">Garis Lurus</option>
               <option value="DECLINING_BALANCE">Saldo Menurun (2×)</option>
             </select>
           </label>
-          <input placeholder="Umur komersial (bulan) *" type="number" min="1" value={form.commercialLifeMonths} onChange={(e) => setForm({ ...form, commercialLifeMonths: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
-          <label className="flex flex-col gap-1 text-xs text-slate-400">
+          <input placeholder="Umur komersial (bulan) *" type="number" min="1" value={form.commercialLifeMonths} onChange={(e) => setForm({ ...form, commercialLifeMonths: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none" />
+          <label className="flex flex-col gap-1 text-xs text-slate-600">
             Kelompok fiskal (Pasal 11)
-            <select value={form.fiscalGroup} onChange={(e) => setForm({ ...form, fiscalGroup: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/60 focus:outline-none">
+            <select value={form.fiscalGroup} onChange={(e) => setForm({ ...form, fiscalGroup: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none">
               {FISCAL_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
           </label>
-          <input placeholder="Catatan (opsional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none sm:col-span-2 lg:col-span-4" />
+          <input placeholder="Catatan (opsional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none sm:col-span-2 lg:col-span-4" />
           <div className="flex justify-end sm:col-span-2 lg:col-span-4">
             <button onClick={() => void createAsset()} disabled={saving || !form.name || !form.category || !form.purchaseDate || !form.purchaseCost || !form.commercialLifeMonths} className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40">
               {saving ? "Menyimpan…" : "Simpan Aset"}
@@ -292,20 +292,20 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
       )}
 
       {/* Register */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40">
-        <div className="border-b border-slate-800 px-4 py-3">
+      <div className="rounded-xl border border-slate-200 bg-white">
+        <div className="border-b border-slate-200 px-4 py-3">
           <h2 className="text-sm font-semibold">Register Aset Tetap</h2>
           <p className="mt-0.5 text-xs text-slate-500">Penyusutan komersial (PSAK 216) & fiskal (Pasal 11) dihitung otomatis per periode.</p>
         </div>
         {loading ? (
-          <p className="p-4 text-sm text-slate-400">Memuat aset…</p>
+          <p className="p-4 text-sm text-slate-600">Memuat aset…</p>
         ) : assets.length === 0 ? (
           <p className="p-6 text-center text-sm text-slate-500">Belum ada aset terdaftar untuk klien ini.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
                   <th className="px-4 py-3 font-medium">Aset</th>
                   <th className="px-4 py-3 font-medium">Kategori</th>
                   <th className="px-4 py-3 font-medium">Perolehan</th>
@@ -333,20 +333,20 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
       </div>
 
       {/* Rekonsiliasi fiskal */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/40">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 px-4 py-3">
+      <div className="rounded-xl border border-slate-200 bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
           <div>
             <h2 className="text-sm font-semibold">Rekonsiliasi Fiskal Aset</h2>
             <p className="mt-0.5 text-xs text-slate-500">Beda temporer nilai buku komersial vs fiskal (dasar pajak tangguhan).</p>
           </div>
           <div className="flex items-center gap-2">
             {monthInput(reconPeriod, setReconPeriod)}
-            <button onClick={() => void loadRecon(clientId, reconPeriod)} className="rounded border border-slate-600 px-3 py-2 text-xs text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300">
+            <button onClick={() => void loadRecon(clientId, reconPeriod)} className="rounded border border-slate-300 px-3 py-2 text-xs text-slate-800 hover:border-yellow-400/50 hover:text-amber-600">
               Muat
             </button>
             <a
               href={`/api/clients/${clientId}/assets/report?period=${reconPeriod}&format=csv`}
-              className="rounded border border-slate-600 px-3 py-2 text-xs text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300"
+              className="rounded border border-slate-300 px-3 py-2 text-xs text-slate-800 hover:border-yellow-400/50 hover:text-amber-600"
             >
               ↓ CSV
             </a>
@@ -356,7 +356,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
                   <th className="px-4 py-3 font-medium">Aset</th>
                   <th className="px-4 py-3 font-medium">Fiskal</th>
                   <th className="px-4 py-3 text-right font-medium">Biaya</th>
@@ -367,22 +367,22 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
               </thead>
               <tbody>
                 {recon.rows.map((r) => (
-                  <tr key={r.assetId} className="border-b border-slate-800/60 last:border-0 hover:bg-white/[0.02]">
-                    <td className="px-4 py-3 font-medium text-slate-200">{r.name}</td>
-                    <td className="px-4 py-3 text-xs text-slate-400">{r.fiscalGroupLabel}</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-300">{formatCurrencyRp(r.purchaseCost)}</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-200">{formatCurrencyRp(r.bookValueCommercial)}</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-200">{formatCurrencyRp(r.bookValueFiscal)}</td>
-                    <td className={`px-4 py-3 text-right tabular-nums ${r.temporaryDifference === 0 ? "text-slate-500" : "text-amber-300"}`}>
+                  <tr key={r.assetId} className="border-b border-slate-200/60 last:border-0 hover:bg-white/[0.02]">
+                    <td className="px-4 py-3 font-medium text-slate-800">{r.name}</td>
+                    <td className="px-4 py-3 text-xs text-slate-600">{r.fiscalGroupLabel}</td>
+                    <td className="px-4 py-3 text-right tabular-nums text-slate-700">{formatCurrencyRp(r.purchaseCost)}</td>
+                    <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(r.bookValueCommercial)}</td>
+                    <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(r.bookValueFiscal)}</td>
+                    <td className={`px-4 py-3 text-right tabular-nums ${r.temporaryDifference === 0 ? "text-slate-500" : "text-amber-600"}`}>
                       {formatCurrencyRp(r.temporaryDifference)}
                     </td>
                   </tr>
                 ))}
-                <tr className="bg-slate-950/40 font-medium">
-                  <td className="px-4 py-3 text-slate-100" colSpan={3}>Total</td>
-                  <td className="px-4 py-3 text-right tabular-nums text-slate-100">{formatCurrencyRp(recon.totals.bookValueCommercial)}</td>
-                  <td className="px-4 py-3 text-right tabular-nums text-slate-100">{formatCurrencyRp(recon.totals.bookValueFiscal)}</td>
-                  <td className={`px-4 py-3 text-right tabular-nums ${recon.totals.temporaryDifference === 0 ? "text-slate-400" : "text-amber-300"}`}>
+                <tr className="bg-slate-50/40 font-medium">
+                  <td className="px-4 py-3 text-slate-900" colSpan={3}>Total</td>
+                  <td className="px-4 py-3 text-right tabular-nums text-slate-900">{formatCurrencyRp(recon.totals.bookValueCommercial)}</td>
+                  <td className="px-4 py-3 text-right tabular-nums text-slate-900">{formatCurrencyRp(recon.totals.bookValueFiscal)}</td>
+                  <td className={`px-4 py-3 text-right tabular-nums ${recon.totals.temporaryDifference === 0 ? "text-slate-600" : "text-amber-600"}`}>
                     {formatCurrencyRp(recon.totals.temporaryDifference)}
                   </td>
                 </tr>
@@ -410,29 +410,29 @@ function AssetRow({
 }) {
   return (
     <>
-      <tr className="border-b border-slate-800/60 hover:bg-white/[0.02]">
-        <td className="px-4 py-3 font-medium text-slate-200">{asset.name}</td>
-        <td className="px-4 py-3 text-slate-400">{asset.category}</td>
-        <td className="px-4 py-3 text-slate-400">
+      <tr className="border-b border-slate-200/60 hover:bg-white/[0.02]">
+        <td className="px-4 py-3 font-medium text-slate-800">{asset.name}</td>
+        <td className="px-4 py-3 text-slate-600">{asset.category}</td>
+        <td className="px-4 py-3 text-slate-600">
           {new Date(asset.purchaseDate).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
         </td>
-        <td className="px-4 py-3 text-right tabular-nums text-slate-300">{formatCurrencyRp(asset.purchaseCost)}</td>
-        <td className="px-4 py-3 text-slate-300">
+        <td className="px-4 py-3 text-right tabular-nums text-slate-700">{formatCurrencyRp(asset.purchaseCost)}</td>
+        <td className="px-4 py-3 text-slate-700">
           {METHOD_LABELS[asset.method] ?? asset.method} · {asset.commercialLifeMonths} bln
         </td>
-        <td className="px-4 py-3 text-xs text-slate-400">{asset.fiscalGroupLabel}</td>
-        <td className="px-4 py-3 text-right tabular-nums text-slate-200">{formatCurrencyRp(asset.bookValueCommercial)}</td>
+        <td className="px-4 py-3 text-xs text-slate-600">{asset.fiscalGroupLabel}</td>
+        <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(asset.bookValueCommercial)}</td>
         <td className="px-4 py-3">
-          <button onClick={onToggle} className="rounded border border-slate-600 px-2 py-1 text-xs text-slate-300 hover:border-yellow-400/50 hover:text-yellow-300">
+          <button onClick={onToggle} className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600">
             {open ? "Tutup" : "Jadwal"}
           </button>
         </td>
       </tr>
       {open && (
-        <tr className="bg-slate-950/40">
+        <tr className="bg-slate-50/40">
           <td colSpan={8} className="px-4 py-3">
             {schedule === null ? (
-              <p className="text-sm text-slate-400">Memuat jadwal…</p>
+              <p className="text-sm text-slate-600">Memuat jadwal…</p>
             ) : schedule.length === 0 ? (
               <p className="text-sm text-slate-500">
                 Belum ada jadwal. Jalankan &quot;Hitung &amp; Catat Penyusutan&quot; untuk periode pertama.
@@ -441,7 +441,7 @@ function AssetRow({
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px] text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-800 text-slate-500">
+                    <tr className="border-b border-slate-200 text-slate-500">
                       <th className="py-2 pr-3 font-medium">Periode</th>
                       <th className="py-2 pr-3 text-right font-medium">Komersial</th>
                       <th className="py-2 pr-3 text-right font-medium">Fiskal</th>
@@ -454,17 +454,17 @@ function AssetRow({
                   </thead>
                   <tbody>
                     {schedule.map((s) => (
-                      <tr key={s.id} className="border-b border-slate-800/60 last:border-0">
-                        <td className="py-2 pr-3 font-mono text-slate-300">{s.period}</td>
-                        <td className="py-2 pr-3 text-right tabular-nums text-emerald-300">{formatCurrencyRp(s.commercialAmount)}</td>
-                        <td className="py-2 pr-3 text-right tabular-nums text-slate-300">{formatCurrencyRp(s.fiscalAmount)}</td>
-                        <td className="py-2 pr-3 text-right tabular-nums text-slate-300">{formatCurrencyRp(s.accumulatedCommercial)}</td>
-                        <td className="py-2 pr-3 text-right tabular-nums text-slate-300">{formatCurrencyRp(s.accumulatedFiscal)}</td>
-                        <td className="py-2 pr-3 text-right tabular-nums text-slate-200">{formatCurrencyRp(s.bookValueCommercial)}</td>
-                        <td className="py-2 pr-3 text-right tabular-nums text-slate-200">{formatCurrencyRp(s.bookValueFiscal)}</td>
+                      <tr key={s.id} className="border-b border-slate-200/60 last:border-0">
+                        <td className="py-2 pr-3 font-mono text-slate-700">{s.period}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums text-emerald-600">{formatCurrencyRp(s.commercialAmount)}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums text-slate-700">{formatCurrencyRp(s.fiscalAmount)}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums text-slate-700">{formatCurrencyRp(s.accumulatedCommercial)}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums text-slate-700">{formatCurrencyRp(s.accumulatedFiscal)}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(s.bookValueCommercial)}</td>
+                        <td className="py-2 pr-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(s.bookValueFiscal)}</td>
                         <td className="py-2">
                           {s.journalEntryId ? (
-                            <a href={`/dashboard/reports/ledger`} className="text-yellow-300/90 hover:underline">
+                            <a href={`/dashboard/reports/ledger`} className="text-amber-600/90 hover:underline">
                               ✓ tercatat
                             </a>
                           ) : (
@@ -509,10 +509,10 @@ function BulkUploadAssets({ clientId, onUploaded }: { clientId: string; onUpload
   };
 
   return (
-    <label className={`cursor-pointer rounded-lg border px-3 py-2 text-sm transition ${uploading ? "opacity-50" : "border-slate-700 text-slate-300 hover:border-yellow-400/50"}`}>
+    <label className={`cursor-pointer rounded-lg border px-3 py-2 text-sm transition ${uploading ? "opacity-50" : "border-slate-200 text-slate-700 hover:border-yellow-400/50"}`}>
       {uploading ? "Mengupload..." : "⬇ Upload Spreadsheet"}
       <input type="file" accept=".csv,.txt,.tsv" onChange={handleUpload} className="hidden" disabled={uploading} />
-      {msg && <span className={`ml-2 text-xs ${msg.startsWith("✅") ? "text-emerald-400" : "text-rose-400"}`}>{msg}</span>}
+      {msg && <span className={`ml-2 text-xs ${msg.startsWith("✅") ? "text-emerald-600" : "text-rose-600"}`}>{msg}</span>}
     </label>
   );
 }

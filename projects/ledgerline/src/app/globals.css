@@ -1,15 +1,19 @@
 @import "tailwindcss";
 
 :root {
-  --background: #0b1120;
-  --foreground: #e5e9f2;
-  --card: #101a30;
-  --card-border: #1e2a45;
-  --accent: #f5c518;
-  --trust: #3b82f6;  /* EN-05 trust blue — secondary accent for charts/CTAs */
-  --positive: #22c55e;
-  --warning: #f59e0b;
-  --danger: #ef4444;
+  /* Lark-inspired light theme (Feishu palette) */
+  --background: #f5f6f7;
+  --foreground: #1f2329;
+  --card: #ffffff;
+  --card-border: #e5e6eb;
+  --accent: #3370ff;        /* Lark brand blue — primary CTA/aksi */
+  --trust: #00a1ff;         /* secondary blue — info/link/chart */
+  --positive: #34c724;      /* Lark success green */
+  --warning: #ff8800;       /* Lark warning orange */
+  --danger: #f54a45;        /* Lark danger red */
+  --muted: #646a73;         /* text secondary */
+  --muted-fg: #8f959e;      /* text tertiary */
+  --hover: #f2f3f5;         /* hover fill */
 
   /* Typography: DM Sans (body) + Space Grotesk (heading, tabular numbers) */
   --font-sans: var(--font-dm-sans), system-ui, sans-serif;
@@ -27,12 +31,15 @@
   --color-positive: var(--positive);
   --color-warning: var(--warning);
   --color-danger: var(--danger);
+  --color-muted: var(--muted);
+  --color-muted-fg: var(--muted-fg);
+  --color-hover: var(--hover);
   --font-sans: var(--font-sans);
   --font-heading: var(--font-heading);
   --font-mono: var(--font-mono);
 }
 
-/* ── Base + grain overlay ─────────────────────────────────────────────── */
+/* ── Base + subtle texture ────────────────────────────────────────────── */
 
 body {
   background: var(--background);
@@ -48,7 +55,7 @@ body::before {
   inset: 0;
   z-index: 0;
   pointer-events: none;
-  opacity: 0.03;
+  opacity: 0.02;
   background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='1'/%3E%3C/svg%3E");
   background-repeat: repeat;
   background-size: 256px 256px;
@@ -64,13 +71,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::selection {
-  background: color-mix(in srgb, var(--accent) 30%, transparent);
+  background: color-mix(in srgb, var(--accent) 18%, transparent);
 }
 
 /* ── Accessibility ────────────────────────────────────────────────────── */
 
 :focus-visible {
-  outline: 2px solid var(--accent, #f5c518);
+  outline: 2px solid var(--accent, #3370ff);
   outline-offset: 2px;
   border-radius: 4px;
 }
@@ -136,8 +143,8 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .card-hover:hover {
-  border-color: color-mix(in srgb, var(--card-border) 70%, var(--accent));
-  box-shadow: 0 2px 12px rgba(245, 197, 24, 0.06);
+  border-color: color-mix(in srgb, var(--card-border) 60%, var(--accent));
+  box-shadow: 0 2px 12px rgba(51, 112, 255, 0.10);
   transform: translateY(-1px);
 }
 

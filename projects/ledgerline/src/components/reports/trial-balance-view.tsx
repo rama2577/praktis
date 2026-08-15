@@ -186,48 +186,48 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
   return (
     <div className="space-y-5">
       {/* Filter bar */}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Klien
           <select
             value={clientId}
             onChange={(e) => { setClientId(e.target.value); setReport(null); }}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
           >
             {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Periode
           <input
             type="month" value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
           />
         </label>
         <a
           href={exportUrl("csv") ?? "#"} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-slate-700 text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300" : "pointer-events-none opacity-40"}`}
+            clientId ? "border-slate-200 text-slate-800 hover:border-yellow-400/50 hover:text-amber-600" : "pointer-events-none opacity-40"}`}
         >↓ Ekspor CSV</a>
         <a
           href={exportUrl("xlsx") ?? "#"} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-slate-700 text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300" : "pointer-events-none opacity-40"}`}
+            clientId ? "border-slate-200 text-slate-800 hover:border-yellow-400/50 hover:text-amber-600" : "pointer-events-none opacity-40"}`}
         >↓ Ekspor XLSX</a>
-        <span className="rounded-lg border border-yellow-400/30 bg-yellow-400/10 px-3 py-2 text-xs text-yellow-300">
+        <span className="rounded-lg border border-yellow-400/30 bg-yellow-400/10 px-3 py-2 text-xs text-amber-600">
           📋 10-Kolom Big 4
         </span>
         <a
           href={clientId ? `/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet-csv` : "#"}
           aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-yellow-400/40 bg-yellow-400/10 text-yellow-300 hover:bg-yellow-400/20" : "pointer-events-none opacity-40"
+            clientId ? "border-yellow-400/40 bg-yellow-400/10 text-amber-600 hover:bg-yellow-400/20" : "pointer-events-none opacity-40"
           }`}
         >↓ Lajur CSV</a>
         {report?.periodStatus === "OPEN" && canLock && (
           <button type="button" onClick={() => void handleLock()} disabled={locking}
-            className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-yellow-300 transition hover:bg-yellow-400/20 disabled:opacity-50">
+            className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-amber-600 transition hover:bg-yellow-400/20 disabled:opacity-50">
             {locking ? "Mengunci…" : "🔒 Kunci Periode"}
           </button>
         )}
@@ -236,7 +236,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
       {error && <ErrorState message={error} onRetry={() => void load()} />}
 
       {loading && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-8 text-center text-sm text-slate-400">
+        <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-600">
           Menghitung neraca percobaan…
         </div>
       )}
@@ -255,15 +255,15 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
               ["Status", report.balanced ? "✓ Seimbang" : "Tidak seimbang"],
               ["Indikator", report.unusualCount === 0 ? "Semua wajar" : `${report.unusualCount} akun perlu cek`],
             ] as const).map(([label, val]) => (
-              <div key={label} className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
-                <p className="text-xs text-slate-400">{label}</p>
+              <div key={label} className="rounded-xl border border-slate-200 bg-white p-4">
+                <p className="text-xs text-slate-600">{label}</p>
                 <div className="mt-2">
                   {label === "Status" ? (
                     <Badge label={val} tone={report.balanced ? "positive" : "danger"} />
                   ) : label === "Indikator" ? (
                     <Badge label={val} tone={report.unusualCount === 0 ? "positive" : "danger"} />
                   ) : (
-                    <p className="font-mono text-lg text-slate-100">{val}</p>
+                    <p className="font-mono text-lg text-slate-900">{val}</p>
                   )}
                 </div>
               </div>
@@ -272,13 +272,13 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
 
           {/* ── 10-KOLOM WORKKSHEET — ditampilkan di mode "lajur" ── */}
           {mode === "lajur" && worksheet && (
-            <div className="rounded-xl border border-slate-800 bg-slate-900/50">
-              <div className="flex flex-wrap items-center gap-4 border-b border-slate-800 px-4 py-3">
+            <div className="rounded-xl border border-slate-200 bg-white">
+              <div className="flex flex-wrap items-center gap-4 border-b border-slate-200 px-4 py-3">
                 <div>
-                  <h3 className="text-sm font-medium text-slate-100">
+                  <h3 className="text-sm font-medium text-slate-900">
                     Neraca Lajur — {worksheet.clientName}
                   </h3>
-                  <p className="text-xs text-slate-400">
+                  <p className="text-xs text-slate-600">
                     {worksheet.period}
                     {worksheet.prevPeriodLabel ? ` · vs ${worksheet.prevPeriodLabel}` : ""}
                   </p>
@@ -287,7 +287,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                   {worksheet.balanced && <Badge label="Seimbang" tone="positive" />}
                   {!worksheet.balanced && <Badge label="Tidak seimbang" tone="danger" />}
                   {report.periodStatus === "CLOSED" && <Badge label="🔒 Terkunci" tone="accent" />}
-                  <span className="rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-400">
+                  <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
                     💰 {new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0}).format(worksheet.labaBersih)}
                   </span>
                   <span className="text-xs text-slate-500">{worksheet.lines.length} akun</span>
@@ -298,23 +298,23 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                 <table className="w-full min-w-[1400px] text-left text-sm">
                   {/* Row 1: main groups */}
                   <thead>
-                    <tr className="border-b border-slate-800 text-[11px] text-slate-400">
-                      <th className="sticky left-0 z-20 bg-slate-950 px-2 py-1.5" rowSpan={2}>No</th>
-                      <th className="sticky left-[40px] z-20 bg-slate-950 px-2 py-1.5" rowSpan={2}>Kode</th>
+                    <tr className="border-b border-slate-200 text-[11px] text-slate-600">
+                      <th className="sticky left-0 z-20 bg-slate-50 px-2 py-1.5" rowSpan={2}>No</th>
+                      <th className="sticky left-[40px] z-20 bg-slate-50 px-2 py-1.5" rowSpan={2}>Kode</th>
                       <th className="px-2 py-1.5" rowSpan={2}>Nama Akun</th>
                       <th className="px-2 py-1.5 text-center" colSpan={2}>Neraca Saldo</th>
-                      <th className="px-2 py-1.5 text-center bg-slate-800/30" colSpan={2}>Penyesuaian</th>
+                      <th className="px-2 py-1.5 text-center bg-slate-100/30" colSpan={2}>Penyesuaian</th>
                       <th className="px-2 py-1.5 text-center" colSpan={2}>NS Disesuaikan</th>
                       <th className="px-2 py-1.5 text-center" colSpan={2}>Laba Rugi</th>
                       <th className="px-2 py-1.5 text-center" colSpan={2}>Neraca</th>
                       <th className="px-2 py-1.5 text-center" colSpan={2}>vs Bln Lalu</th>
                     </tr>
                     {/* Row 2: D/K sub-headers */}
-                    <tr className="border-b border-slate-800 text-[10px] text-slate-500">
+                    <tr className="border-b border-slate-200 text-[10px] text-slate-500">
                       <th className="px-2 py-1 text-right">D</th>
                       <th className="px-2 py-1 text-right">K</th>
-                      <th className="px-2 py-1 text-right bg-slate-800/20">D</th>
-                      <th className="px-2 py-1 text-right bg-slate-800/20">K</th>
+                      <th className="px-2 py-1 text-right bg-slate-100/20">D</th>
+                      <th className="px-2 py-1 text-right bg-slate-100/20">K</th>
                       <th className="px-2 py-1 text-right">D</th>
                       <th className="px-2 py-1 text-right">K</th>
                       <th className="px-2 py-1 text-right">D</th>
@@ -332,8 +332,8 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                       return (
                         <tr
                           key={l.no}
-                          className={`border-b border-slate-800/60 ${
-                            isLaba ? "bg-yellow-400/10 font-semibold text-slate-100" : "text-slate-300"
+                          className={`border-b border-slate-200/60 ${
+                            isLaba ? "bg-yellow-400/10 font-semibold text-slate-900" : "text-slate-700"
                           } ${l.isAdjusting ? "ring-1 ring-inset ring-amber-400/30" : ""}`}
                         >
                           <td className={`sticky left-0 z-10 px-2 py-1.5 text-slate-500 ${rowBg}`}>{l.no}</td>
@@ -342,15 +342,15 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                             {l.accountCode ? (
                               <a
                                 href={`/dashboard/reports/ledger?clientId=${encodeURIComponent(report.clientId)}&accountCode=${encodeURIComponent(l.accountCode)}&period=${encodeURIComponent(worksheet.period)}`}
-                                className="text-slate-300 hover:text-yellow-300 hover:underline transition"
+                                className="text-slate-700 hover:text-amber-600 hover:underline transition"
                                 title={`Buku Besar ${l.accountName}`}
                               >{l.accountName}</a>
                             ) : l.accountName}
                           </td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.nsDebit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.nsCredit)}</td>
-                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-800/20 ${l.isAdjusting ? "text-amber-300" : ""}`}>{fmtOrEmpty(l.adjDebit)}</td>
-                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-800/20 ${l.isAdjusting ? "text-amber-300" : ""}`}>{fmtOrEmpty(l.adjCredit)}</td>
+                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-100/20 ${l.isAdjusting ? "text-amber-600" : ""}`}>{fmtOrEmpty(l.adjDebit)}</td>
+                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-100/20 ${l.isAdjusting ? "text-amber-600" : ""}`}>{fmtOrEmpty(l.adjCredit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.adjNsDebit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.adjNsCredit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.lrDebit)}</td>
@@ -362,7 +362,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                           </td>
                           <td className={`px-2 py-1.5 text-right font-mono text-[11px] ${
                             l.variancePct !== null
-                              ? l.variancePct > 20 ? "text-emerald-400" : l.variancePct < -20 ? "text-rose-400" : "text-slate-500"
+                              ? l.variancePct > 20 ? "text-emerald-600" : l.variancePct < -20 ? "text-rose-600" : "text-slate-500"
                               : ""
                           }`}>
                             {l.variancePct !== null ? `${l.variancePct >= 0 ? "↑" : "↓"}${Math.abs(l.variancePct).toFixed(0)}%` : ""}
@@ -372,12 +372,12 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                     })}
                   </tbody>
                   <tfoot>
-                    <tr className="border-t-2 border-slate-700 bg-slate-950 font-semibold text-slate-100 text-[11px]">
-                      <td className="sticky left-0 z-10 bg-slate-950 px-2 py-2" colSpan={3}>TOTAL</td>
+                    <tr className="border-t-2 border-slate-200 bg-slate-50 font-semibold text-slate-900 text-[11px]">
+                      <td className="sticky left-0 z-10 bg-slate-50 px-2 py-2" colSpan={3}>TOTAL</td>
                       <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsDebit)}</td>
                       <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.nsCredit)}</td>
-                      <td className="px-2 py-2 text-right font-mono bg-slate-800/20">{formatCurrencyRp(worksheet.totals.adjDebit)}</td>
-                      <td className="px-2 py-2 text-right font-mono bg-slate-800/20">{formatCurrencyRp(worksheet.totals.adjCredit)}</td>
+                      <td className="px-2 py-2 text-right font-mono bg-slate-100/20">{formatCurrencyRp(worksheet.totals.adjDebit)}</td>
+                      <td className="px-2 py-2 text-right font-mono bg-slate-100/20">{formatCurrencyRp(worksheet.totals.adjCredit)}</td>
                       <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.adjNsDebit)}</td>
                       <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.adjNsCredit)}</td>
                       <td className="px-2 py-2 text-right font-mono">{formatCurrencyRp(worksheet.totals.lrDebit)}</td>
@@ -394,13 +394,13 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
 
           {/* ── Mode Standar — tabel neraca percobaan ── */}
           {mode === "standar" && (
-          <div className="rounded-xl border border-slate-800 bg-slate-900/50">
-            <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
+          <div className="rounded-xl border border-slate-200 bg-white">
+            <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
               <div>
-                <h3 className="text-sm font-medium text-slate-100">
+                <h3 className="text-sm font-medium text-slate-900">
                   Neraca Percobaan — {report.clientName}
                 </h3>
-                <p className="text-xs text-slate-400">
+                <p className="text-xs text-slate-600">
                   Periode {report.period}
                   {report.prevPeriod ? ` · komparatif vs ${report.prevPeriod}` : ""} · {report.rows.length} akun
                 </p>
@@ -433,7 +433,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                     <TD className="font-mono">
                       <Link
                         href={`/dashboard/reports/ledger?clientId=${report.clientId}&accountCode=${encodeURIComponent(r.accountCode)}&period=${report.period}`}
-                        className="text-yellow-300/90 underline-offset-2 hover:underline"
+                        className="text-amber-600/90 underline-offset-2 hover:underline"
                         title={`Buku besar ${r.accountName}`}
                       >
                         {r.accountCode}
@@ -441,18 +441,18 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                     </TD>
                     <TD>{r.accountName}</TD>
                     <TD><Badge label={CLASS_LABELS[r.classification]} tone={CLASS_TONE[r.classification]} /></TD>
-                    <TD className="text-right font-mono text-slate-300">{r.debit > 0 ? formatCurrencyRp(r.debit) : "—"}</TD>
-                    <TD className="text-right font-mono text-slate-300">{r.credit > 0 ? formatCurrencyRp(r.credit) : "—"}</TD>
-                    <TD className="text-right font-mono text-slate-100">{formatCurrencyRp(r.balance)}</TD>
-                    <TD className="text-right font-mono text-slate-400">{r.prevBalance === null ? "—" : formatCurrencyRp(r.prevBalance)}</TD>
-                    <TD>{r.unusualReason && <span className="text-xs text-red-300" title={r.unusualReason}>⚠ {r.unusualReason}</span>}</TD>
+                    <TD className="text-right font-mono text-slate-700">{r.debit > 0 ? formatCurrencyRp(r.debit) : "—"}</TD>
+                    <TD className="text-right font-mono text-slate-700">{r.credit > 0 ? formatCurrencyRp(r.credit) : "—"}</TD>
+                    <TD className="text-right font-mono text-slate-900">{formatCurrencyRp(r.balance)}</TD>
+                    <TD className="text-right font-mono text-slate-600">{r.prevBalance === null ? "—" : formatCurrencyRp(r.prevBalance)}</TD>
+                    <TD>{r.unusualReason && <span className="text-xs text-red-600" title={r.unusualReason}>⚠ {r.unusualReason}</span>}</TD>
                   </TR>
                 ))}
               </TBody>
             </Table>
-            <div className="flex justify-between border-t border-slate-800 px-4 py-3 text-sm">
-              <span className="text-slate-400">Total</span>
-              <span className="font-mono text-slate-200">
+            <div className="flex justify-between border-t border-slate-200 px-4 py-3 text-sm">
+              <span className="text-slate-600">Total</span>
+              <span className="font-mono text-slate-800">
                 {formatCurrencyRp(report.totalDebit)} = {formatCurrencyRp(report.totalCredit)}
               </span>
             </div>

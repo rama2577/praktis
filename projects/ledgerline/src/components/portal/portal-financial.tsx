@@ -43,14 +43,14 @@ type PortalFinancial = {
 
 function StmtBlock({ title, stmt }: { title: string; stmt: Statement }) {
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-4">
-      <h4 className="mb-2 text-center text-sm font-bold text-slate-100">{title}</h4>
+    <div className="rounded-xl border border-slate-200 bg-slate-50/60 p-4">
+      <h4 className="mb-2 text-center text-sm font-bold text-slate-900">{title}</h4>
       <div className="space-y-0.5">
         {stmt.lines.map((l, i) => (
           <div
             key={i}
             className={`flex justify-between gap-3 text-xs ${
-              l.bold ? "border-t border-slate-800 pt-1 font-semibold text-slate-100" : "text-slate-400"
+              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-600"
             }`}
             style={{ paddingLeft: `${(l.indent ?? 0) * 14}px` }}
           >
@@ -99,12 +99,12 @@ export function PortalFinancial({ token }: { token: string }) {
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-center gap-3">
-        <h3 className="font-display text-lg font-bold text-slate-100">Laporan Keuangan</h3>
+        <h3 className="font-display text-lg font-bold text-slate-900">Laporan Keuangan</h3>
         {data && (
           <select
             value={period}
             onChange={(e) => void load(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-1.5 text-sm text-slate-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-1.5 text-sm text-slate-900"
           >
             {data.availablePeriods.map((p) => (
               <option key={p} value={p}>
@@ -135,7 +135,7 @@ export function PortalFinancial({ token }: { token: string }) {
           {/* Neraca lajur */}
           <Card className="p-4">
             <div className="mb-3 flex items-center justify-between">
-              <h4 className="text-sm font-bold text-slate-100">Neraca Lajur</h4>
+              <h4 className="text-sm font-bold text-slate-900">Neraca Lajur</h4>
               {data.worksheet.balanced ? (
                 <Badge label="Seimbang ✓" tone="positive" />
               ) : (
@@ -145,7 +145,7 @@ export function PortalFinancial({ token }: { token: string }) {
             <div className="overflow-x-auto">
               <table className="w-full min-w-[820px] text-left text-xs">
                 <thead>
-                  <tr className="border-b border-slate-800 text-slate-400">
+                  <tr className="border-b border-slate-200 text-slate-600">
                     <th className="px-2 py-1.5">No</th>
                     <th className="px-2 py-1.5">Akun</th>
                     <th className="px-2 py-1.5 text-right" colSpan={2}>Neraca Saldo</th>
@@ -155,7 +155,7 @@ export function PortalFinancial({ token }: { token: string }) {
                 </thead>
                 <tbody>
                   {data.worksheet.lines.map((l) => (
-                    <tr key={l.no} className={`border-b border-slate-800/60 ${l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold" : "text-slate-300"}`}>
+                    <tr key={l.no} className={`border-b border-slate-200/60 ${l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold" : "text-slate-700"}`}>
                       <td className="px-2 py-1.5 text-slate-500">{l.no}</td>
                       <td className="px-2 py-1.5">{l.accountName}</td>
                       <td className="px-2 py-1.5 text-right font-mono">{l.nsDebit ? rp(l.nsDebit) : ""}</td>
@@ -173,17 +173,17 @@ export function PortalFinancial({ token }: { token: string }) {
 
           {/* Analisa */}
           <Card className="p-4">
-            <h4 className="mb-2 text-sm font-bold text-slate-100">Analisa Laporan Keuangan</h4>
-            <ul className="list-disc space-y-1.5 pl-5 text-xs text-slate-300">
+            <h4 className="mb-2 text-sm font-bold text-slate-900">Analisa Laporan Keuangan</h4>
+            <ul className="list-disc space-y-1.5 pl-5 text-xs text-slate-700">
               {data.analysis.narrative.map((n, i) => (
                 <li key={i}>{n}</li>
               ))}
             </ul>
             <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
               {data.analysis.ratios.map((r) => (
-                <div key={r.label} className="rounded-lg border border-slate-800 px-3 py-2 text-xs">
-                  <span className="text-slate-400">{r.label}: </span>
-                  <span className="font-mono text-slate-200">{r.value === null ? "N/A" : r.value.toFixed(2)}</span>
+                <div key={r.label} className="rounded-lg border border-slate-200 px-3 py-2 text-xs">
+                  <span className="text-slate-600">{r.label}: </span>
+                  <span className="font-mono text-slate-800">{r.value === null ? "N/A" : r.value.toFixed(2)}</span>
                   <span className="ml-1 text-slate-500">({r.verdict})</span>
                 </div>
               ))}
@@ -192,13 +192,13 @@ export function PortalFinancial({ token }: { token: string }) {
 
           {/* Pajak */}
           <Card className="p-4">
-            <h4 className="mb-2 text-sm font-bold text-slate-100">
+            <h4 className="mb-2 text-sm font-bold text-slate-900">
               Analisa Pajak — Tax Ratio:{" "}
-              <span className="font-mono text-yellow-300">
+              <span className="font-mono text-amber-600">
                 {data.taxAnalysis.taxRatio.value === null ? "N/A" : `${(data.taxAnalysis.taxRatio.value * 100).toFixed(1)}%`}
               </span>
             </h4>
-            <ul className="list-disc space-y-1.5 pl-5 text-xs text-slate-300">
+            <ul className="list-disc space-y-1.5 pl-5 text-xs text-slate-700">
               {data.taxAnalysis.narrative.map((n, i) => (
                 <li key={i}>{n}</li>
               ))}
@@ -207,15 +207,15 @@ export function PortalFinancial({ token }: { token: string }) {
 
           {/* CALK */}
           <Card className="p-4">
-            <h4 className="mb-3 text-sm font-bold text-slate-100">Catatan atas Laporan Keuangan</h4>
+            <h4 className="mb-3 text-sm font-bold text-slate-900">Catatan atas Laporan Keuangan</h4>
             <div className="space-y-4">
               {data.calk.sections.map((s) => (
                 <div key={s.number}>
-                  <h5 className="mb-1 text-xs font-semibold text-yellow-300">
+                  <h5 className="mb-1 text-xs font-semibold text-amber-600">
                     {s.number}. {s.title}
                   </h5>
                   {s.paragraphs.map((p, i) => (
-                    <p key={i} className="text-xs leading-relaxed text-slate-400">
+                    <p key={i} className="text-xs leading-relaxed text-slate-600">
                       {p}
                     </p>
                   ))}

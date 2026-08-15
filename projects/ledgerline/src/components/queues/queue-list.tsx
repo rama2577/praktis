@@ -225,16 +225,16 @@ export function QueueList() {
   return (
     <div className="space-y-8">
       {flash && (
-        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
+        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600">
           {flash}
         </div>
       )}
 
       {/* EN-06: Batch approve bar — muncul saat ada task terpilih */}
       {selected.size > 0 && (
-        <div className="sticky top-2 z-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-yellow-400/40 bg-slate-900/95 px-4 py-3 shadow-lg backdrop-blur">
-          <p className="text-sm text-slate-200">
-            <span className="font-semibold text-yellow-400">{selected.size}</span> task dipilih · confidence ≥{" "}
+        <div className="sticky top-2 z-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-yellow-400/40 bg-slate-50/95 px-4 py-3 shadow-lg backdrop-blur">
+          <p className="text-sm text-slate-800">
+            <span className="font-semibold text-amber-600">{selected.size}</span> task dipilih · confidence ≥{" "}
             {Math.round(BATCH_CONFIDENCE_MIN * 100)}%
           </p>
           <div className="flex items-center gap-2">
@@ -242,7 +242,7 @@ export function QueueList() {
               type="button"
               disabled={batchBusy}
               onClick={() => setSelected(new Set())}
-              className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 disabled:opacity-50"
+              className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100 disabled:opacity-50"
             >
               Batal
             </button>
@@ -260,12 +260,12 @@ export function QueueList() {
 
       {/* Filter klien — agar tidak semua klien tampil dalam satu tabel kerja */}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Sortir klien
           <select
             value={clientFilter}
             onChange={(e) => setClientFilter(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
           >
             <option value="">Semua klien ({data?.data.length ?? 0})</option>
             {clients.map((c) => (
@@ -277,7 +277,7 @@ export function QueueList() {
           <button
             type="button"
             onClick={() => setClientFilter("")}
-            className="mt-4 rounded-md border border-slate-700 px-2 py-1.5 text-xs text-slate-400 hover:text-slate-200"
+            className="mt-4 rounded-md border border-slate-200 px-2 py-1.5 text-xs text-slate-600 hover:text-slate-800"
           >
             ✕ Hapus filter
           </button>
@@ -292,14 +292,14 @@ export function QueueList() {
         <section key={stage}>
           <div className="mb-3 flex items-center gap-3">
             {stageBadge(stage)}
-            <span className="rounded-full bg-slate-800 px-2 py-0.5 text-xs text-slate-300">{tasks.length}</span>
+            <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-700">{tasks.length}</span>
           </div>
           <div className="space-y-3">
             {tasks.map((task) => (
               <div
                 key={task.id}
-                className={`rounded-xl border bg-slate-900/60 p-4 transition-colors ${
-                  task.urgent ? "border-red-500/40" : "border-slate-800"
+                className={`rounded-xl border bg-white p-4 transition-colors ${
+                  task.urgent ? "border-red-500/40" : "border-slate-200"
                 }`}
               >
                 <div className="flex flex-wrap items-start justify-between gap-3">
@@ -316,24 +316,24 @@ export function QueueList() {
                             ? `Confidence di bawah ambang batch (${Math.round(BATCH_CONFIDENCE_MIN * 100)}%)`
                             : "Pilih untuk batch approve"
                         }
-                        className="h-4 w-4 shrink-0 rounded border-slate-600 bg-slate-800 accent-yellow-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="h-4 w-4 shrink-0 rounded border-slate-300 bg-slate-100 accent-yellow-400 disabled:cursor-not-allowed disabled:opacity-40"
                       />
-                      <span className="font-medium text-slate-100">{task.journalEntry.client.name}</span>
+                      <span className="font-medium text-slate-900">{task.journalEntry.client.name}</span>
                       {task.urgent && <StatusBadge label="Urgent" tone="danger" />}
                       <StatusBadge
                         label={`${Math.round(task.journalEntry.confidence * 100)}% keyakinan AI`}
                         tone={task.journalEntry.confidence >= 0.7 ? "positive" : "warning"}
                       />
                     </div>
-                    <p className="mt-1 text-sm text-slate-300">{task.journalEntry.description}</p>
+                    <p className="mt-1 text-sm text-slate-700">{task.journalEntry.description}</p>
                     <p className="mt-0.5 text-xs text-slate-500">
                       {task.journalEntry.document?.fileName ?? "Tanpa dokumen"} · Tahap: {stageLabel(stage)}
                     </p>
                   </div>
                   <div className="flex items-center gap-3 text-right">
-                    <div className="text-xs text-slate-400">
+                    <div className="text-xs text-slate-600">
                       <div>Tenggat</div>
-                      <div className={task.dueAt && new Date(task.dueAt).getTime() <= Date.now() ? "font-semibold text-red-400" : "text-slate-200"}>
+                      <div className={task.dueAt && new Date(task.dueAt).getTime() <= Date.now() ? "font-semibold text-red-600" : "text-slate-800"}>
                         {formatDue(task.dueAt)}
                       </div>
                     </div>
@@ -344,7 +344,7 @@ export function QueueList() {
                         setNote("");
                         setAction(null);
                       }}
-                      className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-sm text-slate-200 hover:bg-slate-700"
+                      className="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-sm text-slate-800 hover:bg-slate-200"
                     >
                       {openTaskId === task.id ? "Tutup" : "Review"}
                     </button>
@@ -355,7 +355,7 @@ export function QueueList() {
                         setNote("");
                         setAction(null);
                       }}
-                      className="rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-sm text-sky-300 hover:bg-sky-500/20"
+                      className="rounded-lg border border-sky-500/40 bg-sky-500/10 px-3 py-1.5 text-sm text-sky-600 hover:bg-sky-500/20"
                     >
                       {editTaskId === task.id ? "Tutup Edit" : "✏️ Edit"}
                     </button>
@@ -363,7 +363,7 @@ export function QueueList() {
                 </div>
 
                 {editTaskId === task.id && (
-                  <div className="mt-4 space-y-4 border-t border-slate-800 pt-4">
+                  <div className="mt-4 space-y-4 border-t border-slate-200 pt-4">
                     <JournalLinesEditor
                       taskId={task.id}
                       initialLines={task.journalEntry.lines}
@@ -379,10 +379,10 @@ export function QueueList() {
                 )}
 
                 {openTaskId === task.id && (
-                  <div className="mt-4 space-y-4 border-t border-slate-800 pt-4">
-                    <div className="overflow-x-auto rounded-lg border border-slate-800">
+                  <div className="mt-4 space-y-4 border-t border-slate-200 pt-4">
+                    <div className="overflow-x-auto rounded-lg border border-slate-200">
                       <table className="w-full text-left text-sm">
-                        <thead className="bg-slate-800/60 text-xs uppercase tracking-wide text-slate-400">
+                        <thead className="bg-slate-100 text-xs uppercase tracking-wide text-slate-600">
                           <tr>
                             <th scope="col" className="px-3 py-2">Kode</th>
                             <th scope="col" className="px-3 py-2">Akun</th>
@@ -394,11 +394,11 @@ export function QueueList() {
                         <tbody className="divide-y divide-slate-800">
                           {task.journalEntry.lines.map((l) => (
                             <tr key={l.id}>
-                              <td className="px-3 py-2 font-mono text-xs text-slate-300">{l.accountCode}</td>
-                              <td className="px-3 py-2 text-slate-200">{l.accountName}</td>
-                              <td className="px-3 py-2 text-right font-mono text-slate-200">{l.debit !== "0" ? formatIdr(l.debit) : "–"}</td>
-                              <td className="px-3 py-2 text-right font-mono text-slate-200">{l.credit !== "0" ? formatIdr(l.credit) : "–"}</td>
-                              <td className="px-3 py-2 font-mono text-xs text-slate-400">{l.psakRef}</td>
+                              <td className="px-3 py-2 font-mono text-xs text-slate-700">{l.accountCode}</td>
+                              <td className="px-3 py-2 text-slate-800">{l.accountName}</td>
+                              <td className="px-3 py-2 text-right font-mono text-slate-800">{l.debit !== "0" ? formatIdr(l.debit) : "–"}</td>
+                              <td className="px-3 py-2 text-right font-mono text-slate-800">{l.credit !== "0" ? formatIdr(l.credit) : "–"}</td>
+                              <td className="px-3 py-2 font-mono text-xs text-slate-600">{l.psakRef}</td>
                             </tr>
                           ))}
                         </tbody>
@@ -406,15 +406,15 @@ export function QueueList() {
                     </div>
 
                     {/* EN-06: Shortcut bar */}
-                    <div className="flex items-center gap-3 rounded-lg border border-slate-700/50 bg-slate-800/40 px-3 py-1.5 text-[11px] text-slate-400">
+                    <div className="flex items-center gap-3 rounded-lg border border-slate-200/50 bg-slate-100 px-3 py-1.5 text-[11px] text-slate-600">
                       <span className="text-slate-500">⌨️</span>
-                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">A</kbd> Setujui</span>
+                      <span><kbd className="rounded bg-slate-200 px-1 py-0.5 text-[10px] text-slate-700">A</kbd> Setujui</span>
                       <span className="text-slate-600">·</span>
-                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">R</kbd> Kembalikan</span>
+                      <span><kbd className="rounded bg-slate-200 px-1 py-0.5 text-[10px] text-slate-700">R</kbd> Kembalikan</span>
                       <span className="text-slate-600">·</span>
-                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">X</kbd> Tolak</span>
+                      <span><kbd className="rounded bg-slate-200 px-1 py-0.5 text-[10px] text-slate-700">X</kbd> Tolak</span>
                       <span className="text-slate-600">·</span>
-                      <span><kbd className="rounded bg-slate-700 px-1 py-0.5 text-[10px] text-slate-300">Esc</kbd> Tutup</span>
+                      <span><kbd className="rounded bg-slate-200 px-1 py-0.5 text-[10px] text-slate-700">Esc</kbd> Tutup</span>
                     </div>
 
                     <div className="space-y-3">
@@ -424,7 +424,7 @@ export function QueueList() {
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="Catatan review (wajib untuk Tolak)…"
                         rows={2}
-                        className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-yellow-400/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-500 focus:border-yellow-400/50 focus:outline-none"
                       />
                       <div className="flex flex-wrap gap-2">
                         <button
@@ -437,14 +437,14 @@ export function QueueList() {
                         <button
                           disabled={busy}
                           onClick={() => submitAction(task.id, "return")}
-                          className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-300 hover:bg-amber-500/20 disabled:opacity-50"
+                          className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-600 hover:bg-amber-500/20 disabled:opacity-50"
                         >
                           Kembalikan <kbd className="ml-1 rounded border border-amber-500/30 bg-amber-500/10 px-1 py-0.5 text-[10px]">R</kbd>
                         </button>
                         <button
                           disabled={busy}
                           onClick={() => submitAction(task.id, "reject")}
-                          className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 hover:bg-red-500/20 disabled:opacity-50"
+                          className="rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-600 hover:bg-red-500/20 disabled:opacity-50"
                         >
                           Tolak <kbd className="ml-1 rounded border border-red-500/30 bg-red-500/10 px-1 py-0.5 text-[10px]">X</kbd>
                         </button>

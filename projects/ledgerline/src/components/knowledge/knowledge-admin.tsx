@@ -152,7 +152,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
       </div>
 
       {error && (
-        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+        <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-600">
           {error}
         </div>
       )}
@@ -160,15 +160,15 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
       {showForm && canEdit && (
         <form
           onSubmit={createDraft}
-          className="space-y-3 rounded-xl border border-slate-700 bg-slate-900/60 p-4"
+          className="space-y-3 rounded-xl border border-slate-200 bg-white p-4"
         >
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-400">Kategori</span>
+              <span className="mb-1 block text-slate-600">Kategori</span>
               <select
                 value={fCategory}
                 onChange={(e) => setFCategory(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
               >
                 <option>Peraturan Pajak</option>
                 <option>Chart of Accounts (COA)</option>
@@ -182,54 +182,54 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
               </select>
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-400">
+              <span className="mb-1 block text-slate-600">
                 Nama (slug, tanpa ekstensi — mis. tax-rules-ppn)
               </span>
               <input
                 value={fName}
                 onChange={(e) => setFName(e.target.value)}
                 placeholder="tax-rules-ppn"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
               />
             </label>
           </div>
           <div className="grid gap-3 sm:grid-cols-2">
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-400">Judul</span>
+              <span className="mb-1 block text-slate-600">Judul</span>
               <input
                 value={fTitle}
                 onChange={(e) => setFTitle(e.target.value)}
                 placeholder="Aturan PPN v2"
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
               />
             </label>
             <label className="block text-xs">
-              <span className="mb-1 block text-slate-400">Tanggal efektif</span>
+              <span className="mb-1 block text-slate-600">Tanggal efektif</span>
               <input
                 type="date"
                 value={fEffective}
                 onChange={(e) => setFEffective(e.target.value)}
-                className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
               />
             </label>
           </div>
           <label className="block text-xs">
-            <span className="mb-1 block text-slate-400">Isi aturan</span>
+            <span className="mb-1 block text-slate-600">Isi aturan</span>
             <textarea
               value={fContent}
               onChange={(e) => setFContent(e.target.value)}
               rows={6}
               placeholder="Tulis konten aturan baru…"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-800 focus:border-yellow-400/50 focus:outline-none"
             />
           </label>
           <label className="block text-xs">
-            <span className="mb-1 block text-slate-400">Catatan perubahan (audit trail)</span>
+            <span className="mb-1 block text-slate-600">Catatan perubahan (audit trail)</span>
             <input
               value={fNote}
               onChange={(e) => setFNote(e.target.value)}
               placeholder="Alasan perubahan…"
-              className="w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
             />
           </label>
           <button
@@ -245,14 +245,14 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
       {loading ? (
         <div className="py-8 text-center text-sm text-slate-500">Memuat versi knowledge…</div>
       ) : items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-700 p-8 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">
           Belum ada knowledge terkelola — seed otomatis dari file referensi.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-xl border border-slate-800 bg-slate-900/40">
+        <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
                 <th className="px-4 py-3 font-medium">Aturan</th>
                 <th className="px-4 py-3 font-medium">Versi</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -265,7 +265,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
               {items.map((item) => (
                 <tr
                   key={item.id}
-                  className="border-b border-slate-800/60 last:border-0 hover:bg-white/[0.02]"
+                  className="border-b border-slate-200/60 last:border-0 hover:bg-white/[0.02]"
                 >
                   <td className="px-4 py-3">
                     <div className="font-medium">{item.title}</div>
@@ -277,7 +277,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                   <td className="px-4 py-3">
                     <StatusBadge label={STATUS_LABELS[item.status]} tone={STATUS_TONE[item.status]} />
                   </td>
-                  <td className="px-4 py-3 text-slate-400">{fmtDate(item.effectiveDate)}</td>
+                  <td className="px-4 py-3 text-slate-600">{fmtDate(item.effectiveDate)}</td>
                   <td className="max-w-[220px] truncate px-4 py-3 text-xs text-slate-500">
                     {item.changeNote ?? "—"}
                   </td>
@@ -288,7 +288,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                           type="button"
                           disabled={busy === item.id}
                           onClick={() => void act(item.id, "approve")}
-                          className="rounded-md border border-emerald-500/40 px-2 py-1 text-xs text-emerald-300 transition hover:bg-emerald-500/10 disabled:opacity-50"
+                          className="rounded-md border border-emerald-500/40 px-2 py-1 text-xs text-emerald-600 transition hover:bg-emerald-500/10 disabled:opacity-50"
                         >
                           Setujui
                         </button>
@@ -296,7 +296,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                           type="button"
                           disabled={busy === item.id}
                           onClick={() => void act(item.id, "reject")}
-                          className="rounded-md border border-red-500/40 px-2 py-1 text-xs text-red-300 transition hover:bg-red-500/10 disabled:opacity-50"
+                          className="rounded-md border border-red-500/40 px-2 py-1 text-xs text-red-600 transition hover:bg-red-500/10 disabled:opacity-50"
                         >
                           Tolak
                         </button>

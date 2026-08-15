@@ -17,8 +17,8 @@ export default async function KnowledgePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-100">Knowledge Base</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Knowledge Base</h1>
+        <p className="mt-1 text-sm text-slate-600">
           Aturan akuntansi Indonesia (COA, PPN/PPh, PSAK, template jurnal) — versi terkelola dengan
           tanggal efektif & persetujuan Senior/Partner.
         </p>

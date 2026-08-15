@@ -11,7 +11,7 @@ export default async function ClientsPage() {
   return (
     <div>
       <h1 className="text-xl font-semibold tracking-tight">Klien</h1>
-      <p className="mt-1 text-sm text-slate-400">
+      <p className="mt-1 text-sm text-slate-600">
         Kelola klien kantor akuntan. Industri menentukan COA yang dipakai saat
         AI menyusun draft jurnal.
       </p>

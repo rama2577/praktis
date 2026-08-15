@@ -34,24 +34,24 @@ export default async function SettingsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-slate-100">Pengaturan</h1>
-        <p className="text-sm text-slate-400">Profil firma, pengguna, dan informasi workspace.</p>
+        <h1 className="font-display text-2xl font-bold text-slate-900">Pengaturan</h1>
+        <p className="text-sm text-slate-600">Profil firma, pengguna, dan informasi workspace.</p>
       </div>
 
       <Card className="p-4">
-        <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Profil Firma</h2>
+        <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Profil Firma</h2>
         <dl className="grid gap-2 text-sm sm:grid-cols-2">
           <div>
             <dt className="text-xs text-slate-500">Nama</dt>
-            <dd className="text-slate-200">{firm?.name ?? "—"}</dd>
+            <dd className="text-slate-800">{firm?.name ?? "—"}</dd>
           </div>
           <div>
             <dt className="text-xs text-slate-500">Klien aktif</dt>
-            <dd className="text-slate-200">{clients}</dd>
+            <dd className="text-slate-800">{clients}</dd>
           </div>
           <div>
             <dt className="text-xs text-slate-500">Sesi Anda</dt>
-            <dd className="text-slate-200">
+            <dd className="text-slate-800">
               {session.user.name} · {session.user.email} ·{" "}
               <Badge label={ROLE_LABEL[session.user.role] ?? session.user.role} tone="accent" />
             </dd>
@@ -60,7 +60,7 @@ export default async function SettingsPage() {
       </Card>
 
       <Card className="p-4">
-        <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Pengguna ({users.length})</h2>
+        <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Pengguna ({users.length})</h2>
         <div className="overflow-x-auto">
           <Table>
             <thead>
@@ -74,7 +74,7 @@ export default async function SettingsPage() {
             <tbody>
               {users.map((u) => (
                 <TR key={u.id}>
-                  <TD className="font-medium text-slate-200">{u.name}</TD>
+                  <TD className="font-medium text-slate-800">{u.name}</TD>
                   <TD>{u.email}</TD>
                   <TD>{ROLE_LABEL[u.role] ?? u.role}</TD>
                   <TD>

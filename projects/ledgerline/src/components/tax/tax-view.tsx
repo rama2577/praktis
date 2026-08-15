@@ -113,20 +113,20 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
   return (
     <div className="space-y-6">
       {flash && (
-        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
+        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600">
           {flash}
         </div>
       )}
-      {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-300">{error}</div>}
+      {error && <div className="rounded-lg border border-red-500/30 bg-red-500/10 px-4 py-2 text-sm text-red-600">{error}</div>}
 
       {/* Toolbar */}
-      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-700 bg-slate-900/40 p-4">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+      <div className="flex flex-wrap items-end gap-3 rounded-xl border border-slate-200 bg-white p-4">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Klien
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/60 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
           >
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -135,18 +135,18 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Periode
           <input
             type="month"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/60 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
           />
         </label>
         <button
           onClick={() => void load(clientId, period)}
-          className="rounded-lg border border-slate-600 px-4 py-2 text-sm text-slate-200 hover:border-yellow-400/50 hover:text-yellow-300"
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 hover:border-yellow-400/50 hover:text-amber-600"
         >
           Muat
         </button>
@@ -155,7 +155,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
             <a
               key={t.value}
               href={`/api/clients/${clientId}/tax/export?period=${period}&type=${t.value}`}
-              className="rounded-lg bg-yellow-400/10 px-3 py-2 text-xs font-medium text-yellow-300 ring-1 ring-yellow-400/30 hover:bg-yellow-400/20"
+              className="rounded-lg bg-yellow-400/10 px-3 py-2 text-xs font-medium text-amber-600 ring-1 ring-yellow-400/30 hover:bg-yellow-400/20"
             >
               ↓ {t.label}
             </a>
@@ -163,7 +163,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
         </div>
       </div>
 
-      {loading && <p className="text-sm text-slate-400">Memuat data pajak…</p>}
+      {loading && <p className="text-sm text-slate-600">Memuat data pajak…</p>}
 
       {!loading && summary && (
         <>
@@ -180,8 +180,8 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
           </div>
 
           {/* Review baris pajak */}
-          <div className="rounded-xl border border-slate-800 bg-slate-900/40">
-            <div className="border-b border-slate-800 px-4 py-3">
+          <div className="rounded-xl border border-slate-200 bg-white">
+            <div className="border-b border-slate-200 px-4 py-3">
               <h2 className="text-sm font-semibold">Review Baris Pajak</h2>
               <p className="mt-0.5 text-xs text-slate-500">
                 {summary.lineCount} baris akun pajak untuk {summary.period} — kode diinferensikan otomatis, bisa di-override per baris.
@@ -193,7 +193,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[860px] text-left text-sm">
                   <thead>
-                    <tr className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-500">
+                    <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
                       <th className="px-4 py-3 font-medium">Tanggal</th>
                       <th className="px-4 py-3 font-medium">Deskripsi</th>
                       <th className="px-4 py-3 font-medium">Akun</th>
@@ -208,16 +208,16 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                       const ov = lineOverrides[l.lineId];
                       const current = l.taxCode ?? "";
                       return (
-                        <tr key={l.lineId} className="border-b border-slate-800/60 last:border-0 hover:bg-white/[0.02]">
-                          <td className="px-4 py-2.5 text-xs text-slate-400">
+                        <tr key={l.lineId} className="border-b border-slate-200/60 last:border-0 hover:bg-white/[0.02]">
+                          <td className="px-4 py-2.5 text-xs text-slate-600">
                             {new Date(l.entryDate).toLocaleDateString("id-ID", { day: "2-digit", month: "short" })}
                           </td>
-                          <td className="px-4 py-2.5 text-slate-300">{l.journalDescription ?? "—"}</td>
+                          <td className="px-4 py-2.5 text-slate-700">{l.journalDescription ?? "—"}</td>
                           <td className="px-4 py-2.5">
-                            <span className="font-mono text-xs text-slate-400">{l.accountCode}</span>{" "}
+                            <span className="font-mono text-xs text-slate-600">{l.accountCode}</span>{" "}
                             <span className="text-xs text-slate-500">{l.accountName}</span>
                           </td>
-                          <td className="px-4 py-2.5 text-right tabular-nums text-slate-200">
+                          <td className="px-4 py-2.5 text-right tabular-nums text-slate-800">
                             {formatCurrencyRp(l.credit > 0 ? l.credit : l.debit)}
                           </td>
                           <td className="px-4 py-2.5">
@@ -228,7 +228,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                               onChange={(e) =>
                                 setLineOverrides((prev) => ({ ...prev, [l.lineId]: { taxCode: ov?.taxCode ?? "", taxBase: e.target.value } }))
                               }
-                              className="w-28 rounded border border-slate-700 bg-slate-950/60 px-2 py-1 text-right text-xs text-slate-200 focus:border-yellow-400/60 focus:outline-none"
+                              className="w-28 rounded border border-slate-200 bg-slate-50/60 px-2 py-1 text-right text-xs text-slate-800 focus:border-yellow-400/60 focus:outline-none"
                             />
                           </td>
                           <td className="px-4 py-2.5">
@@ -237,7 +237,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                               onChange={(e) =>
                                 setLineOverrides((prev) => ({ ...prev, [l.lineId]: { taxCode: e.target.value, taxBase: ov?.taxBase ?? "" } }))
                               }
-                              className="max-w-[220px] rounded border border-slate-700 bg-slate-950/60 px-2 py-1 text-xs text-slate-200 focus:border-yellow-400/60 focus:outline-none"
+                              className="max-w-[220px] rounded border border-slate-200 bg-slate-50/60 px-2 py-1 text-xs text-slate-800 focus:border-yellow-400/60 focus:outline-none"
                             >
                               <option value="">Auto: {current || "—"}</option>
                               {TAX_CODE_OPTIONS.map((o) => (
@@ -250,7 +250,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                           <td className="px-4 py-2.5">
                             <button
                               onClick={() => void saveOverride(l.lineId)}
-                              className="rounded border border-slate-600 px-2 py-1 text-xs text-slate-300 hover:border-yellow-400/50 hover:text-yellow-300"
+                              className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600"
                             >
                               Simpan
                             </button>
@@ -270,9 +270,9 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
 }
 
 function SummaryCard({ label, value, sub, tone = "default" }: { label: string; value: number; sub: string; tone?: "default" | "emerald" | "amber" | "slate" }) {
-  const valueTone = tone === "emerald" ? "text-emerald-300" : tone === "amber" ? "text-amber-300" : tone === "slate" ? "text-slate-300" : "text-yellow-300";
+  const valueTone = tone === "emerald" ? "text-emerald-600" : tone === "amber" ? "text-amber-600" : tone === "slate" ? "text-slate-700" : "text-amber-600";
   return (
-    <div className="rounded-xl border border-slate-700 bg-slate-900/40 p-4">
+    <div className="rounded-xl border border-slate-200 bg-white p-4">
       <p className="text-xs uppercase tracking-wider text-slate-500">{label}</p>
       <p className={`mt-1 text-xl font-semibold tabular-nums ${valueTone}`}>{formatCurrencyRp(value)}</p>
       <p className="mt-0.5 text-xs text-slate-500">{sub}</p>

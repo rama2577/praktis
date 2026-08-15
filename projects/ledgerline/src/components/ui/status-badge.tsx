@@ -1,11 +1,11 @@
 export type StatusTone = "positive" | "warning" | "danger" | "neutral" | "accent";
 
 const TONE_CLASSES: Record<StatusTone, string> = {
-  positive: "bg-emerald-500/10 text-emerald-400 border-emerald-500/30",
-  warning: "bg-amber-500/10 text-amber-400 border-amber-500/30",
-  danger: "bg-red-500/10 text-red-400 border-red-500/30",
-  neutral: "bg-slate-500/10 text-slate-400 border-slate-500/30",
-  accent: "bg-yellow-400/10 text-yellow-400 border-yellow-400/30",
+  positive: "bg-emerald-500/10 text-emerald-600 border-emerald-500/30",
+  warning: "bg-amber-500/10 text-amber-600 border-amber-500/30",
+  danger: "bg-red-500/10 text-red-600 border-red-500/30",
+  neutral: "bg-slate-500/10 text-slate-600 border-slate-500/30",
+  accent: "bg-blue-500/10 text-blue-600 border-blue-500/30",
 };
 
 export function StatusBadge({

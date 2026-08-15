@@ -50,10 +50,10 @@ const TYPE_LABEL: Record<string, string> = {
 };
 
 const TYPE_TONE: Record<string, string> = {
-  CUSTOMER: "text-sky-300",
-  VENDOR: "text-amber-300",
-  SHAREHOLDER: "text-violet-300",
-  OTHER: "text-slate-400",
+  CUSTOMER: "text-sky-600",
+  VENDOR: "text-amber-600",
+  SHAREHOLDER: "text-violet-600",
+  OTHER: "text-slate-600",
 };
 
 export function SubledgerView({ clientId }: { clientId: string }) {
@@ -127,7 +127,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
     }
   }, [clientId, form, load]);
 
-  if (loading) return <div className="p-6 text-sm text-slate-400">Memuat buku besar pembantu…</div>;
+  if (loading) return <div className="p-6 text-sm text-slate-600">Memuat buku besar pembantu…</div>;
   if (error) return <ErrorState message={error} onRetry={() => void load()} />;
 
   const filtered = typeFilter ? (rows ?? []).filter((r) => r.type === typeFilter) : (rows ?? []);
@@ -135,9 +135,9 @@ export function SubledgerView({ clientId }: { clientId: string }) {
   return (
     <div className="space-y-5">
       {/* ── Aging Piutang ── */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50">
-        <div className="border-b border-slate-800 px-4 py-3">
-          <h3 className="text-sm font-medium text-slate-100">⏳ Aging Piutang (Pelanggan)</h3>
+      <div className="rounded-xl border border-slate-200 bg-white">
+        <div className="border-b border-slate-200 px-4 py-3">
+          <h3 className="text-sm font-medium text-slate-900">⏳ Aging Piutang (Pelanggan)</h3>
           <p className="text-xs text-slate-500">Umur piutang per pelanggan — dari jurnal dengan kode bantu.</p>
         </div>
         {!aging || aging.length === 0 ? (
@@ -147,7 +147,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
-              <thead className="bg-slate-900 text-slate-500">
+              <thead className="bg-slate-50 text-slate-500">
                 <tr>
                   <th className="px-4 py-2">Pelanggan</th>
                   {aging[0]!.buckets.map((b) => (
@@ -158,16 +158,16 @@ export function SubledgerView({ clientId }: { clientId: string }) {
               </thead>
               <tbody>
                 {aging.map((a) => (
-                  <tr key={a.code} className="border-t border-slate-800/60 text-slate-300">
+                  <tr key={a.code} className="border-t border-slate-200/60 text-slate-700">
                     <td className="px-4 py-2">
                       <span className="font-mono text-[10px] text-slate-500">{a.code}</span> {a.name}
                     </td>
                     {a.buckets.map((b) => (
-                      <td key={b.bucket} className={`px-3 py-2 text-right font-mono ${b.amount > 0 && b.bucket === "90+" ? "text-rose-300" : ""}`}>
+                      <td key={b.bucket} className={`px-3 py-2 text-right font-mono ${b.amount > 0 && b.bucket === "90+" ? "text-rose-600" : ""}`}>
                         {b.amount ? formatCurrencyRp(b.amount) : "—"}
                       </td>
                     ))}
-                    <td className="px-4 py-2 text-right font-mono font-semibold text-slate-100">{formatCurrencyRp(a.total)}</td>
+                    <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">{formatCurrencyRp(a.total)}</td>
                   </tr>
                 ))}
               </tbody>
@@ -177,17 +177,17 @@ export function SubledgerView({ clientId }: { clientId: string }) {
       </div>
 
       {/* ── Master Subledger ── */}
-      <div className="rounded-xl border border-slate-800 bg-slate-900/50">
-        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 px-4 py-3">
+      <div className="rounded-xl border border-slate-200 bg-white">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
           <div>
-            <h3 className="text-sm font-medium text-slate-100">📒 Buku Besar Pembantu</h3>
+            <h3 className="text-sm font-medium text-slate-900">📒 Buku Besar Pembantu</h3>
             <p className="text-xs text-slate-500">Master kode bantu (CT-* pelanggan, AP-* pemasok, SH-* saham).</p>
           </div>
           <div className="flex items-center gap-2">
             <select
               value={typeFilter}
               onChange={(e) => setTypeFilter(e.target.value)}
-              className="rounded-lg border border-slate-700 bg-slate-950 px-2 py-1.5 text-xs text-slate-200"
+              className="rounded-lg border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs text-slate-800"
             >
               <option value="">Semua tipe</option>
               {Object.entries(TYPE_LABEL).map(([k, v]) => (
@@ -197,7 +197,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
             <button
               type="button"
               onClick={() => setShowForm((s) => !s)}
-              className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-[#0b1120] hover:bg-yellow-300"
+              className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] hover:bg-yellow-300"
             >
               + Tambah
             </button>
@@ -205,23 +205,23 @@ export function SubledgerView({ clientId }: { clientId: string }) {
         </div>
 
         {showForm && (
-          <div className="grid gap-2 border-b border-slate-800 bg-slate-950/50 p-3 md:grid-cols-5">
+          <div className="grid gap-2 border-b border-slate-200 bg-slate-50/50 p-3 md:grid-cols-5">
             <input
               placeholder="Kode (CT-010)"
               value={form.code}
               onChange={(e) => setForm({ ...form, code: e.target.value })}
-              className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs"
+              className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs"
             />
             <input
               placeholder="Nama"
               value={form.name}
               onChange={(e) => setForm({ ...form, name: e.target.value })}
-              className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs"
+              className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs"
             />
             <select
               value={form.type}
               onChange={(e) => setForm({ ...form, type: e.target.value })}
-              className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs"
+              className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs"
             >
               <option value="CUSTOMER">Pelanggan</option>
               <option value="VENDOR">Pemasok</option>
@@ -232,13 +232,13 @@ export function SubledgerView({ clientId }: { clientId: string }) {
               placeholder="Saldo awal"
               value={form.openingBalance}
               onChange={(e) => setForm({ ...form, openingBalance: e.target.value })}
-              className="rounded-md border border-slate-700 bg-slate-900 px-2 py-1.5 text-xs"
+              className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1.5 text-xs"
             />
             <button
               type="button"
               onClick={() => void createSubledger()}
               disabled={!form.code.trim() || !form.name.trim()}
-              className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-[#0b1120] disabled:opacity-40"
+              className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] disabled:opacity-40"
             >
               Simpan
             </button>
@@ -247,7 +247,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
 
         <div className="overflow-x-auto">
           <table className="w-full text-left text-xs">
-            <thead className="bg-slate-900 text-slate-500">
+            <thead className="bg-slate-50 text-slate-500">
               <tr>
                 <th className="px-4 py-2">Kode</th>
                 <th className="px-4 py-2">Nama</th>
@@ -262,14 +262,14 @@ export function SubledgerView({ clientId }: { clientId: string }) {
             </thead>
             <tbody>
               {filtered.map((r) => (
-                <tr key={r.id} className="border-t border-slate-800/60 text-slate-300">
-                  <td className="px-4 py-2 font-mono text-slate-400">{r.code}</td>
+                <tr key={r.id} className="border-t border-slate-200/60 text-slate-700">
+                  <td className="px-4 py-2 font-mono text-slate-600">{r.code}</td>
                   <td className="px-4 py-2">{r.name}</td>
                   <td className={`px-3 py-2 ${TYPE_TONE[r.type] ?? ""}`}>{TYPE_LABEL[r.type] ?? r.type}</td>
                   <td className="px-3 py-2 text-right font-mono">{r.openingBalance ? formatCurrencyRp(r.openingBalance) : "—"}</td>
                   <td className="px-3 py-2 text-right font-mono">{r.debit ? formatCurrencyRp(r.debit) : "—"}</td>
                   <td className="px-3 py-2 text-right font-mono">{r.credit ? formatCurrencyRp(r.credit) : "—"}</td>
-                  <td className={`px-3 py-2 text-right font-mono font-semibold ${r.balance < 0 ? "text-amber-300" : "text-slate-100"}`}>
+                  <td className={`px-3 py-2 text-right font-mono font-semibold ${r.balance < 0 ? "text-amber-600" : "text-slate-900"}`}>
                     {formatCurrencyRp(r.balance)}
                   </td>
                   <td className="px-3 py-2 text-slate-500">{r.lastActivity ?? "—"}</td>
@@ -277,7 +277,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                     <button
                       type="button"
                       onClick={() => void openLedger(r.code)}
-                      className="rounded-md border border-slate-700 px-2 py-1 text-[10px] text-slate-300 hover:border-yellow-400/50"
+                      className="rounded-md border border-slate-200 px-2 py-1 text-[10px] text-slate-700 hover:border-yellow-400/50"
                     >
                       Buku Besar
                     </button>
@@ -298,15 +298,15 @@ export function SubledgerView({ clientId }: { clientId: string }) {
 
       {/* ── Buku Besar Pembantu (detail) ── */}
       {activeCode && (
-        <div className="rounded-xl border border-slate-800 bg-slate-900/50">
-          <div className="flex items-center justify-between border-b border-slate-800 px-4 py-3">
-            <h3 className="text-sm font-medium text-slate-100">
+        <div className="rounded-xl border border-slate-200 bg-white">
+          <div className="flex items-center justify-between border-b border-slate-200 px-4 py-3">
+            <h3 className="text-sm font-medium text-slate-900">
               📜 Buku Besar Pembantu — <span className="font-mono">{activeCode}</span>
             </h3>
             <button
               type="button"
               onClick={() => { setActiveCode(null); setLedger(null); }}
-              className="text-xs text-slate-500 hover:text-slate-300"
+              className="text-xs text-slate-500 hover:text-slate-700"
             >
               ✕ Tutup
             </button>
@@ -318,7 +318,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
-                <thead className="bg-slate-900 text-slate-500">
+                <thead className="bg-slate-50 text-slate-500">
                   <tr>
                     <th className="px-4 py-2">Tanggal</th>
                     <th className="px-3 py-2">Bukti</th>
@@ -331,14 +331,14 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                 </thead>
                 <tbody>
                   {ledger.map((l, i) => (
-                    <tr key={i} className="border-t border-slate-800/60 text-slate-300">
-                      <td className="px-4 py-2 font-mono text-slate-400">{l.date}</td>
+                    <tr key={i} className="border-t border-slate-200/60 text-slate-700">
+                      <td className="px-4 py-2 font-mono text-slate-600">{l.date}</td>
                       <td className="px-3 py-2 font-mono text-slate-500">{l.bukti ?? "—"}</td>
                       <td className="px-3 py-2">{l.description}</td>
-                      <td className="px-3 py-2 font-mono text-slate-400">{l.accountCode}</td>
+                      <td className="px-3 py-2 font-mono text-slate-600">{l.accountCode}</td>
                       <td className="px-3 py-2 text-right font-mono">{l.debit ? formatCurrencyRp(l.debit) : ""}</td>
                       <td className="px-3 py-2 text-right font-mono">{l.credit ? formatCurrencyRp(l.credit) : ""}</td>
-                      <td className="px-4 py-2 text-right font-mono font-semibold text-slate-100">{formatCurrencyRp(l.balance)}</td>
+                      <td className="px-4 py-2 text-right font-mono font-semibold text-slate-900">{formatCurrencyRp(l.balance)}</td>
                     </tr>
                   ))}
                 </tbody>

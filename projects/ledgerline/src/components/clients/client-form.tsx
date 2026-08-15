@@ -77,8 +77,8 @@ export function ClientForm({
 
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="client-name" className="text-sm font-medium text-slate-300">
-            Nama Klien <span className="text-red-400">*</span>
+          <label htmlFor="client-name" className="text-sm font-medium text-slate-700">
+            Nama Klien <span className="text-red-600">*</span>
           </label>
           <input
             id="client-name"
@@ -92,13 +92,13 @@ export function ClientForm({
             className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm placeholder:text-slate-500 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
           />
           {fieldErrors.name ? (
-            <p className="text-xs text-red-400">{fieldErrors.name}</p>
+            <p className="text-xs text-red-600">{fieldErrors.name}</p>
           ) : null}
         </div>
 
         <div className="flex flex-col gap-1.5">
-          <label htmlFor="client-industry" className="text-sm font-medium text-slate-300">
-            Industri <span className="text-red-400">*</span>
+          <label htmlFor="client-industry" className="text-sm font-medium text-slate-700">
+            Industri <span className="text-red-600">*</span>
           </label>
           <select
             id="client-industry"
@@ -114,12 +114,12 @@ export function ClientForm({
             ))}
           </select>
           {fieldErrors.industry ? (
-            <p className="text-xs text-red-400">{fieldErrors.industry}</p>
+            <p className="text-xs text-red-600">{fieldErrors.industry}</p>
           ) : null}
         </div>
 
         <div className="flex flex-col gap-1.5 sm:col-span-2">
-          <label htmlFor="client-taxid" className="text-sm font-medium text-slate-300">
+          <label htmlFor="client-taxid" className="text-sm font-medium text-slate-700">
             NPWP <span className="text-slate-500">(opsional)</span>
           </label>
           <input
@@ -133,7 +133,7 @@ export function ClientForm({
             className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm placeholder:text-slate-500 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
           />
           {fieldErrors.taxId ? (
-            <p className="text-xs text-red-400">{fieldErrors.taxId}</p>
+            <p className="text-xs text-red-600">{fieldErrors.taxId}</p>
           ) : null}
         </div>
       </div>
@@ -141,7 +141,7 @@ export function ClientForm({
       {formError ? (
         <p
           role="alert"
-          className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400"
+          className="mt-4 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600"
         >
           {formError}
         </p>
@@ -151,14 +151,14 @@ export function ClientForm({
         <button
           type="submit"
           disabled={submitting || !name.trim()}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#0b1120] transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
         >
           {submitting ? "Menyimpan..." : mode === "create" ? "Tambah" : "Simpan"}
         </button>
         <button
           type="button"
           onClick={onCancel}
-          className="rounded-lg border border-line px-4 py-2 text-sm text-slate-300 transition hover:bg-white/5"
+          className="rounded-lg border border-line px-4 py-2 text-sm text-slate-700 transition hover:bg-black/5"
         >
           Batal
         </button>

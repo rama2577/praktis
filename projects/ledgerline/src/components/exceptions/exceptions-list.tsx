@@ -146,18 +146,18 @@ export function ExceptionsList() {
   return (
     <div className="space-y-4">
       {flash && (
-        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-300">
+        <div role="status" aria-live="polite" className="rounded-lg border border-emerald-500/30 bg-emerald-500/10 px-4 py-2 text-sm text-emerald-600">
           {flash}
         </div>
       )}
       {/* Filter klien */}
       <div className="flex flex-wrap items-center gap-3">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Sortir klien
           <select
             value={clientFilter}
             onChange={(e) => setClientFilter(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
           >
             <option value="">Semua klien ({items.length})</option>
             {clients.map((c) => (
@@ -169,7 +169,7 @@ export function ExceptionsList() {
           <button
             type="button"
             onClick={() => setClientFilter("")}
-            className="mt-4 rounded-md border border-slate-700 px-2 py-1.5 text-xs text-slate-400 hover:text-slate-200"
+            className="mt-4 rounded-md border border-slate-200 px-2 py-1.5 text-xs text-slate-600 hover:text-slate-800"
           >
             ✕ Hapus filter
           </button>
@@ -181,22 +181,22 @@ export function ExceptionsList() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium text-slate-100">{item.clientName}</span>
+                  <span className="font-medium text-slate-900">{item.clientName}</span>
                   <StatusBadge label="Exception" tone="danger" />
                   <StatusBadge
                     label={item.confidence === null ? "—" : `${Math.round(item.confidence * 100)}% keyakinan AI`}
                     tone="warning"
                   />
                 </div>
-                <p className="mt-1 text-sm text-slate-300">{item.description ?? "Tanpa deskripsi"}</p>
-                <p className="mt-1 text-xs text-red-300/90">🚩 {item.exceptionFlag ?? "Flag tidak tersedia"}</p>
+                <p className="mt-1 text-sm text-slate-700">{item.description ?? "Tanpa deskripsi"}</p>
+                <p className="mt-1 text-xs text-red-600/90">🚩 {item.exceptionFlag ?? "Flag tidak tersedia"}</p>
                 <p className="mt-0.5 text-xs text-slate-500">
                   {item.documentName ?? "Tanpa dokumen"} · dibuat {new Date(item.createdAt).toLocaleString("id-ID", { dateStyle: "medium", timeStyle: "short" })}
                 </p>
               </div>
               <button
                 onClick={() => void openDetail(openId === item.id ? "" : item.id)}
-                className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm text-red-300 hover:bg-red-500/20"
+                className="rounded-lg border border-red-500/40 bg-red-500/10 px-3 py-1.5 text-sm text-red-600 hover:bg-red-500/20"
               >
                 {openId === item.id ? "Tutup" : "Resolusi"}
               </button>
@@ -205,19 +205,19 @@ export function ExceptionsList() {
             {/* EN-06 — Exception one-screen: dokumen + draft + aturan */}
             {openId === item.id && (
               <div className="mt-4 space-y-4 border-t border-line pt-4">
-                {detailLoading && <p className="text-sm text-slate-400">Memuat detail…</p>}
+                {detailLoading && <p className="text-sm text-slate-600">Memuat detail…</p>}
 
                 {detail && (
                   <div className="grid gap-4 lg:grid-cols-3">
                     {/* Kiri: dokumen sumber + aturan */}
                     <div className="space-y-4 lg:col-span-1">
-                      <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50/40 p-3">
                         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
                           Dokumen Sumber
                         </h3>
                         {detail.document ? (
                           <div className="space-y-1 text-sm">
-                            <p className="break-all font-medium text-slate-200">{detail.document.fileName}</p>
+                            <p className="break-all font-medium text-slate-800">{detail.document.fileName}</p>
                             <p className="text-xs text-slate-500">
                               {TYPE_LABELS[detail.document.type] ?? detail.document.type} · {formatBytes(detail.document.sizeBytes)}
                             </p>
@@ -228,7 +228,7 @@ export function ExceptionsList() {
                               href={`/api/documents/${detail.document.id}/file`}
                               target="_blank"
                               rel="noreferrer"
-                              className="mt-2 inline-block rounded border border-yellow-400/40 bg-yellow-400/10 px-2 py-1 text-xs text-yellow-300 hover:bg-yellow-400/20"
+                              className="mt-2 inline-block rounded border border-yellow-400/40 bg-yellow-400/10 px-2 py-1 text-xs text-amber-600 hover:bg-yellow-400/20"
                             >
                               🔍 Buka dokumen
                             </a>
@@ -238,14 +238,14 @@ export function ExceptionsList() {
                         )}
                       </div>
 
-                      <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50/40 p-3">
                         <h3 className="mb-2 text-xs font-semibold uppercase tracking-wider text-slate-500">
                           Aturan & Alasan
                         </h3>
                         {detail.rule ? (
                           <div className="space-y-1 text-sm">
-                            <p className="text-slate-200">
-                              Deteksi: <span className="font-medium text-amber-300">{detail.rule.label}</span>
+                            <p className="text-slate-800">
+                              Deteksi: <span className="font-medium text-amber-600">{detail.rule.label}</span>
                             </p>
                             <p className="text-xs text-slate-500">
                               Template {detail.rule.template} · {detail.rule.psakRef} · skor {detail.rule.score}%
@@ -254,7 +254,7 @@ export function ExceptionsList() {
                         ) : (
                           <p className="text-sm text-slate-500">Tidak ada aturan yang cocok — butuh penilaian manual.</p>
                         )}
-                        <p className="mt-2 text-xs text-red-300/90">🚩 {detail.exceptionFlag ?? "Flag tidak tersedia"}</p>
+                        <p className="mt-2 text-xs text-red-600/90">🚩 {detail.exceptionFlag ?? "Flag tidak tersedia"}</p>
                         <p className="mt-1 text-xs text-slate-500">
                           Jenis jurnal: {TYPE_LABELS[detail.journalType] ?? detail.journalType} ·{" "}
                           {new Date(detail.entryDate).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
@@ -264,7 +264,7 @@ export function ExceptionsList() {
 
                     {/* Kanan: draft jurnal AI */}
                     <div className="lg:col-span-2">
-                      <div className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
+                      <div className="rounded-lg border border-slate-200 bg-slate-50/40 p-3">
                         <div className="mb-2 flex items-center justify-between">
                           <h3 className="text-xs font-semibold uppercase tracking-wider text-slate-500">
                             Draft Jurnal AI
@@ -277,7 +277,7 @@ export function ExceptionsList() {
                         <div className="overflow-x-auto">
                           <table className="w-full min-w-[420px] text-left text-sm">
                             <thead>
-                              <tr className="border-b border-slate-800 text-xs uppercase tracking-wider text-slate-500">
+                              <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
                                 <th className="py-2 pr-2 font-medium">Kode</th>
                                 <th className="py-2 pr-2 font-medium">Akun</th>
                                 <th className="py-2 pr-2 text-right font-medium">Debit</th>
@@ -286,13 +286,13 @@ export function ExceptionsList() {
                             </thead>
                             <tbody>
                               {detail.lines.map((line, i) => (
-                                <tr key={`${line.accountCode}-${i}`} className="border-b border-slate-800/60 last:border-0">
-                                  <td className="py-2 pr-2 font-mono text-xs text-slate-400">{line.accountCode}</td>
-                                  <td className="py-2 pr-2 text-slate-200">{line.accountName}</td>
-                                  <td className="py-2 pr-2 text-right tabular-nums text-emerald-300">
+                                <tr key={`${line.accountCode}-${i}`} className="border-b border-slate-200/60 last:border-0">
+                                  <td className="py-2 pr-2 font-mono text-xs text-slate-600">{line.accountCode}</td>
+                                  <td className="py-2 pr-2 text-slate-800">{line.accountName}</td>
+                                  <td className="py-2 pr-2 text-right tabular-nums text-emerald-600">
                                     {line.debit > 0 ? formatCurrencyRp(line.debit) : ""}
                                   </td>
-                                  <td className="py-2 text-right tabular-nums text-red-300">
+                                  <td className="py-2 text-right tabular-nums text-red-600">
                                     {line.credit > 0 ? formatCurrencyRp(line.credit) : ""}
                                   </td>
                                 </tr>
@@ -306,14 +306,14 @@ export function ExceptionsList() {
                 )}
 
                 <div className="space-y-3 border-t border-line pt-4">
-                  <p className="text-xs text-slate-400">
-                    Resolusi mengirim jurnal ke antrian <span className="text-amber-300">Review Junior</span> untuk diproses ulang (EXCEPTION → JUNIOR_REVIEW).
+                  <p className="text-xs text-slate-600">
+                    Resolusi mengirim jurnal ke antrian <span className="text-amber-600">Review Junior</span> untuk diproses ulang (EXCEPTION → JUNIOR_REVIEW).
                   </p>
                   <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Catatan resolusi (mis. Faktur PPN sudah dilengkapi klien)…"
-                    className="min-h-[70px] w-full rounded-lg border border-slate-700 bg-slate-950/60 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none"
+                    className="min-h-[70px] w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/60 focus:outline-none"
                   />
                   <div className="flex justify-end">
                     <button

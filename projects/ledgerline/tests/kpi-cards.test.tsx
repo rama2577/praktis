@@ -42,27 +42,27 @@ describe("KpiCards", () => {
 
   it("first-pass rate hijau ≥70%", () => {
     render(<KpiCards data={{ ...baseData, firstPassRate: 85 }} />);
-    expect(screen.getByText("85%").className).toContain("text-emerald-400");
+    expect(screen.getByText("85%").className).toContain("text-emerald-600");
   });
 
   it("first-pass rate kuning ≥40%", () => {
     render(<KpiCards data={{ ...baseData, firstPassRate: 50 }} />);
-    expect(screen.getByText("50%").className).toContain("text-amber-400");
+    expect(screen.getByText("50%").className).toContain("text-amber-600");
   });
 
   it("first-pass rate merah <40%", () => {
     render(<KpiCards data={{ ...baseData, firstPassRate: 30 }} />);
-    expect(screen.getByText("30%").className).toContain("text-red-400");
+    expect(screen.getByText("30%").className).toContain("text-red-600");
   });
 
   it("SLA breaches merah jika >0", () => {
     render(<KpiCards data={{ ...baseData, slaBreachCount: 3 }} />);
-    expect(screen.getByText("3").className).toContain("text-red-400");
+    expect(screen.getByText("3").className).toContain("text-red-600");
   });
 
   it("SLA breaches hijau jika 0", () => {
     render(<KpiCards data={{ ...baseData, slaBreachCount: 0, breachesByStage: [] }} />);
-    expect(screen.getByText("0").className).toContain("text-emerald-400");
+    expect(screen.getByText("0").className).toContain("text-emerald-600");
   });
 
   it("menampilkan hint breach per stage", () => {
@@ -74,6 +74,6 @@ describe("KpiCards", () => {
     const down = { ...baseData, transactionsDeltaPct: -8.5 };
     render(<KpiCards data={down} />);
     const hint = screen.getByText(/-8,5% vs rata-rata harian 15/);
-    expect(hint.className).toContain("text-red-400");
+    expect(hint.className).toContain("text-red-600");
   });
 });

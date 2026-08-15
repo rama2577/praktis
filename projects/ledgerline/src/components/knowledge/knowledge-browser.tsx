@@ -5,8 +5,8 @@ import type { KnowledgeEntry } from "@/server/knowledge";
 import { EmptyState } from "@/components/ui/empty-state";
 
 const EXT_TONE: Record<string, string> = {
-  MD: "border-sky-500/30 bg-sky-500/10 text-sky-300",
-  CSV: "border-emerald-500/30 bg-emerald-500/10 text-emerald-300",
+  MD: "border-sky-500/30 bg-sky-500/10 text-sky-600",
+  CSV: "border-emerald-500/30 bg-emerald-500/10 text-emerald-600",
 };
 
 function formatBytes(n: number): string {
@@ -44,11 +44,11 @@ export function KnowledgeBrowser({ entries }: { entries: KnowledgeEntry[] }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari referensi (mis. PPN, PSAK 72, piutang)…"
           aria-label="Cari knowledge base"
-          className="w-full max-w-md rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm text-slate-200 placeholder:text-slate-500 focus:border-yellow-400/50 focus:outline-none"
+          className="w-full max-w-md rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-500 focus:border-yellow-400/50 focus:outline-none"
         />
         <div className="flex flex-wrap gap-2 text-xs">
           {categories.map(([cat, count]) => (
-            <span key={cat} className="rounded-full border border-line bg-card px-2.5 py-1 text-slate-400">
+            <span key={cat} className="rounded-full border border-line bg-card px-2.5 py-1 text-slate-600">
               {cat} · {count}
             </span>
           ))}
@@ -68,14 +68,14 @@ export function KnowledgeBrowser({ entries }: { entries: KnowledgeEntry[] }) {
               <button
                 type="button"
                 onClick={() => setOpen(open === entry.name ? null : entry.name)}
-                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-white/5"
+                className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-black/5"
               >
                 <div className="flex min-w-0 items-center gap-3">
-                  <span className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold ${EXT_TONE[entry.ext] ?? "border-slate-600 bg-slate-700/40 text-slate-300"}`}>
+                  <span className={`rounded border px-1.5 py-0.5 text-[10px] font-semibold ${EXT_TONE[entry.ext] ?? "border-slate-300 bg-slate-200/40 text-slate-700"}`}>
                     {entry.ext}
                   </span>
                   <div className="min-w-0">
-                    <p className="truncate font-mono text-sm text-slate-200">{entry.name}</p>
+                    <p className="truncate font-mono text-sm text-slate-800">{entry.name}</p>
                     <p className="text-xs text-slate-500">
                       {entry.category} · {formatBytes(entry.sizeBytes)}
                     </p>
@@ -86,7 +86,7 @@ export function KnowledgeBrowser({ entries }: { entries: KnowledgeEntry[] }) {
                 </span>
               </button>
               {open === entry.name && (
-                <pre className="max-h-80 overflow-auto border-t border-line bg-slate-950/60 px-4 py-3 text-xs leading-relaxed text-slate-300">
+                <pre className="max-h-80 overflow-auto border-t border-line bg-slate-50/60 px-4 py-3 text-xs leading-relaxed text-slate-700">
                   {entry.preview}
                   {entry.preview.length >= 800 ? "\n… (konten dipotong — lihat file sumber)" : ""}
                 </pre>

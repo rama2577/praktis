@@ -70,14 +70,14 @@ export default async function PipelinePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-slate-100">Pipeline Produksi</h1>
-        <p className="text-sm text-slate-400">
+        <h1 className="font-display text-2xl font-bold text-slate-900">Pipeline Produksi</h1>
+        <p className="text-sm text-slate-600">
           Alur dokumen klien: upload → ekstraksi AI → draft jurnal → review berjenjang → persetujuan partner → final.
         </p>
       </div>
 
       <Card className="p-4">
-        <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Status Per Klien</h2>
+        <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Status Per Klien</h2>
         <div className="overflow-x-auto">
           <Table>
             <thead>
@@ -94,7 +94,7 @@ export default async function PipelinePage() {
             <tbody>
               {clients.map((c) => (
                 <TR key={c.id}>
-                  <TD className="font-medium text-slate-200">{c.name}</TD>
+                  <TD className="font-medium text-slate-800">{c.name}</TD>
                   {STAGES.map((s) => {
                     const n = journalMap.get(`${c.id}:${s}`) ?? 0;
                     return (
@@ -107,7 +107,7 @@ export default async function PipelinePage() {
                       </TD>
                     );
                   })}
-                  <TD className="text-center font-semibold text-slate-100">{totals.get(c.id) ?? 0}</TD>
+                  <TD className="text-center font-semibold text-slate-900">{totals.get(c.id) ?? 0}</TD>
                 </TR>
               ))}
             </tbody>
@@ -117,14 +117,14 @@ export default async function PipelinePage() {
 
       <div className="grid gap-4 lg:grid-cols-2">
         <Card className="p-4">
-          <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Antrian Review Pending</h2>
+          <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Antrian Review Pending</h2>
           {tasks.length === 0 ? (
             <p className="text-sm text-slate-500">Tidak ada task pending.</p>
           ) : (
             <div className="space-y-2">
               {tasks.map((t) => (
-                <div key={t.stage} className="flex items-center justify-between rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2 text-sm">
-                  <span className="text-slate-300">{STAGE_LABEL[t.stage] ?? t.stage}</span>
+                <div key={t.stage} className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm">
+                  <span className="text-slate-700">{STAGE_LABEL[t.stage] ?? t.stage}</span>
                   <Badge label={`${t._count} task`} tone="warning" />
                 </div>
               ))}
@@ -133,7 +133,7 @@ export default async function PipelinePage() {
         </Card>
 
         <Card className="p-4">
-          <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Dokumen Masuk</h2>
+          <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Dokumen Masuk</h2>
           {documents.length === 0 ? (
             <p className="text-sm text-slate-500">Belum ada dokumen.</p>
           ) : (

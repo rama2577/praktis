@@ -152,11 +152,11 @@ export function Spt1771View({
         <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
         <PeriodInput period={period} setPeriod={setPeriod} />
         <div>
-          <label className="mb-1 block text-xs text-slate-400">Mode perhitungan PPh</label>
+          <label className="mb-1 block text-xs text-slate-600">Mode perhitungan PPh</label>
           <select
             value={mode}
             onChange={(e) => setMode(e.target.value as Mode)}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-200"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800"
           >
             {(Object.keys(MODE_LABELS) as Mode[]).map((m) => (
               <option key={m} value={m}>{MODE_LABELS[m]}</option>
@@ -166,24 +166,24 @@ export function Spt1771View({
       </div>
 
       {error && <ErrorState message={error} onRetry={() => void load()} />}
-      {loading && <p className="p-4 text-sm text-slate-400">Menyusun SPT 1771…</p>}
+      {loading && <p className="p-4 text-sm text-slate-600">Menyusun SPT 1771…</p>}
 
       {!loading && data && (
         <div className="space-y-5">
           {/* ── Lampiran I ── */}
-          <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 px-4 py-3">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
               <div>
-                <h3 className="text-sm font-medium text-slate-100">🧾 Lampiran I — Rekonsiliasi Fiskal ({data.year})</h3>
+                <h3 className="text-sm font-medium text-slate-900">🧾 Lampiran I — Rekonsiliasi Fiskal ({data.year})</h3>
                 <p className="text-xs text-slate-500">Koreksi otomatis dari heuristik; angka koreksi bisa diedit langsung.</p>
               </div>
-              <button onClick={exportRekonsiliasi} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-yellow-300 hover:bg-yellow-400/10">
+              <button onClick={exportRekonsiliasi} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-yellow-400/10">
                 ⬇ Export CSV Lampiran I
               </button>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-900 text-slate-500">
+                <thead className="bg-slate-50 text-slate-500">
                   <tr>
                     <th className="px-3 py-2 text-left font-medium">Kode</th>
                     <th className="px-3 py-2 text-left font-medium">Nama Akun</th>
@@ -195,7 +195,7 @@ export function Spt1771View({
                 </thead>
                 <tbody>
                   {rows.map((r, i) => (
-                    <tr key={`${r.kode}-${i}`} className={`border-t border-slate-800/60 ${r.isBeban ? "text-slate-300" : "text-slate-200"}`}>
+                    <tr key={`${r.kode}-${i}`} className={`border-t border-slate-200/60 ${r.isBeban ? "text-slate-700" : "text-slate-800"}`}>
                       <td className="px-3 py-1.5 font-mono text-slate-500">{r.kode}</td>
                       <td className="px-3 py-1.5 text-left">{r.nama}</td>
                       <td className="px-2 py-1.5 font-mono">{fmt(r.komersial)}</td>
@@ -204,7 +204,7 @@ export function Spt1771View({
                           type="number"
                           value={r.koreksiPositif}
                           onChange={(e) => updateRow(i, "koreksiPositif", Number(e.target.value) || 0)}
-                          className="w-28 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right font-mono text-rose-200"
+                          className="w-28 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-rose-200"
                         />
                       </td>
                       <td className="px-2 py-1.5">
@@ -212,24 +212,24 @@ export function Spt1771View({
                           type="number"
                           value={r.koreksiNegatif}
                           onChange={(e) => updateRow(i, "koreksiNegatif", Number(e.target.value) || 0)}
-                          className="w-28 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right font-mono text-emerald-200"
+                          className="w-28 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-emerald-200"
                         />
                       </td>
-                      <td className="px-3 py-1.5 font-mono font-medium text-slate-100">{fmt(r.fiskal)}</td>
+                      <td className="px-3 py-1.5 font-mono font-medium text-slate-900">{fmt(r.fiskal)}</td>
                     </tr>
                   ))}
-                  <tr className="border-t border-slate-700 bg-slate-900/80 font-semibold text-slate-100">
+                  <tr className="border-t border-slate-200 bg-slate-50/80 font-semibold text-slate-900">
                     <td className="px-3 py-2 text-left" colSpan={2}>Laba (Rugi) Komersial</td>
                     <td className="px-2 py-2 font-mono">{fmt(totals.labaKom)}</td>
                     <td className="px-2 py-2" /><td className="px-2 py-2" /><td className="px-3 py-2" />
                   </tr>
-                  <tr className="border-t border-slate-800 font-semibold text-slate-100">
+                  <tr className="border-t border-slate-200 font-semibold text-slate-900">
                     <td className="px-3 py-2 text-left" colSpan={2}>Koreksi Fiskal Positif</td>
-                    <td className="px-2 py-2" /><td className="px-2 py-2 font-mono text-rose-300">{fmt(totals.korPos)}</td><td className="px-2 py-2" /><td className="px-3 py-2" />
+                    <td className="px-2 py-2" /><td className="px-2 py-2 font-mono text-rose-600">{fmt(totals.korPos)}</td><td className="px-2 py-2" /><td className="px-3 py-2" />
                   </tr>
-                  <tr className="border-t border-slate-800 font-semibold text-slate-100">
+                  <tr className="border-t border-slate-200 font-semibold text-slate-900">
                     <td className="px-3 py-2 text-left" colSpan={2}>Koreksi Fiskal Negatif</td>
-                    <td className="px-2 py-2" /><td className="px-2 py-2" /><td className="px-2 py-2 font-mono text-emerald-300">{fmt(totals.korNeg)}</td><td className="px-3 py-2" />
+                    <td className="px-2 py-2" /><td className="px-2 py-2" /><td className="px-2 py-2 font-mono text-emerald-600">{fmt(totals.korNeg)}</td><td className="px-3 py-2" />
                   </tr>
                   <tr className="border-t border-yellow-400/30 bg-yellow-400/5 font-bold text-yellow-200">
                     <td className="px-3 py-2 text-left" colSpan={2}>Laba Fiskal (Penghasilan Kena Pajak)</td>
@@ -242,10 +242,10 @@ export function Spt1771View({
           </div>
 
           {/* ── Lampiran II ── */}
-          <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 px-4 py-3">
-              <h3 className="text-sm font-medium text-slate-100">🏗️ Lampiran II — Penyusutan & Amortisasi Fiskal</h3>
-              <button onClick={exportPenyusutan} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-yellow-300 hover:bg-yellow-400/10">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
+              <h3 className="text-sm font-medium text-slate-900">🏗️ Lampiran II — Penyusutan & Amortisasi Fiskal</h3>
+              <button onClick={exportPenyusutan} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-yellow-400/10">
                 ⬇ Export CSV Lampiran II
               </button>
             </div>
@@ -254,7 +254,7 @@ export function Spt1771View({
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-right text-xs">
-                  <thead className="bg-slate-900 text-slate-500">
+                  <thead className="bg-slate-50 text-slate-500">
                     <tr>
                       <th className="px-3 py-2 text-left font-medium">Kode</th>
                       <th className="px-3 py-2 text-left font-medium">Aset</th>
@@ -266,13 +266,13 @@ export function Spt1771View({
                   </thead>
                   <tbody>
                     {data.penyusutan.map((r) => (
-                      <tr key={r.assetCode} className="border-t border-slate-800/60 text-slate-300">
+                      <tr key={r.assetCode} className="border-t border-slate-200/60 text-slate-700">
                         <td className="px-3 py-1.5 font-mono text-slate-500">{r.assetCode}</td>
                         <td className="px-3 py-1.5 text-left">{r.assetName}</td>
                         <td className="px-2 py-1.5">{r.kelompok}</td>
                         <td className="px-2 py-1.5 font-mono">{fmt(r.komersial)}</td>
                         <td className="px-2 py-1.5 font-mono">{fmt(r.fiskal)}</td>
-                        <td className={`px-3 py-1.5 font-mono ${r.koreksi !== 0 ? "text-rose-300" : "text-slate-500"}`}>{fmt(r.koreksi)}</td>
+                        <td className={`px-3 py-1.5 font-mono ${r.koreksi !== 0 ? "text-rose-600" : "text-slate-500"}`}>{fmt(r.koreksi)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -282,10 +282,10 @@ export function Spt1771View({
           </div>
 
           {/* ── Lampiran III ── */}
-          <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
-            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-800 px-4 py-3">
-              <h3 className="text-sm font-medium text-slate-100">💰 Lampiran III — Perhitungan PPh Terutang</h3>
-              <button onClick={exportPph} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-yellow-300 hover:bg-yellow-400/10">
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
+              <h3 className="text-sm font-medium text-slate-900">💰 Lampiran III — Perhitungan PPh Terutang</h3>
+              <button onClick={exportPph} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-yellow-400/10">
                 ⬇ Export CSV Lampiran III
               </button>
             </div>
@@ -298,9 +298,9 @@ export function Spt1771View({
                 ["Kredit Pajak (Dibayar Dimuka)", data.kreditPajak],
                 ["PPh Kurang/(Lebih) Bayar", data.pphKurangBayar],
               ] as [string, number][]).map(([label, v]) => (
-                <div key={label} className="rounded-lg border border-slate-800 bg-slate-950/60 px-3 py-2">
+                <div key={label} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2">
                   <p className="text-[11px] text-slate-500">{label}</p>
-                  <p className={`font-mono text-base font-semibold ${label.includes("Kurang") && data.pphKurangBayar > 0 ? "text-rose-300" : "text-slate-100"}`}>
+                  <p className={`font-mono text-base font-semibold ${label.includes("Kurang") && data.pphKurangBayar > 0 ? "text-rose-600" : "text-slate-900"}`}>
                     {typeof v === "number" ? fmt(v) : v}
                   </p>
                 </div>

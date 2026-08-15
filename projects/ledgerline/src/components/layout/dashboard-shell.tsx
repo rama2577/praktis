@@ -24,7 +24,7 @@ export function DashboardShell({
       {/* Skip link — terlihat saat fokus keyboard */}
       <a
         href="#main-content"
-        className="sr-only z-[60] rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#0b1120] focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
+        className="sr-only z-[60] rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
       >
         Lewati ke konten utama
       </a>
@@ -34,7 +34,7 @@ export function DashboardShell({
         <div
           aria-hidden
           onClick={() => setMobileOpen(false)}
-          className="fixed inset-0 z-40 bg-black/60 lg:hidden"
+          className="fixed inset-0 z-40 bg-black/40 lg:hidden"
         />
       )}
 
@@ -54,7 +54,7 @@ export function DashboardShell({
               type="button"
               onClick={() => setMobileOpen(true)}
               aria-label="Buka menu navigasi"
-              className="rounded-lg border border-line p-1.5 text-slate-300 hover:bg-white/5 lg:hidden"
+              className="rounded-lg border border-line p-1.5 text-slate-700 hover:bg-black/5 lg:hidden"
             >
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden>
                 <line x1="3" y1="6" x2="21" y2="6" />
@@ -62,13 +62,13 @@ export function DashboardShell({
                 <line x1="3" y1="18" x2="21" y2="18" />
               </svg>
             </button>
-            <h2 className="truncate text-sm font-medium text-slate-300">Operations Dashboard</h2>
+            <h2 className="truncate text-sm font-medium text-slate-700">Operations Dashboard</h2>
           </div>
-          <div className="flex items-center gap-3 text-xs text-slate-400">
+          <div className="flex items-center gap-3 text-xs text-slate-600">
             <AiCommandPalette />
             <span className="hidden sm:inline">{today}</span>
-            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 font-medium text-emerald-400">
-              <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+            <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2.5 py-0.5 font-medium text-emerald-600">
+              <span aria-hidden className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-500" />
               AI Online
             </span>
           </div>

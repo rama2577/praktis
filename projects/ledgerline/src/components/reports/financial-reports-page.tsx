@@ -32,8 +32,8 @@ export function FinancialReportsPage({ initialClients = [] }: { initialClients?:
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-slate-100">Laporan Keuangan</h1>
-        <p className="text-sm text-slate-400">
+        <h1 className="font-display text-2xl font-bold text-slate-900">Laporan Keuangan</h1>
+        <p className="text-sm text-slate-600">
           Laporan akhir (SAK ETAP) + analisa: rasio & grafik, CALK, analisa pajak (tax ratio), dan dokumen penyampaian.
         </p>
       </div>
@@ -45,8 +45,8 @@ export function FinancialReportsPage({ initialClients = [] }: { initialClients?:
             onClick={() => setTab(t.key)}
             className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
               tab === t.key
-                ? "bg-yellow-400/20 text-yellow-300 ring-1 ring-yellow-400/40"
-                : "border border-slate-700 text-slate-300 hover:border-yellow-400/40"
+                ? "bg-yellow-400/20 text-amber-600 ring-1 ring-yellow-400/40"
+                : "border border-slate-200 text-slate-700 hover:border-yellow-400/40"
             }`}
           >
             {t.label}

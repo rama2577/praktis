@@ -56,16 +56,16 @@ export function AiCommandPalette() {
       <button
         type="button"
         onClick={() => setOpen(true)}
-        className="inline-flex items-center gap-2 rounded-lg border border-line bg-white/5 px-3 py-1.5 text-xs text-slate-300 transition hover:border-accent/50 hover:text-accent"
+        className="inline-flex items-center gap-2 rounded-lg border border-line bg-black/5 px-3 py-1.5 text-xs text-slate-700 transition hover:border-accent/50 hover:text-accent"
         title="Tanya AI (⌘K)"
       >
         <span aria-hidden>✨</span>
         <span className="hidden sm:inline">Tanya AI</span>
-        <kbd className="rounded border border-line bg-white/5 px-1.5 py-0.5 text-[10px] text-slate-500">⌘K</kbd>
+        <kbd className="rounded border border-line bg-black/5 px-1.5 py-0.5 text-[10px] text-slate-500">⌘K</kbd>
       </button>
 
       {open && (
-        <div className="fixed inset-0 z-[70] flex items-start justify-center bg-black/60 p-4 pt-[12vh]" role="dialog" aria-modal="true" aria-label="Tanya AI">
+        <div className="fixed inset-0 z-[70] flex items-start justify-center bg-black/40 p-4 pt-[12vh]" role="dialog" aria-modal="true" aria-label="Tanya AI">
           <div className="w-full max-w-xl overflow-hidden rounded-xl border border-line bg-card shadow-2xl">
             <form onSubmit={submit} className="flex items-center gap-2 border-b border-line px-4 py-3">
               <span aria-hidden>✨</span>
@@ -74,13 +74,13 @@ export function AiCommandPalette() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder='Contoh: "Berapa klien aktif & transaksi hari ini?"'
-                className="w-full bg-transparent text-sm text-slate-100 placeholder:text-slate-500 focus:outline-none"
+                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
                 aria-label="Pertanyaan ke AI"
               />
               <button
                 type="submit"
                 disabled={loading || !query.trim()}
-                className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-[#0b1120] transition hover:bg-[#ffdf6b] disabled:opacity-50"
+                className="shrink-0 rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-[#ffdf6b] disabled:opacity-50"
               >
                 {loading ? "…" : "Kirim"}
               </button>
@@ -88,13 +88,13 @@ export function AiCommandPalette() {
 
             <div className="max-h-[50vh] overflow-y-auto p-4 text-sm">
               {error ? (
-                <p className="text-red-300">{error}</p>
+                <p className="text-red-600">{error}</p>
               ) : result ? (
                 <div className="space-y-2">
-                  <span className="inline-block rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[11px] font-medium text-sky-300">
+                  <span className="inline-block rounded-full border border-sky-500/30 bg-sky-500/10 px-2 py-0.5 text-[11px] font-medium text-sky-600">
                     {result.intent === "ask" ? "Data firma" : result.intent === "draft" ? "Draft jurnal" : result.intent === "explain" ? "Penjelasan" : "Bantuan"}
                   </span>
-                  <p className="whitespace-pre-wrap text-slate-200">{result.answer}</p>
+                  <p className="whitespace-pre-wrap text-slate-800">{result.answer}</p>
                 </div>
               ) : (
                 <p className="text-xs text-slate-500">

@@ -55,13 +55,13 @@ export function Breadcrumb() {
             </span>
           )}
           {i === crumbs.length - 1 ? (
-            <span className="text-sm text-slate-400" aria-current="page">
+            <span className="text-sm text-slate-600" aria-current="page">
               {c.label}
             </span>
           ) : (
             <Link
               href={c.href}
-              className="text-sm text-slate-400 transition hover:text-slate-200"
+              className="text-sm text-slate-600 transition hover:text-slate-800"
             >
               {c.label}
             </Link>

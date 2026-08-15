@@ -14,12 +14,12 @@ export function ErrorState({
       <span aria-hidden className="text-2xl">
         ⚠️
       </span>
-      <p className="mt-2 text-sm text-red-300">{message}</p>
+      <p className="mt-2 text-sm text-red-600">{message}</p>
       {onRetry && (
         <button
           type="button"
           onClick={onRetry}
-          className="mt-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-300 transition hover:bg-red-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
+          className="mt-4 rounded-lg border border-red-500/40 bg-red-500/10 px-4 py-2 text-sm font-medium text-red-600 transition hover:bg-red-500/20 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-400"
         >
           Coba lagi
         </button>

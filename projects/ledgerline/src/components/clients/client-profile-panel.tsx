@@ -113,7 +113,7 @@ export function ClientProfilePanel({
   const entries = Object.entries(profile?.coaMapping ?? {});
 
   return (
-    <div className="mt-6 rounded-xl border border-slate-800 bg-slate-900/40 p-4">
+    <div className="mt-6 rounded-xl border border-slate-200 bg-white p-4">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold">Profil Klien (AI Mapping)</h2>
@@ -125,7 +125,7 @@ export function ClientProfilePanel({
       </div>
 
       {error && (
-        <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-300">
+        <div className="mt-3 rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-600">
           {error}
         </div>
       )}
@@ -142,7 +142,7 @@ export function ClientProfilePanel({
           <summary className="cursor-pointer text-xs text-accent hover:underline">
             Lihat COA Klien ({entries.length} akun)
           </summary>
-          <div className="mt-2 grid max-h-64 grid-cols-2 gap-x-4 overflow-auto rounded-lg border border-slate-700 bg-slate-950 p-3 font-mono text-[11px] leading-relaxed text-slate-300 md:grid-cols-3">
+          <div className="mt-2 grid max-h-64 grid-cols-2 gap-x-4 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-[11px] leading-relaxed text-slate-700 md:grid-cols-3">
             {entries.map(([kode, v]) => (
               <div key={kode} className="truncate" title={`${kode} — ${v.accountName}`}>
                 <span className="text-slate-500">{kode}</span> {v.accountName}
@@ -154,7 +154,7 @@ export function ClientProfilePanel({
 
       {!loading && status === "REVIEW" && canEdit && (
         <div className="mt-3">
-          <div className="max-h-56 overflow-auto rounded-lg border border-slate-700 bg-slate-950 p-3 font-mono text-[11px] leading-relaxed text-slate-300">
+          <div className="max-h-56 overflow-auto rounded-lg border border-slate-200 bg-slate-50 p-3 font-mono text-[11px] leading-relaxed text-slate-700">
             {JSON.stringify(profile?.coaMapping ?? {}, null, 2)}
           </div>
           <button
@@ -169,7 +169,7 @@ export function ClientProfilePanel({
       )}
 
       {!loading && status === "READY" && (
-        <div className="mt-3 text-xs text-slate-400">
+        <div className="mt-3 text-xs text-slate-600">
           {entries.length > 0 ? (
             <>
               {entries.length} akun klien sudah dipetakan
@@ -183,10 +183,10 @@ export function ClientProfilePanel({
       )}
 
       {canEdit && status !== "READY" && (
-        <form onSubmit={learn} className="mt-4 space-y-3 border-t border-slate-800 pt-4">
+        <form onSubmit={learn} className="mt-4 space-y-3 border-t border-slate-200 pt-4">
           <div>
-            <p className="text-xs text-slate-400">
-              <span className="font-medium text-slate-200">Belajar dari daftar akun klien:</span>{" "}
+            <p className="text-xs text-slate-600">
+              <span className="font-medium text-slate-800">Belajar dari daftar akun klien:</span>{" "}
               tempel daftar akun (dari COA klien, format: kode pipe nama per baris) — AI akan
               memetakan ke akun standar, lalu Anda review.
             </p>
@@ -195,7 +195,7 @@ export function ClientProfilePanel({
               onChange={(e) => setRawList(e.target.value)}
               rows={5}
               placeholder={"1000 | Kas\n4110 | Penjualan Barang\n5100 | Beban Gaji"}
-              className="mt-2 w-full rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 font-mono text-xs text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-800 focus:border-yellow-400/50 focus:outline-none"
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -203,7 +203,7 @@ export function ClientProfilePanel({
               value={sourcePeriod}
               onChange={(e) => setSourcePeriod(e.target.value)}
               placeholder="Periode sumber (mis. 2026-01)"
-              className="w-48 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-xs text-slate-200 focus:border-yellow-400/50 focus:outline-none"
+              className="w-48 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-yellow-400/50 focus:outline-none"
             />
             <button
               type="submit"

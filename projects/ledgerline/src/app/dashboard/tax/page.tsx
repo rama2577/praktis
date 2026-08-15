@@ -17,8 +17,8 @@ export default async function TaxPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-100">Core Tax</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Core Tax</h1>
+        <p className="mt-1 text-sm text-slate-600">
           Kode pajak per baris jurnal, review tax specialist, dan export SPT (1111, 1771 + rekonsiliasi fiskal, PPh 21/23/4(2)) siap upload Core Tax DJP.
         </p>
       </div>

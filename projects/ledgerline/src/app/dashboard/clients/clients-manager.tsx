@@ -77,14 +77,14 @@ export function ClientsManager({
             <button
               type="button"
               onClick={openCreate}
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#0b1120] transition hover:bg-yellow-300"
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-yellow-300"
             >
               + Tambah Klien
             </button>
             <button
               type="button"
               onClick={openImport}
-              className="rounded-lg border border-slate-700 px-4 py-2 text-sm text-slate-300 transition hover:border-yellow-400/50"
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 transition hover:border-yellow-400/50"
             >
               📥 Import Kertas Kerja
             </button>
@@ -122,7 +122,7 @@ export function ClientsManager({
                       <p className="text-xs text-slate-500">NPWP: {client.taxId}</p>
                     ) : null}
                   </td>
-                  <td className="px-4 py-3 text-slate-300">
+                  <td className="px-4 py-3 text-slate-700">
                     {industryLabels[client.industry] ?? client.industry}
                   </td>
                   <td className="px-4 py-3">
@@ -131,10 +131,10 @@ export function ClientsManager({
                       tone={client.status === "ACTIVE" ? "positive" : "neutral"}
                     />
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-slate-300">
+                  <td className="px-4 py-3 text-right tabular-nums text-slate-700">
                     {client.documentCount}
                   </td>
-                  <td className="px-4 py-3 text-right tabular-nums text-slate-300">
+                  <td className="px-4 py-3 text-right tabular-nums text-slate-700">
                     {client.journalCount}
                   </td>
                   <td className="px-4 py-3">
@@ -142,7 +142,7 @@ export function ClientsManager({
                       <button
                         type="button"
                         onClick={() => openEdit(client)}
-                        className="rounded-lg border border-line px-2.5 py-1 text-xs text-slate-300 transition hover:bg-white/5"
+                        className="rounded-lg border border-line px-2.5 py-1 text-xs text-slate-700 transition hover:bg-black/5"
                       >
                         Edit
                       </button>

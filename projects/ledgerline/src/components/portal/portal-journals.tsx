@@ -47,19 +47,19 @@ export function PortalJournals({ token }: { token: string }) {
   }, [load]);
 
   return (
-    <section className="rounded-xl border border-slate-700 bg-slate-900/40 p-5">
+    <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="mb-3">
         <h2 className="text-sm font-semibold">Transaksi Saya</h2>
-        <p className="mt-1 text-xs text-slate-400">
+        <p className="mt-1 text-xs text-slate-600">
           Ringkasan pencatatan yang sudah disetujui tim akuntan — dalam bahasa sederhana.
         </p>
       </div>
 
-      {loading && <p className="text-sm text-slate-400">Memuat transaksi…</p>}
-      {error && <p className="text-sm text-red-300">{error}</p>}
+      {loading && <p className="text-sm text-slate-600">Memuat transaksi…</p>}
+      {error && <p className="text-sm text-red-600">{error}</p>}
 
       {!loading && !error && items.length === 0 && (
-        <p className="text-sm text-slate-400">
+        <p className="text-sm text-slate-600">
           Belum ada transaksi tercatat. Setelah dokumen Anda diproses, ringkasan transaksi akan
           muncul di sini.
         </p>
@@ -68,20 +68,20 @@ export function PortalJournals({ token }: { token: string }) {
       {!loading && !error && items.length > 0 && (
         <ul className="space-y-3">
           {items.map((j) => (
-            <li key={j.id} className="rounded-lg border border-slate-800 bg-slate-950/40 p-3">
-              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-400">
-                <span className="font-medium text-slate-200">{j.description ?? "Transaksi"}</span>
-                <span className="rounded bg-slate-800 px-1.5 py-0.5">
+            <li key={j.id} className="rounded-lg border border-slate-200 bg-slate-50/40 p-3">
+              <div className="flex flex-wrap items-center gap-2 text-xs text-slate-600">
+                <span className="font-medium text-slate-800">{j.description ?? "Transaksi"}</span>
+                <span className="rounded bg-slate-100 px-1.5 py-0.5">
                   {TYPE_LABELS[j.journalType] ?? j.journalType}
                 </span>
                 <span>{new Date(j.entryDate).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</span>
               </div>
-              <p className="mt-2 text-sm text-slate-300">{j.summary}</p>
+              <p className="mt-2 text-sm text-slate-700">{j.summary}</p>
               <details className="mt-2">
-                <summary className="cursor-pointer text-xs text-yellow-300/90 hover:text-yellow-200">
+                <summary className="cursor-pointer text-xs text-amber-600/90 hover:text-yellow-200">
                   Lihat penjelasan lengkap
                 </summary>
-                <p className="mt-2 text-sm leading-relaxed text-slate-400">{j.explanation}</p>
+                <p className="mt-2 text-sm leading-relaxed text-slate-600">{j.explanation}</p>
               </details>
             </li>
           ))}

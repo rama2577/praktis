@@ -45,7 +45,7 @@ export function PortalNotifications({ token }: { token: string }) {
   if (loading) return null;
 
   return (
-    <section className="rounded-xl border border-slate-700 bg-slate-900/40 p-5">
+    <section className="rounded-xl border border-slate-200 bg-white p-5">
       <div className="mb-3 flex items-center justify-between">
         <h2 className="text-sm font-semibold">
           Notifikasi
@@ -59,24 +59,24 @@ export function PortalNotifications({ token }: { token: string }) {
           <button
             type="button"
             onClick={() => void markRead()}
-            className="text-xs text-yellow-300 underline-offset-2 hover:underline"
+            className="text-xs text-amber-600 underline-offset-2 hover:underline"
           >
             Tandai semua dibaca
           </button>
         )}
       </div>
       {items.length === 0 ? (
-        <p className="text-sm text-slate-400">Belum ada notifikasi.</p>
+        <p className="text-sm text-slate-600">Belum ada notifikasi.</p>
       ) : (
         <ul className="space-y-2">
           {items.map((n) => (
             <li
               key={n.id}
               className={`rounded-lg border px-3 py-2 text-sm ${
-                n.readAt ? "border-slate-800 bg-slate-950/40 text-slate-400" : "border-slate-700 bg-slate-950/70 text-slate-200"
+                n.readAt ? "border-slate-200 bg-slate-50/40 text-slate-600" : "border-slate-200 bg-slate-50/70 text-slate-800"
               }`}
             >
-              <span className="mr-2 text-xs text-yellow-300">{n.typeLabel}</span>
+              <span className="mr-2 text-xs text-amber-600">{n.typeLabel}</span>
               {n.message}
               <span className="ml-2 text-xs text-slate-500">
                 {new Date(n.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}

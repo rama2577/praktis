@@ -59,7 +59,7 @@ export default async function ClientDetailPage({
     <div>
       <Link
         href="/dashboard/clients"
-        className="text-xs text-slate-400 transition hover:text-accent"
+        className="text-xs text-slate-600 transition hover:text-accent"
       >
         ← Kembali ke Klien
       </Link>
@@ -67,7 +67,7 @@ export default async function ClientDetailPage({
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <div>
           <h1 className="text-xl font-semibold tracking-tight">{client.name}</h1>
-          <p className="mt-0.5 text-sm text-slate-400">
+          <p className="mt-0.5 text-sm text-slate-600">
             {client.taxId ? `NPWP: ${client.taxId} · ` : ""}
             {client._count.journals} jurnal · {client.documents.length} dokumen
           </p>
@@ -111,7 +111,7 @@ export default async function ClientDetailPage({
                   <div className="flex items-start justify-between gap-3">
                     <div className="min-w-0">
                       <p className="truncate text-sm font-medium">{doc.fileName}</p>
-                      <p className="mt-0.5 text-xs text-slate-400">{DOC_TYPE_LABELS[doc.type]}</p>
+                      <p className="mt-0.5 text-xs text-slate-600">{DOC_TYPE_LABELS[doc.type]}</p>
                     </div>
                     <StatusBadge label={STATUS_LABELS[doc.status]} tone={STATUS_TONE[doc.status]} />
                   </div>
@@ -120,7 +120,7 @@ export default async function ClientDetailPage({
                       <summary className="cursor-pointer text-xs text-accent hover:underline">
                         Lihat teks terindeks ({doc.referenceText.length.toLocaleString("id-ID")} karakter)
                       </summary>
-                      <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-950 p-3 text-xs leading-relaxed text-slate-400">
+                      <pre className="mt-2 max-h-48 overflow-y-auto whitespace-pre-wrap rounded-lg bg-slate-50 p-3 text-xs leading-relaxed text-slate-600">
                         {doc.referenceText.slice(0, 4000)}
                         {doc.referenceText.length > 4000 ? "…" : ""}
                       </pre>
@@ -157,10 +157,10 @@ export default async function ClientDetailPage({
                     className="border-b border-line/60 last:border-0 hover:bg-white/[0.02]"
                   >
                     <td className="px-4 py-3 font-medium">{doc.fileName}</td>
-                    <td className="px-4 py-3 text-slate-300">
+                    <td className="px-4 py-3 text-slate-700">
                       {DOC_TYPE_LABELS[doc.type]}
                       {isReferenceDocType(doc.type) && (
-                        <span className="ml-2 rounded bg-yellow-400/10 px-1.5 py-0.5 text-[10px] font-medium text-yellow-300">
+                        <span className="ml-2 rounded bg-yellow-400/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-600">
                           Referensi
                         </span>
                       )}
@@ -171,10 +171,10 @@ export default async function ClientDetailPage({
                         tone={STATUS_TONE[doc.status]}
                       />
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums text-slate-300">
+                    <td className="px-4 py-3 text-right tabular-nums text-slate-700">
                       {formatBytes(doc.sizeBytes)}
                     </td>
-                    <td className="px-4 py-3 text-slate-400">
+                    <td className="px-4 py-3 text-slate-600">
                       {doc.createdAt.toLocaleDateString("id-ID", {
                         day: "numeric",
                         month: "short",

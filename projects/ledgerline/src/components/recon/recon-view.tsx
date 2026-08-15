@@ -177,19 +177,19 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-slate-100">Rekonsiliasi Bank</h1>
-        <p className="text-sm text-slate-400">
+        <h1 className="font-display text-2xl font-bold text-slate-900">Rekonsiliasi Bank</h1>
+        <p className="text-sm text-slate-600">
           Cocokkan mutasi bank dengan jurnal kas (1-1000/1-1100), bantuan saran AI, dan laporan outstanding.
         </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Klien
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           >
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -198,13 +198,13 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Periode
           <input
             type="month"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           />
         </label>
         <Button variant="secondary" onClick={() => void load()} disabled={loading}>
@@ -216,7 +216,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
       </div>
 
       {notice && (
-        <div className="rounded-lg border border-emerald-700/40 bg-emerald-950/30 px-4 py-2 text-sm text-emerald-300">
+        <div className="rounded-lg border border-emerald-700/40 bg-emerald-950/30 px-4 py-2 text-sm text-emerald-600">
           {notice}
         </div>
       )}
@@ -233,31 +233,31 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
         <>
           <div className="grid grid-cols-2 gap-3 lg:grid-cols-4">
             <Card className="p-4">
-              <div className="text-xs text-slate-400">Mutasi bank</div>
-              <div className="font-display text-xl font-bold text-slate-100">
-                {s.totalMutations} <span className="text-xs font-normal text-slate-400">({s.totalMatched} tercocok)</span>
+              <div className="text-xs text-slate-600">Mutasi bank</div>
+              <div className="font-display text-xl font-bold text-slate-900">
+                {s.totalMutations} <span className="text-xs font-normal text-slate-600">({s.totalMatched} tercocok)</span>
               </div>
               <div className="mt-1 text-xs text-slate-500">
                 Masuk {fmt(s.bankIn)} · Keluar {fmt(s.bankOut)}
               </div>
             </Card>
             <Card className="p-4">
-              <div className="text-xs text-slate-400">Buku kas (jurnal)</div>
-              <div className="font-display text-xl font-bold text-slate-100">
-                {s.outstandingJournals.length} <span className="text-xs font-normal text-slate-400">belum di bank</span>
+              <div className="text-xs text-slate-600">Buku kas (jurnal)</div>
+              <div className="font-display text-xl font-bold text-slate-900">
+                {s.outstandingJournals.length} <span className="text-xs font-normal text-slate-600">belum di bank</span>
               </div>
               <div className="mt-1 text-xs text-slate-500">
                 Masuk {fmt(s.bookIn)} · Keluar {fmt(s.bookOut)}
               </div>
             </Card>
             <Card className="p-4">
-              <div className="text-xs text-slate-400">Outstanding mutasi</div>
-              <div className="font-display text-xl font-bold text-amber-300">{s.outstandingMutations.length}</div>
+              <div className="text-xs text-slate-600">Outstanding mutasi</div>
+              <div className="font-display text-xl font-bold text-amber-600">{s.outstandingMutations.length}</div>
               <div className="mt-1 text-xs text-slate-500">Mutasi bank tanpa jurnal</div>
             </Card>
             <Card className="p-4">
-              <div className="text-xs text-slate-400">Selisih</div>
-              <div className={`font-display text-xl font-bold ${s.bankIn - s.bankOut === s.bookIn - s.bookOut ? "text-emerald-300" : "text-rose-300"}`}>
+              <div className="text-xs text-slate-600">Selisih</div>
+              <div className={`font-display text-xl font-bold ${s.bankIn - s.bankOut === s.bookIn - s.bookOut ? "text-emerald-600" : "text-rose-600"}`}>
                 {money((s.bankIn - s.bankOut) - (s.bookIn - s.bookOut))}
               </div>
               <div className="mt-1 text-xs text-slate-500">Bank − Buku periode {s.period}</div>
@@ -275,7 +275,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
 
           <Card className="p-4">
             <div className="mb-3 flex items-center justify-between">
-              <h2 className="font-display text-base font-semibold text-slate-100">Mutasi Bank — {data.clientName}</h2>
+              <h2 className="font-display text-base font-semibold text-slate-900">Mutasi Bank — {data.clientName}</h2>
               <Badge label={s.period} />
             </div>
             {data.mutations.length === 0 ? (
@@ -300,8 +300,8 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
                         <TR key={m.id}>
                           <TD className="whitespace-nowrap">{m.date.slice(0, 10)}</TD>
                           <TD>{m.description}</TD>
-                          <TD className="text-right text-emerald-300">{m.amount > 0 ? fmt(m.amount) : ""}</TD>
-                          <TD className="text-right text-rose-300">{m.amount < 0 ? fmt(Math.abs(m.amount)) : ""}</TD>
+                          <TD className="text-right text-emerald-600">{m.amount > 0 ? fmt(m.amount) : ""}</TD>
+                          <TD className="text-right text-rose-600">{m.amount < 0 ? fmt(Math.abs(m.amount)) : ""}</TD>
                           <TD>
                             {m.matchStatus === "UNMATCHED" ? (
                               <StatusBadge label="Belum cocok" tone="neutral" />
@@ -312,7 +312,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
                           <TD>
                             {m.matchStatus === "UNMATCHED" && sug ? (
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-amber-300" title={sug.reason}>
+                                <span className="text-xs text-amber-600" title={sug.reason}>
                                   {Math.round(sug.score * 100)}% · {sug.journalDescription ?? sug.journalId.slice(-6)}
                                 </span>
                                 <Button size="sm" variant="secondary" onClick={() => void applySuggestion(m.id, sug.journalId)} disabled={busy}>
@@ -321,7 +321,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
                               </div>
                             ) : m.matchStatus !== "UNMATCHED" ? (
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-slate-400">
+                                <span className="text-xs text-slate-600">
                                   {m.matchedJournalId ? `→ ${m.matchedJournalId.slice(-6)}` : ""}
                                 </span>
                                 <Button size="sm" variant="ghost" onClick={() => void applySuggestion(m.id, null)} disabled={busy}>
@@ -342,7 +342,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
           </Card>
 
           <Card className="p-4">
-            <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Outstanding — Jurnal Kas Tanpa Mutasi</h2>
+            <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Outstanding — Jurnal Kas Tanpa Mutasi</h2>
             {s.outstandingJournals.length === 0 ? (
               <EmptyState title="Semua tercocok" description="Tidak ada jurnal kas yang belum punya mutasi." />
             ) : (

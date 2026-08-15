@@ -17,8 +17,8 @@ export default async function AssetsPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-100">Aset Tetap</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Aset Tetap</h1>
+        <p className="mt-1 text-sm text-slate-600">
           Register aset, penyusutan komersial (PSAK 216) & fiskal (Pasal 11), jurnal otomatis, rekonsiliasi fiskal.
         </p>
       </div>

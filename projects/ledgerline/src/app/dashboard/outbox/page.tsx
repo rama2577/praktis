@@ -53,24 +53,24 @@ export default async function OutboxPage({
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-slate-100">Outbox Event</h1>
-        <p className="text-sm text-slate-400">
+        <h1 className="font-display text-2xl font-bold text-slate-900">Outbox Event</h1>
+        <p className="text-sm text-slate-600">
           Antrian event keluar (notifikasi klien, webhook, integrasi) dengan retry otomatis — pola transactional outbox.
         </p>
       </div>
 
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-4">
-          <div className="text-xs text-slate-400">Pending</div>
-          <div className="font-display text-xl font-bold text-amber-300">{summary.pending}</div>
+          <div className="text-xs text-slate-600">Pending</div>
+          <div className="font-display text-xl font-bold text-amber-600">{summary.pending}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-xs text-slate-400">Terproses</div>
-          <div className="font-display text-xl font-bold text-emerald-300">{summary.processed}</div>
+          <div className="text-xs text-slate-600">Terproses</div>
+          <div className="font-display text-xl font-bold text-emerald-600">{summary.processed}</div>
         </Card>
         <Card className="p-4">
-          <div className="text-xs text-slate-400">Gagal</div>
-          <div className="font-display text-xl font-bold text-rose-300">{summary.failed}</div>
+          <div className="text-xs text-slate-600">Gagal</div>
+          <div className="font-display text-xl font-bold text-rose-600">{summary.failed}</div>
         </Card>
       </div>
 
@@ -80,7 +80,7 @@ export default async function OutboxPage({
         {clientFilter && (
           <a
             href="/dashboard/outbox"
-            className="mt-4 rounded-md border border-slate-700 px-2 py-1.5 text-xs text-slate-400 hover:text-slate-200"
+            className="mt-4 rounded-md border border-slate-200 px-2 py-1.5 text-xs text-slate-600 hover:text-slate-800"
           >
             ✕ Hapus filter
           </a>
@@ -88,7 +88,7 @@ export default async function OutboxPage({
       </div>
 
       <Card className="p-4">
-        <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Event Terbaru ({events.length})</h2>
+        <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Event Terbaru ({events.length})</h2>
         <div className="overflow-x-auto">
           <Table>
             <thead>
@@ -103,7 +103,7 @@ export default async function OutboxPage({
             <tbody>
               {events.map((e) => (
                 <TR key={e.id}>
-                  <TD className="whitespace-nowrap text-slate-400">{e.createdAt.toISOString().slice(0, 16).replace("T", " ")}</TD>
+                  <TD className="whitespace-nowrap text-slate-600">{e.createdAt.toISOString().slice(0, 16).replace("T", " ")}</TD>
                   <TD>{EVENT_LABEL[e.eventType] ?? e.eventType}</TD>
                   <TD>{e.clientId ? (clientName.get(e.clientId) ?? "—") : "—"}</TD>
                   <TD>

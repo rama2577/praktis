@@ -142,16 +142,16 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
   return (
     <div className="space-y-3">
       <div className="flex flex-wrap items-center justify-between gap-2">
-        <p className="text-xs text-slate-400">
-          ✏️ Edit baris jurnal — simpan <span className="text-slate-200">tidak mengubah stage</span> review, koreksi
+        <p className="text-xs text-slate-600">
+          ✏️ Edit baris jurnal — simpan <span className="text-slate-800">tidak mengubah stage</span> review, koreksi
           tercatat sebagai feedback KB.
         </p>
         <div className="flex items-center gap-2">
           <span
             className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
               balance.ok
-                ? "bg-emerald-500/15 text-emerald-300"
-                : "bg-amber-500/15 text-amber-300"
+                ? "bg-emerald-500/15 text-emerald-600"
+                : "bg-amber-500/15 text-amber-600"
             }`}
             role="status"
           >
@@ -160,9 +160,9 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
         </div>
       </div>
 
-      <div className="overflow-x-auto rounded-lg border border-slate-700">
+      <div className="overflow-x-auto rounded-lg border border-slate-200">
         <table className="w-full text-left text-sm">
-          <thead className="bg-slate-800/60 text-xs uppercase tracking-wide text-slate-400">
+          <thead className="bg-slate-100 text-xs uppercase tracking-wide text-slate-600">
             <tr>
               <th scope="col" className="w-8 px-2 py-2"></th>
               <th scope="col" className="px-2 py-2">Kode</th>
@@ -181,7 +181,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     aria-label={`Hapus baris ${r.accountCode || "baru"}`}
                     disabled={rows.length <= 2}
                     onClick={() => removeRow(r.key)}
-                    className="rounded border border-slate-700 px-1.5 text-xs text-red-300 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-30"
+                    className="rounded border border-slate-200 px-1.5 text-xs text-red-600 hover:bg-red-500/10 disabled:cursor-not-allowed disabled:opacity-30"
                   >
                     ✕
                   </button>
@@ -191,7 +191,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     value={r.accountCode}
                     onChange={(e) => updateRow(r.key, { accountCode: e.target.value })}
                     placeholder="1-1100"
-                    className="w-24 rounded border border-slate-700 bg-slate-950 px-2 py-1 font-mono text-xs text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-24 rounded border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-xs text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -199,7 +199,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     value={r.accountName}
                     onChange={(e) => updateRow(r.key, { accountName: e.target.value })}
                     placeholder="Kas dan Setara Kas"
-                    className="w-full min-w-40 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full min-w-40 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -208,7 +208,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     onChange={(e) => updateRow(r.key, { debit: e.target.value })}
                     inputMode="decimal"
                     placeholder="0"
-                    className="w-full rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right font-mono text-xs text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-xs text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -217,7 +217,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     onChange={(e) => updateRow(r.key, { credit: e.target.value })}
                     inputMode="decimal"
                     placeholder="0"
-                    className="w-full rounded border border-slate-700 bg-slate-950 px-2 py-1 text-right font-mono text-xs text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-xs text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -225,17 +225,17 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     value={r.notes}
                     onChange={(e) => updateRow(r.key, { notes: e.target.value })}
                     placeholder="Catatan baris (opsional)"
-                    className="w-full min-w-36 rounded border border-slate-700 bg-slate-950 px-2 py-1 text-xs text-slate-200 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full min-w-36 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
                   />
                 </td>
               </tr>
             ))}
           </tbody>
-          <tfoot className="bg-slate-800/40 text-xs">
+          <tfoot className="bg-slate-100 text-xs">
             <tr>
-              <td colSpan={3} className="px-2 py-2 text-slate-400">Total</td>
-              <td className="px-2 py-2 text-right font-mono tabular-nums text-slate-200">{formatCurrencyRp(balance.totalDebit)}</td>
-              <td className="px-2 py-2 text-right font-mono tabular-nums text-slate-200">{formatCurrencyRp(balance.totalCredit)}</td>
+              <td colSpan={3} className="px-2 py-2 text-slate-600">Total</td>
+              <td className="px-2 py-2 text-right font-mono tabular-nums text-slate-800">{formatCurrencyRp(balance.totalDebit)}</td>
+              <td className="px-2 py-2 text-right font-mono tabular-nums text-slate-800">{formatCurrencyRp(balance.totalCredit)}</td>
               <td className="px-2 py-2"></td>
             </tr>
           </tfoot>
@@ -243,7 +243,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
       </div>
 
       {error && (
-        <p role="alert" className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs text-red-300">
+        <p role="alert" className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-1.5 text-xs text-red-600">
           {error}
         </p>
       )}
@@ -261,7 +261,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
           type="button"
           disabled={busy}
           onClick={addRow}
-          className="rounded-lg border border-slate-700 bg-slate-800 px-3 py-1.5 text-sm text-slate-200 hover:bg-slate-700 disabled:opacity-50"
+          className="rounded-lg border border-slate-200 bg-slate-100 px-3 py-1.5 text-sm text-slate-800 hover:bg-slate-200 disabled:opacity-50"
         >
           + Tambah baris
         </button>
@@ -269,7 +269,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
           type="button"
           disabled={busy}
           onClick={onCancel}
-          className="rounded-lg border border-slate-700 px-3 py-1.5 text-sm text-slate-300 hover:bg-slate-800 disabled:opacity-50"
+          className="rounded-lg border border-slate-200 px-3 py-1.5 text-sm text-slate-700 hover:bg-slate-100 disabled:opacity-50"
         >
           Batal
         </button>

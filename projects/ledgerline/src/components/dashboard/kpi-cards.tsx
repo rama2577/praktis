@@ -35,48 +35,48 @@ export function KpiCards({ data }: { data: DashboardData }) {
     {
       label: "First-Pass Rate",
       value: fmtPct(data.firstPassRate),
-      valueTone: data.firstPassRate >= 70 ? "text-emerald-400" : data.firstPassRate >= 40 ? "text-amber-400" : "text-red-400",
+      valueTone: data.firstPassRate >= 70 ? "text-emerald-600" : data.firstPassRate >= 40 ? "text-amber-600" : "text-red-600",
       hint: "jurnal langsung disetujui tanpa exception",
       icon: "🎯",
     },
     {
       label: "Klien Aktif",
       value: fmt(data.activeClients),
-      valueTone: "text-slate-100",
+      valueTone: "text-slate-900",
       hint: `+${fmt(data.newClientsThisMonth)} bulan ini`,
       icon: "🏢",
     },
     {
       label: "AI Automation",
       value: fmtPct(data.aiAutomationPct),
-      valueTone: "text-emerald-400",
+      valueTone: "text-emerald-600",
       hint: "jurnal AI tanpa pengecualian",
       icon: "🤖",
     },
     {
       label: "Jobs in Progress",
       value: fmt(data.jobsInProgress),
-      valueTone: "text-amber-400",
+      valueTone: "text-amber-600",
       hint: `${fmt(data.aiDraftJobs)} draft AI · ${fmt(data.reviewJobs)} menunggu review`,
       icon: "⚙️",
     },
     {
       label: "Transactions Hari Ini",
       value: fmt(data.transactionsToday),
-      valueTone: "text-slate-100",
+      valueTone: "text-slate-900",
       hint: deltaHint,
-      hintTone: delta !== null && delta < 0 ? "text-red-400" : "text-slate-500",
+      hintTone: delta !== null && delta < 0 ? "text-red-600" : "text-slate-500",
       icon: "📄",
     },
     {
       label: "SLA Breaches",
       value: fmt(data.slaBreachCount),
-      valueTone: data.slaBreachCount > 0 ? "text-red-400" : "text-emerald-400",
+      valueTone: data.slaBreachCount > 0 ? "text-red-600" : "text-emerald-600",
       hint:
         data.breachesByStage.length === 0
           ? "tidak ada pelanggaran"
           : data.breachesByStage.map((b) => `${STAGE_LABEL[b.stage] ?? b.stage} ${b.count}`).join(" · "),
-      hintTone: data.slaBreachCount > 0 ? "text-red-300/80" : "text-slate-500",
+      hintTone: data.slaBreachCount > 0 ? "text-red-600/80" : "text-slate-500",
       icon: "⏱️",
     },
   ];
@@ -95,7 +95,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
             }`}
           >
             <div className="flex items-center justify-between">
-              <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{card.label}</p>
+              <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{card.label}</p>
               <span aria-hidden className="text-base opacity-80">
                 {card.icon}
               </span>

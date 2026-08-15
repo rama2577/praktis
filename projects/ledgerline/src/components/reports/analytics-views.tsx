@@ -91,20 +91,20 @@ export function RatioCard({ r }: {
 }) {
   const tone = r.verdict === "BAIK" ? "positive" : r.verdict === "WASPADA" ? "warning" : r.verdict === "KURANG" ? "danger" : "neutral";
   return (
-    <div className="rounded-xl border border-slate-800 bg-slate-900/50 p-4">
+    <div className="rounded-xl border border-slate-200 bg-white p-4">
       <div className="flex items-start justify-between gap-2">
-        <p className="text-sm font-medium text-slate-200">{r.label}</p>
+        <p className="text-sm font-medium text-slate-800">{r.label}</p>
         <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
-          tone === "positive" ? "bg-emerald-400/10 text-emerald-300" :
-          tone === "danger" ? "bg-rose-400/10 text-rose-300" :
-          tone === "warning" ? "bg-amber-400/10 text-amber-300" :
-          "bg-slate-700 text-slate-300"
+          tone === "positive" ? "bg-emerald-400/10 text-emerald-600" :
+          tone === "danger" ? "bg-rose-400/10 text-rose-600" :
+          tone === "warning" ? "bg-amber-400/10 text-amber-600" :
+          "bg-slate-200 text-slate-700"
         }`}>{r.verdict}</span>
       </div>
-      <p className="mt-2 font-mono text-xl text-slate-100">{r.value === null ? "N/A" : r.value.toFixed(2)}</p>
+      <p className="mt-2 font-mono text-xl text-slate-900">{r.value === null ? "N/A" : r.value.toFixed(2)}</p>
       <p className="mt-1 text-xs text-slate-500">{r.formula}</p>
       <p className="text-xs text-slate-500">Benchmark: {r.benchmark}</p>
-      <p className="mt-2 text-xs text-slate-400">{r.note}</p>
+      <p className="mt-2 text-xs text-slate-600">{r.note}</p>
     </div>
   );
 }
@@ -115,11 +115,11 @@ export function BarChart({ series, color }: { series: { label: string; value: nu
     <div className="space-y-2">
       {series.map((s) => (
         <div key={s.label} className="flex items-center gap-2">
-          <span className="w-40 truncate text-xs text-slate-400" title={s.label}>{s.label}</span>
-          <div className="h-5 flex-1 overflow-hidden rounded bg-slate-800">
+          <span className="w-40 truncate text-xs text-slate-600" title={s.label}>{s.label}</span>
+          <div className="h-5 flex-1 overflow-hidden rounded bg-slate-100">
             <div className="h-full rounded transition-all" style={{ width: `${Math.max((Math.abs(s.value) / max) * 100, 2)}%`, backgroundColor: color }} />
           </div>
-          <span className="w-28 text-right font-mono text-xs text-slate-300">{rp(s.value)}</span>
+          <span className="w-28 text-right font-mono text-xs text-slate-700">{rp(s.value)}</span>
         </div>
       ))}
     </div>
@@ -128,9 +128,9 @@ export function BarChart({ series, color }: { series: { label: string; value: nu
 
 export function SelectClient({ clients, clientId, setClientId }: { clients: Client[]; clientId: string; setClientId: (v: string) => void }) {
   return (
-    <label className="flex flex-col gap-1 text-xs text-slate-400">
+    <label className="flex flex-col gap-1 text-xs text-slate-600">
       Klien
-      <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100">
+      <select value={clientId} onChange={(e) => setClientId(e.target.value)} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900">
         {clients.map((c) => (<option key={c.id} value={c.id}>{c.name}</option>))}
       </select>
     </label>
@@ -139,9 +139,9 @@ export function SelectClient({ clients, clientId, setClientId }: { clients: Clie
 
 export function PeriodInput({ period, setPeriod }: { period: string; setPeriod: (v: string) => void }) {
   return (
-    <label className="flex flex-col gap-1 text-xs text-slate-400">
+    <label className="flex flex-col gap-1 text-xs text-slate-600">
       Periode
-      <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100" />
+      <input type="month" value={period} onChange={(e) => setPeriod(e.target.value)} className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900" />
     </label>
   );
 }

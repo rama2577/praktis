@@ -35,7 +35,7 @@ export function TR({
   ...rest
 }: { children: ReactNode; className?: string } & HTMLAttributes<HTMLTableRowElement>) {
   return (
-    <tr className={`transition hover:bg-slate-800/40 ${className}`} {...rest}>
+    <tr className={`transition hover:bg-slate-100 ${className}`} {...rest}>
       {children}
     </tr>
   );

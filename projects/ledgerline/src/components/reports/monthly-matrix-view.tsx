@@ -82,25 +82,25 @@ export function MonthlyMatrixView({
 
       {error && <ErrorState message={error} onRetry={() => void load()} />}
 
-      {loading && <p className="p-4 text-sm text-slate-400">Menghitung matrix 12 bulan…</p>}
+      {loading && <p className="p-4 text-sm text-slate-600">Menghitung matrix 12 bulan…</p>}
 
       {!loading && data && (
         <div className="space-y-5">
           {/* ── Laba Rugi per Bulan ── */}
-          <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
-            <div className="border-b border-slate-800 px-4 py-3">
-              <h3 className="text-sm font-medium text-slate-100">📈 Laba Rugi per Bulan — {data.year}</h3>
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="border-b border-slate-200 px-4 py-3">
+              <h3 className="text-sm font-medium text-slate-900">📈 Laba Rugi per Bulan — {data.year}</h3>
               <p className="text-xs text-slate-500">Transaksi bulan berjalan (non-kumulatif), pola kertas kerja (1-12).</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-900 text-slate-500">
+                <thead className="bg-slate-50 text-slate-500">
                   <tr>
                     <th className="px-3 py-2 text-left font-medium">Pos</th>
                     {data.months.map((m) => (
                       <th key={m.period} className="px-2 py-2 font-medium">{monthLabel(m.period)}</th>
                     ))}
-                    <th className="px-3 py-2 font-medium text-yellow-300">Total</th>
+                    <th className="px-3 py-2 font-medium text-amber-600">Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -109,10 +109,10 @@ export function MonthlyMatrixView({
                     ["Beban", (m: MonthRow) => m.beban],
                     ["Laba (Rugi)", (m: MonthRow) => m.laba],
                   ] as [string, (m: MonthRow) => number][]).map(([label, get]) => (
-                    <tr key={label} className={`border-t border-slate-800/60 ${label === "Laba (Rugi)" ? "font-semibold text-slate-100" : "text-slate-300"}`}>
+                    <tr key={label} className={`border-t border-slate-200/60 ${label === "Laba (Rugi)" ? "font-semibold text-slate-900" : "text-slate-700"}`}>
                       <td className="px-3 py-2 text-left">{label}</td>
                       {data.months.map((m) => (
-                        <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-300" : ""}`}>{fmt(get(m))}</td>
+                        <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-600" : ""}`}>{fmt(get(m))}</td>
                       ))}
                       <td className="px-3 py-2 font-mono text-yellow-200">
                         {fmt(label === "Pendapatan" ? data.totals.pendapatan : label === "Beban" ? data.totals.beban : data.totals.laba)}
@@ -125,20 +125,20 @@ export function MonthlyMatrixView({
           </div>
 
           {/* ── Neraca Posisi Akhir Bulan ── */}
-          <div className="overflow-hidden rounded-xl border border-slate-800 bg-slate-900/50">
-            <div className="border-b border-slate-800 px-4 py-3">
-              <h3 className="text-sm font-medium text-slate-100">📊 Neraca Posisi Akhir Bulan — {data.year}</h3>
+          <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
+            <div className="border-b border-slate-200 px-4 py-3">
+              <h3 className="text-sm font-medium text-slate-900">📊 Neraca Posisi Akhir Bulan — {data.year}</h3>
               <p className="text-xs text-slate-500">Kumulatif Januari–bulan berjalan (laba YTD masuk ekuitas).</p>
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-900 text-slate-500">
+                <thead className="bg-slate-50 text-slate-500">
                   <tr>
                     <th className="px-3 py-2 text-left font-medium">Pos</th>
                     {data.months.map((m) => (
                       <th key={m.period} className="px-2 py-2 font-medium">{monthLabel(m.period)}</th>
                     ))}
-                    <th className="px-3 py-2 font-medium text-yellow-300">Des (Akhir Th)</th>
+                    <th className="px-3 py-2 font-medium text-amber-600">Des (Akhir Th)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -148,10 +148,10 @@ export function MonthlyMatrixView({
                     ["Total Ekuitas (incl. laba YTD)", (m: MonthRow) => m.ekuitas],
                     ["Laba Kumulatif (YTD)", (m: MonthRow) => m.labaKumulatif],
                   ] as [string, (m: MonthRow) => number][]).map(([label, get]) => (
-                    <tr key={label} className={`border-t border-slate-800/60 ${label === "Total Ekuitas (incl. laba YTD)" ? "font-semibold text-slate-100" : "text-slate-300"}`}>
+                    <tr key={label} className={`border-t border-slate-200/60 ${label === "Total Ekuitas (incl. laba YTD)" ? "font-semibold text-slate-900" : "text-slate-700"}`}>
                       <td className="px-3 py-2 text-left">{label}</td>
                       {data.months.map((m) => (
-                        <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-300" : ""}`}>{fmt(get(m))}</td>
+                        <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-600" : ""}`}>{fmt(get(m))}</td>
                       ))}
                       <td className="px-3 py-2 font-mono text-yellow-200">
                         {fmt(label === "Total Aset" ? data.totals.aset : label === "Total Liabilitas" ? data.totals.liabilitas : label === "Total Ekuitas (incl. laba YTD)" ? data.totals.ekuitas : data.months[11]?.labaKumulatif ?? 0)}

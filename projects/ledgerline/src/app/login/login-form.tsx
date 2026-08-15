@@ -36,7 +36,7 @@ export function LoginForm() {
   return (
     <form onSubmit={onSubmit} className="mt-8 flex flex-col gap-4" noValidate={false}>
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="email" className="text-sm font-medium text-slate-300">
+        <label htmlFor="email" className="text-sm font-medium text-slate-700">
           Email
         </label>
         <input
@@ -53,7 +53,7 @@ export function LoginForm() {
       </div>
 
       <div className="flex flex-col gap-1.5">
-        <label htmlFor="password" className="text-sm font-medium text-slate-300">
+        <label htmlFor="password" className="text-sm font-medium text-slate-700">
           Password
         </label>
         <input
@@ -72,7 +72,7 @@ export function LoginForm() {
       {error ? (
         <p
           role="alert"
-          className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-400"
+          className="rounded-lg border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-600"
         >
           {error}
         </p>
@@ -81,7 +81,7 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading || !email || !password}
-        className="mt-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-[#0b1120] transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
+        className="mt-2 rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-[#ffffff] transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
       >
         {loading ? "Memproses..." : "Masuk"}
       </button>

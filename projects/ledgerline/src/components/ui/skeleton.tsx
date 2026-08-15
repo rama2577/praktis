@@ -1,6 +1,6 @@
 /** Skeleton loading — bar abu-abu berdenyut. */
 export function Skeleton({ className = "" }: { className?: string }) {
-  return <div aria-hidden className={`animate-pulse rounded-lg bg-slate-800/70 ${className}`} />;
+  return <div aria-hidden className={`animate-pulse rounded-lg bg-slate-100/70 ${className}`} />;
 }
 
 /** Daftar skeleton kartu untuk list/queue. */

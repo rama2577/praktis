@@ -50,7 +50,7 @@ export function ClientEnrichButton({ clientId }: { clientId: string }) {
       {message && (
         <span
           className={`rounded px-2 py-1 text-xs ${
-            state === "error" ? "bg-red-500/15 text-red-300" : state === "done" ? "bg-emerald-500/15 text-emerald-300" : "bg-slate-600/30 text-slate-300"
+            state === "error" ? "bg-red-500/15 text-red-600" : state === "done" ? "bg-emerald-500/15 text-emerald-600" : "bg-slate-600/30 text-slate-700"
           }`}
         >
           {message}

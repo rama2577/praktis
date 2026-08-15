@@ -44,10 +44,10 @@ export function PortalLinkButton({ clientId }: { clientId: string }) {
       title="Buat link portal klien & salin ke clipboard untuk dibagikan"
       className={`inline-flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs font-semibold transition ${
         state === "copied"
-          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-300"
+          ? "border-emerald-500/40 bg-emerald-500/10 text-emerald-600"
           : state === "error"
-            ? "border-red-500/40 bg-red-500/10 text-red-300"
-            : "border-line bg-card text-slate-200 hover:border-accent/50 hover:text-accent"
+            ? "border-red-500/40 bg-red-500/10 text-red-600"
+            : "border-line bg-card text-slate-800 hover:border-accent/50 hover:text-accent"
       } disabled:cursor-wait disabled:opacity-60`}
     >
       <svg

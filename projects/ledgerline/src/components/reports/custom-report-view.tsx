@@ -182,19 +182,19 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-2xl font-bold text-slate-100">Laporan Custom AI</h1>
-        <p className="text-sm text-slate-400">
+        <h1 className="font-display text-2xl font-bold text-slate-900">Laporan Custom AI</h1>
+        <p className="text-sm text-slate-600">
           Minta laporan dalam bahasa natural → AI usulkan struktur → setujui → simpan sebagai template → jalankan & unduh.
         </p>
       </div>
 
       <div className="flex flex-wrap items-end gap-3">
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Klien
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           >
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -203,26 +203,26 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
             ))}
           </select>
         </label>
-        <label className="flex flex-col gap-1 text-xs text-slate-400">
+        <label className="flex flex-col gap-1 text-xs text-slate-600">
           Periode
           <input
             type="month"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900"
           />
         </label>
       </div>
 
       {notice && (
-        <div className="rounded-lg border border-emerald-700/40 bg-emerald-950/30 px-4 py-2 text-sm text-emerald-300">
+        <div className="rounded-lg border border-emerald-700/40 bg-emerald-950/30 px-4 py-2 text-sm text-emerald-600">
           {notice}
         </div>
       )}
       {error && <ErrorState message={error} />}
 
       <Card className="p-4">
-        <h2 className="mb-2 font-display text-base font-semibold text-slate-100">✨ Minta Laporan</h2>
+        <h2 className="mb-2 font-display text-base font-semibold text-slate-900">✨ Minta Laporan</h2>
         <p className="mb-3 text-xs text-slate-500">
           Contoh: &quot;laba rugi Agustus 2026&quot;, &quot;penjualan per proyek Proyek A&quot;, &quot;beban per channel online&quot;
         </p>
@@ -234,7 +234,7 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
               if (e.key === "Enter") void suggest();
             }}
             placeholder='Contoh: "pendapatan per proyek"'
-            className="flex-1 rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder:text-slate-500"
+            className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
           />
           <Button onClick={() => void suggest()} disabled={busy || !prompt.trim()}>
             Usulkan Struktur
@@ -248,12 +248,12 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
               <Badge label={KIND_LABEL[suggestion.kind] ?? suggestion.kind} tone="accent" />
               <Badge label={`${Math.round(suggestion.confidence * 100)}% yakin`} tone="positive" />
             </div>
-            <p className="mt-2 text-sm text-slate-300">{suggestion.description}</p>
+            <p className="mt-2 text-sm text-slate-700">{suggestion.description}</p>
             {suggestion.dimensions?.project && (
-              <p className="mt-1 text-xs text-slate-400">Filter proyek: {suggestion.dimensions.project}</p>
+              <p className="mt-1 text-xs text-slate-600">Filter proyek: {suggestion.dimensions.project}</p>
             )}
             {suggestion.dimensions?.channel && (
-              <p className="mt-1 text-xs text-slate-400">Filter channel: {suggestion.dimensions.channel}</p>
+              <p className="mt-1 text-xs text-slate-600">Filter channel: {suggestion.dimensions.channel}</p>
             )}
             <p className="mt-1 text-xs text-slate-500">Kolom: {suggestion.columns.join(", ")}</p>
             <p className="mt-1 text-xs text-slate-500">Alasan: {suggestion.reasons.join("; ")}</p>
@@ -270,7 +270,7 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
       </Card>
 
       <Card className="p-4">
-        <h2 className="mb-3 font-display text-base font-semibold text-slate-100">Template Tersimpan ({templates.length})</h2>
+        <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Template Tersimpan ({templates.length})</h2>
         {loading ? (
           <Skeleton className="h-24 w-full" />
         ) : templates.length === 0 ? (
@@ -280,11 +280,11 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
             {templates.map((t) => (
               <div
                 key={t.id}
-                className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-800 bg-slate-900/60 px-3 py-2"
+                className="flex flex-wrap items-center gap-2 rounded-lg border border-slate-200 bg-white px-3 py-2"
               >
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="text-sm font-medium text-slate-200">{t.name}</span>
+                    <span className="text-sm font-medium text-slate-800">{t.name}</span>
                     <Badge label={KIND_LABEL[t.kind] ?? t.kind} />
                     {t.dimensions?.project && <Badge label={`Proyek: ${t.dimensions.project}`} tone="warning" />}
                     {t.dimensions?.channel && <Badge label={`Channel: ${t.dimensions.channel}`} tone="warning" />}
@@ -309,7 +309,7 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
       {rows && activeTemplate && (
         <Card className="p-4">
           <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-            <h2 className="font-display text-base font-semibold text-slate-100">{activeTemplate.name}</h2>
+            <h2 className="font-display text-base font-semibold text-slate-900">{activeTemplate.name}</h2>
             <Badge label={period} />
           </div>
           <div className="overflow-x-auto">
@@ -323,17 +323,17 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
               <tbody>
                 {rows.map((r, i) => (
                   <TR key={`${r.label}-${i}`}>
-                    <TD className={r.label.includes("TOTAL") || r.label.includes("LABA") ? "font-semibold text-slate-100" : ""}>
+                    <TD className={r.label.includes("TOTAL") || r.label.includes("LABA") ? "font-semibold text-slate-900" : ""}>
                       {r.label}
                     </TD>
-                    <TD className={`text-right ${r.amount < 0 ? "text-rose-300" : "text-slate-200"}`}>{fmt(r.amount)}</TD>
+                    <TD className={`text-right ${r.amount < 0 ? "text-rose-600" : "text-slate-800"}`}>{fmt(r.amount)}</TD>
                   </TR>
                 ))}
               </tbody>
             </Table>
           </div>
-          <p className="mt-3 text-right text-sm text-slate-400">
-            Total: <span className="font-semibold text-slate-100">{fmt(total)}</span>
+          <p className="mt-3 text-right text-sm text-slate-600">
+            Total: <span className="font-semibold text-slate-900">{fmt(total)}</span>
           </p>
         </Card>
       )}

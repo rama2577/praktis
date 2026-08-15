@@ -38,11 +38,11 @@ function StatusConfidenceBars({ rows }: { rows: StatusConfidence[] }) {
         const pctVal = r.avgConfidence === null ? 0 : Math.round(r.avgConfidence * 100);
         return (
           <div key={r.status} className="flex items-center gap-3 text-sm">
-            <span className="w-40 shrink-0 text-slate-300">{STATUS_LABEL[r.status] ?? r.status}</span>
-            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-800">
+            <span className="w-40 shrink-0 text-slate-700">{STATUS_LABEL[r.status] ?? r.status}</span>
+            <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100">
               <div className={`h-full rounded-full ${STATUS_TONE[r.status] ?? "bg-slate-500"}`} style={{ width: `${pctVal}%` }} />
             </div>
-            <span className="w-24 shrink-0 text-right tabular-nums text-xs text-slate-400">
+            <span className="w-24 shrink-0 text-right tabular-nums text-xs text-slate-600">
               {r.avgConfidence === null ? "—" : `${pctVal}%`} · {r.count} jurnal
             </span>
           </div>
@@ -57,16 +57,16 @@ function BreachBars({ rows }: { rows: StageBreachRate[] }) {
     <div className="space-y-2.5">
       {rows.map((r) => (
         <div key={r.stage} className="flex items-center gap-3 text-sm">
-          <span className="w-32 shrink-0 text-slate-300">
+          <span className="w-32 shrink-0 text-slate-700">
             {r.stage === "JUNIOR" ? "Junior" : r.stage === "SENIOR" ? "Senior" : r.stage === "TAX" ? "Pajak" : "Partner"}
           </span>
-          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-800">
+          <div className="h-2.5 flex-1 overflow-hidden rounded-full bg-slate-100">
             <div
               className={`h-full rounded-full ${r.rate > 0 ? "bg-red-500" : "bg-emerald-500"}`}
               style={{ width: `${Math.min(100, r.rate)}%` }}
             />
           </div>
-          <span className="w-28 shrink-0 text-right tabular-nums text-xs text-slate-400">
+          <span className="w-28 shrink-0 text-right tabular-nums text-xs text-slate-600">
             {r.breached}/{r.total} breach · {r.rate.toLocaleString("id-ID")}%
           </span>
         </div>
@@ -83,17 +83,17 @@ export default async function QualityPage() {
   const corrections = await getCorrectionInsights(session.user.firmId);
 
   const cards = [
-    { label: "Jurnal Total", value: String(m.totalJournals), hint: `${m.approvedCount} disetujui · ${m.rejectedCount} ditolak`, tone: "text-slate-100" },
-    { label: "Lolos Tanpa Revisi", value: `${m.firstPassRate.toLocaleString("id-ID")}%`, hint: "task review tanpa reject", tone: "text-emerald-400" },
-    { label: "Exception Rate", value: `${m.exceptionRate.toLocaleString("id-ID")}%`, hint: `${m.exceptionCount} jurnal ber-exception`, tone: m.exceptionRate > 0 ? "text-amber-400" : "text-emerald-400" },
-    { label: "Rata-rata Confidence", value: m.avgConfidenceAll === null ? "—" : `${pct(m.avgConfidenceAll * 100, 100)}%`, hint: "skor keyakinan AI", tone: "text-sky-400" },
+    { label: "Jurnal Total", value: String(m.totalJournals), hint: `${m.approvedCount} disetujui · ${m.rejectedCount} ditolak`, tone: "text-slate-900" },
+    { label: "Lolos Tanpa Revisi", value: `${m.firstPassRate.toLocaleString("id-ID")}%`, hint: "task review tanpa reject", tone: "text-emerald-600" },
+    { label: "Exception Rate", value: `${m.exceptionRate.toLocaleString("id-ID")}%`, hint: `${m.exceptionCount} jurnal ber-exception`, tone: m.exceptionRate > 0 ? "text-amber-600" : "text-emerald-600" },
+    { label: "Rata-rata Confidence", value: m.avgConfidenceAll === null ? "—" : `${pct(m.avgConfidenceAll * 100, 100)}%`, hint: "skor keyakinan AI", tone: "text-sky-600" },
   ];
 
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-2xl font-semibold tracking-tight text-slate-100">Metrik Kualitas</h1>
-        <p className="mt-1 text-sm text-slate-400">
+        <h1 className="text-2xl font-semibold tracking-tight text-slate-900">Metrik Kualitas</h1>
+        <p className="mt-1 text-sm text-slate-600">
           Akurasi AI vs hasil review manusia, korelasi confidence, dan breach rate per stage.
         </p>
       </div>
@@ -101,7 +101,7 @@ export default async function QualityPage() {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {cards.map((c) => (
           <div key={c.label} className="rounded-xl border border-line bg-card p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{c.label}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{c.label}</p>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${c.tone}`}>{c.value}</p>
             <p className="mt-1 text-xs text-slate-500">{c.hint}</p>
           </div>
@@ -133,30 +133,30 @@ export default async function QualityPage() {
         />
 
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
-          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+          <div className="rounded-lg border border-line bg-white px-4 py-3">
             <p className="text-[11px] uppercase tracking-wider text-slate-500">Task Selesai</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-100">{firm.totalTasks}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">{firm.totalTasks}</p>
           </div>
-          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+          <div className="rounded-lg border border-line bg-white px-4 py-3">
             <p className="text-[11px] uppercase tracking-wider text-slate-500">Rata-rata Review</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-100">
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">
               {firm.avgReviewMinutes === null ? "—" : `${firm.avgReviewMinutes} mnt`}
             </p>
           </div>
-          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+          <div className="rounded-lg border border-line bg-white px-4 py-3">
             <p className="text-[11px] uppercase tracking-wider text-slate-500">SLA Met</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-400">
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-600">
               {firm.avgSlaRate === null ? "—" : `${firm.avgSlaRate.toLocaleString("id-ID")}%`}
             </p>
           </div>
-          <div className="rounded-lg border border-line bg-slate-900/40 px-4 py-3">
+          <div className="rounded-lg border border-line bg-white px-4 py-3">
             <p className="text-[11px] uppercase tracking-wider text-slate-500">Disetujui</p>
-            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-100">{firm.totalApproved}</p>
+            <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">{firm.totalApproved}</p>
           </div>
         </div>
 
         {clerks.length === 0 ? (
-          <p className="text-sm text-slate-400">Belum ada data review per clerk.</p>
+          <p className="text-sm text-slate-600">Belum ada data review per clerk.</p>
         ) : (
           <div className="overflow-hidden rounded-lg border border-line">
             <Table>
@@ -172,15 +172,15 @@ export default async function QualityPage() {
               <TBody>
                 {clerks.map((c) => (
                   <TR key={c.userId}>
-                    <TD className="font-medium text-slate-200">{c.name}</TD>
-                    <TD className="text-xs text-slate-400">{c.role}</TD>
-                    <TD numeric className="text-right text-slate-300">{c.totalReviews}</TD>
-                    <TD numeric className="text-right text-emerald-300">{c.approved}</TD>
-                    <TD numeric className="text-right text-red-300">{c.rejected}</TD>
-                    <TD numeric className="text-right text-slate-300">
+                    <TD className="font-medium text-slate-800">{c.name}</TD>
+                    <TD className="text-xs text-slate-600">{c.role}</TD>
+                    <TD numeric className="text-right text-slate-700">{c.totalReviews}</TD>
+                    <TD numeric className="text-right text-emerald-600">{c.approved}</TD>
+                    <TD numeric className="text-right text-red-600">{c.rejected}</TD>
+                    <TD numeric className="text-right text-slate-700">
                       {c.avgMinutes === null ? "—" : `${c.avgMinutes} mnt`}
                     </TD>
-                    <TD numeric className={`text-right ${c.slaRate >= 80 ? "text-emerald-300" : c.slaRate >= 50 ? "text-amber-300" : "text-red-300"}`}>
+                    <TD numeric className={`text-right ${c.slaRate >= 80 ? "text-emerald-600" : c.slaRate >= 50 ? "text-amber-600" : "text-red-600"}`}>
                       {c.slaRate}%
                     </TD>
                   </TR>
@@ -195,22 +195,22 @@ export default async function QualityPage() {
         <CardHeader
           title="Jurnal Exception"
           action={
-            <Link href="/dashboard/exceptions" className="text-xs text-yellow-400 hover:underline">
+            <Link href="/dashboard/exceptions" className="text-xs text-amber-600 hover:underline">
               Kelola exception →
             </Link>
           }
         />
         {m.exceptions.length === 0 ? (
-          <p className="text-sm text-slate-400">Tidak ada jurnal berstatus exception.</p>
+          <p className="text-sm text-slate-600">Tidak ada jurnal berstatus exception.</p>
         ) : (
           <ul className="divide-y divide-line">
             {m.exceptions.map((e) => (
               <li key={e.id} className="flex flex-wrap items-center justify-between gap-2 py-3">
                 <div>
-                  <p className="text-sm text-slate-200">
+                  <p className="text-sm text-slate-800">
                     <span className="font-medium">{e.clientName}</span> — {e.description ?? "tanpa deskripsi"}
                   </p>
-                  <p className="mt-0.5 text-xs text-red-300/80">🚩 {e.exceptionFlag}</p>
+                  <p className="mt-0.5 text-xs text-red-600/80">🚩 {e.exceptionFlag}</p>
                 </div>
                 <span className="text-xs tabular-nums text-slate-500">
                   confidence {e.confidence === null ? "—" : `${pct(e.confidence * 100, 100)}%`}
@@ -228,7 +228,7 @@ export default async function QualityPage() {
           description={`Feedback loop KB — ${corrections.totalCorrections} koreksi dari ${corrections.totalEditedJournals} jurnal tercatat sebagai data belajar (EN-03).`}
         />
         {corrections.totalCorrections === 0 ? (
-          <p className="text-sm text-slate-400">
+          <p className="text-sm text-slate-600">
             Belum ada koreksi. Saat reviewer mengubah baris jurnal di panel review, koreksi otomatis tercatat di sini.
           </p>
         ) : (
@@ -238,9 +238,9 @@ export default async function QualityPage() {
               <div className="space-y-2">
                 {corrections.topAccounts.map((a) => (
                   <div key={a.accountCode} className="flex items-center gap-3 text-sm">
-                    <span className="w-24 shrink-0 font-mono text-xs text-sky-300">{a.accountCode}</span>
-                    <span className="flex-1 truncate text-slate-200">{a.accountName}</span>
-                    <span className="w-16 shrink-0 text-right tabular-nums text-xs text-slate-400">{a.count}×</span>
+                    <span className="w-24 shrink-0 font-mono text-xs text-sky-600">{a.accountCode}</span>
+                    <span className="flex-1 truncate text-slate-800">{a.accountName}</span>
+                    <span className="w-16 shrink-0 text-right tabular-nums text-xs text-slate-600">{a.count}×</span>
                   </div>
                 ))}
               </div>
@@ -250,8 +250,8 @@ export default async function QualityPage() {
                 <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Berdasarkan Field</p>
                 <div className="flex flex-wrap gap-2">
                   {corrections.byField.map((f) => (
-                    <span key={f.field} className="rounded-full border border-slate-700 bg-slate-800/60 px-2.5 py-1 text-xs text-slate-300">
-                      {correctionFieldLabel(f.field)} · <span className="tabular-nums text-slate-100">{f.count}</span>
+                    <span key={f.field} className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs text-slate-700">
+                      {correctionFieldLabel(f.field)} · <span className="tabular-nums text-slate-900">{f.count}</span>
                     </span>
                   ))}
                 </div>
@@ -261,8 +261,8 @@ export default async function QualityPage() {
                 <div className="space-y-1.5">
                   {corrections.byUser.map((u) => (
                     <div key={u.userId} className="flex items-center justify-between text-sm">
-                      <span className="text-slate-300">{u.name}</span>
-                      <span className="tabular-nums text-xs text-slate-400">{u.count} koreksi</span>
+                      <span className="text-slate-700">{u.name}</span>
+                      <span className="tabular-nums text-xs text-slate-600">{u.count} koreksi</span>
                     </div>
                   ))}
                 </div>
@@ -282,10 +282,10 @@ async function OcrMetricsPanel({ firmId }: { firmId: string }) {
   const ocr = await getOcrMetrics(firmId, 30);
   const idr = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
   const ocrCards = [
-    { label: "Dokumen Diproses (30 hr)", value: String(ocr.totalDocuments), hint: `${ocr.localCount} OCR lokal · ${ocr.pdfTextCount} PDF digital · ${ocr.xlsxCount} XLSX`, tone: "text-slate-100" },
-    { label: "Fallback Vision", value: `${ocr.visionFallbackRate.toLocaleString("id-ID")}%`, hint: `${ocr.visionCount} dokumen ke vision LLM`, tone: ocr.visionFallbackRate > 30 ? "text-amber-400" : "text-emerald-400" },
-    { label: "Strong Model", value: `${ocr.strongRate.toLocaleString("id-ID")}%`, hint: "retry glm-4.6 utk hasil jelek", tone: "text-sky-400" },
-    { label: "Est. Biaya OCR", value: ocr.totalEstCostUsd === 0 ? "Rp 0" : `Rp ${idr.format(ocr.totalEstCostIdr)}`, hint: `$${ocr.totalEstCostUsd.toFixed(4)} · ${idr.format(ocr.totalEstTokens)} token`, tone: "text-violet-400" },
+    { label: "Dokumen Diproses (30 hr)", value: String(ocr.totalDocuments), hint: `${ocr.localCount} OCR lokal · ${ocr.pdfTextCount} PDF digital · ${ocr.xlsxCount} XLSX`, tone: "text-slate-900" },
+    { label: "Fallback Vision", value: `${ocr.visionFallbackRate.toLocaleString("id-ID")}%`, hint: `${ocr.visionCount} dokumen ke vision LLM`, tone: ocr.visionFallbackRate > 30 ? "text-amber-600" : "text-emerald-600" },
+    { label: "Strong Model", value: `${ocr.strongRate.toLocaleString("id-ID")}%`, hint: "retry glm-4.6 utk hasil jelek", tone: "text-sky-600" },
+    { label: "Est. Biaya OCR", value: ocr.totalEstCostUsd === 0 ? "Rp 0" : `Rp ${idr.format(ocr.totalEstCostIdr)}`, hint: `$${ocr.totalEstCostUsd.toFixed(4)} · ${idr.format(ocr.totalEstTokens)} token`, tone: "text-violet-600" },
   ];
 
   return (
@@ -297,7 +297,7 @@ async function OcrMetricsPanel({ firmId }: { firmId: string }) {
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {ocrCards.map((c) => (
           <div key={c.label} className="rounded-xl border border-line bg-card p-5">
-            <p className="text-xs font-medium uppercase tracking-wider text-slate-400">{c.label}</p>
+            <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{c.label}</p>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${c.tone}`}>{c.value}</p>
             <p className="mt-1 text-xs text-slate-500">{c.hint}</p>
           </div>
@@ -305,7 +305,7 @@ async function OcrMetricsPanel({ firmId }: { firmId: string }) {
       </div>
 
       {ocr.totalDocuments === 0 ? (
-        <p className="mt-5 rounded-lg border border-dashed border-slate-700 bg-slate-900/40 px-4 py-6 text-center text-sm text-slate-400">
+        <p className="mt-5 rounded-lg border border-dashed border-slate-200 bg-white px-4 py-6 text-center text-sm text-slate-600">
           Belum ada dokumen diproses — metrik muncul otomatis setelah dokumen pertama melalui pipeline (upload → OCR → draft).
         </p>
       ) : (
@@ -320,7 +320,7 @@ async function OcrMetricsPanel({ firmId }: { firmId: string }) {
             <TBody>
               {ocr.perDay.slice(-14).reverse().map((d) => (
                 <TR key={d.date}>
-                  <TD className="tabular-nums text-slate-300">{d.date}</TD>
+                  <TD className="tabular-nums text-slate-700">{d.date}</TD>
                   <TD className="text-right tabular-nums">{d.total}</TD>
                   <TD className="text-right tabular-nums">{d.vision}</TD>
                   <TD className="text-right tabular-nums">Rp {idr.format(usdToIdr(d.costUsd))}</TD>

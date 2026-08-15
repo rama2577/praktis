@@ -31,36 +31,36 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
         <>
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Card className="p-4">
-              <p className="text-xs text-slate-400">Tax Ratio</p>
-              <p className="mt-1 font-mono text-2xl text-yellow-300">
+              <p className="text-xs text-slate-600">Tax Ratio</p>
+              <p className="mt-1 font-mono text-2xl text-amber-600">
                 {data.taxRatio.value === null ? "N/A" : `${(data.taxRatio.value * 100).toFixed(1)}%`}
               </p>
               <p className="mt-1 text-xs text-slate-500">{data.taxRatio.formula}</p>
             </Card>
             <Card className="p-4">
-              <p className="text-xs text-slate-400">PPN Kurang Bayar</p>
-              <p className="mt-1 font-mono text-2xl text-slate-100">{rp(Math.max(data.ppn.kurangBayar, 0))}</p>
+              <p className="text-xs text-slate-600">PPN Kurang Bayar</p>
+              <p className="mt-1 font-mono text-2xl text-slate-900">{rp(Math.max(data.ppn.kurangBayar, 0))}</p>
               <p className="mt-1 text-xs text-slate-500">{data.ppn.note}</p>
             </Card>
             <Card className="p-4">
-              <p className="text-xs text-slate-400">Total PPh</p>
-              <p className="mt-1 font-mono text-2xl text-slate-100">{rp(data.pph.totalPPh)}</p>
+              <p className="text-xs text-slate-600">Total PPh</p>
+              <p className="mt-1 font-mono text-2xl text-slate-900">{rp(data.pph.totalPPh)}</p>
               <p className="mt-1 text-xs text-slate-500">{data.pph.note}</p>
             </Card>
             <Card className="p-4">
-              <p className="text-xs text-slate-400">Effective Tax Rate</p>
-              <p className="mt-1 font-mono text-2xl text-slate-100">
+              <p className="text-xs text-slate-600">Effective Tax Rate</p>
+              <p className="mt-1 font-mono text-2xl text-slate-900">
                 {data.pph.effectiveTaxRate === null ? "N/A" : `${(data.pph.effectiveTaxRate * 100).toFixed(1)}%`}
               </p>
               <p className="mt-1 text-xs text-slate-500">Total PPh ÷ laba</p>
             </Card>
           </div>
           <Card className="p-5">
-            <h3 className="mb-3 text-sm font-medium text-slate-200">Rincian Pajak</h3>
+            <h3 className="mb-3 text-sm font-medium text-slate-800">Rincian Pajak</h3>
             <div className="overflow-x-auto">
               <table className="w-full text-left text-sm">
                 <thead>
-                  <tr className="border-b border-slate-800 text-xs text-slate-400">
+                  <tr className="border-b border-slate-200 text-xs text-slate-600">
                     <th className="px-3 py-2">Pos</th>
                     <th className="px-3 py-2 text-right">Nilai</th>
                     <th className="px-3 py-2">Keterangan</th>
@@ -68,7 +68,7 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
                 </thead>
                 <tbody>
                   {data.breakdown.map((b) => (
-                    <tr key={b.label} className="border-b border-slate-800/60 text-slate-300">
+                    <tr key={b.label} className="border-b border-slate-200/60 text-slate-700">
                       <td className="px-3 py-2">{b.label}</td>
                       <td className="px-3 py-2 text-right font-mono">{rp(b.value)}</td>
                       <td className="px-3 py-2 text-xs text-slate-500">{b.note}</td>
@@ -79,8 +79,8 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
             </div>
           </Card>
           <Card className="p-5">
-            <h3 className="mb-3 text-sm font-medium text-slate-200">Analisa Pajak</h3>
-            <ul className="list-disc space-y-2 pl-5 text-sm text-slate-300">
+            <h3 className="mb-3 text-sm font-medium text-slate-800">Analisa Pajak</h3>
+            <ul className="list-disc space-y-2 pl-5 text-sm text-slate-700">
               {data.narrative.map((n, i) => (
                 <li key={i}>{n}</li>
               ))}
@@ -114,14 +114,14 @@ type AnnualData = {
 
 function StmtBlock({ title, lines }: { title: string; lines: { label: string; amount: number; indent?: number; bold?: boolean }[] }) {
   return (
-    <div className="rounded-xl border border-slate-800 p-4">
-      <h4 className="mb-2 text-center text-sm font-bold text-slate-100">{title}</h4>
+    <div className="rounded-xl border border-slate-200 p-4">
+      <h4 className="mb-2 text-center text-sm font-bold text-slate-900">{title}</h4>
       <div className="space-y-0.5">
         {lines.map((l, i) => (
           <div
             key={i}
             className={`flex justify-between gap-3 text-xs ${
-              l.bold ? "border-t border-slate-800 pt-1 font-semibold text-slate-100" : "text-slate-400"
+              l.bold ? "border-t border-slate-200 pt-1 font-semibold text-slate-900" : "text-slate-600"
             }`}
             style={{ paddingLeft: `${(l.indent ?? 0) * 14}px` }}
           >
