@@ -59,7 +59,7 @@ export const PATCH = withTenantApi<Ctx>(async (request, ctx) => {
   }
 
   const { id } = await ctx.params;
-  const body = (await request.json().catch(() => null)) as { lines?: ReclassLine[] } | null;
+  const body = (await request.json().catch(() => null)) as { lines?: ReclassLine[]; kind?: string } | null;
   const lines = body?.lines;
   if (!Array.isArray(lines) || lines.length < 2) {
     return NextResponse.json({ error: "Minimal 2 baris jurnal." }, { status: 400 });
@@ -71,6 +71,7 @@ export const PATCH = withTenantApi<Ctx>(async (request, ctx) => {
       journalId: id,
       lines,
       userId: guard.session.user.id,
+      kind: body?.kind,
     });
     return NextResponse.json({ data: result });
   } catch (e) {

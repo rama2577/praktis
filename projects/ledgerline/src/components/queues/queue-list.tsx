@@ -366,7 +366,9 @@ export function QueueList() {
                   <div className="mt-4 space-y-4 border-t border-slate-200 pt-4">
                     <JournalLinesEditor
                       taskId={task.id}
+                      clientId={task.journalEntry.client.id}
                       initialLines={task.journalEntry.lines}
+                      initialDescription={task.journalEntry.description}
                       onSaved={(message) => {
                         setFlash(message);
                         setEditTaskId(null);

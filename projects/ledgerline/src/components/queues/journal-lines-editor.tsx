@@ -1,7 +1,8 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { formatCurrencyRp } from "@/lib/format";
+import { CoaSelect, type CoaAccount } from "@/components/queues/coa-select";
 
 export type EditableLine = {
   key: string; // key client-side (baris baru pakai crypto.randomUUID / counter)
@@ -15,6 +16,7 @@ export type EditableLine = {
 
 type Props = {
   taskId: string;
+  clientId: string;
   initialLines: Array<{
     id: string;
     accountCode: string;
@@ -24,6 +26,7 @@ type Props = {
     psakRef: string;
     notes?: string | null;
   }>;
+  initialDescription: string;
   onSaved: (message: string) => void;
   onCancel: () => void;
 };
@@ -51,10 +54,32 @@ function parseAmount(v: string): number {
   return Number.isFinite(n) ? n : NaN;
 }
 
-export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: Props) {
+export function JournalLinesEditor({ taskId, clientId, initialLines, initialDescription, onSaved, onCancel }: Props) {
   const [rows, setRows] = useState<EditableLine[]>(() => toEditable(initialLines));
+  const [description, setDescription] = useState(initialDescription);
+  const [descSource, setDescSource] = useState<string | null>(null);
+  const [coa, setCoa] = useState<CoaAccount[]>([]);
   const [busy, setBusy] = useState(false);
+  const [descBusy, setDescBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Ambil COA klien untuk dropdown akun (search abjad nama).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/clients/${clientId}/coa`);
+        if (!res.ok) return;
+        const body = (await res.json()) as { data?: { accounts?: CoaAccount[] } };
+        if (!cancelled && body.data?.accounts) setCoa(body.data.accounts);
+      } catch {
+        /* COA opsional — fallback ke input bebas */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [clientId]);
 
   const balance = useMemo(() => {
     let totalDebit = 0;
@@ -101,6 +126,35 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
     setRows((prev) => prev.filter((r) => r.key !== key));
   };
 
+  const generateDescription = async () => {
+    setDescBusy(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/journals/describe", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          lines: rows.map((r) => ({
+            accountName: r.accountName,
+            debit: r.debit === "" ? 0 : Number(r.debit),
+            credit: r.credit === "" ? 0 : Number(r.credit),
+            notes: r.notes || null,
+          })),
+        }),
+      });
+      const body = (await res.json()) as { data?: { description?: string; source?: string }; error?: string };
+      if (!res.ok) throw new Error(body.error ?? "Gagal membuat deskripsi");
+      if (body.data?.description) {
+        setDescription(body.data.description);
+        setDescSource(body.data.source ?? "AI");
+      }
+    } catch (e) {
+      setError((e as Error).message);
+    } finally {
+      setDescBusy(false);
+    }
+  };
+
   const save = async () => {
     setError(null);
     if (!balance.ok) {
@@ -119,6 +173,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
+          description: description.trim(),
           lines: rows.map((r) => ({
             id: r.id,
             accountCode: r.accountCode.trim(),
@@ -146,18 +201,42 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
           ✏️ Edit baris jurnal — simpan <span className="text-slate-800">tidak mengubah stage</span> review, koreksi
           tercatat sebagai feedback KB.
         </p>
-        <div className="flex items-center gap-2">
-          <span
-            className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
-              balance.ok
-                ? "bg-emerald-500/15 text-emerald-600"
-                : "bg-amber-500/15 text-accent"
-            }`}
-            role="status"
-          >
-            {balance.ok ? "✓ Seimbang" : balance.issue ?? "Belum seimbang"}
-          </span>
-        </div>
+        <span
+          className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
+            balance.ok ? "bg-emerald-500/15 text-emerald-600" : "bg-amber-500/15 text-accent"
+          }`}
+          role="status"
+        >
+          {balance.ok ? "✓ Seimbang" : balance.issue ?? "Belum seimbang"}
+        </span>
+      </div>
+
+      <div className="rounded-lg border border-slate-200 bg-slate-50/60 p-3">
+        <label className="block text-sm">
+          <span className="mb-1 block text-xs font-medium text-slate-700">Deskripsi transaksi</span>
+          <div className="flex items-center gap-2">
+            <input
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              placeholder="mis. Penjualan tunai — PT Maju Jaya"
+              className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={() => void generateDescription()}
+              disabled={descBusy}
+              title="Buat deskripsi otomatis dengan AI dari baris jurnal"
+              className="shrink-0 rounded-lg border border-ai/40 bg-ai/10 px-3 py-2 text-sm font-medium text-ai transition hover:bg-ai/20 disabled:opacity-50"
+            >
+              {descBusy ? "…" : "✨ AI"}
+            </button>
+          </div>
+          {descSource && (
+            <span className="mt-1 inline-block rounded px-1.5 py-0.5 text-[11px] font-medium bg-ai/10 text-ai">
+              {descSource === "AI" ? "saran AI — periksa sebelum simpan" : "deskripsi aturan — periksa sebelum simpan"}
+            </span>
+          )}
+        </label>
       </div>
 
       <div className="overflow-x-auto rounded-lg border border-slate-200">
@@ -165,14 +244,13 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
           <thead className="bg-slate-100 text-xs uppercase tracking-wide text-slate-700">
             <tr>
               <th scope="col" className="w-8 px-2 py-2"></th>
-              <th scope="col" className="px-2 py-2">Kode</th>
-              <th scope="col" className="px-2 py-2">Akun</th>
+              <th scope="col" className="px-2 py-2">Akun (COA klien)</th>
               <th scope="col" className="w-32 px-2 py-2 text-right">Debit</th>
               <th scope="col" className="w-32 px-2 py-2 text-right">Kredit</th>
               <th scope="col" className="px-2 py-2">Keterangan</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-slate-800">
+          <tbody className="divide-y divide-slate-200">
             {rows.map((r) => (
               <tr key={r.key}>
                 <td className="px-2 py-1.5">
@@ -187,19 +265,11 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                   </button>
                 </td>
                 <td className="px-2 py-1.5">
-                  <input
-                    value={r.accountCode}
-                    onChange={(e) => updateRow(r.key, { accountCode: e.target.value })}
-                    placeholder="1-1100"
-                    className="w-24 rounded border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-xs text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
-                  />
-                </td>
-                <td className="px-2 py-1.5">
-                  <input
-                    value={r.accountName}
-                    onChange={(e) => updateRow(r.key, { accountName: e.target.value })}
-                    placeholder="Kas dan Setara Kas"
-                    className="w-full min-w-40 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
+                  <CoaSelect
+                    accounts={coa}
+                    code={r.accountCode}
+                    name={r.accountName}
+                    onChange={(accountCode, accountName) => updateRow(r.key, { accountCode, accountName })}
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -233,7 +303,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
           </tbody>
           <tfoot className="bg-slate-100 text-xs">
             <tr>
-              <td colSpan={3} className="px-2 py-2 text-slate-700">Total</td>
+              <td colSpan={2} className="px-2 py-2 text-slate-700">Total</td>
               <td className="px-2 py-2 text-right font-mono tabular-nums text-slate-800">{formatCurrencyRp(balance.totalDebit)}</td>
               <td className="px-2 py-2 text-right font-mono tabular-nums text-slate-800">{formatCurrencyRp(balance.totalCredit)}</td>
               <td className="px-2 py-2"></td>
@@ -253,7 +323,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
           type="button"
           disabled={busy}
           onClick={() => void save()}
-          className="rounded-lg bg-sky-600 px-4 py-1.5 text-sm font-medium text-white hover:bg-sky-500 disabled:opacity-50"
+          className="rounded-lg bg-accent px-4 py-1.5 text-sm font-medium text-white hover:bg-[#1f49ce] disabled:opacity-50"
         >
           {busy ? "Menyimpan…" : "Simpan Koreksi"}
         </button>

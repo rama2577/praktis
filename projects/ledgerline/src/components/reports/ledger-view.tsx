@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, type FormEvent } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
 import { Table, TBody, THead, TH, TD, TR } from "@/components/ui/table";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -36,6 +36,25 @@ type Report = {
 
 type EditLine = { accountCode: string; accountName: string; debit: string; credit: string; notes: string };
 
+type CorrectionKind = "angka" | "deskripsi" | "akun";
+
+type LedgerAccountSummary = {
+  accountCode: string;
+  accountName: string;
+  entryCount: number;
+  totalDebit: number;
+  totalCredit: number;
+  closingBalance: number;
+};
+
+type ClientOption = { id: string; name: string };
+
+const CORRECTION_KIND_LABELS: Record<CorrectionKind, string> = {
+  angka: "Penyesuaian angka",
+  deskripsi: "Perubahan deskripsi",
+  akun: "Perubahan akun (reclass)",
+};
+
 const TYPE_LABELS: Record<string, string> = {
   AI: "AI",
   MANUAL: "Manual",
@@ -44,36 +63,52 @@ const TYPE_LABELS: Record<string, string> = {
 
 export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
   const searchParams = useSearchParams();
+  const router = useRouter();
   const clientId = searchParams.get("clientId") ?? "";
   const accountCode = searchParams.get("accountCode") ?? "";
   const period = searchParams.get("period") ?? "";
 
   const [report, setReport] = useState<Report | null>(null);
+  const [clients, setClients] = useState<ClientOption[]>([]);
+  const [allAccounts, setAllAccounts] = useState<LedgerAccountSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // State reclass
+  // State koreksi (reclass)
   const [editing, setEditing] = useState<LedgerEntry | null>(null);
   const [editLines, setEditLines] = useState<EditLine[]>([]);
+  const [correctionKind, setCorrectionKind] = useState<CorrectionKind>("angka");
   const [saving, setSaving] = useState(false);
 
   const load = useCallback(async () => {
-    if (!clientId || !accountCode || !period) {
+    if (!clientId || !period) {
       setLoading(false);
       return;
     }
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch(
-        `/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}`,
-      );
-      if (!res.ok) {
-        const body = (await res.json().catch(() => null)) as { error?: string } | null;
-        throw new Error(body?.error ?? "Gagal memuat buku besar");
+      if (!accountCode) {
+        // Mode seluruh akun
+        const res = await fetch(`/api/clients/${clientId}/ledger?period=${period}`);
+        if (!res.ok) {
+          const body = (await res.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(body?.error ?? "Gagal memuat buku besar");
+        }
+        const data = (await res.json()) as { data: { accounts: LedgerAccountSummary[] } };
+        setAllAccounts(data.data.accounts);
+        setReport(null);
+      } else {
+        const res = await fetch(
+          `/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}`,
+        );
+        if (!res.ok) {
+          const body = (await res.json().catch(() => null)) as { error?: string } | null;
+          throw new Error(body?.error ?? "Gagal memuat buku besar");
+        }
+        const data = (await res.json()) as { data: Report };
+        setReport(data.data);
       }
-      const data = (await res.json()) as { data: Report };
-      setReport(data.data);
     } catch (e) {
       setError((e as Error).message);
     } finally {
@@ -88,9 +123,28 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
     void start();
   }, [load]);
 
+  // Daftar klien untuk filter (tarik seluruh akun tanpa dari neraca percobaan).
+  useEffect(() => {
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch("/api/clients");
+        if (!res.ok) return;
+        const body = (await res.json()) as { data?: ClientOption[] };
+        if (!cancelled && Array.isArray(body.data)) setClients(body.data);
+      } catch {
+        /* daftar klien opsional */
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const startEdit = async (entry: LedgerEntry) => {
     setEditing(entry);
     setEditLines([]);
+    setCorrectionKind("angka");
     try {
       const res = await fetch(`/api/journals/${entry.journalId}`);
       if (!res.ok) throw new Error("Gagal memuat detail jurnal");
@@ -152,7 +206,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
       const res = await fetch(`/api/journals/${editing.journalId}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ lines }),
+        body: JSON.stringify({ lines, kind: correctionKind }),
       });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { error?: string } | null;
@@ -169,8 +223,62 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
 
   const backHref = `/dashboard/reports/trial-balance${clientId && period ? `?clientId=${clientId}&period=${period}` : ""}`;
 
+  const applyFilter = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const c = String(fd.get("clientId") ?? "");
+    const p = String(fd.get("period") ?? "");
+    if (c && p) {
+      router.push(`/dashboard/reports/ledger?clientId=${encodeURIComponent(c)}&period=${encodeURIComponent(p)}`);
+    }
+  };
+
   return (
     <div className="space-y-5">
+      {/* Filter klien + bulan (tarik seluruh akun tanpa dari neraca percobaan) */}
+      <form onSubmit={applyFilter} className="rounded-xl border border-slate-200 bg-white p-4">
+        <div className="flex flex-wrap items-end gap-3">
+          <label className="block text-sm">
+            <span className="mb-1 block text-xs font-medium text-slate-700">Klien</span>
+            <select
+              name="clientId"
+              defaultValue={clientId}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
+            >
+              <option value="">— Pilih klien —</option>
+              {clients.map((c) => (
+                <option key={c.id} value={c.id}>
+                  {c.name}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="block text-sm">
+            <span className="mb-1 block text-xs font-medium text-slate-700">Bulan</span>
+            <input
+              type="month"
+              name="period"
+              defaultValue={period}
+              className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
+            />
+          </label>
+          <button
+            type="submit"
+            className="rounded-lg bg-accent px-4 py-2 text-sm font-medium text-white transition hover:bg-[#1f49ce]"
+          >
+            Tampilkan Buku Besar
+          </button>
+          {accountCode && (
+            <Link
+              href={`/dashboard/reports/ledger?clientId=${clientId}&period=${period}`}
+              className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-accent/50 hover:text-accent"
+            >
+              ← Seluruh akun
+            </Link>
+          )}
+        </div>
+      </form>
+
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href={backHref}
@@ -197,11 +305,57 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
         </div>
       )}
 
-      {!loading && !error && !report && (
+      {!loading && !error && !report && allAccounts.length === 0 && (
         <EmptyState
-          title="Parameter tidak lengkap"
-          description="Buka buku besar dari halaman Neraca Percobaan dengan mengklik kode akun."
+          title="Belum ada parameter"
+          description="Pilih klien dan bulan di atas untuk menampilkan seluruh akun buku besar."
         />
+      )}
+
+      {!loading && !error && !report && allAccounts.length > 0 && (
+        <div className="rounded-xl border border-slate-200 bg-white">
+          <div className="border-b border-slate-200 px-4 py-3">
+            <h2 className="text-sm font-medium text-slate-900">Buku Besar — Seluruh Akun</h2>
+            <p className="mt-0.5 text-xs text-slate-700">
+              {clients.find((c) => c.id === clientId)?.name ?? "Klien"} · Periode {period} · {allAccounts.length}{" "}
+              akun
+            </p>
+          </div>
+          <Table>
+            <THead>
+              <TH>Kode</TH>
+              <TH>Nama Akun</TH>
+              <TH className="text-right">Jml Jurnal</TH>
+              <TH className="text-right">Debit</TH>
+              <TH className="text-right">Kredit</TH>
+              <TH className="text-right">Saldo</TH>
+            </THead>
+            <TBody>
+              {allAccounts.map((a) => (
+                <TR key={a.accountCode}>
+                  <TD className="font-mono text-slate-700">
+                    <button
+                      type="button"
+                      onClick={() =>
+                        router.push(
+                          `/dashboard/reports/ledger?clientId=${clientId}&accountCode=${encodeURIComponent(a.accountCode)}&period=${period}`,
+                        )
+                      }
+                      className="text-slate-800 underline-offset-2 hover:text-accent hover:underline"
+                    >
+                      {a.accountCode}
+                    </button>
+                  </TD>
+                  <TD className="text-slate-700">{a.accountName}</TD>
+                  <TD className="text-right font-mono text-slate-700">{a.entryCount}</TD>
+                  <TD className="text-right font-mono text-slate-700">{formatCurrencyRp(a.totalDebit)}</TD>
+                  <TD className="text-right font-mono text-slate-700">{formatCurrencyRp(a.totalCredit)}</TD>
+                  <TD className="text-right font-mono text-slate-900">{formatCurrencyRp(a.closingBalance)}</TD>
+                </TR>
+              ))}
+            </TBody>
+          </Table>
+        </div>
       )}
 
       {report && (
@@ -237,7 +391,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
 
           {report.status === "CLOSED" && (
             <div className="rounded-xl border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-accent">
-              Periode sudah dikunci — jurnal tidak bisa di-reclass. Perbaikan hanya lewat{" "}
+              Periode sudah dikunci — jurnal tidak bisa dikoreksi. Perbaikan hanya lewat{" "}
               <Link href="/dashboard/journals" className="underline">
                 jurnal penyesuaian
               </Link>
@@ -287,7 +441,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                           onClick={() => void startEdit(e)}
                           className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 transition hover:border-accent/50 hover:text-accent"
                         >
-                          Reclass
+                          Koreksi
                         </button>
                       </TD>
                     )}
@@ -308,16 +462,16 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
         </>
       )}
 
-      {/* Panel reclass */}
+      {/* Panel koreksi */}
       {editing && report && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70 p-4">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="max-h-[85vh] w-full max-w-2xl overflow-y-auto rounded-xl border border-slate-200 bg-slate-50 p-5">
             <div className="mb-4 flex items-center justify-between">
               <div>
-                <h3 className="text-sm font-medium text-slate-900">Reclass Jurnal</h3>
+                <h3 className="text-sm font-medium text-slate-900">Koreksi Jurnal</h3>
                 <p className="text-xs text-slate-700">
                   {report.accountName} · {new Date(editing.entryDate).toLocaleDateString("id-ID")} ·{" "}
-                  {editing.description ?? "—"} — edit baris lalu simpan (audit trail tercatat)
+                  {editing.description ?? "—"} — edit lalu simpan (audit trail tercatat)
                 </p>
               </div>
               <button
@@ -328,6 +482,26 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
               >
                 ✕
               </button>
+            </div>
+
+            <div className="mb-3">
+              <span className="mb-1 block text-xs font-medium text-slate-700">Jenis koreksi</span>
+              <div className="flex flex-wrap gap-2">
+                {(Object.keys(CORRECTION_KIND_LABELS) as CorrectionKind[]).map((k) => (
+                  <button
+                    key={k}
+                    type="button"
+                    onClick={() => setCorrectionKind(k)}
+                    className={`rounded-full border px-3 py-1.5 text-xs transition ${
+                      correctionKind === k
+                        ? "border-accent bg-accent/10 font-medium text-accent"
+                        : "border-slate-200 text-slate-700 hover:border-accent/50"
+                    }`}
+                  >
+                    {CORRECTION_KIND_LABELS[k]}
+                  </button>
+                ))}
+              </div>
             </div>
 
             <div className="space-y-2">
@@ -400,7 +574,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                 disabled={saving || !balanced || editLines.length < 2}
                 className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-white transition hover:bg-[#1f49ce] disabled:opacity-50"
               >
-                {saving ? "Menyimpan…" : "Simpan Reclass"}
+                {saving ? "Menyimpan…" : "Simpan Koreksi"}
               </button>
             </div>
           </div>

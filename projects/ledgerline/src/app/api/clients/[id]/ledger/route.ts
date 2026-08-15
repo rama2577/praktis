@@ -3,7 +3,7 @@ import { requireRoleApi } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { withTenantApi } from "@/lib/tenant-api";
-import { getLedger, ledgerCsv, ledgerXlsx } from "@/server/ledger";
+import { getLedger, getLedgerAllAccounts, ledgerCsv, ledgerXlsx } from "@/server/ledger";
 import { parsePeriod } from "@/server/trial-balance";
 
 type Ctx = { params: Promise<{ id: string }> };
@@ -23,9 +23,6 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
   const accountCode = searchParams.get("accountCode") ?? "";
   const period = searchParams.get("period") ?? "";
 
-  if (!accountCode.trim()) {
-    return NextResponse.json({ error: "Parameter accountCode wajib diisi." }, { status: 400 });
-  }
   if (!parsePeriod(period)) {
     return NextResponse.json({ error: "Periode tidak valid. Gunakan format YYYY-MM." }, { status: 400 });
   }
@@ -36,6 +33,12 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
   });
   if (!client) {
     return NextResponse.json({ error: "Klien tidak ditemukan." }, { status: 404 });
+  }
+
+  // Mode seluruh akun: tanpa accountCode → ringkasan semua akun per periode.
+  if (!accountCode.trim()) {
+    const all = await getLedgerAllAccounts(client.id, client.name, period);
+    return NextResponse.json({ data: all });
   }
 
   const report = await getLedger(client.id, client.name, accountCode.trim(), period);

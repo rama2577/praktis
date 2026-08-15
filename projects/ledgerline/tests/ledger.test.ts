@@ -119,7 +119,7 @@ describe("reclassJournal — guard & validasi", () => {
     expect(txMock.journalLine.createMany).toHaveBeenCalled();
     const logCall = txMock.activityLog.create.mock.calls[0][0].data;
     expect(logCall.action).toBe("JOURNAL_EDITED");
-    expect(logCall.detail.scope).toBe("reclass");
+    expect(logCall.detail.scope).toBe("koreksi");
     expect(logCall.detail.before).toHaveLength(2);
     expect(logCall.detail.after).toHaveLength(2);
   });

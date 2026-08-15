@@ -18,7 +18,7 @@ export const POST = withTenantApi<{ params: Promise<{ taskId: string }> }>(async
   const user = guard.session.user;
 
   const { taskId } = await ctx.params;
-  const body = (await req.json().catch(() => ({}))) as { lines?: unknown };
+  const body = (await req.json().catch(() => ({}))) as { lines?: unknown; description?: unknown };
   const validated = validateEditLines(body);
   if (!validated.ok) {
     return NextResponse.json({ error: validated.error }, { status: 400 });
@@ -43,6 +43,7 @@ export const POST = withTenantApi<{ params: Promise<{ taskId: string }> }>(async
       actor,
       task,
       lines: validated.lines as EditLineInput[],
+      description: typeof body.description === "string" ? body.description : undefined,
     });
     return NextResponse.json({
       data: result,

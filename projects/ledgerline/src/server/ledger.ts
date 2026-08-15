@@ -133,6 +133,65 @@ export async function getLedger(
   };
 }
 
+/** Ringkasan satu akun untuk mode "seluruh akun" buku besar. */
+export type LedgerAccountSummary = {
+  accountCode: string;
+  accountName: string;
+  entryCount: number;
+  totalDebit: number;
+  totalCredit: number;
+  closingBalance: number;
+};
+
+/**
+ * Buku besar SELURUH akun untuk satu periode — tarik semua jurnal
+ * APPROVED/FINALIZED dalam rentang periode, dikelompokkan per akun.
+ */
+export async function getLedgerAllAccounts(
+  clientId: string,
+  clientName: string,
+  period: string,
+): Promise<{ clientId: string; clientName: string; period: string; accounts: LedgerAccountSummary[] }> {
+  const start = periodStart(period);
+  const end = periodEnd(period);
+
+  const entries = await prisma.journalEntry.findMany({
+    where: {
+      clientId,
+      status: { in: TB_STATUSES },
+      entryDate: { gte: start, lt: end },
+    },
+    select: {
+      lines: { select: { accountCode: true, accountName: true, debit: true, credit: true } },
+    },
+  });
+
+  const map = new Map<string, LedgerAccountSummary>();
+  for (const e of entries) {
+    for (const l of e.lines) {
+      const cur =
+        map.get(l.accountCode) ??
+        { accountCode: l.accountCode, accountName: l.accountName, entryCount: 0, totalDebit: 0, totalCredit: 0, closingBalance: 0 };
+      cur.totalDebit += Number(l.debit);
+      cur.totalCredit += Number(l.credit);
+      cur.entryCount += 1;
+      if (!cur.accountName || cur.accountName === l.accountCode) cur.accountName = l.accountName;
+      map.set(l.accountCode, cur);
+    }
+  }
+
+  const accounts = [...map.values()]
+    .map((a) => ({
+      ...a,
+      totalDebit: Math.round(a.totalDebit * 100) / 100,
+      totalCredit: Math.round(a.totalCredit * 100) / 100,
+      closingBalance: Math.round((a.totalDebit - a.totalCredit) * 100) / 100,
+    }))
+    .sort((a, b) => a.accountCode.localeCompare(b.accountCode));
+
+  return { clientId, clientName, period, accounts };
+}
+
 // ── Kunci periode (partner) ─────────────────────────────────────────────────
 
 /**
@@ -191,6 +250,7 @@ export async function reclassJournal(params: {
   journalId: string;
   lines: ReclassLine[];
   userId: string;
+  kind?: string; // angka | deskripsi | akun
 }): Promise<{ id: string; status: JournalStatus }> {
   const { firmId, journalId, lines, userId } = params;
 
@@ -248,7 +308,8 @@ export async function reclassJournal(params: {
         journalEntryId: journal.id,
         action: "JOURNAL_EDITED",
         detail: {
-          scope: "reclass",
+          scope: "koreksi",
+          kind: params.kind ?? "akun",
           period,
           before,
           after: lines.map((l) => ({

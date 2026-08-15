@@ -141,6 +141,7 @@ export async function editJournalLines(params: {
   actor: User;
   task: ReviewTask;
   lines: EditLineInput[];
+  description?: string;
 }) {
   const { firmId, actor, task, lines } = params;
 
@@ -202,9 +203,14 @@ export async function editJournalLines(params: {
     });
   }
 
+  const newDescription = params.description?.trim();
+  const descriptionChanged = !!newDescription && newDescription !== entry.description;
   await prisma.journalEntry.update({
     where: { id: entry.id },
-    data: { updatedAt: now },
+    data: {
+      updatedAt: now,
+      ...(descriptionChanged ? { description: newDescription } : {}),
+    },
   });
 
   await prisma.activityLog.create({
@@ -217,6 +223,7 @@ export async function editJournalLines(params: {
         stage: task.stage,
         lineCount: lines.length,
         correctionCount: corrections.length,
+        descriptionChanged,
         corrections: corrections.slice(0, 20),
         balance,
       },
