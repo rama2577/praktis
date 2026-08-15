@@ -197,6 +197,13 @@ footer{border-top:1px solid var(--line);padding:44px 0 36px}
   .hero{padding:60px 0 56px}
   .stats-in{gap:18px;padding:26px 0}
 }
+/* video demo */
+.demo{position:relative;padding:84px 0 76px;overflow:hidden}
+.demo .glow.g3{width:600px;height:600px;background:rgba(245,197,24,.10);top:-180px;left:50%;transform:translateX(-50%)}
+.video-wrap{position:relative;border-radius:20px;overflow:hidden;border:1px solid var(--line-2);box-shadow:0 30px 90px rgba(0,0,0,.55);background:var(--panel)}
+.video-wrap video{width:100%;display:block;aspect-ratio:16/9;background:#000}
+.video-caption{display:flex;align-items:center;gap:12px;justify-content:space-between;padding:16px 20px;border-top:1px solid var(--line);font-size:14px;color:var(--muted)}
+@media (max-width:640px){.video-caption{flex-direction:column;align-items:flex-start;gap:6px}}
 </style>
 </head>
 <body>
@@ -212,6 +219,7 @@ footer{border-top:1px solid var(--line);padding:44px 0 36px}
       <span>Praktis<small>AI Bookkeeping</small></span>
     </a>
     <div class="nav-links" id="navLinks">
+      <a href="#demo">Demo</a>
       <a href="#masalah">Masalah</a>
       <a href="#cara-kerja">Cara Kerja</a>
       <a href="#fitur">Fitur</a>
@@ -290,6 +298,25 @@ footer{border-top:1px solid var(--line);padding:44px 0 36px}
     <div class="stat reveal"><b data-count="298">298</b><span>menit per klien per bulan — turun dari 1.854 mnt (−84%)</span></div>
   </div>
 </div>
+
+<!-- DEMO VIDEO -->
+<section id="demo" class="demo">
+  <div class="glow g3" aria-hidden="true"></div>
+  <div class="container">
+    <div class="sec-head reveal">
+      <span class="sec-tag">Demo</span>
+      <h2>Lihat Praktis bekerja, dari dokumen sampai laporan</h2>
+      <p>Tonton 60 detik bagaimana AI menyusun draft jurnal, review 4 mata, dan laporan selesai otomatis.</p>
+    </div>
+    <div class="video-wrap reveal">
+      <video controls preload="metadata" poster="assets/poster-demo.jpg" aria-label="Video demo Praktis">
+        <source src="assets/video/praktis-demo.mp4" type="video/mp4">
+        Browser Anda tidak mendukung pemutaran video.
+      </video>
+      <div class="video-caption"><span>🎬 Praktis · Demo 60 detik</span><span>Dokumen → Draft AI → Review → Laporan</span></div>
+    </div>
+  </div>
+</section>
 
 <!-- MASALAH -->
 <section id="masalah">

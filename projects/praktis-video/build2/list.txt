@@ -1,0 +1,6 @@
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build2/intro.mp4'
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build2/dash.mp4'
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build2/pipe.mp4'
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build2/rev.mp4'
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build2/cust.mp4'
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build2/outro.mp4'

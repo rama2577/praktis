@@ -1,0 +1,3 @@
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build/intro.mp4'
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build/demo.mp4'
+file '/Users/staff/.openclaw-autoclaw/workspace/projects/praktis-video/build/outro.mp4'
