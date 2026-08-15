@@ -53,6 +53,24 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
         </div>
       )}
 
+      {brief.deadlines.length > 0 && (
+        <div className="mt-3">
+          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">Deadline terdekat</p>
+          <div className="space-y-1">
+            {brief.deadlines.slice(0, 5).map((d, i) => (
+              <div key={i} className="flex items-center justify-between rounded-lg border border-line bg-slate-900/40 px-3 py-1.5 text-xs">
+                <span className="truncate text-slate-300">
+                  {d.clientName} · {d.type}
+                </span>
+                <span className={`shrink-0 font-medium tabular-nums ${d.daysLeft <= 7 ? "text-red-300" : "text-slate-400"}`}>
+                  {d.daysLeft} hari lagi
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {brief.priorityQueue.length === 0 ? (
         <p className="mt-4 rounded-lg border border-dashed border-slate-700 bg-slate-900/40 px-4 py-5 text-center text-sm text-slate-500">
           Tidak ada jurnal menunggu review. 👍
