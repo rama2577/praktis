@@ -1,0 +1,1278 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>CRM Mile V.2 — Enhanced Interactive App</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+<style>
+  :root {
+    --brand: #114B8C;
+    --brand-600: #0E3F77;
+    --brand-700: #0A2F5C;
+    --ink: #0A1628;
+    --ink-2: #0E1F38;
+
+    --ai-1: #7C3AED;
+    --ai-2: #C026D3;
+    --ai-grad: linear-gradient(135deg, #7C3AED 0%, #C026D3 100%);
+
+    --bg: #F5F7FA;
+    --surface: #FFFFFF;
+    --surface-2: #FAFBFC;
+    --border: #E4E9F0;
+    --border-2: #D5DCE6;
+
+    --txt: #0F172A;
+    --txt-2: #475569;
+    --txt-3: #94A3B8;
+
+    --success-50: #ECFDF5; --success-100: #D1FAE5; --success-500: #10B981; --success-600: #059669; --success-700: #047857;
+    --warning-50: #FEFCE8; --warning-100: #FEF3C7; --warning-600: #D97706; --warning-700: #B45309;
+    --danger-50: #FEF2F2; --danger-100: #FEE2E2; --danger-500: #EF4444; --danger-600: #DC2626; --danger-700: #B91C1C;
+
+    --radius: 12px;
+    --radius-sm: 8px;
+    --shadow-sm: 0 1px 2px rgba(10,22,40,.05), 0 1px 3px rgba(10,22,40,.04);
+    --shadow: 0 1px 2px rgba(10,22,40,.05), 0 4px 12px -2px rgba(10,22,40,.06);
+    --shadow-lg: 0 24px 48px -12px rgba(10,22,40,.25);
+    --ring: 0 0 0 3px rgba(17,75,140,.12);
+  }
+  [data-theme="dark"] {
+    --bg: #0B1220;
+    --surface: #101B2D;
+    --surface-2: #0E1728;
+    --border: #1E2A40;
+    --border-2: #2A3850;
+    --txt: #E6EDF7;
+    --txt-2: #9FB0C6;
+    --txt-3: #5D7089;
+    --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 4px 12px -2px rgba(0,0,0,.4);
+    --shadow-lg: 0 24px 48px -12px rgba(0,0,0,.6);
+    --ai-panel-bg: rgba(124,58,237,.08);
+    --ai-panel-border: rgba(167,139,250,.25);
+    --ring: 0 0 0 3px rgba(59,130,246,.25);
+  }
+
+  * { box-sizing: border-box; }
+  html, body { height: 100%; }
+  body {
+    margin: 0;
+    font-family: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: var(--bg);
+    color: var(--txt);
+    -webkit-font-smoothing: antialiased;
+    overflow: hidden;
+    transition: background .25s ease, color .25s ease;
+  }
+  .mono { font-family: "JetBrains Mono", ui-monospace, monospace; font-variant-numeric: tabular-nums; letter-spacing: -0.01em; }
+
+  /* ===== Layout ===== */
+  .app { display: flex; height: 100vh; }
+  .main { flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .content { flex: 1; overflow-y: auto; padding: 26px 30px 48px; scroll-behavior: smooth; }
+
+  /* ===== Sidebar ===== */
+  .sidebar {
+    width: 244px; flex-shrink: 0; background: linear-gradient(180deg, var(--ink) 0%, var(--ink-2) 100%);
+    color: #C7D4E8; display: flex; flex-direction: column; position: relative; overflow-y: auto;
+  }
+  .sidebar::before {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(120% 60% at 0% 0%, rgba(124,58,237,.16), transparent 60%), radial-gradient(100% 50% at 100% 100%, rgba(17,75,140,.35), transparent 70%);
+  }
+  .brand { padding: 18px 18px 16px; border-bottom: 1px solid rgba(255,255,255,.07); position: relative; z-index: 1; display: flex; align-items: center; gap: 11px; }
+  .brand-mark {
+    width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
+    font-weight: 800; font-size: 17px; color: white; background: linear-gradient(135deg, #2563EB, #114B8C);
+    box-shadow: 0 4px 14px -2px rgba(37,99,235,.55);
+  }
+  .brand-title { font-weight: 800; color: white; font-size: 15px; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 10px; color: #7E93B2; font-weight: 600; letter-spacing: 1.4px; text-transform: uppercase; margin-top: 2px; }
+
+  .nav { padding: 12px 12px; position: relative; z-index: 1; flex: 1; }
+  .nav-label { font-size: 10px; font-weight: 700; color: #5C7290; text-transform: uppercase; letter-spacing: 1.2px; padding: 14px 12px 6px; }
+  .nav-item {
+    display: flex; align-items: center; gap: 11px; padding: 8px 12px; border-radius: 9px; font-size: 13px; font-weight: 500;
+    color: #A8BBD4; cursor: pointer; margin-bottom: 2px; transition: background .12s, color .12s, transform .12s; position: relative;
+  }
+  .nav-item i { width: 16px; height: 16px; opacity: .85; flex-shrink: 0; }
+  .nav-item:hover { background: rgba(255,255,255,.06); color: white; }
+  .nav-item.active { background: rgba(255,255,255,.1); color: white; font-weight: 600; }
+  .nav-item.active::before { content: ""; position: absolute; left: -12px; top: 8px; bottom: 8px; width: 3px; border-radius: 0 3px 3px 0; background: linear-gradient(180deg, #7C3AED, #2563EB); }
+  .nav-item .badge-small { margin-left: auto; font-size: 9px; padding: 2px 6px; border-radius: 5px; font-weight: 700; letter-spacing: .3px; }
+  .badge-beta { background: rgba(217,119,6,.18); color: #FBBF24; }
+  .badge-new { background: rgba(59,130,246,.18); color: #60A5FA; }
+  .badge-ai-mini { background: linear-gradient(135deg,#7C3AED,#C026D3); color: white; }
+
+  .sidebar-foot { padding: 14px 18px; border-top: 1px solid rgba(255,255,255,.07); position: relative; z-index: 1; font-size: 11px; color: #5C7290; display: flex; align-items: center; gap: 8px; }
+
+  /* ===== Topbar ===== */
+  .topbar { height: 58px; background: var(--surface); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 18px; gap: 12px; flex-shrink: 0; transition: background .25s, border-color .25s; }
+  .tenant-switcher { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border-radius: 9px; background: var(--surface-2); border: 1px solid var(--border); font-size: 13px; font-weight: 600; cursor: pointer; color: var(--txt); }
+  .tenant-switcher:hover { border-color: var(--border-2); }
+  .search-topbar { flex: 1; max-width: 400px; position: relative; }
+  .search-topbar input { width: 100%; padding: 8px 12px 8px 36px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; outline: none; background: var(--surface-2); color: var(--txt); font-family: inherit; transition: border-color .15s, box-shadow .15s; }
+  .search-topbar input:focus { border-color: var(--brand); box-shadow: var(--ring); background: var(--surface); }
+  .search-topbar i { position: absolute; left: 11px; top: 9px; width: 15px; height: 15px; color: var(--txt-3); }
+  .search-topbar .kbd { position: absolute; right: 9px; top: 8px; padding: 2px 6px; border: 1px solid var(--border-2); border-radius: 5px; font-size: 10px; font-weight: 600; color: var(--txt-3); background: var(--surface); }
+  .topbar-right { margin-left: auto; display: flex; align-items: center; gap: 5px; }
+  .chip-pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 11px; border-radius: 999px; background: var(--warning-50); color: var(--warning-700); font-size: 11px; font-weight: 700; border: 1px solid var(--warning-100); }
+  .icon-btn { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; color: var(--txt-2); cursor: pointer; position: relative; border: none; background: transparent; transition: background .12s; }
+  .icon-btn:hover { background: var(--surface-2); color: var(--txt); }
+  .avatar-btn { display: flex; align-items: center; gap: 8px; padding: 4px 10px 4px 6px; border-radius: 999px; cursor: pointer; }
+  .avatar-btn:hover { background: var(--surface-2); }
+  .avatar-circle { width: 28px; height: 28px; border-radius: 50%; background: var(--ai-grad); color: white; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; }
+
+  /* ===== Components ===== */
+  .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow-sm); transition: background .25s, border-color .25s; }
+  .card-hover { cursor: pointer; transition: transform .14s ease, box-shadow .14s ease, border-color .14s; }
+  .card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow); border-color: var(--border-2); }
+
+  .btn { border: none; border-radius: 9px; font-weight: 600; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font-family: inherit; padding: 8px 14px; transition: all .14s ease; }
+  .btn:active { transform: scale(.97); }
+  .btn-primary { background: var(--brand); color: white; box-shadow: 0 1px 2px rgba(10,22,40,.2); }
+  .btn-primary:hover { background: var(--brand-600); }
+  .btn-secondary { background: var(--surface); color: var(--txt-2); border: 1px solid var(--border-2); }
+  .btn-secondary:hover { background: var(--surface-2); color: var(--txt); }
+  .btn-ai { background: var(--ai-grad); color: white; box-shadow: 0 4px 14px -4px rgba(124,58,237,.5); }
+  .btn-ai:hover { opacity: .93; }
+  .btn-ghost { background: transparent; color: var(--txt-2); }
+  .btn-ghost:hover { background: var(--surface-2); color: var(--txt); }
+
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 10px; border-radius: 7px; font-size: 12px; font-weight: 600; white-space: nowrap; }
+  .badge-primary { background: rgba(37,99,235,.1); color: var(--brand-600); }
+  .badge-success { background: var(--success-50); color: var(--success-700); }
+  .badge-warning { background: var(--warning-50); color: var(--warning-700); }
+  .badge-danger { background: var(--danger-50); color: var(--danger-700); }
+  .badge-neutral { background: var(--surface-2); color: var(--txt-2); border: 1px solid var(--border); }
+  .badge-ai { background: var(--ai-grad); color: white; font-size: 10px; padding: 3px 8px; border-radius: 6px; font-weight: 700; letter-spacing: .4px; display: inline-flex; align-items: center; gap: 3px; white-space: nowrap; box-shadow: 0 2px 6px -1px rgba(124,58,237,.4); }
+
+  .chip { display: inline-flex; align-items: center; gap: 5px; padding: 6px 13px; border-radius: 999px; font-size: 12px; font-weight: 500; border: 1px solid var(--border); background: var(--surface); cursor: pointer; white-space: nowrap; color: var(--txt-2); transition: all .12s; }
+  .chip:hover { border-color: var(--border-2); color: var(--txt); }
+  .chip.active { background: var(--brand); color: white; border-color: var(--brand); }
+
+  .table { width: 100%; border-collapse: collapse; }
+  .table thead th { padding: 11px 16px; background: var(--surface-2); border-bottom: 1px solid var(--border); font-size: 10.5px; font-weight: 700; color: var(--txt-3); text-align: left; text-transform: uppercase; letter-spacing: .6px; white-space: nowrap; }
+  .table tbody td { padding: 13px 16px; border-bottom: 1px solid var(--border); font-size: 13px; color: var(--txt-2); vertical-align: middle; }
+  .table tbody tr { transition: background .1s; }
+  .table tbody tr:hover { background: var(--surface-2); }
+  .table tbody tr:last-child td { border-bottom: none; }
+  .avatar-mini { width: 24px; height: 24px; border-radius: 50%; color: white; display: inline-flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; flex-shrink: 0; }
+
+  .ai-panel {
+    background: linear-gradient(135deg, rgba(124,58,237,.05) 0%, rgba(192,38,211,.05) 100%);
+    border: 1px solid rgba(167,139,250,.35); border-radius: var(--radius); padding: 16px 18px; position: relative; overflow: hidden;
+  }
+  .ai-panel::after { content: ""; position: absolute; top: -40px; right: -40px; width: 140px; height: 140px; border-radius: 50%; background: radial-gradient(circle, rgba(124,58,237,.12), transparent 70%); pointer-events: none; }
+  .ai-label { display: flex; align-items: center; gap: 7px; margin-bottom: 9px; }
+  .ai-label strong { font-size: 11px; color: #7C3AED; text-transform: uppercase; letter-spacing: .7px; }
+  [data-theme="dark"] .ai-label strong { color: #A78BFA; }
+
+  .sentiment-badge { display: inline-flex; align-items: center; gap: 4px; padding: 4px 9px; border-radius: 999px; font-size: 11px; font-weight: 600; }
+  .sentiment-positive { background: var(--success-50); color: var(--success-700); }
+  .sentiment-neutral { background: var(--surface-2); color: var(--txt-2); }
+  .sentiment-negative { background: #FFF7ED; color: #C2410C; }
+  .sentiment-escalation { background: var(--danger-50); color: var(--danger-700); animation: pulse 2s ease-in-out infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .6; } }
+
+  .form-input, .form-textarea { width: 100%; padding: 9px 12px; border: 1px solid var(--border); border-radius: 9px; font-size: 13px; outline: none; font-family: inherit; background: var(--surface); color: var(--txt); transition: border-color .15s, box-shadow .15s; }
+  .form-input:focus, .form-textarea:focus { border-color: var(--brand); box-shadow: var(--ring); }
+  select.form-input { cursor: pointer; }
+
+  /* Modal / Drawer */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(8,15,30,.55); backdrop-filter: blur(3px); z-index: 40; opacity: 0; pointer-events: none; transition: opacity .2s; display: flex; align-items: center; justify-content: center; padding: 20px; }
+  .modal-overlay.open { opacity: 1; pointer-events: auto; }
+  .modal { background: var(--surface); border-radius: 16px; box-shadow: var(--shadow-lg); max-width: 620px; width: 100%; max-height: 90vh; overflow-y: auto; transform: scale(.96) translateY(8px); transition: transform .2s; display: flex; flex-direction: column; }
+  .modal-overlay.open .modal { transform: scale(1) translateY(0); }
+
+  .drawer-overlay { position: fixed; inset: 0; background: rgba(8,15,30,.4); z-index: 40; opacity: 0; pointer-events: none; transition: opacity .2s; }
+  .drawer-overlay.open { opacity: 1; pointer-events: auto; }
+  .drawer { position: fixed; top: 0; right: 0; height: 100vh; width: 480px; background: var(--surface); box-shadow: var(--shadow-lg); z-index: 50; transform: translateX(100%); transition: transform .28s cubic-bezier(.4,0,.2,1); display: flex; flex-direction: column; }
+  .drawer.open { transform: translateX(0); }
+  .drawer-header { padding: 18px 22px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+  .drawer-body { flex: 1; overflow-y: auto; padding: 20px 22px; }
+
+  .toast { position: fixed; bottom: 22px; right: 22px; background: var(--ink); color: white; padding: 11px 16px; border-radius: 11px; font-size: 13px; z-index: 100; opacity: 0; transform: translateY(16px); transition: all .22s cubic-bezier(.4,0,.2,1); display: flex; align-items: center; gap: 9px; box-shadow: var(--shadow-lg); max-width: 380px; }
+  .toast.show { opacity: 1; transform: translateY(0); }
+
+  .screen { display: none; animation: screenIn .28s ease; }
+  .screen.active { display: block; }
+  @keyframes screenIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+
+  .kpi-trend { font-size: 11px; font-weight: 700; }
+  .kpi-up { color: var(--success-600); } .kpi-down { color: var(--danger-600); }
+
+  @keyframes shimmer { 0% { background-position: -400px 0; } 100% { background-position: 400px 0; } }
+  .shimmer { background: linear-gradient(90deg, var(--surface-2) 25%, var(--border) 50%, var(--surface-2) 75%); background-size: 800px 100%; animation: shimmer 1.2s infinite; color: transparent !important; border-radius: 5px; }
+
+  ::-webkit-scrollbar { width: 9px; height: 9px; }
+  ::-webkit-scrollbar-thumb { background: var(--border-2); border-radius: 5px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--txt-3); }
+
+  .page-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; margin-bottom: 20px; flex-wrap: wrap; }
+  .page-head h1 { font-size: 23px; font-weight: 800; margin: 0; letter-spacing: -0.02em; }
+  .page-head .sub { font-size: 13px; color: var(--txt-2); margin-top: 4px; }
+
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+  .grid-2 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  @media (max-width: 1100px) { .grid-4 { grid-template-columns: repeat(2,1fr); } .grid-3 { grid-template-columns: repeat(2,1fr); } .grid-2 { grid-template-columns: 1fr; } }
+  @media (max-width: 760px) { .sidebar { display: none; } .grid-4, .grid-3 { grid-template-columns: 1fr; } .content { padding: 18px 16px 40px; } }
+</style>
+</head>
+<body>
+
+<div class="app">
+  <!-- ============ SIDEBAR ============ -->
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-mark">M</div>
+      <div>
+        <div class="brand-title">MileApp</div>
+        <div class="brand-sub">CRM · V.2</div>
+      </div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item" data-screen="dashboard"><i data-lucide="layout-dashboard"></i> Dashboard</div>
+      <div class="nav-item" data-screen="executive"><i data-lucide="briefcase-business"></i> Executive <span class="badge-small badge-new">NEW</span></div>
+      <div class="nav-item" data-screen="pipeline"><i data-lucide="kanban-square"></i> Pipeline</div>
+      <div class="nav-item active" data-screen="activities"><i data-lucide="calendar-check"></i> Aktivitas <span class="badge-small badge-ai-mini">AI</span></div>
+      <div class="nav-item" data-screen="contacts"><i data-lucide="users"></i> Contacts <span class="badge-small badge-ai-mini">AI</span></div>
+      <div class="nav-item" data-screen="companies"><i data-lucide="building-2"></i> Companies <span class="badge-small badge-ai-mini">AI</span></div>
+      <div class="nav-item" data-screen="cadences"><i data-lucide="repeat"></i> Cadences <span class="badge-small badge-ai-mini">AI</span></div>
+      <div class="nav-item" data-screen="reports"><i data-lucide="bar-chart-3"></i> Reports <span class="badge-small badge-ai-mini">AI</span></div>
+      <div class="nav-label">Workspace</div>
+      <div class="nav-item" data-screen="workspace"><i data-lucide="grid-2x2"></i> Workspace <span class="badge-small badge-beta">BETA</span></div>
+      <div class="nav-item" data-screen="partnership"><i data-lucide="handshake"></i> Partnership</div>
+      <div class="nav-label">System</div>
+      <div class="nav-item" data-screen="settings"><i data-lucide="settings"></i> Settings</div>
+    </nav>
+    <div class="sidebar-foot">
+      <span style="width:7px;height:7px;border-radius:50%;background:#10B981;box-shadow:0 0 8px #10B981;"></span>
+      <span>All systems operational</span>
+    </div>
+  </aside>
+
+  <!-- ============ MAIN ============ -->
+  <main class="main">
+    <header class="topbar">
+      <div class="tenant-switcher" onclick="toast('Switch tenant (demo)')">
+        <i data-lucide="building" style="width:14px;height:14px;color:var(--txt-3);"></i>
+        Mile.app Internal
+        <span style="font-size:10px;color:var(--txt-3);background:var(--surface);padding:1px 6px;border-radius:8px;border:1px solid var(--border);">4 org</span>
+      </div>
+      <div class="search-topbar" onclick="openCmdk()">
+        <i data-lucide="search"></i>
+        <input type="text" placeholder="Cari apa aja · atau tanya AI..." readonly>
+        <span class="kbd">⌘K</span>
+      </div>
+      <div class="topbar-right">
+        <span class="chip-pill"><i data-lucide="flame" style="width:11px;height:11px;"></i> 1 hari</span>
+        <button class="icon-btn" onclick="toast('AI Assistant (demo)')"><i data-lucide="sparkles" style="width:16px;height:16px;color:#7C3AED;"></i></button>
+        <button class="icon-btn" id="theme-btn" onclick="toggleTheme()" title="Toggle dark mode"><i data-lucide="moon" style="width:16px;height:16px;"></i></button>
+        <button class="icon-btn" onclick="toast('Notifications (demo)')"><i data-lucide="bell" style="width:16px;height:16px;"></i>
+          <span style="position:absolute;top:7px;right:7px;width:7px;height:7px;background:#DC2626;border-radius:50%;border:1.5px solid var(--surface);"></span>
+        </button>
+        <div class="avatar-btn">
+          <div class="avatar-circle">RP</div>
+          <div style="font-size:12px;font-weight:700;color:var(--txt);">Rama</div>
+        </div>
+      </div>
+    </header>
+
+    <div class="content">
+
+<!-- ============ DASHBOARD ============ -->
+<div class="screen" id="screen-dashboard">
+  <div class="page-head">
+    <div>
+      <h1>Dashboard</h1>
+      <div class="sub">Ringkasan aktivitas sales tim · <strong>Aug 2026</strong></div>
+    </div>
+    <button class="btn btn-secondary"><i data-lucide="download" style="width:14px;height:14px;"></i> Export</button>
+  </div>
+
+  <div class="grid-4" style="margin-bottom:16px;">
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:11px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Pipeline</span>
+        <span class="kpi-trend kpi-up">▲ 12%</span>
+      </div>
+      <div class="mono" style="font-size:23px;font-weight:700;margin-top:8px;">Rp 64,14M</div>
+      <div style="font-size:11px;color:var(--txt-2);margin-top:3px;">Weighted <strong>Rp 42,8M</strong> <span class="badge-ai" style="font-size:8px;margin-left:2px;">Q1</span></div>
+      <svg viewBox="0 0 200 36" style="width:100%;height:34px;margin-top:8px;display:block;">
+        <defs><linearGradient id="sp1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#2563EB" stop-opacity=".28"/><stop offset="1" stop-color="#2563EB" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0 30 C20 28 30 20 45 22 S75 26 90 18 S120 20 135 12 S165 14 200 6 L200 36 L0 36 Z" fill="url(#sp1)"/>
+        <path d="M0 30 C20 28 30 20 45 22 S75 26 90 18 S120 20 135 12 S165 14 200 6" fill="none" stroke="#2563EB" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:11px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Active Deals</span>
+        <span class="kpi-trend kpi-up">▲ 8%</span>
+      </div>
+      <div class="mono" style="font-size:23px;font-weight:700;margin-top:8px;">240</div>
+      <div style="font-size:11px;color:var(--txt-2);margin-top:3px;">28 high-value · 17 stale</div>
+      <svg viewBox="0 0 200 36" style="width:100%;height:34px;margin-top:8px;display:block;">
+        <defs><linearGradient id="sp2" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#10B981" stop-opacity=".28"/><stop offset="1" stop-color="#10B981" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0 26 C25 24 40 14 60 16 S90 22 110 12 S140 16 160 9 S185 11 200 4 L200 36 L0 36 Z" fill="url(#sp2)"/>
+        <path d="M0 26 C25 24 40 14 60 16 S90 22 110 12 S140 16 160 9 S185 11 200 4" fill="none" stroke="#10B981" stroke-width="2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:11px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Win Rate</span>
+        <span class="kpi-trend kpi-up">▲ 4%</span>
+      </div>
+      <div style="display:flex;align-items:center;gap:14px;margin-top:6px;">
+        <div class="mono" style="font-size:23px;font-weight:700;">66.7%</div>
+        <svg viewBox="0 0 40 40" style="width:44px;height:44px;transform:rotate(-90deg);">
+          <circle cx="20" cy="20" r="16" fill="none" stroke="var(--border)" stroke-width="5"/>
+          <circle cx="20" cy="20" r="16" fill="none" stroke="#10B981" stroke-width="5" stroke-linecap="round" stroke-dasharray="100.5" stroke-dashoffset="33.5"/>
+        </svg>
+      </div>
+      <div style="font-size:11px;color:var(--txt-2);margin-top:5px;">32 won · 48 lost/total</div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <span style="font-size:11px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Avg Cycle</span>
+        <span class="kpi-trend kpi-down">▼ 3d</span>
+      </div>
+      <div class="mono" style="font-size:23px;font-weight:700;margin-top:8px;">18 hari</div>
+      <div style="font-size:11px;color:var(--txt-2);margin-top:3px;">Benchmark 21 hari</div>
+      <div style="margin-top:10px;display:flex;gap:3px;align-items:flex-end;height:34px;">
+        <div style="flex:1;background:var(--brand);border-radius:2px;height:40%;"></div>
+        <div style="flex:1;background:var(--brand);border-radius:2px;height:65%;"></div>
+        <div style="flex:1;background:var(--brand);border-radius:2px;height:50%;"></div>
+        <div style="flex:1;background:var(--brand);border-radius:2px;height:80%;"></div>
+        <div style="flex:1;background:var(--brand);border-radius:2px;height:60%;"></div>
+        <div style="flex:1;background:var(--brand);border-radius:2px;height:90%;"></div>
+        <div style="flex:1;background:var(--brand);border-radius:2px;height:72%;"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="ai-panel">
+      <div class="ai-label"><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI</span><strong>Daily AI Briefing</strong></div>
+      <p style="font-size:13px;line-height:1.65;color:var(--txt-2);margin:0;">
+        Selamat pagi, Rama. Pipeline health <strong style="color:var(--txt);">stabil</strong> (weighted forecast <strong style="color:var(--txt);">Rp 42,8M</strong>, ▲ 12% vs bulan lalu).
+        Prioritas hari ini: <strong style="color:var(--txt);">2 deal at risk</strong> (Lion Parcel · Sicepat — sentiment Negative) dan <strong style="color:var(--txt);">3 deal siap close</strong> (LumiPay · Novara Tech · Manufacturing X).
+        Saran: sisihkan <strong style="color:var(--txt);">90 mnt pagi</strong> untuk 3 call urgent — mulai dari Lion Parcel (12 hari no-contact).
+      </p>
+      <div style="display:flex;gap:8px;margin-top:12px;flex-wrap:wrap;">
+        <button class="btn btn-primary" style="padding:6px 12px;font-size:12px;" onclick="switchScreen('pipeline')">Buka Pipeline</button>
+        <button class="btn btn-secondary" style="padding:6px 12px;font-size:12px;" onclick="toast('Menyiapkan 3 call briefing...')">Siapkan Call Briefing</button>
+      </div>
+    </div>
+    <div class="card" style="padding:16px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;">
+        <span style="font-weight:700;font-size:13px;">Pipeline by Stage</span>
+        <span class="badge badge-neutral" style="font-size:10px;">240 deals</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Lead</span><span class="mono">42</span></div><div style="height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;"><div style="height:100%;width:17.5%;background:#94A3B8;border-radius:4px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Qualified</span><span class="mono">38</span></div><div style="height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;"><div style="height:100%;width:15.8%;background:#60A5FA;border-radius:4px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Proposal</span><span class="mono">45</span></div><div style="height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;"><div style="height:100%;width:18.8%;background:#2563EB;border-radius:4px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Negotiation</span><span class="mono">50</span></div><div style="height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;"><div style="height:100%;width:20.8%;background:#7C3AED;border-radius:4px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Won</span><span class="mono">32</span></div><div style="height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;"><div style="height:100%;width:13.3%;background:#10B981;border-radius:4px;"></div></div></div>
+        <div><div style="display:flex;justify-content:space-between;font-size:11px;margin-bottom:3px;"><span>Lost</span><span class="mono">33</span></div><div style="height:7px;background:var(--surface-2);border-radius:4px;overflow:hidden;"><div style="height:100%;width:13.8%;background:#EF4444;border-radius:4px;"></div></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ EXECUTIVE ============ -->
+<div class="screen" id="screen-executive">
+  <div class="page-head">
+    <div>
+      <div style="display:flex;align-items:center;gap:9px;"><h1>Executive Dashboard</h1><span class="badge badge-primary">NEW · V.2</span></div>
+      <div class="sub">Boardroom view — MRR, adoption, dormant-customer signal</div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card" style="padding:20px;">
+      <div style="font-size:11px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">MRR Estimate · 30d</div>
+      <div class="mono" style="font-size:28px;font-weight:700;margin-top:8px;">Rp 1,24M <span style="font-size:13px;color:var(--success-600);font-weight:700;">▲ +18%</span></div>
+      <svg viewBox="0 0 200 44" style="width:100%;height:42px;margin-top:10px;">
+        <defs><linearGradient id="mrr" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#7C3AED" stop-opacity=".3"/><stop offset="1" stop-color="#7C3AED" stop-opacity="0"/></linearGradient></defs>
+        <path d="M0 36 C20 35 35 30 50 30 S80 24 95 22 S125 24 140 16 S165 14 200 5 L200 44 L0 44 Z" fill="url(#mrr)"/>
+        <path d="M0 36 C20 35 35 30 50 30 S80 24 95 22 S125 24 140 16 S165 14 200 5" fill="none" stroke="#7C3AED" stroke-width="2.2" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div class="card" style="padding:20px;">
+      <div style="font-size:11px;color:var(--txt-3);font-weight:700;text-transform:uppercase;letter-spacing:.5px;">Weighted Forecast <span class="badge-ai" style="font-size:8px;">Q1</span></div>
+      <div class="mono" style="font-size:28px;font-weight:700;margin-top:8px;">Rp 42,8M</div>
+      <div style="display:flex;gap:12px;margin-top:12px;">
+        <div style="flex:1;background:var(--success-50);border-radius:8px;padding:10px;"><div class="mono" style="font-weight:700;color:var(--success-700);">Rp 1,2M</div><div style="font-size:10px;color:var(--txt-2);margin-top:2px;">Commit · 95%</div></div>
+        <div style="flex:1;background:rgba(124,58,237,.08);border-radius:8px;padding:10px;"><div class="mono" style="font-weight:700;color:#7C3AED;">Rp 4,2M</div><div style="font-size:10px;color:var(--txt-2);margin-top:2px;">Best case · 78%</div></div>
+        <div style="flex:1;background:var(--danger-50);border-radius:8px;padding:10px;"><div class="mono" style="font-weight:700;color:var(--danger-600);">Rp 480Jt</div><div style="font-size:10px;color:var(--txt-2);margin-top:2px;">At risk · 40% slip</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="grid-2" style="margin-bottom:16px;">
+    <div class="card" style="padding:18px;">
+      <div style="font-weight:700;font-size:13px;margin-bottom:14px;">Adoption Health</div>
+      <div style="display:flex;align-items:center;gap:16px;">
+        <svg viewBox="0 0 40 40" style="width:70px;height:70px;transform:rotate(-90deg);">
+          <circle cx="20" cy="20" r="17" fill="none" stroke="var(--border)" stroke-width="4.5"/>
+          <circle cx="20" cy="20" r="17" fill="none" stroke="url(#adoptGrad)" stroke-width="4.5" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="17"/>
+          <defs><linearGradient id="adoptGrad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#7C3AED"/></linearGradient></defs>
+        </svg>
+        <div>
+          <div class="mono" style="font-size:26px;font-weight:700;">84%</div>
+          <div style="font-size:12px;color:var(--txt-2);">42 / 50 user aktif</div>
+        </div>
+      </div>
+      <div style="margin-top:12px;font-size:12px;color:var(--txt-2);">8 customer dormant (18.2%) perlu re-engagement campaign.</div>
+    </div>
+    <div class="ai-panel">
+      <div class="ai-label"><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI</span><strong>Executive Narrative</strong></div>
+      <p style="font-size:13px;line-height:1.65;color:var(--txt-2);margin:0;">
+        MRR bulan ini <strong style="color:var(--txt);">Rp 1,24M</strong> (▲ 18% vs 30d lalu) didorong 3 deal Won besar. Weighted forecast <strong style="color:var(--txt);">Rp 42,8M</strong> masih kuat, tapi <strong style="color:var(--txt);">1 deal enterprise (Lion Parcel Rp 480Jt) at risk</strong> — rekomendasi eskalasi ke VP untuk intervensi.
+      </p>
+      <button class="btn btn-ai" style="margin-top:12px;padding:7px 14px;font-size:12px;" onclick="toast('Membuat executive brief...')"><i data-lucide="file-text" style="width:14px;height:14px;"></i> Generate Board Brief</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ PIPELINE ============ -->
+<div class="screen" id="screen-pipeline">
+  <div class="page-head">
+    <div>
+      <div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap;">
+        <h1>Pipeline</h1>
+        <span class="badge badge-primary">240 deals</span>
+        <span class="badge badge-neutral mono">Rp 64,14M</span>
+        <span class="badge-ai"><i data-lucide="sparkles" style="width:10px;height:10px;"></i> AI ENHANCED</span>
+      </div>
+      <div class="sub">Kelola pipeline dengan AI Health Score, Next Best Action & Competitor Intel</div>
+    </div>
+    <div style="display:flex;gap:9px;flex-wrap:wrap;">
+      <button class="btn btn-secondary"><i data-lucide="download" style="width:14px;height:14px;"></i> Export CSV</button>
+      <button class="btn btn-primary" onclick="toast('Add Deal modal (demo)')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Add Deal</button>
+    </div>
+  </div>
+
+  <div class="ai-panel" style="margin-bottom:16px;">
+    <div class="ai-label">
+      <span class="badge-ai"><i data-lucide="sparkles" style="width:10px;height:10px;"></i>AI</span>
+      <strong>Today's Priority Actions</strong>
+      <span style="font-size:12px;color:var(--txt-2);">· 4 deals need attention</span>
+      <button style="margin-left:auto;font-size:12px;color:#7C3AED;font-weight:600;cursor:pointer;display:inline-flex;align-items:center;gap:4px;background:none;border:none;font-family:inherit;" onclick="toast('AI refresh recommendations')"><i data-lucide="refresh-cw" style="width:12px;height:12px;"></i> Refresh</button>
+    </div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px;">
+      <div class="card card-hover" onclick="openDeal('Enterprise Package — Lion Parcel Q4','Rp 480 Jt','Negotiation','Rendy',42)" style="padding:14px;border-color:rgba(239,68,68,.4);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#EF4444;"></span><span style="font-size:10px;font-weight:800;color:#B91C1C;text-transform:uppercase;letter-spacing:.8px;">Urgent</span></div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.35;">Lion Parcel Q4</div>
+        <div style="font-size:12px;color:var(--txt-2);line-height:1.5;">📞 Call Ibu Sri — 12 hari no contact, sentiment turun</div>
+      </div>
+      <div class="card card-hover" onclick="openDeal('Annual software license — LumiPay','Rp 700 Jt','Proposal','Erika',82)" style="padding:14px;border-color:rgba(16,185,129,.4);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#10B981;"></span><span style="font-size:10px;font-weight:800;color:#047857;text-transform:uppercase;letter-spacing:.8px;">Close Now</span></div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.35;">LumiPay Annual</div>
+        <div style="font-size:12px;color:var(--txt-2);line-height:1.5;">📄 Send proposal — momentum tinggi, demo positif</div>
+      </div>
+      <div class="card card-hover" onclick="openDeal('Fleet ekspansi — Sicepat','Rp 240 Jt','Lead','Rendy',55)" style="padding:14px;border-color:rgba(245,158,11,.4);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#F59E0B;"></span><span style="font-size:10px;font-weight:800;color:#B45309;text-transform:uppercase;letter-spacing:.8px;">Watch</span></div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.35;">Sicepat Fleet</div>
+        <div style="font-size:12px;color:var(--txt-2);line-height:1.5;">👥 Loop-in senior VP — stalled 12 hari</div>
+      </div>
+      <div class="card card-hover" onclick="openDeal('Novara Tech — enterprise','Rp 120 Jt','Qualified','Angga',68)" style="padding:14px;border-color:rgba(96,165,250,.4);">
+        <div style="display:flex;align-items:center;gap:6px;margin-bottom:8px;"><span style="width:8px;height:8px;border-radius:50%;background:#3B82F6;"></span><span style="font-size:10px;font-weight:800;color:#1D4ED8;text-transform:uppercase;letter-spacing:.8px;">Opportunity</span></div>
+        <div style="font-size:14px;font-weight:700;margin-bottom:5px;line-height:1.35;">Novara Tech</div>
+        <div style="font-size:12px;color:var(--txt-2);line-height:1.5;">✨ CTO post tentang AI di LinkedIn — align pitch</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toolbar -->
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;gap:14px;flex-wrap:wrap;">
+    <div style="display:flex;border:1px solid var(--border);border-radius:10px;overflow:hidden;background:var(--surface);box-shadow:var(--shadow-sm);">
+      <div class="view-btn" data-view="kanban" onclick="switchView('kanban')" style="padding:8px 15px;font-size:12.5px;font-weight:500;color:var(--txt-2);cursor:pointer;display:flex;align-items:center;gap:7px;border-right:1px solid var(--border);background:var(--surface);"><i data-lucide="kanban-square" style="width:14px;height:14px;"></i> Kanban</div>
+      <div class="view-btn active" data-view="grouped" onclick="switchView('grouped')" style="padding:8px 15px;font-size:12.5px;font-weight:700;color:white;cursor:pointer;background:var(--brand);border-right:1px solid var(--border);display:flex;align-items:center;gap:7px;"><i data-lucide="list-tree" style="width:14px;height:14px;"></i> Grouped</div>
+      <div class="view-btn" data-view="list" onclick="switchView('list')" style="padding:8px 15px;font-size:12.5px;font-weight:500;color:var(--txt-2);cursor:pointer;background:var(--surface);border-right:1px solid var(--border);display:flex;align-items:center;gap:7px;"><i data-lucide="list" style="width:14px;height:14px;"></i> List</div>
+      <div class="view-btn" data-view="forecast" onclick="switchView('forecast')" style="padding:8px 15px;font-size:12.5px;font-weight:500;color:var(--txt-2);cursor:pointer;background:var(--surface);display:flex;align-items:center;gap:7px;"><i data-lucide="trending-up" style="width:14px;height:14px;"></i> Forecast</div>
+    </div>
+    <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <div style="position:relative;">
+        <i data-lucide="search" style="position:absolute;left:10px;top:9px;width:14px;height:14px;color:var(--txt-3);"></i>
+        <input type="text" id="pipe-search" class="form-input" style="padding-left:32px;width:190px;" placeholder="Filter deals..." oninput="filterPipeline(this.value)">
+      </div>
+      <select class="form-input" style="width:auto;" onchange="toast('Filter: '+this.value)">
+        <option>Semua Sales</option><option>Rendy</option><option>Dika</option><option>Erika</option><option>Angga</option>
+      </select>
+      <select class="form-input" style="width:auto;" onchange="toast('Filter priority: '+this.value)">
+        <option>Semua Priority</option><option>🔥 Hot</option><option>🌡 Warm</option><option>❄ Cold</option>
+      </select>
+    </div>
+  </div>
+
+  <div class="card" style="overflow:hidden;">
+    <!-- Saved views tabs -->
+    <div style="padding:0 18px;border-bottom:1px solid var(--border);display:flex;gap:2px;overflow-x:auto;">
+      <div style="padding:13px 17px;border-bottom:2px solid var(--brand);color:var(--brand);font-weight:700;font-size:12.5px;display:flex;align-items:center;gap:7px;white-space:nowrap;"><i data-lucide="layers" style="width:14px;height:14px;"></i> Semua <span class="badge badge-neutral" style="font-size:10px;">240</span></div>
+      <div style="padding:13px 17px;color:var(--txt-2);font-weight:500;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;" onclick="toast('High-Value tab')">🔥 High-Value <span class="badge badge-neutral" style="font-size:10px;">28</span></div>
+      <div style="padding:13px 17px;color:var(--txt-2);font-weight:500;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;" onclick="toast('Stale tab')">⏰ Stale &gt; 14 hari <span class="badge badge-warning" style="font-size:10px;">17</span></div>
+      <div style="padding:13px 17px;color:var(--txt-2);font-weight:500;font-size:12.5px;cursor:pointer;display:flex;align-items:center;gap:7px;white-space:nowrap;" onclick="toast('Won this month')">🏆 Won Bulan Ini <span class="badge badge-success" style="font-size:10px;">32</span></div>
+    </div>
+
+    <!-- KANBAN -->
+    <div id="view-kanban" style="display:none;padding:18px;background:var(--surface-2);overflow-x:auto;">
+      <div style="display:grid;grid-template-columns:repeat(5,minmax(255px,1fr));gap:14px;min-width:1280px;">
+        <div>
+          <div style="padding:11px 13px;background:var(--surface);border-radius:9px 9px 0 0;border:1px solid var(--border);border-bottom:none;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--txt-2);letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center;"><span>Lead</span><span class="badge badge-neutral">42</span></div>
+          <div style="padding:11px;background:var(--surface);border:1px solid var(--border);border-radius:0 0 9px 9px;display:flex;flex-direction:column;gap:10px;min-height:240px;">
+            <div class="card card-hover" onclick="openDeal('Fleet ekspansi armada — Sicepat','Rp 240 Jt','Lead','Rendy',55)" style="padding:13px;box-shadow:none;">
+              <div style="font-size:12.5px;font-weight:700;margin-bottom:5px;line-height:1.35;">Fleet ekspansi armada — Sicepat</div>
+              <div class="mono" style="font-size:14px;font-weight:700;color:var(--brand);margin-bottom:10px;">Rp 240 Jt</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:5px;"><span class="badge badge-danger" style="font-size:10px;">🔥 Hot</span><span class="mono" style="font-size:11px;font-weight:700;color:#C2410C;background:#FFF7ED;padding:3px 7px;border-radius:6px;">55</span></div>
+                <div class="avatar-mini" style="background:#8B5CF6;">RP</div>
+              </div>
+              <div style="margin-top:10px;padding-top:9px;border-top:1px dashed var(--border);font-size:11px;color:#7C3AED;display:flex;align-items:center;gap:6px;"><span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span><span>Competitor: Salesforce</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="padding:11px 13px;background:var(--surface);border-radius:9px 9px 0 0;border:1px solid var(--border);border-bottom:none;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--txt-2);letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center;"><span>Qualified</span><span class="badge badge-neutral">38</span></div>
+          <div style="padding:11px;background:var(--surface);border:1px solid var(--border);border-radius:0 0 9px 9px;display:flex;flex-direction:column;gap:10px;min-height:240px;">
+            <div class="card card-hover" onclick="openDeal('Solar panel roll-out — Blue Bird','Rp 180 Jt','Qualified','Dika',68)" style="padding:13px;box-shadow:none;">
+              <div style="font-size:12.5px;font-weight:700;margin-bottom:5px;line-height:1.35;">Solar panel roll-out — Blue Bird</div>
+              <div class="mono" style="font-size:14px;font-weight:700;color:var(--brand);margin-bottom:10px;">Rp 180 Jt</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:5px;"><span class="badge badge-warning" style="font-size:10px;">🌡 Warm</span><span class="mono" style="font-size:11px;font-weight:700;color:#B45309;background:#FEF3C7;padding:3px 7px;border-radius:6px;">68</span></div>
+                <div class="avatar-mini" style="background:#F59E0B;">DK</div>
+              </div>
+            </div>
+            <div class="card card-hover" onclick="openDeal('Novara Tech — enterprise','Rp 120 Jt','Qualified','Angga',68)" style="padding:13px;box-shadow:none;">
+              <div style="font-size:12.5px;font-weight:700;margin-bottom:5px;line-height:1.35;">Novara Tech — platform upgrade</div>
+              <div class="mono" style="font-size:14px;font-weight:700;color:var(--brand);margin-bottom:10px;">Rp 120 Jt</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:5px;"><span class="badge badge-warning" style="font-size:10px;">🌡 Warm</span><span class="mono" style="font-size:11px;font-weight:700;color:#B45309;background:#FEF3C7;padding:3px 7px;border-radius:6px;">68</span></div>
+                <div class="avatar-mini" style="background:#0EA5E9;">AN</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="padding:11px 13px;background:var(--surface);border-radius:9px 9px 0 0;border:1px solid var(--border);border-bottom:none;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--txt-2);letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center;"><span>Proposal</span><span class="badge badge-neutral">45</span></div>
+          <div style="padding:11px;background:var(--surface);border:1px solid var(--border);border-radius:0 0 9px 9px;display:flex;flex-direction:column;gap:10px;min-height:240px;">
+            <div class="card card-hover" onclick="openDeal('Annual software license — LumiPay','Rp 700 Jt','Proposal','Erika',82)" style="padding:13px;box-shadow:none;">
+              <div style="font-size:12.5px;font-weight:700;margin-bottom:5px;line-height:1.35;">Annual software license — LumiPay</div>
+              <div class="mono" style="font-size:14px;font-weight:700;color:var(--brand);margin-bottom:10px;">Rp 700 Jt</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:5px;"><span class="badge badge-danger" style="font-size:10px;">🔥 Hot</span><span class="mono" style="font-size:11px;font-weight:700;color:#047857;background:#D1FAE5;padding:3px 7px;border-radius:6px;">82 ▲</span></div>
+                <div class="avatar-mini" style="background:#EC4899;">ER</div>
+              </div>
+              <div style="margin-top:10px;padding-top:9px;border-top:1px dashed var(--border);font-size:11px;color:#7C3AED;display:flex;align-items:center;gap:6px;"><span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span><span>Close now — momentum tinggi</span></div>
+            </div>
+            <div class="card card-hover" onclick="openDeal('Truck fleet expansion — Lion Logistics','Rp 3,9 M','Proposal','Rendy',72)" style="padding:13px;box-shadow:none;">
+              <div style="font-size:12.5px;font-weight:700;margin-bottom:5px;line-height:1.35;">Truck fleet — Lion Logistics</div>
+              <div class="mono" style="font-size:14px;font-weight:700;color:var(--brand);margin-bottom:10px;">Rp 3,9 M</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:5px;"><span class="badge badge-danger" style="font-size:10px;">🔥 Hot</span><span class="mono" style="font-size:11px;font-weight:700;color:#B45309;background:#FEF3C7;padding:3px 7px;border-radius:6px;">72</span></div>
+                <div class="avatar-mini" style="background:#8B5CF6;">RP</div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="padding:11px 13px;background:var(--surface);border-radius:9px 9px 0 0;border:1px solid var(--border);border-bottom:none;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--txt-2);letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center;"><span>Negotiation</span><span class="badge badge-neutral">50</span></div>
+          <div style="padding:11px;background:var(--surface);border:1px solid var(--border);border-radius:0 0 9px 9px;display:flex;flex-direction:column;gap:10px;min-height:240px;">
+            <div class="card card-hover" onclick="openDeal('Enterprise Package — Lion Parcel Q4','Rp 480 Jt','Negotiation','Rendy',42)" style="padding:13px;box-shadow:none;border-color:rgba(239,68,68,.45);background:var(--danger-50);">
+              <div style="font-size:12.5px;font-weight:700;margin-bottom:5px;line-height:1.35;">Enterprise — Lion Parcel Q4</div>
+              <div class="mono" style="font-size:14px;font-weight:700;color:var(--brand);margin-bottom:10px;">Rp 480 Jt</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;">
+                <div style="display:flex;align-items:center;gap:5px;"><span class="badge badge-danger" style="font-size:10px;">🔥 Hot</span><span class="mono" style="font-size:11px;font-weight:700;color:#B91C1C;background:#FEE2E2;padding:3px 7px;border-radius:6px;">42 ▼</span></div>
+                <div class="avatar-mini" style="background:#8B5CF6;">RP</div>
+              </div>
+              <div style="margin-top:10px;padding-top:9px;border-top:1px dashed rgba(239,68,68,.4);font-size:11px;color:#B91C1C;display:flex;align-items:center;gap:6px;"><i data-lucide="alert-triangle" style="width:12px;height:12px;"></i><span>Stuck 12 hari · vs Zoho</span></div>
+            </div>
+          </div>
+        </div>
+        <div>
+          <div style="padding:11px 13px;background:var(--success-50);border-radius:9px 9px 0 0;border:1px solid var(--success-100);border-bottom:none;font-size:11px;font-weight:800;text-transform:uppercase;color:var(--success-700);letter-spacing:.6px;display:flex;justify-content:space-between;align-items:center;"><span>✓ Won</span><span class="badge badge-success">32</span></div>
+          <div style="padding:11px;background:var(--surface);border:1px solid var(--success-100);border-radius:0 0 9px 9px;display:flex;flex-direction:column;gap:10px;min-height:240px;">
+            <div class="card card-hover" onclick="openDeal('System upgrade — ABC Corp','Rp 70 Jt','Won','Olivia',100)" style="padding:13px;box-shadow:none;border-color:var(--success-100);background:#F0FDF4;">
+              <div style="font-size:12.5px;font-weight:700;color:var(--success-700);margin-bottom:5px;line-height:1.35;">System upgrade — ABC Corp</div>
+              <div class="mono" style="font-size:14px;font-weight:700;color:var(--success-600);margin-bottom:10px;">Rp 70 Jt ✓</div>
+              <div style="display:flex;align-items:center;justify-content:space-between;"><span class="badge badge-success" style="font-size:10px;">100 · Won</span><div class="avatar-mini" style="background:#10B981;">OL</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GROUPED -->
+    <div id="view-grouped">
+      <table class="table" id="grouped-table">
+        <thead><tr>
+          <th style="width:36px;"><input type="checkbox"></th>
+          <th onclick="sortTable('grouped-table',1)">Deal <i data-lucide="arrow-up-down" style="width:11px;height:11px;display:inline;"></i></th>
+          <th>Stage</th>
+          <th>Owner</th>
+          <th style="text-align:right;">Value</th>
+          <th style="text-align:center;">Health <span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span></th>
+          <th>Priority</th>
+        </tr></thead>
+        <tbody>
+          <tr data-name="Lion Parcel Q4" onclick="openDeal('Enterprise Package — Lion Parcel Q4','Rp 480 Jt','Negotiation','Rendy',42)" style="cursor:pointer;">
+            <td onclick="event.stopPropagation();"><input type="checkbox"></td>
+            <td><div style="font-weight:700;color:var(--txt);margin-bottom:4px;">Enterprise Package — Lion Parcel Q4</div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#B91C1C;"><span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span><i data-lucide="alert-triangle" style="width:12px;height:12px;"></i><span>Zoho quote 30% lebih murah · stalled 12 hari</span></div></td>
+            <td><span class="badge badge-warning">Negotiation</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar-mini" style="background:#8B5CF6;">RP</div>Rendy</div></td>
+            <td class="mono" style="text-align:right;font-weight:700;font-size:14px;color:var(--txt);">Rp 480 Jt</td>
+            <td style="text-align:center;"><span class="badge badge-danger mono" style="font-size:13px;">42 ▼</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-danger" style="font-size:11px;">🔥 Hot</span><span style="font-size:11px;color:#7C3AED;font-weight:700;" title="AI setuju">✓</span></div></td>
+          </tr>
+          <tr data-name="LumiPay" onclick="openDeal('Annual software license — LumiPay','Rp 700 Jt','Proposal','Erika',82)" style="cursor:pointer;">
+            <td onclick="event.stopPropagation();"><input type="checkbox"></td>
+            <td><div style="font-weight:700;color:var(--txt);margin-bottom:4px;">Annual software license — LumiPay</div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--success-600);"><span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span><i data-lucide="trending-up" style="width:12px;height:12px;"></i><span>Momentum tinggi — 87% predicted close by 30 Sep</span></div></td>
+            <td><span class="badge badge-primary">Proposal</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar-mini" style="background:#EC4899;">ER</div>Erika</div></td>
+            <td class="mono" style="text-align:right;font-weight:700;font-size:14px;color:var(--txt);">Rp 700 Jt</td>
+            <td style="text-align:center;"><span class="badge badge-success mono" style="font-size:13px;">82 ▲</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-danger" style="font-size:11px;">🔥 Hot</span><span style="font-size:11px;color:#7C3AED;font-weight:700;" title="AI setuju">✓</span></div></td>
+          </tr>
+          <tr data-name="Lion Logistics" onclick="openDeal('Truck fleet — Lion Logistics','Rp 3,9 M','Proposal','Rendy',72)" style="cursor:pointer;">
+            <td onclick="event.stopPropagation();"><input type="checkbox"></td>
+            <td><div style="font-weight:700;color:var(--txt);margin-bottom:4px;">Truck fleet expansion — Lion Logistics</div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:var(--txt-2);"><span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span><span>Similar to Won deal "ABC Fleet Q2" — apply playbook?</span></div></td>
+            <td><span class="badge badge-primary">Proposal</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar-mini" style="background:#8B5CF6;">RP</div>Rendy</div></td>
+            <td class="mono" style="text-align:right;font-weight:700;font-size:14px;color:var(--txt);">Rp 3,9 M</td>
+            <td style="text-align:center;"><span class="badge badge-warning mono" style="font-size:13px;">72</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-danger" style="font-size:11px;">🔥 Hot</span><span style="font-size:11px;color:#7C3AED;font-weight:700;" title="AI setuju">✓</span></div></td>
+          </tr>
+          <tr data-name="Blue Bird" onclick="openDeal('Solar panel — Blue Bird','Rp 180 Jt','Qualified','Dika',68)" style="cursor:pointer;">
+            <td onclick="event.stopPropagation();"><input type="checkbox"></td>
+            <td><div style="font-weight:700;color:var(--txt);margin-bottom:4px;">Solar panel roll-out — Blue Bird</div>
+              <div style="display:flex;align-items:center;gap:8px;font-size:11px;color:#7C3AED;flex-wrap:wrap;"><span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span><span>Suggest upgrade Priority ke Hot — 3 activity ▲ + budget approved</span><button style="font-size:10.5px;padding:3px 10px;background:#7C3AED;color:white;border:none;border-radius:6px;cursor:pointer;font-weight:700;" onclick="event.stopPropagation();toast('✓ Priority updated to Hot')">Apply</button></div></td>
+            <td><span class="badge badge-neutral">Qualified</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar-mini" style="background:#F59E0B;">DK</div>Dika</div></td>
+            <td class="mono" style="text-align:right;font-weight:700;font-size:14px;color:var(--txt);">Rp 180 Jt</td>
+            <td style="text-align:center;"><span class="badge badge-warning mono" style="font-size:13px;">68</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-warning" style="font-size:11px;">🌡 Warm</span><span style="font-size:11px;color:#7C3AED;font-weight:700;" title="AI suggest Hot">→ Hot</span></div></td>
+          </tr>
+          <tr data-name="Sicepat" onclick="openDeal('Fleet ekspansi — Sicepat','Rp 240 Jt','Lead','Rendy',55)" style="cursor:pointer;">
+            <td onclick="event.stopPropagation();"><input type="checkbox"></td>
+            <td><div style="font-weight:700;color:var(--txt);margin-bottom:4px;">Fleet ekspansi armada — Sicepat</div>
+              <div style="display:flex;align-items:center;gap:6px;font-size:11px;color:#C2410C;"><span class="badge-ai" style="font-size:9px;"><i data-lucide="sparkles" style="width:9px;height:9px;"></i></span><span>Competitor Salesforce mentioned — prepare counter</span></div></td>
+            <td><span class="badge badge-primary">Lead</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><div class="avatar-mini" style="background:#8B5CF6;">RP</div>Rendy</div></td>
+            <td class="mono" style="text-align:right;font-weight:700;font-size:14px;color:var(--txt);">Rp 240 Jt</td>
+            <td style="text-align:center;"><span class="badge mono" style="background:#FFF7ED;color:#C2410C;font-size:13px;">55</span></td>
+            <td><div style="display:flex;align-items:center;gap:8px;"><span class="badge badge-danger" style="font-size:11px;">🔥 Hot</span><span style="font-size:11px;color:#7C3AED;font-weight:700;" title="AI setuju">✓</span></div></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LIST -->
+    <div id="view-list" style="display:none;">
+      <table class="table"><thead><tr><th>Deal</th><th>Stage</th><th>Health</th><th>Owner</th><th style="text-align:right;">Value</th></tr></thead>
+        <tbody>
+          <tr onclick="openDeal('Enterprise — Lion Parcel Q4','Rp 480 Jt','Negotiation','Rendy',42)" style="cursor:pointer;"><td style="font-weight:600;color:var(--txt);">Enterprise Package — Lion Parcel Q4</td><td><span class="badge badge-warning">Negotiation</span></td><td><span class="badge badge-danger mono">42 ▼</span></td><td>Rendy</td><td class="mono" style="text-align:right;font-weight:700;">Rp 480 Jt</td></tr>
+          <tr onclick="openDeal('Annual — LumiPay','Rp 700 Jt','Proposal','Erika',82)" style="cursor:pointer;"><td style="font-weight:600;color:var(--txt);">Annual software license — LumiPay</td><td><span class="badge badge-primary">Proposal</span></td><td><span class="badge badge-success mono">82 ▲</span></td><td>Erika</td><td class="mono" style="text-align:right;font-weight:700;">Rp 700 Jt</td></tr>
+          <tr onclick="openDeal('Truck — Lion Logistics','Rp 3,9 M','Proposal','Rendy',72)" style="cursor:pointer;"><td style="font-weight:600;color:var(--txt);">Truck fleet — Lion Logistics</td><td><span class="badge badge-primary">Proposal</span></td><td><span class="badge badge-warning mono">72</span></td><td>Rendy</td><td class="mono" style="text-align:right;font-weight:700;">Rp 3,9 M</td></tr>
+          <tr onclick="openDeal('Solar — Blue Bird','Rp 180 Jt','Qualified','Dika',68)" style="cursor:pointer;"><td style="font-weight:600;color:var(--txt);">Solar panel — Blue Bird</td><td><span class="badge badge-neutral">Qualified</span></td><td><span class="badge badge-warning mono">68</span></td><td>Dika</td><td class="mono" style="text-align:right;font-weight:700;">Rp 180 Jt</td></tr>
+          <tr onclick="openDeal('Fleet — Sicepat','Rp 240 Jt','Lead','Rendy',55)" style="cursor:pointer;"><td style="font-weight:600;color:var(--txt);">Fleet ekspansi — Sicepat</td><td><span class="badge badge-primary">Lead</span></td><td><span class="badge mono" style="background:#FFF7ED;color:#C2410C;">55</span></td><td>Rendy</td><td class="mono" style="text-align:right;font-weight:700;">Rp 240 Jt</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- FORECAST -->
+    <div id="view-forecast" style="display:none;padding:22px;">
+      <div class="ai-panel" style="margin-bottom:16px;">
+        <div class="ai-label"><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI</span><strong>Predictive Forecast (ML upgrade dari weighted)</strong></div>
+        <p style="font-size:13px;color:var(--txt-2);line-height:1.65;margin:0;">
+          Q4 2026 forecast <strong style="color:var(--txt);">Rp 3,8 – 4,2M</strong> (confidence 78%). Base: 3 enterprise deal close. Downside: <strong style="color:var(--txt);">−Rp 800Jt</strong> jika Lion Parcel slip ke Q1 2027 (40% probability). Upside: <strong style="color:var(--txt);">+Rp 500Jt</strong> jika Novara Tech upgrade enterprise (25%).
+        </p>
+      </div>
+      <div class="grid-4">
+        <div class="card" style="padding:16px;text-align:center;"><div style="font-size:10px;color:var(--txt-3);font-weight:700;text-transform:uppercase;">Commit</div><div class="mono" style="font-size:20px;font-weight:700;margin-top:6px;">Rp 1,2M</div><div style="font-size:10px;color:var(--success-600);margin-top:3px;font-weight:600;">95% confidence</div></div>
+        <div class="card" style="padding:16px;text-align:center;"><div style="font-size:10px;color:var(--txt-3);font-weight:700;text-transform:uppercase;">Best Case</div><div class="mono" style="font-size:20px;font-weight:700;margin-top:6px;">Rp 4,2M</div><div style="font-size:10px;color:var(--brand);margin-top:3px;font-weight:600;">78% AI predicted</div></div>
+        <div class="card" style="padding:16px;text-align:center;"><div style="font-size:10px;color:var(--txt-3);font-weight:700;text-transform:uppercase;">Weighted (Old)</div><div class="mono" style="font-size:20px;font-weight:700;margin-top:6px;">Rp 42,8M</div><div style="font-size:10px;color:var(--txt-3);margin-top:3px;">probability × amount</div></div>
+        <div class="card" style="padding:16px;text-align:center;border-color:rgba(239,68,68,.35);"><div style="font-size:10px;color:var(--txt-3);font-weight:700;text-transform:uppercase;">At Risk</div><div class="mono" style="font-size:20px;font-weight:700;margin-top:6px;color:var(--danger-600);">Rp 480Jt</div><div style="font-size:10px;color:var(--danger-600);margin-top:3px;font-weight:600;">Lion Parcel · 40% slip</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI Legend -->
+  <div style="margin-top:16px;padding:16px 20px;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><span class="badge-ai"><i data-lucide="sparkles" style="width:10px;height:10px;"></i>AI</span><strong style="font-size:11px;color:var(--txt-2);text-transform:uppercase;letter-spacing:.6px;">Legend AI di Pipeline</strong></div>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:14px;font-size:12px;color:var(--txt-2);line-height:1.55;">
+      <div><div style="font-weight:700;color:var(--txt);margin-bottom:3px;">Health Score</div><div>0–100 · activity + sentiment + stage momentum</div></div>
+      <div><div style="font-weight:700;color:var(--txt);margin-bottom:3px;">Priority AI Signal</div><div><span style="color:#7C3AED;font-weight:700;">✓</span> AI setuju manual · <span style="color:#7C3AED;font-weight:700;">→</span> AI suggest berbeda</div></div>
+      <div><div style="font-weight:700;color:var(--txt);margin-bottom:3px;">Competitor Tag</div><div>Auto-detect kompetitor dari notes + email activity</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ ACTIVITIES ============ -->
+<div class="screen active" id="screen-activities">
+  <div class="page-head">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;"><h1>Aktivitas</h1><span class="badge badge-neutral">387 · 7 hari</span><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI ENHANCED</span></div>
+      <div class="sub">Log activity harian · AI sentiment tracking · voice-to-log</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ai" onclick="toast('Voice-to-Log (mobile mockup)')"><i data-lucide="mic" style="width:14px;height:14px;"></i> Voice</button>
+      <button class="btn btn-primary" onclick="toast('Log Activity modal (demo)')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Log Activity</button>
+    </div>
+  </div>
+
+  <div class="card" style="padding:14px 16px;margin-bottom:16px;background:linear-gradient(90deg,rgba(124,58,237,.05),rgba(192,38,211,.05));border-color:rgba(167,139,250,.35);display:flex;align-items:flex-start;gap:12px;">
+    <div style="width:36px;height:36px;border-radius:9px;background:var(--ai-grad);color:white;display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 4px 12px -2px rgba(124,58,237,.5);"><i data-lucide="clipboard-list" style="width:18px;height:18px;"></i></div>
+    <div style="flex:1;">
+      <div style="display:flex;align-items:center;gap:6px;margin-bottom:3px;"><span class="badge-ai">AI</span><span style="font-weight:700;font-size:13px;color:#7C3AED;">Meeting Prep Brief</span><span style="font-size:11px;color:var(--txt-2);">· dalam 30 menit</span></div>
+      <div style="font-size:13px;color:var(--txt-2);">Meeting <strong style="color:var(--txt);">Lion Parcel Q4</strong> · 10:00 · Ibu Sri · 3 talking points siap</div>
+    </div>
+  </div>
+
+  <div class="card" style="overflow:hidden;">
+    <div style="padding:12px 18px;border-bottom:1px solid var(--border);display:flex;gap:8px;align-items:center;flex-wrap:wrap;">
+      <div class="chip active">Semua</div>
+      <div class="chip"><i data-lucide="phone" style="width:11px;height:11px;"></i> Call</div>
+      <div class="chip"><i data-lucide="mail" style="width:11px;height:11px;"></i> Email</div>
+      <div class="chip"><i data-lucide="users" style="width:11px;height:11px;"></i> Meeting</div>
+      <div class="chip" style="background:var(--danger-50);color:var(--danger-700);border-color:var(--danger-100);margin-left:auto;"><i data-lucide="alert-triangle" style="width:11px;height:11px;"></i> Escalation · 2</div>
+    </div>
+    <table class="table">
+      <thead><tr><th style="width:32px;"><input type="checkbox"></th><th>Type</th><th>Subject</th><th>Owner</th><th>Sentiment <span class="badge-ai" style="font-size:9px;">AI</span></th><th>Waktu</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><span class="badge" style="background:var(--danger-50);color:var(--danger-700);"><i data-lucide="alert-octagon" style="width:11px;height:11px;"></i> Email</span></td>
+          <td style="font-weight:600;color:var(--txt);">Response Ibu Sri · concern budget Q4</td>
+          <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar-mini" style="background:#8B5CF6;">RP</div>Rendy</div></td>
+          <td><span class="sentiment-badge sentiment-escalation">🚨 Escalation</span></td>
+          <td style="font-size:11px;color:var(--txt-3);">2 jam lalu</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><span class="badge" style="background:rgba(37,99,235,.1);color:#1D4ED8;"><i data-lucide="phone" style="width:11px;height:11px;"></i> Call</span></td>
+          <td style="font-weight:600;color:var(--txt);">Follow-up initial proposal — LumiPay</td>
+          <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar-mini" style="background:#EC4899;">ER</div>Erika</div></td>
+          <td><span class="sentiment-badge sentiment-positive">😊 Positive</span></td>
+          <td style="font-size:11px;color:var(--txt-3);">5 jam lalu</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><span class="badge" style="background:var(--success-50);color:var(--success-700);"><i data-lucide="users" style="width:11px;height:11px;"></i> Meeting</span></td>
+          <td style="font-weight:600;color:var(--txt);">Kickoff discovery — Novara Tech <span class="badge-ai" style="font-size:9px;margin-left:4px;">SUMMARY</span></td>
+          <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar-mini" style="background:#0EA5E9;">AN</div>Angga</div></td>
+          <td><span class="sentiment-badge sentiment-positive">😊 Positive</span></td>
+          <td style="font-size:11px;color:var(--txt-3);">Kemarin</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ CONTACTS ============ -->
+<div class="screen" id="screen-contacts">
+  <div class="page-head">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;"><h1>Contacts</h1><span class="badge badge-neutral">2,847</span><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI PROSPECT INFO</span></div>
+      <div class="sub">Person-level enrichment · auto-summary role + pain point + preferred channel</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ai" onclick="toast('Enrich semua contact (bulk)...')"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> Enrich Semua</button>
+      <button class="btn btn-primary" onclick="toast('New Contact (demo)')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Contact</button>
+    </div>
+  </div>
+  <div class="card" style="overflow:hidden;">
+    <table class="table">
+      <thead><tr><th style="width:32px;"><input type="checkbox"></th><th>Contact</th><th>Title</th><th style="min-width:290px;">Prospect Info <span class="badge-ai" style="font-size:9px;">AI</span></th><th>Preferred <span class="badge-ai" style="font-size:9px;">AI</span></th></tr></thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div style="display:flex;align-items:center;gap:11px;"><div class="avatar-mini" style="background:#8B5CF6;width:36px;height:36px;font-size:12px;">SH</div><div><div style="font-weight:700;color:var(--txt);">Sri Handayani</div><div style="font-size:11px;color:var(--txt-3);">Lion Parcel · Jakarta</div></div></div></td>
+          <td><span class="badge badge-neutral">Procurement Manager</span></td>
+          <td style="font-size:12px;line-height:1.55;">
+            <strong style="color:var(--txt);">Decision maker</strong> tim procurement, tenure 4+ tahun. Signal budget-sensitive dari 3 email terakhir. Prefer bahasa formal + data-driven pitch. Likely pain: cost optimization Q4 karena end-of-year budget crunch.
+            <button style="font-size:11px;color:var(--brand);font-weight:600;margin-top:4px;display:inline-flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-family:inherit;" onclick="toast('Regenerating...')"><i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Regenerate</button>
+          </td>
+          <td><span class="chip" style="padding:4px 9px;font-size:11px;"><i data-lucide="mail" style="width:11px;height:11px;"></i> Email</span></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div style="display:flex;align-items:center;gap:11px;"><div class="avatar-mini" style="background:#F59E0B;width:36px;height:36px;font-size:12px;">BS</div><div><div style="font-weight:700;color:var(--txt);">Budi Santoso</div><div style="font-size:11px;color:var(--txt-3);">Novara Tech · Jakarta</div></div></div></td>
+          <td><span class="badge badge-primary">CTO</span></td>
+          <td style="font-size:12px;line-height:1.55;">
+            <strong style="color:var(--txt);">Technical decision maker</strong> + co-founder. Aktif share konten AI + productivity di LinkedIn. Prefer bahasa semi-casual, hands-on demo lebih efektif dari slide deck. Likely pain: data migration + vendor lock-in.
+            <button style="font-size:11px;color:var(--brand);font-weight:600;margin-top:4px;display:inline-flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-family:inherit;" onclick="toast('Regenerating...')"><i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Regenerate</button>
+          </td>
+          <td><span class="chip" style="padding:4px 9px;font-size:11px;"><i data-lucide="message-circle" style="width:11px;height:11px;color:#10B981;"></i> WhatsApp</span></td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div style="display:flex;align-items:center;gap:11px;"><div class="avatar-mini" style="background:var(--txt-3);color:var(--txt);width:36px;height:36px;font-size:12px;">TW</div><div><div style="font-weight:700;color:var(--txt);">Tania Wibowo</div><div style="font-size:11px;color:var(--txt-3);">LumiPay · Surabaya</div></div></div></td>
+          <td><span class="badge badge-neutral">Head of Sales</span></td>
+          <td style="color:var(--txt-3);font-style:italic;font-size:12px;">Belum di-enrich · <span style="color:var(--brand);font-weight:600;font-style:normal;cursor:pointer;" onclick="toast('Generating with AI...')">Generate profile</span></td>
+          <td><span style="color:var(--txt-3);font-size:11px;">—</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ COMPANIES ============ -->
+<div class="screen" id="screen-companies">
+  <div class="page-head">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;"><h1>Companies</h1><span class="badge badge-neutral">924</span><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI ENRICHMENT</span></div>
+      <div class="sub">Account profile + industry classification via AI · click Generate untuk demo</div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-ai" onclick="enrichAll()"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> Enrich Semua</button>
+      <button class="btn btn-primary" onclick="toast('New Company (demo)')"><i data-lucide="plus" style="width:14px;height:14px;"></i> Company</button>
+    </div>
+  </div>
+  <div class="card" style="overflow:hidden;">
+    <table class="table">
+      <thead><tr><th style="width:32px;"><input type="checkbox"></th><th>Company</th><th>Industry <span class="badge-ai" style="font-size:9px;">AI</span></th><th style="min-width:290px;">Account Profile <span class="badge-ai" style="font-size:9px;">AI</span></th><th>Owner</th><th style="text-align:right;">Pipeline</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div style="display:flex;align-items:center;gap:11px;"><div style="width:34px;height:34px;border-radius:8px;background:#10B981;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;">NG</div><div><div style="font-weight:700;color:var(--txt);">NexiGreen</div><div style="font-size:11px;color:var(--txt-3);">nexigreen.co.id · Jakarta</div></div></div></td>
+          <td><span class="badge badge-success">Financial Services</span></td>
+          <td style="font-size:12px;line-height:1.55;">Fintech green-financing untuk UMKM ramah lingkungan, fokus solar panel + EV micro-loan.<button style="font-size:11px;color:var(--brand);font-weight:600;margin-top:4px;display:inline-flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-family:inherit;" onclick="toast('Regenerating...')"><i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Regenerate</button></td>
+          <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar-mini" style="background:#8B5CF6;">RP</div>Rendy</div></td>
+          <td class="mono" style="text-align:right;font-weight:700;color:var(--txt);">Rp 480 Jt</td>
+        </tr>
+        <tr id="row-novara">
+          <td><input type="checkbox"></td>
+          <td><div style="display:flex;align-items:center;gap:11px;"><div style="width:34px;height:34px;border-radius:8px;background:var(--txt-3);color:var(--txt);display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;">NT</div><div><div style="font-weight:700;color:var(--txt);">Novara Tech</div><div style="font-size:11px;color:var(--txt-3);">novaratech.com · Jakarta</div></div></div></td>
+          <td id="cell-industry-novara"><button class="btn btn-secondary" style="font-size:11px;padding:4px 10px;border-style:dashed;" onclick="enrichNovara()"><i data-lucide="sparkles" style="width:11px;height:11px;color:#7C3AED;"></i> Generate</button></td>
+          <td id="cell-profile-novara" style="color:var(--txt-3);font-style:italic;font-size:12px;">Belum di-enrich · <span style="color:var(--brand);font-weight:600;font-style:normal;cursor:pointer;" onclick="enrichNovara()">Generate profile ← click ini</span></td>
+          <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar-mini" style="background:#0EA5E9;">AN</div>Angga</div></td>
+          <td class="mono" style="text-align:right;font-weight:700;color:var(--txt);">Rp 120 Jt</td>
+        </tr>
+        <tr>
+          <td><input type="checkbox"></td>
+          <td><div style="display:flex;align-items:center;gap:11px;"><div style="width:34px;height:34px;border-radius:8px;background:#EF4444;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;">PV</div><div><div style="font-weight:700;color:var(--txt);">PuraVibe Essentials</div><div style="font-size:11px;color:var(--txt-3);">puravibe.id · Surabaya</div></div></div></td>
+          <td><span class="badge badge-warning">Manufacturing</span></td>
+          <td style="font-size:12px;line-height:1.55;">Wellness brand plant-based zero-waste, DTC + retail chain distribution (Indomaret, Guardian, Watsons).<button style="font-size:11px;color:var(--brand);font-weight:600;margin-top:4px;display:inline-flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-family:inherit;" onclick="toast('Regenerating...')"><i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Regenerate</button></td>
+          <td><div style="display:flex;align-items:center;gap:6px;"><div class="avatar-mini" style="background:#EC4899;">ER</div>Erika</div></td>
+          <td class="mono" style="text-align:right;font-weight:700;color:var(--txt);">Rp 180 Jt</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ CADENCES ============ -->
+<div class="screen" id="screen-cadences">
+  <div class="page-head">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;"><h1>Sequences / Cadences</h1><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI OPTIMIZED</span></div>
+      <div class="sub">Multi-touch sequences dengan AI template optimization + best-time-send prediction</div>
+    </div>
+    <button class="btn btn-primary" onclick="toast('New Sequence (demo)')"><i data-lucide="plus" style="width:14px;height:14px;"></i> New Sequence</button>
+  </div>
+
+  <div class="ai-panel" style="margin-bottom:16px;">
+    <div class="ai-label"><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI</span><strong>Sequence Optimization Insights (Mingguan)</strong></div>
+    <div class="grid-3">
+      <div style="background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:9px;padding:13px;">
+        <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-bottom:4px;">TEMPLATE PERFORMANCE</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;color:var(--txt);">"Welcome V2" 40% reply vs V1 20%</div>
+        <div style="font-size:11px;color:var(--txt-2);line-height:1.5;">Recommend switch semua enrollment ke V2. Total impacted: 47 leads.</div>
+        <button class="btn btn-primary" style="padding:5px 11px;font-size:11px;margin-top:9px;" onclick="toast('✓ Migrated 47 enrollments')">Apply</button>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:9px;padding:13px;">
+        <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-bottom:4px;">BEST-TIME-SEND</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;color:var(--txt);">Ibu Sri reply Selasa 10–11 pagi</div>
+        <div style="font-size:11px;color:var(--txt-2);line-height:1.5;">Schedule email urgent di window itu. Learned from 8-week reply pattern.</div>
+        <button class="btn btn-primary" style="padding:5px 11px;font-size:11px;margin-top:9px;" onclick="toast('✓ Rescheduled 3 emails')">Reschedule</button>
+      </div>
+      <div style="background:var(--surface);border:1px solid rgba(167,139,250,.35);border-radius:9px;padding:13px;">
+        <div style="font-size:10px;color:var(--txt-3);font-weight:700;margin-bottom:4px;">PERSONALIZATION</div>
+        <div style="font-size:13px;font-weight:700;margin-bottom:6px;color:var(--txt);">Novara CTO post AI CRM di LinkedIn</div>
+        <div style="font-size:11px;color:var(--txt-2);line-height:1.5;">Align pitch ke "AI-first CRM" — buka rate 2× untuk konten align interest post terakhir.</div>
+        <button class="btn btn-ai" style="padding:5px 11px;font-size:11px;margin-top:9px;" onclick="toast('AI drafting personalized email...')">Draft Email</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="overflow:hidden;">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);font-weight:700;font-size:14px;color:var(--txt);">Active Sequences</div>
+    <table class="table">
+      <thead><tr><th>Sequence Name</th><th>Enrolled</th><th>Reply Rate</th><th>Meeting Booked</th><th>Status</th></tr></thead>
+      <tbody>
+        <tr><td style="font-weight:600;color:var(--txt);">🎯 Welcome New Lead V2</td><td class="mono">47 leads</td><td><span class="mono" style="color:var(--success-600);font-weight:700;">40%</span> <span style="font-size:10px;color:var(--success-600);font-weight:700;">▲ 2×</span></td><td class="mono">12</td><td><span class="badge badge-success">Active</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--txt);">Q4 Renewal Push</td><td class="mono">28 customers</td><td class="mono">32%</td><td class="mono">8</td><td><span class="badge badge-success">Active</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--txt);">Reactivation Dormant 60d</td><td class="mono">8 companies</td><td class="mono">18%</td><td class="mono">2</td><td><span class="badge badge-warning">Under-performing</span></td></tr>
+        <tr><td style="font-weight:600;color:var(--txt);opacity:.6;">Welcome New Lead V1 <span class="badge badge-danger" style="margin-left:4px;font-size:10px;">DEPRECATED</span></td><td class="mono">0 (migrated)</td><td class="mono">20%</td><td class="mono">0</td><td><span class="badge badge-neutral">Paused</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ============ REPORTS ============ -->
+<div class="screen" id="screen-reports">
+  <div class="page-head">
+    <div>
+      <div style="display:flex;align-items:center;gap:8px;"><h1>Reports</h1><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI NARRATIVE</span></div>
+      <div class="sub">6 report existing + AI narrative summary + natural language query</div>
+    </div>
+    <button class="btn btn-secondary" onclick="toast('Export All (demo)')"><i data-lucide="download" style="width:14px;height:14px;"></i> Export All</button>
+  </div>
+
+  <div style="background:linear-gradient(135deg,rgba(124,58,237,.06),rgba(192,38,211,.06));border:1px solid rgba(167,139,250,.35);border-radius:13px;padding:16px 18px;margin-bottom:18px;">
+    <div class="ai-label"><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI</span><strong>Ask Anything · Natural Language Query</strong></div>
+    <div style="display:flex;gap:8px;">
+      <input type="text" class="form-input" style="flex:1;" placeholder='Contoh: "deals stuck in negotiation > 14 days, owner Rendy"' id="nl-query">
+      <button class="btn btn-ai" onclick="askAI()"><i data-lucide="sparkles" style="width:14px;height:14px;"></i> Ask AI</button>
+    </div>
+    <div style="display:flex;gap:6px;margin-top:9px;flex-wrap:wrap;">
+      <button class="chip" style="font-size:11px;" onclick="setNLQuery('deals stuck negotiation > 14 hari')">💬 deals stuck &gt; 14 hari</button>
+      <button class="chip" style="font-size:11px;" onclick="setNLQuery('top 5 accounts pipeline this quarter')">📈 top 5 pipeline Q3</button>
+      <button class="chip" style="font-size:11px;" onclick="setNLQuery('deals kena escalation sentiment')">🚨 deals escalation</button>
+      <button class="chip" style="font-size:11px;" onclick="setNLQuery('rep dengan velocity tertinggi bulan ini')">🏆 top velocity rep</button>
+    </div>
+  </div>
+
+  <div class="grid-2">
+    <div class="card" style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div style="font-weight:700;font-size:14px;color:var(--txt);">📊 Deal Aging Report</div><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="toast('Open report')">Open</button></div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:12px;">
+        <div style="text-align:center;background:var(--surface-2);border-radius:8px;padding:9px 4px;"><div style="font-size:9px;color:var(--txt-3);font-weight:700;">LEAD</div><div class="mono" style="font-weight:700;font-size:16px;color:var(--txt);">4.2d</div></div>
+        <div style="text-align:center;background:var(--surface-2);border-radius:8px;padding:9px 4px;"><div style="font-size:9px;color:var(--txt-3);font-weight:700;">QUAL</div><div class="mono" style="font-weight:700;font-size:16px;color:var(--txt);">7.8d</div></div>
+        <div style="text-align:center;background:var(--surface-2);border-radius:8px;padding:9px 4px;"><div style="font-size:9px;color:var(--txt-3);font-weight:700;">PROP</div><div class="mono" style="font-weight:700;font-size:16px;color:var(--txt);">12d</div></div>
+        <div style="text-align:center;background:var(--warning-50);border-radius:8px;padding:9px 4px;"><div style="font-size:9px;color:var(--txt-3);font-weight:700;">NEGO</div><div class="mono" style="font-weight:700;font-size:16px;color:#D97706;">18d ⚠</div></div>
+      </div>
+      <div class="ai-panel" style="padding:11px;margin-top:8px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;"><span class="badge-ai" style="font-size:9px;">AI</span><span style="font-size:10px;color:#7C3AED;font-weight:700;">NARRATIVE</span></div>
+        <p style="font-size:11.5px;color:var(--txt-2);line-height:1.55;margin:0;">Stage <strong style="color:var(--txt);">Negotiation aging 18 hari</strong> (di atas benchmark 14). 3 deal stalled: Lion Parcel, Sicepat, Manufacturing X. Rekomendasi: eskalasi ke senior stakeholder atau pricing revision.</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div style="font-weight:700;font-size:14px;color:var(--txt);">🎯 Lead Conversion Funnel</div><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="toast('Open report')">Open</button></div>
+      <div style="margin-bottom:12px;">
+        <div style="height:26px;background:rgba(37,99,235,.15);border-radius:6px;margin-bottom:4px;padding:0 10px;display:flex;align-items:center;font-size:10.5px;font-weight:700;color:#1D4ED8;">Lead → Qualified: 62%</div>
+        <div style="height:26px;background:rgba(37,99,235,.28);border-radius:6px;margin-bottom:4px;padding:0 10px;display:flex;align-items:center;font-size:10.5px;font-weight:700;color:#1E3A8A;width:76%;">Qualified → Proposal: 48%</div>
+        <div style="height:26px;background:rgba(37,99,235,.5);border-radius:6px;padding:0 10px;display:flex;align-items:center;font-size:10.5px;font-weight:700;color:white;width:56%;">Proposal → Won: 35%</div>
+      </div>
+      <div class="ai-panel" style="padding:11px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;"><span class="badge-ai" style="font-size:9px;">AI</span><span style="font-size:10px;color:#7C3AED;font-weight:700;">INSIGHT</span></div>
+        <p style="font-size:11.5px;color:var(--txt-2);line-height:1.55;margin:0;">Weakest step: <strong style="color:var(--txt);">Proposal → Won (35%)</strong>. Analisa 20 deal: 8 kalah pricing (40%), 5 timing (25%), 4 kompetitor. Rekomendasi training pricing objection handling.</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div style="font-weight:700;font-size:14px;color:var(--txt);">🎖 Quota Attainment</div><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="toast('Open report')">Open</button></div>
+      <div style="display:flex;align-items:center;justify-content:center;padding:8px 0;">
+        <div style="position:relative;width:130px;height:88px;">
+          <svg viewBox="0 0 120 60" style="width:130px;">
+            <path d="M 10 50 A 40 40 0 0 1 110 50" fill="none" stroke="var(--border)" stroke-width="12"/>
+            <path d="M 10 50 A 40 40 0 0 1 92 25" fill="none" stroke="url(#quotaGrad)" stroke-width="12" stroke-linecap="round"/>
+            <defs><linearGradient id="quotaGrad" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#2563EB"/><stop offset="1" stop-color="#10B981"/></linearGradient></defs>
+          </svg>
+          <div style="position:absolute;top:33px;left:50%;transform:translateX(-50%);text-align:center;"><div class="mono" style="font-size:22px;font-weight:700;">72%</div><div style="font-size:9px;color:var(--txt-3);">of Rp 1M</div></div>
+        </div>
+      </div>
+      <div class="ai-panel" style="padding:11px;margin-top:4px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;"><span class="badge-ai" style="font-size:9px;">AI</span><span style="font-size:10px;color:#7C3AED;font-weight:700;">FORECAST</span></div>
+        <p style="font-size:11.5px;color:var(--txt-2);line-height:1.55;margin:0;">Proyeksi: <strong style="color:var(--txt);">hit 108%</strong> jika 2 hot deal (LumiPay + Lion Logistics) close on time. Risk −15% jika Lion Parcel slip ke Oct.</p>
+      </div>
+    </div>
+
+    <div class="card" style="padding:18px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;"><div style="font-weight:700;font-size:14px;color:var(--txt);">📉 Lost Deal Analysis</div><button class="btn btn-secondary" style="padding:4px 10px;font-size:11px;" onclick="toast('Open report')">Open</button></div>
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;">
+        <div style="flex:1;"><div style="font-size:11px;color:var(--txt-2);">Total lost this quarter</div><div class="mono" style="font-size:20px;font-weight:700;color:var(--danger-600);">16 deals · Rp 2.8M</div></div>
+      </div>
+      <div style="display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap;">
+        <span class="badge badge-danger" style="font-size:10px;">Pricing 44%</span>
+        <span class="badge badge-warning" style="font-size:10px;">Timing 25%</span>
+        <span class="badge badge-neutral" style="font-size:10px;">Competitor 20%</span>
+        <span class="badge badge-neutral" style="font-size:10px;">Lainnya 11%</span>
+      </div>
+      <div class="ai-panel" style="padding:11px;">
+        <div style="display:flex;align-items:center;gap:4px;margin-bottom:4px;"><span class="badge-ai" style="font-size:9px;">AI</span><span style="font-size:10px;color:#7C3AED;font-weight:700;">PATTERN</span></div>
+        <p style="font-size:11.5px;color:var(--txt-2);line-height:1.55;margin:0;"><strong style="color:var(--txt);">Top reason: Pricing (44%)</strong>. Kompetitor menang: Zoho (6×), Salesforce (4×), Bitrix24 (3×). Segment paling vulnerable: SMB &lt; Rp 100Jt (10/16). Rekomendasi positioning "value tier" untuk SMB.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ WORKSPACE ============ -->
+<div class="screen" id="screen-workspace">
+  <div class="page-head">
+    <div><div style="display:flex;align-items:center;gap:8px;"><h1>Workspace</h1><span class="badge badge-warning">BETA</span></div>
+    <div class="sub">Dockable panel layout · drag untuk rearrange · layout auto-save</div></div>
+    <button class="btn btn-primary" onclick="toast('Membuka /workspace di real app')"><i data-lucide="external-link" style="width:14px;height:14px;"></i> Buka di App</button>
+  </div>
+  <div style="display:grid;grid-template-columns:2fr 1fr;gap:14px;">
+    <div class="card" style="padding:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><i data-lucide="layout-panel-top" style="width:16px;height:16px;color:var(--txt-3);"></i><span style="font-weight:700;font-size:13px;color:var(--txt);">Layout Presets</span></div>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:10px;">
+        <div class="card card-hover" style="padding:14px;text-align:center;" onclick="toast('Layout: Focus')"><i data-lucide="square" style="width:20px;height:20px;color:var(--brand);margin:0 auto;"></i><div style="font-size:12px;font-weight:600;margin-top:8px;">Focus</div></div>
+        <div class="card card-hover" style="padding:14px;text-align:center;" onclick="toast('Layout: Split')"><i data-lucide="columns-2" style="width:20px;height:20px;color:var(--brand);margin:0 auto;"></i><div style="font-size:12px;font-weight:600;margin-top:8px;">Split View</div></div>
+        <div class="card card-hover" style="padding:14px;text-align:center;" onclick="toast('Layout: Command')"><i data-lucide="layout-grid" style="width:20px;height:20px;color:var(--brand);margin:0 auto;"></i><div style="font-size:12px;font-weight:600;margin-top:8px;">Command Center</div></div>
+      </div>
+    </div>
+    <div class="card" style="padding:18px;">
+      <div style="display:flex;align-items:center;gap:8px;margin-bottom:12px;"><i data-lucide="settings-2" style="width:16px;height:16px;color:var(--txt-3);"></i><span style="font-weight:700;font-size:13px;color:var(--txt);">Auto-save</span></div>
+      <div style="font-size:12px;color:var(--txt-2);line-height:1.6;">Layout tersimpan otomatis per user. Fitur existing V.1 — sudah live di prod.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ============ SETTINGS ============ -->
+<div class="screen" id="screen-settings">
+  <div class="page-head"><div><h1>Settings</h1><div class="sub">Konfigurasi V.2 · AI provider, integrasi & roles</div></div></div>
+  <div class="grid-2">
+    <div class="card" style="padding:18px;"><div style="font-weight:700;color:var(--txt);">🤖 AI Provider</div><div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.6;">GLM-4-Flash (default, FREE) · Claude Haiku (premium tier) — <span class="badge badge-primary" style="font-size:10px;">V.2 baru</span></div>
+      <select class="form-input" style="margin-top:10px;"><option>GLM-4-Flash (FREE)</option><option>Claude Haiku (premium)</option><option>Route otomatis by cost</option></select></div>
+    <div class="card" style="padding:18px;"><div style="font-weight:700;color:var(--txt);">💬 Discord / Slack Integration</div><div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.6;">Chat webhook bidirectional untuk deal event notification — <span class="badge badge-primary" style="font-size:10px;">V.2 baru</span></div>
+      <button class="btn btn-secondary" style="margin-top:10px;" onclick="toast('Connect channel (demo)')">Connect</button></div>
+    <div class="card" style="padding:18px;"><div style="font-weight:700;color:var(--txt);">📋 Template Library</div><div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.6;">Manage 5 industry pipeline templates — <span class="badge badge-primary" style="font-size:10px;">V.2 baru</span></div></div>
+    <div class="card" style="padding:18px;"><div style="font-weight:700;color:var(--txt);">👥 Users & Roles</div><div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.6;">Existing V.1 · 4 active users</div></div>
+  </div>
+</div>
+
+<!-- ============ PARTNERSHIP ============ -->
+<div class="screen" id="screen-partnership">
+  <div class="page-head"><div><h1>Partnership</h1><div class="sub">Partner Program · existing V.1 Sprint H · sudah live</div></div></div>
+  <div class="grid-3">
+    <div class="card" style="padding:18px;"><div style="font-weight:700;color:var(--txt);">🤝 Partner Portal</div><div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.6;">Self-serve onboarding untuk referral partner.</div></div>
+    <div class="card" style="padding:18px;"><div style="font-weight:700;color:var(--txt);">📈 Deal Registration</div><div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.6;">Partner claim + track deal co-sell.</div></div>
+    <div class="card" style="padding:18px;"><div style="font-weight:700;color:var(--txt);">💰 Commission Engine</div><div style="font-size:12px;color:var(--txt-2);margin-top:5px;line-height:1.6;">Tiered payout otomatis per close.</div></div>
+  </div>
+</div>
+
+    </div><!-- /content -->
+  </main>
+</div>
+
+<!-- ============ COMMAND PALETTE ============ -->
+<div class="modal-overlay" id="cmdk-overlay">
+  <div class="modal" style="max-width:620px;padding:0;overflow:hidden;">
+    <div style="padding:14px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;">
+      <i data-lucide="sparkles" style="color:#7C3AED;"></i>
+      <input type="text" id="cmdk-input" class="form-input" style="border:none;background:transparent;font-size:15px;box-shadow:none;" placeholder="Cari, atau tanya AI: 'show deals stuck > 14 days'..." autofocus>
+      <span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:3px 7px;border-radius:5px;font-weight:600;">esc</span>
+    </div>
+    <div style="max-height:400px;overflow-y:auto;padding:8px;">
+      <div style="padding:8px 12px 4px;font-size:10px;font-weight:700;color:var(--txt-3);text-transform:uppercase;letter-spacing:1px;">Suggested actions</div>
+      <div class="cmdk-item selected" onclick="cmdkAction('Deals stuck > 14 hari')"><i data-lucide="alarm-clock"></i><span style="flex:1;font-size:13px;">Deals stuck di stage Negotiation &gt; 14 hari</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">AI</span></div>
+      <div class="cmdk-item" onclick="cmdkAction('Add deal Novara')"><i data-lucide="plus"></i><span style="flex:1;font-size:13px;">Buat deal baru untuk PT Novara Tech</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">AI</span></div>
+      <div class="cmdk-item" onclick="cmdkAction('Top 5 pipeline')"><i data-lucide="trending-up"></i><span style="flex:1;font-size:13px;">Top 5 accounts by pipeline value quarter ini</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">AI</span></div>
+      <div style="padding:8px 12px 4px;font-size:10px;font-weight:700;color:var(--txt-3);text-transform:uppercase;letter-spacing:1px;">Navigation</div>
+      <div class="cmdk-item" onclick="switchScreen('pipeline');closeCmdk();"><i data-lucide="kanban-square"></i><span style="flex:1;font-size:13px;">Pipeline</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">G P</span></div>
+      <div class="cmdk-item" onclick="switchScreen('activities');closeCmdk();"><i data-lucide="calendar-check"></i><span style="flex:1;font-size:13px;">Aktivitas</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">G A</span></div>
+      <div class="cmdk-item" onclick="switchScreen('reports');closeCmdk();"><i data-lucide="bar-chart-3"></i><span style="flex:1;font-size:13px;">Reports</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">G R</span></div>
+      <div style="padding:8px 12px 4px;font-size:10px;font-weight:700;color:var(--txt-3);text-transform:uppercase;letter-spacing:1px;">Quick create</div>
+      <div class="cmdk-item" onclick="toast('New Deal modal');closeCmdk();"><i data-lucide="briefcase"></i><span style="flex:1;font-size:13px;">Deal baru</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">N D</span></div>
+      <div class="cmdk-item" onclick="toast('New Contact modal');closeCmdk();"><i data-lucide="user-plus"></i><span style="flex:1;font-size:13px;">Contact baru</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">N C</span></div>
+      <div class="cmdk-item" onclick="toast('Log Activity modal');closeCmdk();"><i data-lucide="calendar-plus"></i><span style="flex:1;font-size:13px;">Log Activity</span><span style="font-size:10px;color:var(--txt-3);background:var(--surface-2);padding:2px 6px;border-radius:4px;font-weight:600;">N A</span></div>
+    </div>
+    <div style="padding:10px 18px;border-top:1px solid var(--border);background:var(--surface-2);font-size:11px;color:var(--txt-3);display:flex;align-items:center;gap:14px;">
+      <span><kbd style="padding:1px 5px;border:1px solid var(--border-2);border-radius:4px;font-size:9px;background:var(--surface);">↑↓</kbd> navigate</span>
+      <span><kbd style="padding:1px 5px;border:1px solid var(--border-2);border-radius:4px;font-size:9px;background:var(--surface);">↵</kbd> select</span>
+      <span style="margin-left:auto;"><span class="badge-ai" style="font-size:9px;">AI</span> powered by Claude Haiku</span>
+    </div>
+  </div>
+</div>
+
+<!-- ============ DEAL DRAWER ============ -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDeal()"></div>
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div>
+      <div style="font-size:10px;color:var(--txt-3);font-weight:700;letter-spacing:.5px;">DEAL DETAIL</div>
+      <div id="drawer-name" style="font-weight:800;font-size:15px;margin-top:2px;color:var(--txt);">-</div>
+    </div>
+    <button class="icon-btn" onclick="closeDeal()"><i data-lucide="x" style="width:18px;height:18px;"></i></button>
+  </div>
+  <div class="drawer-body">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
+      <div style="background:var(--surface-2);border-radius:9px;padding:12px;"><div style="font-size:10px;color:var(--txt-3);font-weight:700;">VALUE</div><div id="drawer-value" class="mono" style="font-size:19px;font-weight:700;color:var(--txt);">-</div></div>
+      <div style="background:var(--surface-2);border-radius:9px;padding:12px;"><div style="font-size:10px;color:var(--txt-3);font-weight:700;">STAGE</div><div style="margin-top:4px;"><span id="drawer-stage" class="badge badge-primary">-</span></div></div>
+    </div>
+    <div class="ai-panel">
+      <div class="ai-label"><span class="badge-ai"><i data-lucide="sparkles" style="width:9px;height:9px;"></i>AI</span><strong>Deal Insight</strong></div>
+      <div style="margin-bottom:10px;">
+        <div style="font-size:10px;color:var(--txt-2);font-weight:700;margin-bottom:5px;">HEALTH SCORE</div>
+        <div style="display:flex;align-items:center;gap:12px;">
+          <span id="drawer-score" class="mono" style="font-size:26px;font-weight:700;color:var(--txt);">-</span>
+          <svg viewBox="0 0 40 40" style="width:44px;height:44px;transform:rotate(-90deg);">
+            <circle cx="20" cy="20" r="17" fill="none" stroke="var(--border)" stroke-width="4"/>
+            <circle id="drawer-ring" cx="20" cy="20" r="17" fill="none" stroke="#EF4444" stroke-width="4" stroke-linecap="round" stroke-dasharray="107" stroke-dashoffset="107"/>
+          </svg>
+        </div>
+      </div>
+      <div style="background:var(--surface);padding:11px;border-radius:8px;font-size:12px;line-height:1.55;color:var(--txt-2);">
+        <strong style="color:#7C3AED;">Analisis:</strong> Skor turun karena 12 hari tidak ada aktivitas + email terakhir tone negatif. Kompetitor quote 30% lebih murah.
+      </div>
+      <div style="display:flex;gap:8px;margin-top:12px;">
+        <button class="btn btn-ai" style="flex:1;justify-content:center;" onclick="toast('AI drafting email...')"><i data-lucide="pen-tool" style="width:14px;height:14px;"></i> Draft Follow-up</button>
+        <button class="btn btn-secondary" onclick="toast('Log activity')"><i data-lucide="calendar-plus" style="width:14px;height:14px;"></i></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Toast -->
+<div class="toast" id="toast"><i data-lucide="check-circle" style="width:14px;height:14px;"></i> <span id="toast-msg">Action done</span></div>
+
+<script>
+  function refreshIcons() { if (window.lucide) lucide.createIcons(); }
+  document.addEventListener('DOMContentLoaded', refreshIcons);
+
+  let toastTimer = null;
+  function toast(msg) {
+    const t = document.getElementById('toast');
+    document.getElementById('toast-msg').textContent = msg;
+    t.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => t.classList.remove('show'), 2400);
+  }
+
+  // Theme toggle
+  function toggleTheme() {
+    const html = document.documentElement;
+    const dark = html.getAttribute('data-theme') === 'dark';
+    html.setAttribute('data-theme', dark ? 'light' : 'dark');
+    document.getElementById('theme-btn').innerHTML = '<i data-lucide="' + (dark ? 'moon' : 'sun') + '" style="width:16px;height:16px;"></i>';
+    refreshIcons();
+  }
+
+  // Screen switcher
+  function switchScreen(screen) {
+    document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
+    const nav = document.querySelector(`[data-screen="${screen}"]`);
+    if (nav) nav.classList.add('active');
+    document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+    const el = document.getElementById('screen-' + screen);
+    if (el) el.classList.add('active');
+    closeDeal();
+    document.querySelector('.content').scrollTo(0, 0);
+    refreshIcons();
+  }
+  document.querySelectorAll('.nav-item').forEach(item => {
+    item.addEventListener('click', () => switchScreen(item.getAttribute('data-screen')));
+  });
+
+  // Command palette
+  function openCmdk() { document.getElementById('cmdk-overlay').classList.add('open'); setTimeout(() => document.getElementById('cmdk-input').focus(), 100); refreshIcons(); }
+  function closeCmdk() { document.getElementById('cmdk-overlay').classList.remove('open'); }
+  function cmdkAction(query) {
+    toast('🔮 AI parsing: "' + query + '"...');
+    closeCmdk();
+    setTimeout(() => {
+      if (query.includes('stuck')) { switchScreen('pipeline'); toast('✓ Filtered: 17 deals stuck > 14 hari'); }
+      else if (query.includes('Novara')) { toast('✓ New Deal modal opened (mockup)'); }
+      else if (query.includes('Top 5')) { switchScreen('reports'); toast('✓ Report generated'); }
+    }, 900);
+  }
+  document.addEventListener('keydown', (e) => {
+    if ((e.metaKey || e.ctrlKey) && e.key === 'k') { e.preventDefault(); openCmdk(); }
+    if (e.key === 'Escape') { closeCmdk(); closeDeal(); }
+  });
+  document.getElementById('cmdk-overlay').addEventListener('click', e => { if (e.target === e.currentTarget) closeCmdk(); });
+
+  // Natural language query
+  function setNLQuery(q) { document.getElementById('nl-query').value = q; }
+  function askAI() {
+    const q = document.getElementById('nl-query').value || 'query kosong';
+    toast('🔮 AI parsing "' + q + '"...');
+    setTimeout(() => toast('✓ Query executed · 17 results'), 1500);
+  }
+
+  // Deal drawer
+  function openDeal(name, value, stage, owner, score) {
+    document.getElementById('drawer-name').textContent = name;
+    document.getElementById('drawer-value').textContent = value;
+    document.getElementById('drawer-stage').textContent = stage;
+    document.getElementById('drawer-score').textContent = score;
+    const ring = document.getElementById('drawer-ring');
+    const circ = 107; // 2*pi*17
+    const off = circ * (1 - score / 100);
+    ring.setAttribute('stroke-dashoffset', off);
+    ring.setAttribute('stroke', score >= 75 ? '#10B981' : (score >= 50 ? '#F59E0B' : '#EF4444'));
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('drawer-overlay').classList.add('open');
+    refreshIcons();
+  }
+  function closeDeal() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('drawer-overlay').classList.remove('open');
+  }
+
+  // Pipeline view switcher
+  function switchView(view) {
+    document.querySelectorAll('.view-btn').forEach(btn => {
+      const isActive = btn.getAttribute('data-view') === view;
+      btn.style.background = isActive ? 'var(--brand)' : 'var(--surface)';
+      btn.style.color = isActive ? 'white' : 'var(--txt-2)';
+      btn.style.fontWeight = isActive ? '700' : '500';
+      if (isActive) btn.classList.add('active'); else btn.classList.remove('active');
+    });
+    ['kanban','grouped','list','forecast'].forEach(v => {
+      const el = document.getElementById('view-' + v);
+      if (el) el.style.display = (v === view) ? '' : 'none';
+    });
+    refreshIcons();
+    toast('View: ' + view.charAt(0).toUpperCase() + view.slice(1));
+  }
+
+  // Pipeline filter (live)
+  function filterPipeline(q) {
+    q = q.toLowerCase().trim();
+    const rows = document.querySelectorAll('#grouped-table tbody tr');
+    let shown = 0;
+    rows.forEach(r => {
+      const name = (r.getAttribute('data-name') || '').toLowerCase();
+      const match = name.includes(q);
+      r.style.display = match ? '' : 'none';
+      if (match) shown++;
+    });
+    if (q) toast('✓ ' + shown + ' deal cocok');
+  }
+
+  // Sort grouped table
+  function sortTable(id, col) {
+    const table = document.getElementById(id);
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    rows.sort((a, b) => {
+      const av = a.cells[col].textContent.trim();
+      const bv = b.cells[col].textContent.trim();
+      return av.localeCompare(bv, 'id', { numeric: true });
+    });
+    rows.forEach(r => tbody.appendChild(r));
+    toast('✓ Diurutkan');
+  }
+
+  // AI enrich Novara
+  function enrichNovara() {
+    const i = document.getElementById('cell-industry-novara');
+    const p = document.getElementById('cell-profile-novara');
+    i.innerHTML = '<div class="shimmer" style="height:20px; width:120px;"></div>';
+    p.innerHTML = '<div class="shimmer" style="height:14px; width:80%; margin-bottom:6px;"></div><div class="shimmer" style="height:14px; width:60%;"></div>';
+    toast('🔮 Generating with GLM-4-Flash...');
+    setTimeout(() => {
+      i.innerHTML = '<span class="badge badge-primary">Information Tech</span>';
+      p.innerHTML = 'Software development company fokus tools untuk SMB Indonesia. Kompetitor tidak langsung: Talenta + Mekari.<button style="font-size:11px;color:var(--brand);font-weight:600;margin-top:4px;display:inline-flex;align-items:center;gap:3px;background:none;border:none;cursor:pointer;font-family:inherit;" onclick="toast(\'Regenerating...\')"><i data-lucide="refresh-cw" style="width:11px;height:11px;"></i> Regenerate</button>';
+      p.style.color = ''; p.style.fontStyle = '';
+      refreshIcons();
+      toast('✓ Enriched successfully');
+    }, 1800);
+  }
+  function enrichAll() { toast('🔮 Enriching semua company (bulk)...'); setTimeout(() => toast('✓ 8 company baru di-enrich'), 2000); }
+</script>
+</body>
+</html>
