@@ -1,4 +1,4 @@
-import type { ClientProfile, ProfileStatus } from "@prisma/client";
+import type { ClientProfile, ProfileStatus, Industry } from "@prisma/client";
 import { prisma } from "@/lib/db";
 import { chatJsonWithFallback } from "@/ai/llm";
 
@@ -150,4 +150,91 @@ export function coaMappingHint(
     .slice(0, 200)
     .map((k) => `${k} → ${mapping[k].accountCode} ${mapping[k].accountName}${mapping[k].note ? ` (${mapping[k].note})` : ""}`);
   return `MAPPING COA KLIEN (kode klien → akun standar):\n${lines.join("\n")}`;
+}
+
+// ── T1.2 — Enrich master data klien (Lark-inspired) ──────────────────────
+
+const INDUSTRY_ENUM = [
+  "RETAIL", "SERVICES", "FNB", "MANUFACTURING", "CONSTRUCTION", "PROPERTY",
+  "HOSPITALITY", "HEALTHCARE", "EDUCATION", "COOPERATIVE", "NONPROFIT",
+  "AGRICULTURE", "TRANSPORT", "TECHNOLOGY", "FINANCE", "EVENT", "OTHER",
+] as const;
+
+export type ClientEnrichment = {
+  taxId: string | null;
+  industry: string | null;
+  address: string | null;
+  confidence: number;
+};
+
+/** Normalisasi NPWP: ambil 15 digit dari berbagai format (00.000.000.0-000.000). */
+export function normalizeNpwp(raw: string | null | undefined): string | null {
+  if (!raw) return null;
+  const digits = raw.replace(/\D/g, "");
+  if (digits.length !== 15) return null;
+  return `${digits.slice(0, 2)}.${digits.slice(2, 5)}.${digits.slice(5, 8)}.${digits.slice(8, 9)}-${digits.slice(9, 12)}.${digits.slice(12, 15)}`;
+}
+
+const CLIENT_ENRICH_SYSTEM = `Kamu adalah ekstraktor data master akuntansi Indonesia. Dari teks dokumen klien
+(akta, NPWP, faktur, surat), ekstrak data berikut:
+- taxId: NPWP (15 digit; kosongkan jika tidak ditemukan)
+- industry: industri utama, PILIH SATU dari: ${INDUSTRY_ENUM.join(", ")}
+- address: alamat singkat (maks 120 karakter; kosongkan jika tidak ada)
+Balas HANYA JSON: {"taxId":"...","industry":"...","address":"...","confidence":0.0-1.0}`;
+
+/** Parse data master dari teks (LLM). Pure — tidak menyentuh DB. */
+export async function parseClientEnrichment(text: string): Promise<ClientEnrichment> {
+  const { json } = await chatJsonWithFallback({ system: CLIENT_ENRICH_SYSTEM, user: text.slice(0, 8000), timeoutMs: 90_000 });
+  const o = (json ?? {}) as { taxId?: string; industry?: string; address?: string; confidence?: number };
+  const npwp = normalizeNpwp(o.taxId);
+  const industry = INDUSTRY_ENUM.includes((o.industry ?? "").toUpperCase() as (typeof INDUSTRY_ENUM)[number])
+    ? (o.industry ?? "").toUpperCase()
+    : null;
+  return {
+    taxId: npwp,
+    industry,
+    address: typeof o.address === "string" && o.address.trim() ? o.address.trim().slice(0, 120) : null,
+    confidence: typeof o.confidence === "number" ? o.confidence : 0.7,
+  };
+}
+
+/** Enrich master klien dari teks dokumen referensi (referenceText). */
+export async function enrichClientMaster(input: {
+  clientId: string;
+  firmId: string;
+  text?: string;
+}): Promise<{ enrichment: ClientEnrichment; applied: { taxId?: string; industry?: string } }> {
+  let text = input.text;
+  if (!text) {
+    const docs = await prisma.document.findMany({
+      where: { clientId: input.clientId, referenceText: { not: null } },
+      orderBy: { createdAt: "desc" },
+      take: 5,
+      select: { referenceText: true },
+    });
+    text = docs.map((d) => d.referenceText ?? "").join("\n\n");
+  }
+  if (!text || !text.trim()) {
+    throw new Error("Tidak ada teks sumber. Upload dulu dokumen referensi (NPWP/akta) atau kirim teks.");
+  }
+
+  const enrichment = await parseClientEnrichment(text);
+  const current = await prisma.client.findFirst({ where: { id: input.clientId, firmId: input.firmId }, select: { taxId: true, industry: true } });
+  if (!current) throw new Error("Klien tidak ditemukan.");
+
+  const applied: { taxId?: string; industry?: string } = {};
+  const data: { taxId?: string; industry?: Industry } = {};
+  if (!current.taxId && enrichment.taxId) {
+    data.taxId = enrichment.taxId;
+    applied.taxId = enrichment.taxId;
+  }
+  if (current.industry === "OTHER" && enrichment.industry && enrichment.industry !== "OTHER") {
+    data.industry = enrichment.industry as Industry;
+    applied.industry = enrichment.industry;
+  }
+  if (Object.keys(data).length > 0) {
+    await prisma.client.update({ where: { id: input.clientId }, data });
+  }
+
+  return { enrichment, applied };
 }

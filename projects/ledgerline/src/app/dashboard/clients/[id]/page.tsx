@@ -6,6 +6,7 @@ import { UploadForm } from "@/components/documents/upload-form";
 import { ClientProfilePanel } from "@/components/clients/client-profile-panel";
 import { SubledgerView } from "@/components/clients/subledger-view";
 import { PortalLinkButton } from "@/components/clients/portal-link-button";
+import { ClientEnrichButton } from "@/components/clients/client-enrich-button";
 import { formatBytes } from "@/lib/format";
 import Link from "next/link";
 import { Role, type DocumentStatus } from "@prisma/client";
@@ -72,6 +73,7 @@ export default async function ClientDetailPage({
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <ClientEnrichButton clientId={client.id} />
           <PortalLinkButton clientId={client.id} />
           <StatusBadge
             label={client.status === "ACTIVE" ? "Aktif" : "Nonaktif"}
