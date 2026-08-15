@@ -133,3 +133,13 @@ Upload (PDF/JPG/XLSX)
 - API `GET /api/metrics/ocr?days=30` (Admin/Senior) → fallback rate, strong rate, avg duration, biaya, seri per hari.
 - UI: panel "Metrik OCR Hybrid" di halaman Metrik Kualitas (`/dashboard/quality`).
 - E2E `scripts/e2e-ocr-metrics.ts` PASS di prod. Chromium path berubah: chromium-1234 (`chrome-mac-arm64/Google Chrome for Testing`).
+
+## Fix Worker Storage — berbagi file upload antar service (2026-08-15)
+
+- **Masalah**: Railway volume (`web-volume`) hanya bisa di-mount ke SATU service. Upload disimpan di web (filesystem), worker di container terpisah → ENOENT saat baca file.
+- **Solusi**: worker ambil file dari web via HTTP internal ber-token:
+  - `src/app/api/internal/files/[...path]/route.ts` — return file mentah (terenkripsi), cek header `x-internal-token`.
+  - `src/lib/storage.ts` `readStoredFile` — saat `WORKER_MODE=1` fetch dari `WEB_INTERNAL_URL`, lalu dekripsi.
+  - Env baru (web & worker): `STORAGE_INTERNAL_TOKEN`, `WEB_INTERNAL_URL`.
+- **Bug path**: endpoint harus strip prefix `uploads` (cocok dgn `absolutePath`) — awalnya double-prefix `uploads/uploads/...` → 404.
+- **Verifikasi**: upload invoice → PROCESSED, ocrMetric engine=pdf-text, jurnal 1 entry/3 baris DRAFT, estCostUsd=0.

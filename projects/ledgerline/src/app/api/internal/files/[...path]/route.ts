@@ -19,8 +19,9 @@ export async function GET(
   }
 
   const { path: segs } = await params;
-  const abs = path.resolve(UPLOAD_ROOT, ...segs);
-  if (!abs.startsWith(UPLOAD_ROOT + path.sep) && abs !== UPLOAD_ROOT) {
+  const rel = segs.join("/").replace(/^uploads[\\/]/, "");
+  const abs = path.resolve(UPLOAD_ROOT, rel);
+  if (!abs.startsWith(UPLOAD_ROOT + path.sep)) {
     return NextResponse.json({ error: "bad path" }, { status: 400 });
   }
 
