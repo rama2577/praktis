@@ -78,7 +78,7 @@ export function PortalNotifications({ token }: { token: string }) {
             >
               <span className="mr-2 text-xs text-amber-600">{n.typeLabel}</span>
               {n.message}
-              <span className="ml-2 text-xs text-slate-500">
+              <span className="ml-2 text-xs text-slate-600">
                 {new Date(n.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })}
               </span>
             </li>

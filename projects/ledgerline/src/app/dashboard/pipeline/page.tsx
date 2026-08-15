@@ -119,7 +119,7 @@ export default async function PipelinePage() {
         <Card className="p-4">
           <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Antrian Review Pending</h2>
           {tasks.length === 0 ? (
-            <p className="text-sm text-slate-500">Tidak ada task pending.</p>
+            <p className="text-sm text-slate-600">Tidak ada task pending.</p>
           ) : (
             <div className="space-y-2">
               {tasks.map((t) => (
@@ -135,7 +135,7 @@ export default async function PipelinePage() {
         <Card className="p-4">
           <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Dokumen Masuk</h2>
           {documents.length === 0 ? (
-            <p className="text-sm text-slate-500">Belum ada dokumen.</p>
+            <p className="text-sm text-slate-600">Belum ada dokumen.</p>
           ) : (
             <div className="overflow-x-auto">
               <Table>

@@ -57,7 +57,7 @@ export function ClientEnrichButton({ clientId }: { clientId: string }) {
         </span>
       )}
       {result?.enrichment.confidence != null && state === "done" && (
-        <span className="text-[11px] text-slate-500">conf {(result.enrichment.confidence * 100).toFixed(0)}%</span>
+        <span className="text-[11px] text-slate-600">conf {(result.enrichment.confidence * 100).toFixed(0)}%</span>
       )}
     </div>
   );

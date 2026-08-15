@@ -141,7 +141,7 @@ export function ManagementLetterView({
                   <div key={sev} className="flex items-center gap-2 rounded-lg border border-slate-200 bg-slate-100/30 px-3 py-2">
                     <span>{meta.emoji}</span>
                     <span className="text-sm text-slate-700">{count}</span>
-                    <span className="text-xs text-slate-500">{meta.label}</span>
+                    <span className="text-xs text-slate-600">{meta.label}</span>
                   </div>
                 );
               })}
@@ -171,7 +171,7 @@ export function ManagementLetterView({
             <ul className="space-y-1 text-sm text-slate-700">
               {ml.narrative.map((n, i) => <li key={i}>• {n}</li>)}
             </ul>
-            <p className="mt-4 text-xs text-slate-500">
+            <p className="mt-4 text-xs text-slate-600">
               Surat ini dibuat berdasarkan data yang tersedia dalam sistem Praktis per tanggal pelaporan.
               Manajemen bertanggung jawab untuk meninjau, menanggapi, dan menindaklanjuti setiap temuan.
             </p>
@@ -196,14 +196,14 @@ function FindingCard({ finding, expanded, onToggle }: { finding: Finding; expand
       <div className="flex items-start justify-between gap-3 px-4 py-3">
         <div className="min-w-0 flex-1">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-[11px] text-slate-500">{finding.id}</span>
+            <span className="font-mono text-[11px] text-slate-600">{finding.id}</span>
             <Badge label={AREA_META[finding.area] || finding.area} tone="neutral" />
             <Badge label={sev.label} tone={sev.tone} />
             {finding.status === "RESOLVED" && <Badge label="✓ Selesai" tone="positive" />}
           </div>
           <p className="mt-1 text-sm font-medium text-slate-800">{finding.title}</p>
         </div>
-        <span className="text-xs text-slate-500">{expanded ? "▲" : "▼"}</span>
+        <span className="text-xs text-slate-600">{expanded ? "▲" : "▼"}</span>
       </div>
 
       {expanded && (

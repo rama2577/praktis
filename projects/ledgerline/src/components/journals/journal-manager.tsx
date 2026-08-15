@@ -315,7 +315,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
               </div>
               <div className="mt-2 text-xs">
                 {coaLoading ? (
-                  <span className="text-slate-500">Memuat COA klien…</span>
+                  <span className="text-slate-600">Memuat COA klien…</span>
                 ) : coaAccounts.length > 0 ? (
                   <span className="text-slate-600">
                     COA klien terpetakan: <span className="font-semibold text-accent">{coaAccounts.length} akun</span> —
@@ -345,7 +345,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                 <div className="overflow-x-auto rounded-lg border border-line">
                   <table className="w-full min-w-[640px] text-sm">
                     <thead>
-                      <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-500">
+                      <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-600">
                         <th className="px-3 py-2">Kode Akun</th>
                         <th className="px-3 py-2">Nama Akun</th>
                         <th className="px-3 py-2 text-right">Debit</th>
@@ -433,7 +433,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                               type="button"
                               onClick={() => setLines((p) => (p.length > 1 ? p.filter((_, idx) => idx !== i) : p))}
                               disabled={lines.length <= 1}
-                              className="rounded border border-line px-2 py-1 text-xs text-slate-500 transition hover:border-red-500/40 hover:text-red-600 disabled:opacity-40"
+                              className="rounded border border-line px-2 py-1 text-xs text-slate-600 transition hover:border-red-500/40 hover:text-red-600 disabled:opacity-40"
                               aria-label={`Hapus baris ${i + 1}`}
                             >
                               ✕
@@ -474,7 +474,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                 >
                   {busy ? "Menyimpan…" : "Simpan Jurnal"}
                 </button>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-600">
                   Jurnal langsung tercatat (status disetujui) + riwayat aktivitas.
                 </p>
               </div>
@@ -486,11 +486,11 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
       <div>
         <h2 className="mb-3 text-sm font-semibold text-slate-800">Daftar Jurnal Manual & Penyesuaian</h2>
         {loading ? (
-          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-500">
+          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-600">
             Memuat jurnal…
           </div>
         ) : journals.length === 0 ? (
-          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-500">
+          <div className="rounded-xl border border-line bg-card/40 p-8 text-center text-sm text-slate-600">
             Belum ada jurnal manual. Gunakan tombol + Jurnal Manual untuk mencatat jurnal yang
             kurang atau jurnal penyesuaian.
           </div>
@@ -498,7 +498,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
           <div className="overflow-x-auto rounded-xl border border-line bg-card/40">
             <table className="w-full min-w-[720px] text-sm">
               <thead>
-                <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-line bg-white/[0.02] text-left text-xs uppercase tracking-wider text-slate-600">
                   <th className="px-4 py-3">Tanggal</th>
                   <th className="px-4 py-3">Klien</th>
                   <th className="px-4 py-3">Deskripsi</th>

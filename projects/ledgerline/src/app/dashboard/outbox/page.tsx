@@ -117,7 +117,7 @@ export default async function OutboxPage({
             </tbody>
           </Table>
         </div>
-        {events.length === 0 && <p className="py-6 text-center text-sm text-slate-500">Belum ada event outbox.</p>}
+        {events.length === 0 && <p className="py-6 text-center text-sm text-slate-600">Belum ada event outbox.</p>}
       </Card>
     </div>
   );

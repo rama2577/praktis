@@ -33,7 +33,7 @@ export function CardHeader({
     <div className={`mb-4 flex items-start justify-between gap-3 ${className}`}>
       <div>
         <h2 className="font-medium text-slate-900">{title}</h2>
-        {description && <p className="mt-0.5 text-xs text-slate-500">{description}</p>}
+        {description && <p className="mt-0.5 text-xs text-slate-600">{description}</p>}
       </div>
       {action}
     </div>

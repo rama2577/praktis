@@ -44,7 +44,7 @@ export function KnowledgeBrowser({ entries }: { entries: KnowledgeEntry[] }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari referensi (mis. PPN, PSAK 72, piutang)…"
           aria-label="Cari knowledge base"
-          className="w-full max-w-md rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-500 focus:border-yellow-400/50 focus:outline-none"
+          className="w-full max-w-md rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
         />
         <div className="flex flex-wrap gap-2 text-xs">
           {categories.map(([cat, count]) => (
@@ -76,12 +76,12 @@ export function KnowledgeBrowser({ entries }: { entries: KnowledgeEntry[] }) {
                   </span>
                   <div className="min-w-0">
                     <p className="truncate font-mono text-sm text-slate-800">{entry.name}</p>
-                    <p className="text-xs text-slate-500">
+                    <p className="text-xs text-slate-600">
                       {entry.category} · {formatBytes(entry.sizeBytes)}
                     </p>
                   </div>
                 </div>
-                <span aria-hidden className="text-slate-500">
+                <span aria-hidden className="text-slate-600">
                   {open === entry.name ? "▾" : "▸"}
                 </span>
               </button>

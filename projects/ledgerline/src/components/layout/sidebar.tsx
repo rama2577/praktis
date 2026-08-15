@@ -80,7 +80,7 @@ export function Sidebar({
       <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Navigasi utama">
         {NAV_GROUPS.map(({ group, items }) => (
           <div key={group} className="mb-5">
-            <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-500">
+            <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-600">
               {group}
             </p>
             <ul className="flex flex-col gap-0.5">
@@ -91,10 +91,10 @@ export function Sidebar({
                     <li key={item.href}>
                       <span
                         title={`Modul ini hadir di ${item.task}`}
-                        className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-500 opacity-60"
+                        className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-600 opacity-60"
                       >
                         {item.label}
-                        <span className="rounded border border-line px-1.5 py-0.5 text-[10px] text-slate-500">
+                        <span className="rounded border border-line px-1.5 py-0.5 text-[10px] text-slate-600">
                           {item.task}
                         </span>
                       </span>
@@ -125,7 +125,7 @@ export function Sidebar({
 
       {/* ── Security badge strip ── */}
       <div className="border-t border-line px-4 py-2.5">
-        <div className="flex items-center justify-center gap-3 text-[10px] text-slate-500">
+        <div className="flex items-center justify-center gap-3 text-[10px] text-slate-600">
           <span title="Enkripsi AES-256-GCM">🔒 AES-256</span>
           <span className="text-slate-600">·</span>
           <span title="Transport Layer Security">🔐 TLS 1.3</span>

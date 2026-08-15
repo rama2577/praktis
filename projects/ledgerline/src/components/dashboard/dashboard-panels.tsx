@@ -140,7 +140,7 @@ function SlaPanel({ data }: { data: SlaStageSummary[] }) {
           <div key={row.key}>
             <div className="mb-1 flex items-center justify-between text-sm">
               <span className="text-slate-700">
-                {row.label} <span className="text-xs text-slate-500">({row.target})</span>
+                {row.label} <span className="text-xs text-slate-600">({row.target})</span>
               </span>
               <span className="tabular-nums text-xs text-slate-600">
                 {s.pending > 0 ? `${s.pending} antre · ` : ""}
@@ -193,9 +193,9 @@ function ActivityFeed({ data }: { data: ActivityItem[] }) {
             <p className="text-sm text-slate-800">
               <span className="font-medium text-slate-900">{item.userName}</span> {item.label}
             </p>
-            <p className="mt-0.5 font-mono text-[11px] text-slate-500">{item.action}</p>
+            <p className="mt-0.5 font-mono text-[11px] text-slate-600">{item.action}</p>
           </div>
-          <span className="shrink-0 text-xs tabular-nums text-slate-500">
+          <span className="shrink-0 text-xs tabular-nums text-slate-600">
             {formatRelativeTime(item.createdAt)}
           </span>
         </li>
@@ -207,7 +207,7 @@ function ActivityFeed({ data }: { data: ActivityItem[] }) {
 // ── EN-03: Quality Insights ──────────────────────────────────────────────
 
 function QualityTrend({ data }: { data: WeeklyTrendPoint[] }) {
-  if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada data tren.</p>;
+  if (data.length === 0) return <p className="text-xs text-slate-600">Belum ada data tren.</p>;
   return (
     <div>
       <h3 className="mb-2 text-sm font-medium text-slate-800">Tren Mingguan</h3>
@@ -229,14 +229,14 @@ function QualityTrend({ data }: { data: WeeklyTrendPoint[] }) {
 }
 
 function QualityByIndustry({ data }: { data: IndustryBreakdownItem[] }) {
-  if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada data per industri.</p>;
+  if (data.length === 0) return <p className="text-xs text-slate-600">Belum ada data per industri.</p>;
   return (
     <div>
       <h3 className="mb-2 text-sm font-medium text-slate-800">Per Industri</h3>
       <div className="max-h-44 overflow-auto">
         <table className="w-full text-left text-xs">
           <thead>
-            <tr className="border-b border-slate-200 text-slate-500">
+            <tr className="border-b border-slate-200 text-slate-600">
               <th className="py-1.5 pr-2 font-medium">Industri</th>
               <th className="py-1.5 pr-2 font-medium text-right">Jurnal</th>
               <th className="py-1.5 pr-2 font-medium text-right">Exc %</th>
@@ -260,7 +260,7 @@ function QualityByIndustry({ data }: { data: IndustryBreakdownItem[] }) {
 }
 
 function QualityExceptionInsights({ data }: { data: ExceptionInsight[] }) {
-  if (data.length === 0) return <p className="text-xs text-slate-500">Belum ada pengecualian.</p>;
+  if (data.length === 0) return <p className="text-xs text-slate-600">Belum ada pengecualian.</p>;
   return (
     <div>
       <h3 className="mb-2 text-sm font-medium text-slate-800">Alasan Pengecualian</h3>
@@ -272,7 +272,7 @@ function QualityExceptionInsights({ data }: { data: ExceptionInsight[] }) {
           >
             <div className="min-w-0">
               <p className="text-xs text-slate-700 truncate">{d.flag}</p>
-              <p className="text-[10px] text-slate-500">
+              <p className="text-[10px] text-slate-600">
                 terakhir {new Date(d.lastSeen).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
               </p>
             </div>
@@ -350,7 +350,7 @@ export function DashboardPanels({
       <Card>
         <CardHeader
           title="Pipeline Produksi"
-          action={<span className="text-xs text-slate-500">{syncLabel}</span>}
+          action={<span className="text-xs text-slate-600">{syncLabel}</span>}
         />
         <PipelineViz data={data.pipeline} />
         <div className="mt-5">

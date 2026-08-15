@@ -42,15 +42,15 @@ export default async function SettingsPage() {
         <h2 className="mb-3 font-display text-base font-semibold text-slate-900">Profil Firma</h2>
         <dl className="grid gap-2 text-sm sm:grid-cols-2">
           <div>
-            <dt className="text-xs text-slate-500">Nama</dt>
+            <dt className="text-xs text-slate-600">Nama</dt>
             <dd className="text-slate-800">{firm?.name ?? "—"}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-500">Klien aktif</dt>
+            <dt className="text-xs text-slate-600">Klien aktif</dt>
             <dd className="text-slate-800">{clients}</dd>
           </div>
           <div>
-            <dt className="text-xs text-slate-500">Sesi Anda</dt>
+            <dt className="text-xs text-slate-600">Sesi Anda</dt>
             <dd className="text-slate-800">
               {session.user.name} · {session.user.email} ·{" "}
               <Badge label={ROLE_LABEL[session.user.role] ?? session.user.role} tone="accent" />

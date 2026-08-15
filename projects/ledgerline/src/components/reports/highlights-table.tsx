@@ -29,7 +29,7 @@ const fmtR = (n: number | null): string => {
 function Delta({ current, prev }: { current: number; prev?: number }) {
   if (!prev || prev === 0) return null;
   const pct = ((current - prev) / Math.abs(prev)) * 100;
-  const color = pct > 0 ? "text-emerald-600" : pct < 0 ? "text-rose-600" : "text-slate-500";
+  const color = pct > 0 ? "text-emerald-600" : pct < 0 ? "text-rose-600" : "text-slate-600";
   const arrow = pct > 0 ? "↑" : pct < 0 ? "↓" : "→";
   return <span className={`ml-1 text-[10px] ${color}`}>{arrow}{Math.abs(pct).toFixed(0)}%</span>;
 }
@@ -45,7 +45,7 @@ export function HighlightsTable({ data, loading, formatPeriod }: { data: MultiPe
 
   if (!data || data.periods.length === 0) {
     return (
-      <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-500">
+      <div className="rounded-xl border border-slate-200 bg-white p-6 text-center text-sm text-slate-600">
         Belum ada data multi-periode. Upload laporan keuangan historis untuk melihat tren.
       </div>
     );

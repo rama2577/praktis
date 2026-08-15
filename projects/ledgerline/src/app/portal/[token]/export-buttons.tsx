@@ -40,7 +40,7 @@ export function ExportButtons({ token }: { token: string }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold">Ekspor Laporan</h2>
-          <p className="text-xs text-slate-500">Unduh jurnal dalam format PDF, CSV, atau Excel.</p>
+          <p className="text-xs text-slate-600">Unduh jurnal dalam format PDF, CSV, atau Excel.</p>
         </div>
         <div className="flex gap-2">
           {FORMATS.map((f) => (

@@ -69,9 +69,9 @@ export function PortalSnapshots({ token }: { token: string }) {
               <div>
                 <p className="text-sm text-slate-800">
                   {TYPE_LABELS[s.type] ?? s.type} — Periode {s.period}{" "}
-                  <span className="text-xs text-slate-500">v{s.version}</span>
+                  <span className="text-xs text-slate-600">v{s.version}</span>
                 </p>
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-600">
                   {new Date(s.createdAt).toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}
                 </p>
               </div>

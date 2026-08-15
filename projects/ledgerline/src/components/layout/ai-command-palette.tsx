@@ -61,7 +61,7 @@ export function AiCommandPalette() {
       >
         <span aria-hidden>✨</span>
         <span className="hidden sm:inline">Tanya AI</span>
-        <kbd className="rounded border border-line bg-black/5 px-1.5 py-0.5 text-[10px] text-slate-500">⌘K</kbd>
+        <kbd className="rounded border border-line bg-black/5 px-1.5 py-0.5 text-[10px] text-slate-600">⌘K</kbd>
       </button>
 
       {open && (
@@ -74,7 +74,7 @@ export function AiCommandPalette() {
                 value={query}
                 onChange={(e) => setQuery(e.target.value)}
                 placeholder='Contoh: "Berapa klien aktif & transaksi hari ini?"'
-                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-500 focus:outline-none"
+                className="w-full bg-transparent text-sm text-slate-900 placeholder:text-slate-600 focus:outline-none"
                 aria-label="Pertanyaan ke AI"
               />
               <button
@@ -97,7 +97,7 @@ export function AiCommandPalette() {
                   <p className="whitespace-pre-wrap text-slate-800">{result.answer}</p>
                 </div>
               ) : (
-                <p className="text-xs text-slate-500">
+                <p className="text-xs text-slate-600">
                   Tanya apa saja soal data firma, minta draft jurnal, atau minta penjelasan istilah akuntansi/pajak. AI tidak melakukan aksi tulis — Anda tetap yang menyetujui.
                 </p>
               )}

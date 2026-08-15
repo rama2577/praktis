@@ -65,7 +65,7 @@ export function UploadForm({ clientId }: { clientId: string }) {
       aria-label="Form upload dokumen"
     >
       <h3 className="text-sm font-semibold">Upload Dokumen</h3>
-      <p className="mt-0.5 text-xs text-slate-500">
+      <p className="mt-0.5 text-xs text-slate-600">
         Format: PDF, JPG, XLSX — maksimal 10 MB.
       </p>
 
@@ -119,7 +119,7 @@ export function UploadForm({ clientId }: { clientId: string }) {
             <span className="font-medium">
               {fileName ?? "Klik atau seret berkas ke sini"}
             </span>
-            <span className="text-slate-500">PDF · JPG · XLSX (maks 10 MB)</span>
+            <span className="text-slate-600">PDF · JPG · XLSX (maks 10 MB)</span>
           </label>
         </div>
       </div>

@@ -102,8 +102,8 @@ export function RatioCard({ r }: {
         }`}>{r.verdict}</span>
       </div>
       <p className="mt-2 font-mono text-xl text-slate-900">{r.value === null ? "N/A" : r.value.toFixed(2)}</p>
-      <p className="mt-1 text-xs text-slate-500">{r.formula}</p>
-      <p className="text-xs text-slate-500">Benchmark: {r.benchmark}</p>
+      <p className="mt-1 text-xs text-slate-600">{r.formula}</p>
+      <p className="text-xs text-slate-600">Benchmark: {r.benchmark}</p>
       <p className="mt-2 text-xs text-slate-600">{r.note}</p>
     </div>
   );

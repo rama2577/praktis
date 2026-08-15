@@ -115,7 +115,7 @@ export function PortalFinancial({ token }: { token: string }) {
         )}
         {data && <Badge label="🔒 Periode terkunci" tone="accent" />}
       </div>
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-slate-600">
         Laporan disusun dari jurnal yang telah disetujui & dikunci oleh akuntan — identik dengan yang dilihat sisi firma.
       </p>
 
@@ -156,7 +156,7 @@ export function PortalFinancial({ token }: { token: string }) {
                 <tbody>
                   {data.worksheet.lines.map((l) => (
                     <tr key={l.no} className={`border-b border-slate-200/60 ${l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold" : "text-slate-700"}`}>
-                      <td className="px-2 py-1.5 text-slate-500">{l.no}</td>
+                      <td className="px-2 py-1.5 text-slate-600">{l.no}</td>
                       <td className="px-2 py-1.5">{l.accountName}</td>
                       <td className="px-2 py-1.5 text-right font-mono">{l.nsDebit ? rp(l.nsDebit) : ""}</td>
                       <td className="px-2 py-1.5 text-right font-mono">{l.nsCredit ? rp(l.nsCredit) : ""}</td>
@@ -184,7 +184,7 @@ export function PortalFinancial({ token }: { token: string }) {
                 <div key={r.label} className="rounded-lg border border-slate-200 px-3 py-2 text-xs">
                   <span className="text-slate-600">{r.label}: </span>
                   <span className="font-mono text-slate-800">{r.value === null ? "N/A" : r.value.toFixed(2)}</span>
-                  <span className="ml-1 text-slate-500">({r.verdict})</span>
+                  <span className="ml-1 text-slate-600">({r.verdict})</span>
                 </div>
               ))}
             </div>

@@ -30,7 +30,7 @@ export default async function ClientsPage() {
       />
 
       {clients.length === 0 ? (
-        <div className="mt-6 rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-500">
+        <div className="mt-6 rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-600">
           Belum ada klien. Klik <span className="font-medium text-accent">+ Tambah Klien</span>{" "}
           untuk mulai.
         </div>

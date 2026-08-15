@@ -65,7 +65,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
       value: fmt(data.transactionsToday),
       valueTone: "text-slate-900",
       hint: deltaHint,
-      hintTone: delta !== null && delta < 0 ? "text-red-600" : "text-slate-500",
+      hintTone: delta !== null && delta < 0 ? "text-red-600" : "text-slate-600",
       icon: "📄",
     },
     {
@@ -76,7 +76,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
         data.breachesByStage.length === 0
           ? "tidak ada pelanggaran"
           : data.breachesByStage.map((b) => `${STAGE_LABEL[b.stage] ?? b.stage} ${b.count}`).join(" · "),
-      hintTone: data.slaBreachCount > 0 ? "text-red-600/80" : "text-slate-500",
+      hintTone: data.slaBreachCount > 0 ? "text-red-600/80" : "text-slate-600",
       icon: "⏱️",
     },
   ];
@@ -101,7 +101,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
               </span>
             </div>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${card.valueTone}`}>{card.value}</p>
-            <p className={`mt-1 text-xs ${card.hintTone ?? "text-slate-500"}`}>{card.hint}</p>
+            <p className={`mt-1 text-xs ${card.hintTone ?? "text-slate-600"}`}>{card.hint}</p>
           </div>
         );
       })}

@@ -136,7 +136,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
           <h2 className="text-sm font-semibold">Versi Knowledge (terkelola)</h2>
-          <p className="mt-0.5 text-xs text-slate-500">
+          <p className="mt-0.5 text-xs text-slate-600">
             {actives.length} aturan aktif · {drafts.length} draf menunggu persetujuan
           </p>
         </div>
@@ -243,16 +243,16 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
       )}
 
       {loading ? (
-        <div className="py-8 text-center text-sm text-slate-500">Memuat versi knowledge…</div>
+        <div className="py-8 text-center text-sm text-slate-600">Memuat versi knowledge…</div>
       ) : items.length === 0 ? (
-        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-600">
           Belum ada knowledge terkelola — seed otomatis dari file referensi.
         </div>
       ) : (
         <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
-              <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-600">
                 <th className="px-4 py-3 font-medium">Aturan</th>
                 <th className="px-4 py-3 font-medium">Versi</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -269,7 +269,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                 >
                   <td className="px-4 py-3">
                     <div className="font-medium">{item.title}</div>
-                    <div className="text-xs text-slate-500">
+                    <div className="text-xs text-slate-600">
                       {item.category} · {item.name}
                     </div>
                   </td>
@@ -278,7 +278,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                     <StatusBadge label={STATUS_LABELS[item.status]} tone={STATUS_TONE[item.status]} />
                   </td>
                   <td className="px-4 py-3 text-slate-600">{fmtDate(item.effectiveDate)}</td>
-                  <td className="max-w-[220px] truncate px-4 py-3 text-xs text-slate-500">
+                  <td className="max-w-[220px] truncate px-4 py-3 text-xs text-slate-600">
                     {item.changeNote ?? "—"}
                   </td>
                   <td className="px-4 py-3 text-right">

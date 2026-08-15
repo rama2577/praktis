@@ -39,6 +39,72 @@
   --font-mono: var(--font-mono);
 }
 
+/* ── Lark/Feishu palette override (Arco neutral gray + semantic) ──────────── */
+@theme {
+  /* Slate → Arco neutral gray (Lark) */
+  --color-slate-50: #f7f8fa;
+  --color-slate-100: #f2f3f5;
+  --color-slate-200: #e5e6eb;
+  --color-slate-300: #c9cdd4;
+  --color-slate-400: #a9aeb8;
+  --color-slate-500: #8f959e;
+  --color-slate-600: #6b7078;
+  --color-slate-700: #51565d;
+  --color-slate-800: #36393f;
+  --color-slate-900: #1f2329;
+  --color-slate-950: #17191c;
+
+  /* Blue → Lark brand blue #3370ff */
+  --color-blue-50: #e8f1ff;
+  --color-blue-100: #d1e3ff;
+  --color-blue-200: #a3c6ff;
+  --color-blue-300: #74a8ff;
+  --color-blue-400: #4a89ff;
+  --color-blue-500: #3370ff;
+  --color-blue-600: #2b5ce0;
+  --color-blue-700: #2348b8;
+
+  /* Sky → Lark secondary blue #00a1ff */
+  --color-sky-50: #e6f7ff;
+  --color-sky-100: #ccedff;
+  --color-sky-200: #99dbff;
+  --color-sky-300: #66c8ff;
+  --color-sky-400: #33b4ff;
+  --color-sky-500: #00a1ff;
+  --color-sky-600: #0088d4;
+  --color-sky-700: #0070b0;
+
+  /* Emerald → Lark success green #34c724 */
+  --color-emerald-50: #f2fcf2;
+  --color-emerald-100: #dff7df;
+  --color-emerald-200: #b1edb1;
+  --color-emerald-300: #7ee37e;
+  --color-emerald-400: #4fd94f;
+  --color-emerald-500: #34c724;
+  --color-emerald-600: #2ba31e;
+  --color-emerald-700: #238019;
+
+  /* Amber → Lark warning orange #ff8800 */
+  --color-amber-50: #fff5e6;
+  --color-amber-100: #ffeacc;
+  --color-amber-200: #ffd199;
+  --color-amber-300: #ffb866;
+  --color-amber-400: #ff9f33;
+  --color-amber-500: #ff8800;
+  --color-amber-600: #d97400;
+  --color-amber-700: #b05e00;
+
+  /* Red → Lark danger red #f54a45 */
+  --color-red-50: #fff0ef;
+  --color-red-100: #fee0df;
+  --color-red-200: #fcc2c0;
+  --color-red-300: #f99693;
+  --color-red-400: #f76b67;
+  --color-red-500: #f54a45;
+  --color-red-600: #d63a36;
+  --color-red-700: #b02e2b;
+}
+
 /* ── Base + subtle texture ────────────────────────────────────────────── */
 
 body {

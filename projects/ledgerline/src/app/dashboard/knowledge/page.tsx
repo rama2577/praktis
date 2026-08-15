@@ -28,7 +28,7 @@ export default async function KnowledgePage() {
 
       <div className="pt-2">
         <h2 className="text-sm font-semibold">Isi Referensi</h2>
-        <p className="mt-0.5 text-xs text-slate-500">
+        <p className="mt-0.5 text-xs text-slate-600">
           Konten lengkap aturan yang dipakai rule engine & prompt AI.
         </p>
         <div className="mt-3">

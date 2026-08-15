@@ -175,7 +175,7 @@ export function Spt1771View({
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
               <div>
                 <h3 className="text-sm font-medium text-slate-900">🧾 Lampiran I — Rekonsiliasi Fiskal ({data.year})</h3>
-                <p className="text-xs text-slate-500">Koreksi otomatis dari heuristik; angka koreksi bisa diedit langsung.</p>
+                <p className="text-xs text-slate-600">Koreksi otomatis dari heuristik; angka koreksi bisa diedit langsung.</p>
               </div>
               <button onClick={exportRekonsiliasi} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-yellow-400/10">
                 ⬇ Export CSV Lampiran I
@@ -183,7 +183,7 @@ export function Spt1771View({
             </div>
             <div className="overflow-x-auto">
               <table className="w-full text-right text-xs">
-                <thead className="bg-slate-50 text-slate-500">
+                <thead className="bg-slate-50 text-slate-600">
                   <tr>
                     <th className="px-3 py-2 text-left font-medium">Kode</th>
                     <th className="px-3 py-2 text-left font-medium">Nama Akun</th>
@@ -196,7 +196,7 @@ export function Spt1771View({
                 <tbody>
                   {rows.map((r, i) => (
                     <tr key={`${r.kode}-${i}`} className={`border-t border-slate-200/60 ${r.isBeban ? "text-slate-700" : "text-slate-800"}`}>
-                      <td className="px-3 py-1.5 font-mono text-slate-500">{r.kode}</td>
+                      <td className="px-3 py-1.5 font-mono text-slate-600">{r.kode}</td>
                       <td className="px-3 py-1.5 text-left">{r.nama}</td>
                       <td className="px-2 py-1.5 font-mono">{fmt(r.komersial)}</td>
                       <td className="px-2 py-1.5">
@@ -250,11 +250,11 @@ export function Spt1771View({
               </button>
             </div>
             {data.penyusutan.length === 0 ? (
-              <p className="px-4 py-3 text-sm text-slate-500">Tidak ada jadwal penyusutan pada tahun berjalan.</p>
+              <p className="px-4 py-3 text-sm text-slate-600">Tidak ada jadwal penyusutan pada tahun berjalan.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-right text-xs">
-                  <thead className="bg-slate-50 text-slate-500">
+                  <thead className="bg-slate-50 text-slate-600">
                     <tr>
                       <th className="px-3 py-2 text-left font-medium">Kode</th>
                       <th className="px-3 py-2 text-left font-medium">Aset</th>
@@ -267,12 +267,12 @@ export function Spt1771View({
                   <tbody>
                     {data.penyusutan.map((r) => (
                       <tr key={r.assetCode} className="border-t border-slate-200/60 text-slate-700">
-                        <td className="px-3 py-1.5 font-mono text-slate-500">{r.assetCode}</td>
+                        <td className="px-3 py-1.5 font-mono text-slate-600">{r.assetCode}</td>
                         <td className="px-3 py-1.5 text-left">{r.assetName}</td>
                         <td className="px-2 py-1.5">{r.kelompok}</td>
                         <td className="px-2 py-1.5 font-mono">{fmt(r.komersial)}</td>
                         <td className="px-2 py-1.5 font-mono">{fmt(r.fiskal)}</td>
-                        <td className={`px-3 py-1.5 font-mono ${r.koreksi !== 0 ? "text-rose-600" : "text-slate-500"}`}>{fmt(r.koreksi)}</td>
+                        <td className={`px-3 py-1.5 font-mono ${r.koreksi !== 0 ? "text-rose-600" : "text-slate-600"}`}>{fmt(r.koreksi)}</td>
                       </tr>
                     ))}
                   </tbody>
@@ -299,7 +299,7 @@ export function Spt1771View({
                 ["PPh Kurang/(Lebih) Bayar", data.pphKurangBayar],
               ] as [string, number][]).map(([label, v]) => (
                 <div key={label} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2">
-                  <p className="text-[11px] text-slate-500">{label}</p>
+                  <p className="text-[11px] text-slate-600">{label}</p>
                   <p className={`font-mono text-base font-semibold ${label.includes("Kurang") && data.pphKurangBayar > 0 ? "text-rose-600" : "text-slate-900"}`}>
                     {typeof v === "number" ? fmt(v) : v}
                   </p>
@@ -308,12 +308,12 @@ export function Spt1771View({
             </div>
             <div className="px-4 pb-3">
               {data.catatan.map((c, i) => (
-                <p key={i} className="text-[11px] text-slate-500">• {c}</p>
+                <p key={i} className="text-[11px] text-slate-600">• {c}</p>
               ))}
             </div>
           </div>
 
-          <p className="text-[11px] text-slate-500">
+          <p className="text-[11px] text-slate-600">
             💡 Merujuk KB <em>mapping-laporan-spt-1771</em>: Lampiran IV (kompensasi kerugian) & V (struktur permodalan) menyusul.
             Tarif: UU HPP No. 7/2021 — 22% (2020–2022), 20% (2023+). Fasilitas Pasal 31E & PP 23/2018 tersedia di dropdown.
           </p>

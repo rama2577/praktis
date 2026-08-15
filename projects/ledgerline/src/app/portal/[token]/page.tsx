@@ -117,7 +117,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
               Upload
             </button>
           </div>
-          <p className="mt-3 text-[11px] text-slate-500">
+          <p className="mt-3 text-[11px] text-slate-600">
             Format didukung: PDF, JPG/JPEG, XLSX · Maksimal satu berkas per upload · Data dienkripsi
             (AES-256-GCM) &amp; dikirim lewat koneksi aman.
           </p>
@@ -162,7 +162,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
       <div className="mt-6">
         <h2 className="mb-3 text-sm font-semibold">Status Dokumen — Sampai Mana?</h2>
         {timeline.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-500">
+          <div className="rounded-xl border border-dashed border-slate-200 p-6 text-center text-sm text-slate-600">
             Belum ada dokumen untuk dilacak.
           </div>
         ) : (
@@ -171,7 +171,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
               <div key={item.id} className="rounded-xl border border-slate-200 bg-white p-4">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <p className="text-sm font-medium text-slate-800">{item.fileName}</p>
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-slate-600">
                     {new Date(item.createdAt).toLocaleDateString("id-ID", {
                       day: "numeric",
                       month: "short",
@@ -189,7 +189,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
                             ? i === item.stepIndex
                               ? "bg-yellow-400 text-slate-950"
                               : "bg-emerald-500/20 text-emerald-600"
-                            : "bg-slate-100 text-slate-500"
+                            : "bg-slate-100 text-slate-600"
                         }`}
                       >
                         {STEP_LABELS[i]}
@@ -214,14 +214,14 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
       <div className="mt-6">
         <h2 className="mb-3 text-sm font-semibold">Dokumen Anda</h2>
         {documents.length === 0 ? (
-          <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-500">
+          <div className="rounded-xl border border-dashed border-slate-200 p-8 text-center text-sm text-slate-600">
             Belum ada dokumen. Upload dokumen pertama Anda di atas.
           </div>
         ) : (
           <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white">
             <table className="w-full min-w-[500px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-600">
                   <th className="px-4 py-3 font-medium">Berkas</th>
                   <th className="px-4 py-3 font-medium">Jenis</th>
                   <th className="px-4 py-3 font-medium">Status</th>

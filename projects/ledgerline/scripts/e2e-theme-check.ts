@@ -10,7 +10,8 @@ async function main() {
   await page.waitForSelector("text=Hari Ini", { timeout: 20000 }).catch(()=>{});
   const styles = await page.evaluate(() => {
     const body = getComputedStyle(document.body);
-    const card = document.querySelector(".card-hover") ? getComputedStyle(document.querySelector(".card-hover")) : null;
+    const cardEl = document.querySelector(".card-hover");
+    const card = cardEl ? getComputedStyle(cardEl) : null;
     const root = getComputedStyle(document.documentElement);
     return {
       bodyBg: body.backgroundColor,

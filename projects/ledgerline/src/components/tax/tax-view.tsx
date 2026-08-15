@@ -183,17 +183,17 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
           <div className="rounded-xl border border-slate-200 bg-white">
             <div className="border-b border-slate-200 px-4 py-3">
               <h2 className="text-sm font-semibold">Review Baris Pajak</h2>
-              <p className="mt-0.5 text-xs text-slate-500">
+              <p className="mt-0.5 text-xs text-slate-600">
                 {summary.lineCount} baris akun pajak untuk {summary.period} — kode diinferensikan otomatis, bisa di-override per baris.
               </p>
             </div>
             {allRows.length === 0 ? (
-              <p className="p-6 text-center text-sm text-slate-500">Tidak ada baris akun pajak pada periode ini.</p>
+              <p className="p-6 text-center text-sm text-slate-600">Tidak ada baris akun pajak pada periode ini.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[860px] text-left text-sm">
                   <thead>
-                    <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+                    <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-600">
                       <th className="px-4 py-3 font-medium">Tanggal</th>
                       <th className="px-4 py-3 font-medium">Deskripsi</th>
                       <th className="px-4 py-3 font-medium">Akun</th>
@@ -215,7 +215,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                           <td className="px-4 py-2.5 text-slate-700">{l.journalDescription ?? "—"}</td>
                           <td className="px-4 py-2.5">
                             <span className="font-mono text-xs text-slate-600">{l.accountCode}</span>{" "}
-                            <span className="text-xs text-slate-500">{l.accountName}</span>
+                            <span className="text-xs text-slate-600">{l.accountName}</span>
                           </td>
                           <td className="px-4 py-2.5 text-right tabular-nums text-slate-800">
                             {formatCurrencyRp(l.credit > 0 ? l.credit : l.debit)}
@@ -273,9 +273,9 @@ function SummaryCard({ label, value, sub, tone = "default" }: { label: string; v
   const valueTone = tone === "emerald" ? "text-emerald-600" : tone === "amber" ? "text-amber-600" : tone === "slate" ? "text-slate-700" : "text-amber-600";
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
-      <p className="text-xs uppercase tracking-wider text-slate-500">{label}</p>
+      <p className="text-xs uppercase tracking-wider text-slate-600">{label}</p>
       <p className={`mt-1 text-xl font-semibold tabular-nums ${valueTone}`}>{formatCurrencyRp(value)}</p>
-      <p className="mt-0.5 text-xs text-slate-500">{sub}</p>
+      <p className="mt-0.5 text-xs text-slate-600">{sub}</p>
     </div>
   );
 }

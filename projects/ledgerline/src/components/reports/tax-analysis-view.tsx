@@ -35,24 +35,24 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
               <p className="mt-1 font-mono text-2xl text-amber-600">
                 {data.taxRatio.value === null ? "N/A" : `${(data.taxRatio.value * 100).toFixed(1)}%`}
               </p>
-              <p className="mt-1 text-xs text-slate-500">{data.taxRatio.formula}</p>
+              <p className="mt-1 text-xs text-slate-600">{data.taxRatio.formula}</p>
             </Card>
             <Card className="p-4">
               <p className="text-xs text-slate-600">PPN Kurang Bayar</p>
               <p className="mt-1 font-mono text-2xl text-slate-900">{rp(Math.max(data.ppn.kurangBayar, 0))}</p>
-              <p className="mt-1 text-xs text-slate-500">{data.ppn.note}</p>
+              <p className="mt-1 text-xs text-slate-600">{data.ppn.note}</p>
             </Card>
             <Card className="p-4">
               <p className="text-xs text-slate-600">Total PPh</p>
               <p className="mt-1 font-mono text-2xl text-slate-900">{rp(data.pph.totalPPh)}</p>
-              <p className="mt-1 text-xs text-slate-500">{data.pph.note}</p>
+              <p className="mt-1 text-xs text-slate-600">{data.pph.note}</p>
             </Card>
             <Card className="p-4">
               <p className="text-xs text-slate-600">Effective Tax Rate</p>
               <p className="mt-1 font-mono text-2xl text-slate-900">
                 {data.pph.effectiveTaxRate === null ? "N/A" : `${(data.pph.effectiveTaxRate * 100).toFixed(1)}%`}
               </p>
-              <p className="mt-1 text-xs text-slate-500">Total PPh ÷ laba</p>
+              <p className="mt-1 text-xs text-slate-600">Total PPh ÷ laba</p>
             </Card>
           </div>
           <Card className="p-5">
@@ -71,7 +71,7 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
                     <tr key={b.label} className="border-b border-slate-200/60 text-slate-700">
                       <td className="px-3 py-2">{b.label}</td>
                       <td className="px-3 py-2 text-right font-mono">{rp(b.value)}</td>
-                      <td className="px-3 py-2 text-xs text-slate-500">{b.note}</td>
+                      <td className="px-3 py-2 text-xs text-slate-600">{b.note}</td>
                     </tr>
                   ))}
                 </tbody>

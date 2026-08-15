@@ -16,7 +16,7 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
     <section className="rounded-xl border border-trust/20 bg-card p-5">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold tracking-tight text-slate-900">Hari Ini</h2>
-        <span className="text-[11px] text-slate-500">inbox cerdas · otomatis</span>
+        <span className="text-[11px] text-slate-600">inbox cerdas · otomatis</span>
       </div>
 
       <p className="mt-2 text-sm text-slate-700">{brief.summary}</p>
@@ -55,7 +55,7 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
 
       {brief.deadlines.length > 0 && (
         <div className="mt-3">
-          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-slate-500">Deadline terdekat</p>
+          <p className="mb-1.5 text-[11px] font-medium uppercase tracking-wider text-slate-600">Deadline terdekat</p>
           <div className="space-y-1">
             {brief.deadlines.slice(0, 5).map((d, i) => (
               <div key={i} className="flex items-center justify-between rounded-lg border border-line bg-white px-3 py-1.5 text-xs">
@@ -72,7 +72,7 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
       )}
 
       {brief.priorityQueue.length === 0 ? (
-        <p className="mt-4 rounded-lg border border-dashed border-slate-200 bg-white px-4 py-5 text-center text-sm text-slate-500">
+        <p className="mt-4 rounded-lg border border-dashed border-slate-200 bg-white px-4 py-5 text-center text-sm text-slate-600">
           Tidak ada jurnal menunggu review. 👍
         </p>
       ) : (

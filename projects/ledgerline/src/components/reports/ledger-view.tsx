@@ -268,7 +268,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                     </TD>
                     <TD>
                       {e.description ?? "—"}
-                      <span className="ml-2 text-xs text-slate-500">{e.reference}</span>
+                      <span className="ml-2 text-xs text-slate-600">{e.reference}</span>
                     </TD>
                     <TD>
                       <Badge label={TYPE_LABELS[e.journalType] ?? e.journalType} tone="neutral" />
@@ -363,7 +363,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                     type="button"
                     onClick={() => removeLine(i)}
                     disabled={editLines.length <= 2}
-                    className="col-span-2 rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-500 hover:text-red-600 disabled:opacity-30"
+                    className="col-span-2 rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-600 hover:text-red-600 disabled:opacity-30"
                   >
                     Hapus
                   </button>

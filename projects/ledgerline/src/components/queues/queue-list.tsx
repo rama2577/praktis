@@ -282,7 +282,7 @@ export function QueueList() {
             ✕ Hapus filter
           </button>
         )}
-        <p className="mt-4 text-xs text-slate-500">
+        <p className="mt-4 text-xs text-slate-600">
           💡 Batch approve: centang task dengan confidence ≥ {Math.round(BATCH_CONFIDENCE_MIN * 100)}%, lalu setujui
           sekaligus — tetap lewat state machine & tercatat di SLA/aktivitas.
         </p>
@@ -326,7 +326,7 @@ export function QueueList() {
                       />
                     </div>
                     <p className="mt-1 text-sm text-slate-700">{task.journalEntry.description}</p>
-                    <p className="mt-0.5 text-xs text-slate-500">
+                    <p className="mt-0.5 text-xs text-slate-600">
                       {task.journalEntry.document?.fileName ?? "Tanpa dokumen"} · Tahap: {stageLabel(stage)}
                     </p>
                   </div>
@@ -407,7 +407,7 @@ export function QueueList() {
 
                     {/* EN-06: Shortcut bar */}
                     <div className="flex items-center gap-3 rounded-lg border border-slate-200/50 bg-slate-100 px-3 py-1.5 text-[11px] text-slate-600">
-                      <span className="text-slate-500">⌨️</span>
+                      <span className="text-slate-600">⌨️</span>
                       <span><kbd className="rounded bg-slate-200 px-1 py-0.5 text-[10px] text-slate-700">A</kbd> Setujui</span>
                       <span className="text-slate-600">·</span>
                       <span><kbd className="rounded bg-slate-200 px-1 py-0.5 text-[10px] text-slate-700">R</kbd> Kembalikan</span>
@@ -424,7 +424,7 @@ export function QueueList() {
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="Catatan review (wajib untuk Tolak)…"
                         rows={2}
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-500 focus:border-yellow-400/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-600 focus:border-yellow-400/50 focus:outline-none"
                       />
                       <div className="flex flex-wrap gap-2">
                         <button

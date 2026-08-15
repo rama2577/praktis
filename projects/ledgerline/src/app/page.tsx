@@ -57,7 +57,7 @@ export default function Home() {
           >
             Masuk ke Dashboard
           </button>
-          <p className="text-xs leading-relaxed text-slate-500">
+          <p className="text-xs leading-relaxed text-slate-600">
             Autentikasi hadir di Task 3 (login per-reviewer + akun admin dev).
             <br />
             Sementara itu, verifikasi dengan{" "}

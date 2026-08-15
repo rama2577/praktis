@@ -290,7 +290,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                   <span className="rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-600">
                     💰 {new Intl.NumberFormat("id-ID", {style:"currency",currency:"IDR",maximumFractionDigits:0}).format(worksheet.labaBersih)}
                   </span>
-                  <span className="text-xs text-slate-500">{worksheet.lines.length} akun</span>
+                  <span className="text-xs text-slate-600">{worksheet.lines.length} akun</span>
                 </div>
               </div>
               <div className="overflow-x-auto">
@@ -310,7 +310,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                       <th className="px-2 py-1.5 text-center" colSpan={2}>vs Bln Lalu</th>
                     </tr>
                     {/* Row 2: D/K sub-headers */}
-                    <tr className="border-b border-slate-200 text-[10px] text-slate-500">
+                    <tr className="border-b border-slate-200 text-[10px] text-slate-600">
                       <th className="px-2 py-1 text-right">D</th>
                       <th className="px-2 py-1 text-right">K</th>
                       <th className="px-2 py-1 text-right bg-slate-100/20">D</th>
@@ -336,8 +336,8 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                             isLaba ? "bg-yellow-400/10 font-semibold text-slate-900" : "text-slate-700"
                           } ${l.isAdjusting ? "ring-1 ring-inset ring-amber-400/30" : ""}`}
                         >
-                          <td className={`sticky left-0 z-10 px-2 py-1.5 text-slate-500 ${rowBg}`}>{l.no}</td>
-                          <td className={`sticky left-[40px] z-10 px-2 py-1.5 font-mono text-[11px] text-slate-500 ${rowBg}`}>{l.accountCode}</td>
+                          <td className={`sticky left-0 z-10 px-2 py-1.5 text-slate-600 ${rowBg}`}>{l.no}</td>
+                          <td className={`sticky left-[40px] z-10 px-2 py-1.5 font-mono text-[11px] text-slate-600 ${rowBg}`}>{l.accountCode}</td>
                           <td className="px-2 py-1.5">
                             {l.accountCode ? (
                               <a
@@ -357,12 +357,12 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.lrCredit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.neracaDebit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.neracaCredit)}</td>
-                          <td className="px-2 py-1.5 text-right font-mono text-[11px] text-slate-500">
+                          <td className="px-2 py-1.5 text-right font-mono text-[11px] text-slate-600">
                             {l.prevBalance !== null ? formatCurrencyRp(l.prevBalance) : ""}
                           </td>
                           <td className={`px-2 py-1.5 text-right font-mono text-[11px] ${
                             l.variancePct !== null
-                              ? l.variancePct > 20 ? "text-emerald-600" : l.variancePct < -20 ? "text-rose-600" : "text-slate-500"
+                              ? l.variancePct > 20 ? "text-emerald-600" : l.variancePct < -20 ? "text-rose-600" : "text-slate-600"
                               : ""
                           }`}>
                             {l.variancePct !== null ? `${l.variancePct >= 0 ? "↑" : "↓"}${Math.abs(l.variancePct).toFixed(0)}%` : ""}

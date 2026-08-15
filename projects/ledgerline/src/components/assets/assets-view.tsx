@@ -295,17 +295,17 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
       <div className="rounded-xl border border-slate-200 bg-white">
         <div className="border-b border-slate-200 px-4 py-3">
           <h2 className="text-sm font-semibold">Register Aset Tetap</h2>
-          <p className="mt-0.5 text-xs text-slate-500">Penyusutan komersial (PSAK 216) & fiskal (Pasal 11) dihitung otomatis per periode.</p>
+          <p className="mt-0.5 text-xs text-slate-600">Penyusutan komersial (PSAK 216) & fiskal (Pasal 11) dihitung otomatis per periode.</p>
         </div>
         {loading ? (
           <p className="p-4 text-sm text-slate-600">Memuat aset…</p>
         ) : assets.length === 0 ? (
-          <p className="p-6 text-center text-sm text-slate-500">Belum ada aset terdaftar untuk klien ini.</p>
+          <p className="p-6 text-center text-sm text-slate-600">Belum ada aset terdaftar untuk klien ini.</p>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-600">
                   <th className="px-4 py-3 font-medium">Aset</th>
                   <th className="px-4 py-3 font-medium">Kategori</th>
                   <th className="px-4 py-3 font-medium">Perolehan</th>
@@ -337,7 +337,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
         <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
           <div>
             <h2 className="text-sm font-semibold">Rekonsiliasi Fiskal Aset</h2>
-            <p className="mt-0.5 text-xs text-slate-500">Beda temporer nilai buku komersial vs fiskal (dasar pajak tangguhan).</p>
+            <p className="mt-0.5 text-xs text-slate-600">Beda temporer nilai buku komersial vs fiskal (dasar pajak tangguhan).</p>
           </div>
           <div className="flex items-center gap-2">
             {monthInput(reconPeriod, setReconPeriod)}
@@ -356,7 +356,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
           <div className="overflow-x-auto">
             <table className="w-full min-w-[760px] text-left text-sm">
               <thead>
-                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-slate-200 text-xs uppercase tracking-wider text-slate-600">
                   <th className="px-4 py-3 font-medium">Aset</th>
                   <th className="px-4 py-3 font-medium">Fiskal</th>
                   <th className="px-4 py-3 text-right font-medium">Biaya</th>
@@ -373,7 +373,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
                     <td className="px-4 py-3 text-right tabular-nums text-slate-700">{formatCurrencyRp(r.purchaseCost)}</td>
                     <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(r.bookValueCommercial)}</td>
                     <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(r.bookValueFiscal)}</td>
-                    <td className={`px-4 py-3 text-right tabular-nums ${r.temporaryDifference === 0 ? "text-slate-500" : "text-amber-600"}`}>
+                    <td className={`px-4 py-3 text-right tabular-nums ${r.temporaryDifference === 0 ? "text-slate-600" : "text-amber-600"}`}>
                       {formatCurrencyRp(r.temporaryDifference)}
                     </td>
                   </tr>
@@ -390,7 +390,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
             </table>
           </div>
         ) : (
-          <p className="p-4 text-sm text-slate-500">Pilih periode lalu klik &quot;Muat&quot; untuk melihat rekonsiliasi.</p>
+          <p className="p-4 text-sm text-slate-600">Pilih periode lalu klik &quot;Muat&quot; untuk melihat rekonsiliasi.</p>
         )}
       </div>
     </div>
@@ -434,14 +434,14 @@ function AssetRow({
             {schedule === null ? (
               <p className="text-sm text-slate-600">Memuat jadwal…</p>
             ) : schedule.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-slate-600">
                 Belum ada jadwal. Jalankan &quot;Hitung &amp; Catat Penyusutan&quot; untuk periode pertama.
               </p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full min-w-[640px] text-left text-xs">
                   <thead>
-                    <tr className="border-b border-slate-200 text-slate-500">
+                    <tr className="border-b border-slate-200 text-slate-600">
                       <th className="py-2 pr-3 font-medium">Periode</th>
                       <th className="py-2 pr-3 text-right font-medium">Komersial</th>
                       <th className="py-2 pr-3 text-right font-medium">Fiskal</th>

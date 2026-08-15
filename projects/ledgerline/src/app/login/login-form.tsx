@@ -48,7 +48,7 @@ export function LoginForm() {
           placeholder="nama@kantorakuntan.id"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-slate-500 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+          className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-slate-600 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
         />
       </div>
 
@@ -65,7 +65,7 @@ export function LoginForm() {
           placeholder="••••••••"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-slate-500 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
+          className="rounded-lg border border-line bg-background px-3.5 py-2.5 text-sm text-foreground placeholder:text-slate-600 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/30"
         />
       </div>
 
@@ -86,7 +86,7 @@ export function LoginForm() {
         {loading ? "Memproses..." : "Masuk"}
       </button>
 
-      <p className="text-center text-xs text-slate-500">
+      <p className="text-center text-xs text-slate-600">
         Akun demo: <span className="font-mono">admin@ledgerline.dev</span> · password{" "}
         <span className="font-mono">password123</span>
       </p>

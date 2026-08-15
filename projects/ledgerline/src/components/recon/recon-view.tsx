@@ -237,7 +237,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
               <div className="font-display text-xl font-bold text-slate-900">
                 {s.totalMutations} <span className="text-xs font-normal text-slate-600">({s.totalMatched} tercocok)</span>
               </div>
-              <div className="mt-1 text-xs text-slate-500">
+              <div className="mt-1 text-xs text-slate-600">
                 Masuk {fmt(s.bankIn)} · Keluar {fmt(s.bankOut)}
               </div>
             </Card>
@@ -246,21 +246,21 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
               <div className="font-display text-xl font-bold text-slate-900">
                 {s.outstandingJournals.length} <span className="text-xs font-normal text-slate-600">belum di bank</span>
               </div>
-              <div className="mt-1 text-xs text-slate-500">
+              <div className="mt-1 text-xs text-slate-600">
                 Masuk {fmt(s.bookIn)} · Keluar {fmt(s.bookOut)}
               </div>
             </Card>
             <Card className="p-4">
               <div className="text-xs text-slate-600">Outstanding mutasi</div>
               <div className="font-display text-xl font-bold text-amber-600">{s.outstandingMutations.length}</div>
-              <div className="mt-1 text-xs text-slate-500">Mutasi bank tanpa jurnal</div>
+              <div className="mt-1 text-xs text-slate-600">Mutasi bank tanpa jurnal</div>
             </Card>
             <Card className="p-4">
               <div className="text-xs text-slate-600">Selisih</div>
               <div className={`font-display text-xl font-bold ${s.bankIn - s.bankOut === s.bookIn - s.bookOut ? "text-emerald-600" : "text-rose-600"}`}>
                 {money((s.bankIn - s.bankOut) - (s.bookIn - s.bookOut))}
               </div>
-              <div className="mt-1 text-xs text-slate-500">Bank − Buku periode {s.period}</div>
+              <div className="mt-1 text-xs text-slate-600">Bank − Buku periode {s.period}</div>
             </Card>
           </div>
 
@@ -329,7 +329,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
                                 </Button>
                               </div>
                             ) : (
-                              <span className="text-xs text-slate-500">—</span>
+                              <span className="text-xs text-slate-600">—</span>
                             )}
                           </TD>
                         </TR>

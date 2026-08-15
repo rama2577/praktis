@@ -96,7 +96,7 @@ export function ClientsManager({
         <div className="overflow-x-auto rounded-xl border border-line bg-card">
           <table className="w-full min-w-[720px] text-left text-sm">
             <thead>
-              <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-500">
+              <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-600">
                 <th className="px-4 py-3 font-medium">Nama</th>
                 <th className="px-4 py-3 font-medium">Industri</th>
                 <th className="px-4 py-3 font-medium">Status</th>
@@ -119,7 +119,7 @@ export function ClientsManager({
                       {client.name}
                     </Link>
                     {client.taxId ? (
-                      <p className="text-xs text-slate-500">NPWP: {client.taxId}</p>
+                      <p className="text-xs text-slate-600">NPWP: {client.taxId}</p>
                     ) : null}
                   </td>
                   <td className="px-4 py-3 text-slate-700">

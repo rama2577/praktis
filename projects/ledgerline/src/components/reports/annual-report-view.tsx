@@ -74,12 +74,12 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
         <Card className="print:p-0 p-6">
           {/* Halaman judul */}
           <div className="mb-8 border-b-2 border-yellow-400 pb-6 text-center">
-            <p className="text-xs uppercase tracking-widest text-slate-500">Penyampaian Laporan Keuangan</p>
+            <p className="text-xs uppercase tracking-widest text-slate-600">Penyampaian Laporan Keuangan</p>
             <h2 className="mt-2 font-display text-2xl font-bold text-slate-900">{data.legalName}</h2>
             <p className="mt-1 text-sm text-slate-600">
               Laporan Keuangan untuk periode yang berakhir {data.period} beserta Catatan atas Laporan Keuangan
             </p>
-            <p className="mt-1 text-xs text-slate-500">
+            <p className="mt-1 text-xs text-slate-600">
               Bidang usaha: {data.industry} · Disusun per {data.preparedAt}
             </p>
           </div>
@@ -110,7 +110,7 @@ export function AnnualReportView({ clients, period, clientId, setClientId, setPe
                 <div key={r.label} className="rounded-lg border border-slate-200 px-3 py-2 text-xs">
                   <span className="text-slate-600">{r.label}: </span>
                   <span className="font-mono text-slate-800">{r.value === null ? "N/A" : r.value.toFixed(2)}</span>
-                  <span className="ml-1 text-slate-500">({r.verdict})</span>
+                  <span className="ml-1 text-slate-600">({r.verdict})</span>
                 </div>
               ))}
             </div>

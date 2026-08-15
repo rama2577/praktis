@@ -46,7 +46,7 @@ export default async function ClientDetailPage({
 
   if (!client) {
     return (
-      <div className="rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-500">
+      <div className="rounded-xl border border-dashed border-line bg-card/40 p-10 text-center text-sm text-slate-600">
         Klien tidak ditemukan.{" "}
         <Link href="/dashboard/clients" className="text-accent hover:underline">
           Kembali ke daftar klien
@@ -98,7 +98,7 @@ export default async function ClientDetailPage({
       <div className="mt-6">
         <h2 className="text-sm font-semibold">Dokumen Legalitas &amp; Referensi</h2>
         {client.documents.filter((d) => REFERENCE_DOC_TYPES.includes(d.type)).length === 0 ? (
-          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-6 text-center text-sm text-slate-500">
+          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-6 text-center text-sm text-slate-600">
             Belum ada dokumen legalitas / struktur organisasi / artikel pengetahuan.
             Upload jenis tersebut di form di atas — teksnya otomatis diindeks sebagai pengetahuan klien.
           </div>
@@ -135,14 +135,14 @@ export default async function ClientDetailPage({
       <div className="mt-6">
         <h2 className="text-sm font-semibold">Dokumen</h2>
         {client.documents.length === 0 ? (
-          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-8 text-center text-sm text-slate-500">
+          <div className="mt-3 rounded-xl border border-dashed border-line bg-card/40 p-8 text-center text-sm text-slate-600">
             Belum ada dokumen untuk klien ini. Upload dokumen pertama di atas.
           </div>
         ) : (
           <div className="mt-3 overflow-x-auto rounded-xl border border-line bg-card">
             <table className="w-full min-w-[640px] text-left text-sm">
               <thead>
-                <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-500">
+                <tr className="border-b border-line text-xs uppercase tracking-wider text-slate-600">
                   <th className="px-4 py-3 font-medium">Berkas</th>
                   <th className="px-4 py-3 font-medium">Jenis</th>
                   <th className="px-4 py-3 font-medium">Status</th>

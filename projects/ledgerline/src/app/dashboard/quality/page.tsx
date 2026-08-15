@@ -103,7 +103,7 @@ export default async function QualityPage() {
           <div key={c.label} className="rounded-xl border border-line bg-card p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{c.label}</p>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${c.tone}`}>{c.value}</p>
-            <p className="mt-1 text-xs text-slate-500">{c.hint}</p>
+            <p className="mt-1 text-xs text-slate-600">{c.hint}</p>
           </div>
         ))}
       </div>
@@ -134,23 +134,23 @@ export default async function QualityPage() {
 
         <div className="mb-5 grid grid-cols-2 gap-3 sm:grid-cols-4">
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-500">Task Selesai</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-600">Task Selesai</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">{firm.totalTasks}</p>
           </div>
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-500">Rata-rata Review</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-600">Rata-rata Review</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">
               {firm.avgReviewMinutes === null ? "—" : `${firm.avgReviewMinutes} mnt`}
             </p>
           </div>
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-500">SLA Met</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-600">SLA Met</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-emerald-600">
               {firm.avgSlaRate === null ? "—" : `${firm.avgSlaRate.toLocaleString("id-ID")}%`}
             </p>
           </div>
           <div className="rounded-lg border border-line bg-white px-4 py-3">
-            <p className="text-[11px] uppercase tracking-wider text-slate-500">Disetujui</p>
+            <p className="text-[11px] uppercase tracking-wider text-slate-600">Disetujui</p>
             <p className="mt-1 text-2xl font-semibold tabular-nums text-slate-900">{firm.totalApproved}</p>
           </div>
         </div>
@@ -212,7 +212,7 @@ export default async function QualityPage() {
                   </p>
                   <p className="mt-0.5 text-xs text-red-600/80">🚩 {e.exceptionFlag}</p>
                 </div>
-                <span className="text-xs tabular-nums text-slate-500">
+                <span className="text-xs tabular-nums text-slate-600">
                   confidence {e.confidence === null ? "—" : `${pct(e.confidence * 100, 100)}%`}
                 </span>
               </li>
@@ -234,7 +234,7 @@ export default async function QualityPage() {
         ) : (
           <div className="grid gap-6 lg:grid-cols-2">
             <div>
-              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Berdasarkan Akun</p>
+              <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-600">Berdasarkan Akun</p>
               <div className="space-y-2">
                 {corrections.topAccounts.map((a) => (
                   <div key={a.accountCode} className="flex items-center gap-3 text-sm">
@@ -247,7 +247,7 @@ export default async function QualityPage() {
             </div>
             <div className="space-y-6">
               <div>
-                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Berdasarkan Field</p>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-600">Berdasarkan Field</p>
                 <div className="flex flex-wrap gap-2">
                   {corrections.byField.map((f) => (
                     <span key={f.field} className="rounded-full border border-slate-200 bg-slate-100 px-2.5 py-1 text-xs text-slate-700">
@@ -257,7 +257,7 @@ export default async function QualityPage() {
                 </div>
               </div>
               <div>
-                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-500">Reviewer Aktif Mengoreksi</p>
+                <p className="mb-2 text-xs font-medium uppercase tracking-wider text-slate-600">Reviewer Aktif Mengoreksi</p>
                 <div className="space-y-1.5">
                   {corrections.byUser.map((u) => (
                     <div key={u.userId} className="flex items-center justify-between text-sm">
@@ -299,7 +299,7 @@ async function OcrMetricsPanel({ firmId }: { firmId: string }) {
           <div key={c.label} className="rounded-xl border border-line bg-card p-5">
             <p className="text-xs font-medium uppercase tracking-wider text-slate-600">{c.label}</p>
             <p className={`mt-2 text-3xl font-semibold tabular-nums ${c.tone}`}>{c.value}</p>
-            <p className="mt-1 text-xs text-slate-500">{c.hint}</p>
+            <p className="mt-1 text-xs text-slate-600">{c.hint}</p>
           </div>
         ))}
       </div>

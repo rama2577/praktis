@@ -210,7 +210,7 @@ function UploadHistoricalReports({
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
       <h4 className="mb-3 text-xs font-medium text-slate-600">📤 Upload Laporan Keuangan Historis</h4>
-      <p className="mb-3 text-xs text-slate-500">
+      <p className="mb-3 text-xs text-slate-600">
         Upload laporan keuangan tahun-tahun sebelumnya (PDF, XLSX, JPG) untuk ditambahkan ke ikhtisar multi-periode.
         Pipeline OCR akan mengekstrak data dan menambahkannya ke trial balance historis.
       </p>

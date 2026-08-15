@@ -223,7 +223,7 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
 
       <Card className="p-4">
         <h2 className="mb-2 font-display text-base font-semibold text-slate-900">✨ Minta Laporan</h2>
-        <p className="mb-3 text-xs text-slate-500">
+        <p className="mb-3 text-xs text-slate-600">
           Contoh: &quot;laba rugi Agustus 2026&quot;, &quot;penjualan per proyek Proyek A&quot;, &quot;beban per channel online&quot;
         </p>
         <div className="flex flex-col gap-2 sm:flex-row">
@@ -234,7 +234,7 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
               if (e.key === "Enter") void suggest();
             }}
             placeholder='Contoh: "pendapatan per proyek"'
-            className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-500"
+            className="flex-1 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-900 placeholder:text-slate-600"
           />
           <Button onClick={() => void suggest()} disabled={busy || !prompt.trim()}>
             Usulkan Struktur
@@ -255,8 +255,8 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
             {suggestion.dimensions?.channel && (
               <p className="mt-1 text-xs text-slate-600">Filter channel: {suggestion.dimensions.channel}</p>
             )}
-            <p className="mt-1 text-xs text-slate-500">Kolom: {suggestion.columns.join(", ")}</p>
-            <p className="mt-1 text-xs text-slate-500">Alasan: {suggestion.reasons.join("; ")}</p>
+            <p className="mt-1 text-xs text-slate-600">Kolom: {suggestion.columns.join(", ")}</p>
+            <p className="mt-1 text-xs text-slate-600">Alasan: {suggestion.reasons.join("; ")}</p>
             <div className="mt-3 flex gap-2">
               <Button onClick={() => void approve()} disabled={busy}>
                 ✓ Setujui & Simpan Template
@@ -289,7 +289,7 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
                     {t.dimensions?.project && <Badge label={`Proyek: ${t.dimensions.project}`} tone="warning" />}
                     {t.dimensions?.channel && <Badge label={`Channel: ${t.dimensions.channel}`} tone="warning" />}
                   </div>
-                  {t.description && <p className="mt-0.5 text-xs text-slate-500">{t.description}</p>}
+                  {t.description && <p className="mt-0.5 text-xs text-slate-600">{t.description}</p>}
                 </div>
                 <Button size="sm" onClick={() => void run(t)} disabled={busy}>
                   Jalankan
