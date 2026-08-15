@@ -13,6 +13,8 @@ import {
 import { KpiCards } from "@/components/dashboard/kpi-cards";
 import { DashboardPanels, type DashboardFocus } from "@/components/dashboard/dashboard-panels";
 import { DockableDashboard } from "@/components/dashboard/dockable-dashboard";
+import { DailyBriefPanel } from "@/components/dashboard/daily-brief";
+import { getDailyBrief } from "@/server/brief";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +40,7 @@ export default async function DashboardPage() {
   const firmId = session.user.firmId;
   const role = session.user.role;
   const focus = ROLE_FOCUS[role] ?? "admin";
-  const [kpi, pipeline, sla, confidence, activity, industry, trend, insights] = await Promise.all([
+  const [kpi, pipeline, sla, confidence, activity, industry, trend, insights, brief] = await Promise.all([
     getDashboardData(firmId),
     getPipelineData(firmId),
     getSlaSummary(firmId),
@@ -47,6 +49,7 @@ export default async function DashboardPage() {
     getIndustryBreakdown(firmId),
     getWeeklyTrend(firmId),
     getExceptionInsights(firmId),
+    getDailyBrief(firmId),
   ]);
 
   return (
@@ -57,6 +60,9 @@ export default async function DashboardPage() {
       </div>
 
       <KpiCards data={kpi} />
+
+      {/* T1.3 — Inbox cerdas akuntan (ringkasan harian + antrian review) */}
+      <DailyBriefPanel brief={brief} />
 
       {/* PoC: Dockable Workspace (Dockview) */}
       <DockableDashboard
