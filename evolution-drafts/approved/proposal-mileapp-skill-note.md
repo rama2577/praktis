@@ -1,3 +1,30 @@
+# Evolution Proposal: Rama memberikan skill proposal-mileapp untuk dipasang ke skill agent — catat keberadaan dan kegunaan skill ini di memori agar saat Rama minta dibuatkan proposal, skill langsung dipakai.
+
+- Proposal-ID: evo-2026-08-14-proposal-mileapp-skill-note
+- Status: approved
+- Signature: proposal-mileapp-skill-note
+- Created-At: 2026-08-14 14:12
+- Last-Seen-At: 2026-08-14 14:12
+- Target-File: MEMORY.md
+- Trigger-Type: preference
+- Confidence: medium
+
+## Why This Matters
+- Rama memberikan skill proposal-mileapp untuk dipasang ke skill agent — catat keberadaan dan kegunaan skill ini di memori agar saat Rama minta dibuatkan proposal, skill langsung dipakai.
+
+## Evidence
+- Interactive proposal card was present in the session UI.
+- The original pending draft file was unavailable at approval time.
+- AutoClaw reconstructed this draft from the proposal payload so the review result can still be recorded.
+
+## Duplicate Check
+- Checked: pending draft path + signature/proposal fallback
+- Result: original draft file missing
+- Decision: create surrogate draft from proposal payload
+
+## Proposed Change
+### MEMORY.md — catatan skill proposal-mileapp
+
 ---
 summary: "Long-term memory record"
 autoclaw.schema: "agent-profile/v1"
@@ -77,14 +104,10 @@ lessons:
 - **Sisa backlog**: cutover PostingRuleEngine shadow→live (multi-week)
 
 ## 系统架构
-- **Gateway**: _(待补充)_
-- **模型**: _(待补充)_
-- **渠道**: _(待补充)_
-- **浏览器**: _(待补充)_
+- _(待补充)_
 
 ## 工作流
 - Capture recurring workflows here
-- **Preferensi output**: Rama lebih suka hasil analisis/perbandingan disajikan dalam bentuk dokumen (file .docx/Google Doc/spreadsheet), bukan teks panjang di chat — mis. perbandingan nexius.id vs Praktis diminta "buat dalam doc saja"
 
 ## 记忆系统架构
 OpenClaw 三层记忆：
@@ -105,3 +128,16 @@ OpenClaw 三层记忆：
 ## 技能索引
 见 workspace/.agents/skills/ 目录下的 SKILL.md 文件
 - **proposal-mileapp**: skill membuat proposal (zip dari Rama, terpasang 2026-08-14 di ~/.openclaw-autoclaw/skills/proposal-mileapp/) — pakai saat Rama minta dibuatkan proposal (mis. untuk Mile.app)
+
+## Apply Plan
+1. Keep this reconstructed draft as the approval artifact.
+2. Record the proposal content exactly as shown in the interactive card.
+3. Append an audit note after approval or rejection.
+
+## Audit Note
+- Approved by Rama on 2026-08-14 14:12 (user message: "批准 evo-2026-08-14-proposal-mileapp-skill-note").
+- Change applied to MEMORY.md on 2026-08-14 14:12: added `proposal-mileapp` bullet under 技能索引.
+
+## User Approval
+- Approve: 批准 evo-2026-08-14-proposal-mileapp-skill-note
+- Reject: 拒绝 evo-2026-08-14-proposal-mileapp-skill-note

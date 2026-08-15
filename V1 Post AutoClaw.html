@@ -1,0 +1,181 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Post AutoClaw — pratinjau</title>
+<!--
+  Design thinking 4 questions (internal):
+  - Purpose : mockup screenshot post rekomendasi AutoClaw (format "share image" X),
+              untuk Rama preview sebelum diposting.
+  - Tone    : X platform fidelity (dark #000, teks #e7e9ea, biru mention #1d9bf0).
+  - Constraints: teks = copy asli (bukan lorem); tanpa emoji sebagai elemen desain;
+              tanpa metrik palsu (angka aksi dihilangkan); aksesibilitas dasar.
+  - Differentiation: kartu post bersih ala X share-image, mark capit lobster sebagai avatar.
+  font-stack: TwitterChirp + fallback sistem (fidelity platform X — mimic UI asli,
+              bukan default AI; fallback -apple-system = SF Pro di macOS, mirip Chirp)
+-->
+<style>
+  :root {
+    --bg: #000000;
+    --fg: #e7e9ea;
+    --muted: #71767b;
+    --border: rgba(255, 255, 255, 0.10);
+    --accent: #1d9bf0;          /* X blue untuk mention */
+    --avatar-bg: #e0442c;       /* lobster red-orange */
+    --font: "TwitterChirp", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+            "Helvetica Neue", Arial, sans-serif;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html, body { height: 100%; }
+
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .card {
+    min-height: 100vh;
+    width: 600px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 18px;
+    padding: 48px 36px;
+  }
+
+  /* ── Author row ── */
+  .author-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--avatar-bg);
+    flex: none;
+    display: grid;
+    place-items: center;
+  }
+
+  .author-name {
+    font-size: 15px;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--fg);
+  }
+
+  .author-meta {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+    letter-spacing: 0.015em;
+    margin-top: 2px;
+  }
+
+  /* ── Body ── */
+  .post-text {
+    font-size: 16px;
+    line-height: 1.45;
+    color: var(--fg);
+    max-width: 65ch;
+  }
+
+  .post-text p + p { margin-top: 12px; }
+
+  .mention {
+    color: var(--accent);
+    text-decoration: none;
+  }
+
+  /* ── Action bar ── */
+  .actions {
+    display: flex;
+    justify-content: space-between;
+    max-width: 420px;
+    margin-top: 6px;
+  }
+
+  .action {
+    background: none;
+    border: none;
+    color: var(--muted);
+    padding: 8px;
+    border-radius: 999px;
+    cursor: default;
+    display: grid;
+    place-items: center;
+  }
+
+  /* ── Footer ── */
+  .footer {
+    border-top: 1px solid var(--border);
+    padding-top: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--muted);
+    font-size: 13px;
+    letter-spacing: 0.015em;
+  }
+</style>
+</head>
+<body>
+  <main class="card">
+    <!-- Author -->
+    <div class="author-row">
+      <div class="avatar" aria-hidden="true">
+        <svg width="30" height="30" viewBox="0 0 48 48" fill="none" stroke="#ffffff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round">
+          <!-- mark capit lobster abstrak -->
+          <path d="M13 35c-5-8-3-18 4-22 6-3 12-1 14 5"/>
+          <path d="M20 29c-1-6 1-11 6-13 3-1 7 0 8 4"/>
+        </svg>
+      </div>
+      <div>
+        <div class="author-name">Rama Wijaya</div>
+        <div class="author-meta">@ramawijaya&nbsp;·&nbsp;14:12 · 14 Agu 2026</div>
+      </div>
+    </div>
+
+    <!-- Copy post -->
+    <div class="post-text">
+      <p>Setahun lalu: 3 langganan AI, admin tetap manual. Sekarang cukup satu: <a class="mention" href="https://x.com/AutoClaw">@AutoClaw</a>.</p>
+      <p>Local-first — email, kalender, file, sampai WhatsApp. Bisa coding, riset, bikin dokumen, ngingetin jadwal.</p>
+      <p>2 bulan dipakai harian. Akhirnya nemu AI yang kerjanya kayak co-worker, bukan chatbot.</p>
+    </div>
+
+    <!-- Action bar -->
+    <div class="actions">
+      <button class="action" type="button" aria-label="Balas">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 12l-4 4 4 4M4 16h9a6 6 0 0 0 6-6V8"/></svg>
+      </button>
+      <button class="action" type="button" aria-label="Repost">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h13l-3-3M20 16H7l3 3"/></svg>
+      </button>
+      <button class="action" type="button" aria-label="Suka">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.5s-7.6-4.8-9.7-9.2C.8 8.5 3 5 6.4 5c2.1 0 3.6 1.2 4.3 2.4h2.6C14 6.2 15.5 5 17.6 5c3.4 0 5.6 3.5 4.1 6.3-2.1 4.4-9.7 9.2-9.7 9.2z"/></svg>
+      </button>
+      <button class="action" type="button" aria-label="Bookmark">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 4h12v16l-6-4-6 4V4z"/></svg>
+      </button>
+      <button class="action" type="button" aria-label="Bagikan">
+        <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12M12 3L7.5 7.5M12 3l4.5 4.5M5 12v8h14v-8"/></svg>
+      </button>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231 5.45-6.231zm-1.161 17.52h1.833L7.084 4.126H5.117L17.083 19.77z"/></svg>
+      <span>View on X</span>
+    </div>
+  </main>
+</body>
+</html>
