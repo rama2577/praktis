@@ -33,6 +33,26 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
         ))}
       </div>
 
+      {brief.anomalies.length > 0 && (
+        <div className="mt-3 space-y-1.5">
+          {brief.anomalies.map((a) => (
+            <Link
+              key={a.type}
+              href={a.href}
+              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition ${
+                a.severity === "high"
+                  ? "border-red-500/30 bg-red-500/10 text-red-200 hover:bg-red-500/15"
+                  : "border-amber-500/30 bg-amber-500/10 text-amber-200 hover:bg-amber-500/15"
+              }`}
+            >
+              <span aria-hidden>⚠️</span>
+              <span className="font-medium">{a.count}× {a.text}</span>
+              <span className="ml-auto text-slate-400">→</span>
+            </Link>
+          ))}
+        </div>
+      )}
+
       {brief.priorityQueue.length === 0 ? (
         <p className="mt-4 rounded-lg border border-dashed border-slate-700 bg-slate-900/40 px-4 py-5 text-center text-sm text-slate-500">
           Tidak ada jurnal menunggu review. 👍

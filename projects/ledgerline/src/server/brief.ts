@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/db";
 import type { JournalStatus } from "@prisma/client";
+import { detectAnomalies, type Anomaly } from "@/server/anomaly";
 
 /**
  * T1.3 — Inbox cerdas akuntan: ringkasan harian (Daily Brief) + antrian review terprioritas.
@@ -8,7 +9,7 @@ import type { JournalStatus } from "@prisma/client";
 
 export type BriefItem = { kind: string; text: string; count: number; href: string };
 export type PriorityItem = { id: string; clientName: string; status: JournalStatus; createdAt: string };
-export type DailyBrief = { summary: string; items: BriefItem[]; priorityQueue: PriorityItem[]; generatedAt: string };
+export type DailyBrief = { summary: string; items: BriefItem[]; priorityQueue: PriorityItem[]; anomalies: Anomaly[]; generatedAt: string };
 
 const REVIEW_STATUSES: JournalStatus[] = ["DRAFT", "JUNIOR_REVIEW", "SENIOR_REVIEW", "TAX_REVIEW", "PARTNER_APPROVAL"];
 
@@ -22,7 +23,7 @@ export function buildBriefSummary(items: BriefItem[]): string {
 export async function getDailyBrief(firmId: string): Promise<DailyBrief> {
   const since = new Date(Date.now() - 86_400_000);
 
-  const [pendingDocs, reviewCount, exceptionCount, reviewQueue] = await Promise.all([
+  const [pendingDocs, reviewCount, exceptionCount, reviewQueue, anomalies] = await Promise.all([
     prisma.document.count({ where: { firmId, status: { in: ["PENDING", "PROCESSING"] }, createdAt: { gte: since } } }),
     prisma.journalEntry.count({ where: { firmId, status: { in: REVIEW_STATUSES } } }),
     prisma.journalEntry.count({ where: { firmId, status: "EXCEPTION" } }),
@@ -32,6 +33,7 @@ export async function getDailyBrief(firmId: string): Promise<DailyBrief> {
       orderBy: { createdAt: "desc" },
       take: 8,
     }),
+    detectAnomalies(firmId),
   ]);
 
   const items: BriefItem[] = [
@@ -49,6 +51,7 @@ export async function getDailyBrief(firmId: string): Promise<DailyBrief> {
       status: j.status,
       createdAt: j.createdAt.toISOString(),
     })),
+    anomalies,
     generatedAt: new Date().toISOString(),
   };
 }
