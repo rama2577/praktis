@@ -13,7 +13,7 @@ const STATUS_TONE: Record<string, string> = {
 /** Panel "Today" — inbox cerdas akuntan: ringkasan harian + antrian review terprioritas. */
 export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
   return (
-    <section className="rounded-xl border border-trust/20 bg-card p-5">
+    <section className="rounded-2xl border border-trust/20 bg-card p-5 shadow-[0_1px_6px_rgba(17,24,39,0.06)]">
       <div className="flex items-center justify-between">
         <h2 className="text-sm font-semibold tracking-tight text-slate-900">Hari Ini</h2>
         <span className="text-[11px] text-slate-700">inbox cerdas · otomatis</span>
@@ -39,15 +39,15 @@ export function DailyBriefPanel({ brief }: { brief: DailyBrief }) {
             <Link
               key={a.type}
               href={a.href}
-              className={`flex items-center gap-2 rounded-lg border px-3 py-2 text-xs transition ${
+              className={`flex items-center gap-2 rounded-[10px] border px-3 py-2 text-xs transition ${
                 a.severity === "high"
-                  ? "border-red-500/30 bg-red-500/10 text-red-700 hover:bg-red-500/15"
-                  : "border-amber-500/30 bg-amber-500/10 text-amber-700 hover:bg-amber-500/15"
+                  ? "border-[#f6c9c9] bg-[#fdecec] text-[#9b6b6b] hover:bg-[#fbe3e3]"
+                  : "border-[#f5d9a8] bg-[#fef4e6] text-[#957c4b] hover:bg-[#fdefd9]"
               }`}
             >
               <span aria-hidden>⚠️</span>
               <span className="font-medium">{a.count}× {a.text}</span>
-              <span className="ml-auto text-slate-700">→</span>
+              <span className="ml-auto text-slate-600">→</span>
             </Link>
           ))}
         </div>

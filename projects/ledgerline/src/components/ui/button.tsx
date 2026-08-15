@@ -9,14 +9,14 @@ type Size = "sm" | "md";
 
 const VARIANT_CLASSES: Record<Variant, string> = {
   primary:
-    "bg-accent text-white font-semibold hover:bg-[#2b63f2] active:bg-[#2458dd] disabled:bg-slate-200 disabled:text-slate-700",
+    "bg-accent text-white font-semibold hover:bg-[#1f49ce] active:bg-[#1a3db0] disabled:bg-slate-200 disabled:text-slate-700",
   secondary:
     "border border-line bg-card text-foreground hover:border-slate-400 hover:bg-hover disabled:opacity-50",
   ghost: "text-muted hover:bg-hover hover:text-foreground disabled:opacity-50",
   danger:
     "border border-red-500/40 bg-red-500/10 text-red-600 hover:bg-red-500/20 disabled:opacity-50",
   ai:
-    "bg-ai text-white font-semibold hover:bg-[#6a4ae0] active:bg-[#5a3cd6] disabled:bg-slate-200 disabled:text-slate-700",
+    "bg-ai text-white font-semibold hover:bg-[#6a3ae0] active:bg-[#5a2ed6] disabled:bg-slate-200 disabled:text-slate-700",
 };
 
 const SIZE_CLASSES: Record<Size, string> = {

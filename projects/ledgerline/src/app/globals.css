@@ -2,25 +2,25 @@
 
 :root {
   /* Lark-inspired light theme (Feishu palette) */
-  --background: #ffffff;
+  --background: #eef3fa;
   --foreground: #1f2329;
   --card: #ffffff;
   --card-border: #e5e6eb;
-  --sidebar: #f2f8fe;       /* Lark sidebar tint (biru sangat muda) */
-  --accent: #3370ff;        /* Lark brand blue — primary CTA/aksi */
+  --sidebar: #f5f8ff;       /* Lark sidebar tint (putih kebiruan) */
+  --accent: #2b5aed;        /* Lark primary blue */
   --trust: #00a1ff;         /* secondary blue — info/link/chart */
   --positive: #34c724;      /* Lark success green */
   --warning: #ff8800;       /* Lark warning orange */
   --danger: #f54a45;        /* Lark danger red */
-  --muted: #51565d;         /* text secondary (gelap, jelas terbaca) */
-  --muted-fg: #6b7078;      /* text tertiary */
+  --muted: #646a73;         /* text secondary */
+  --muted-fg: #8a93a0;      /* text tertiary */
   --hover: #f2f3f5;         /* hover fill */
-  --ai: #7b5cff;            /* Lark AI purple — penanda fitur AI */
+  --ai: #7c4dff;            /* Lark AI purple — penanda fitur AI */
 
-  /* Typography: DM Sans (body) + Space Grotesk (heading, tabular numbers) */
-  --font-sans: var(--font-dm-sans), system-ui, sans-serif;
-  --font-heading: var(--font-space-grotesk), var(--font-dm-sans), sans-serif;
-  --font-mono: "JetBrains Mono", "Fira Code", ui-monospace, monospace;
+  /* Typography: Inter (body+heading) + system mono */
+  --font-sans: var(--font-inter), system-ui, sans-serif;
+  --font-heading: var(--font-inter), system-ui, sans-serif;
+  --font-mono: ui-monospace, "SFMono-Regular", "JetBrains Mono", Menlo, monospace;
 }
 
 @theme inline {
@@ -58,15 +58,15 @@
   --color-slate-900: #1f2329;
   --color-slate-950: #17191c;
 
-  /* Blue → Lark brand blue #3370ff */
-  --color-blue-50: #e8f1ff;
-  --color-blue-100: #d1e3ff;
-  --color-blue-200: #a3c6ff;
-  --color-blue-300: #74a8ff;
-  --color-blue-400: #4a89ff;
-  --color-blue-500: #3370ff;
-  --color-blue-600: #2b5ce0;
-  --color-blue-700: #2348b8;
+  /* Blue → Lark brand blue #2b5aed */
+  --color-blue-50: #eaf1ff;
+  --color-blue-100: #d6e4ff;
+  --color-blue-200: #adc8ff;
+  --color-blue-300: #84a9ff;
+  --color-blue-400: #5b8bfa;
+  --color-blue-500: #2b5aed;
+  --color-blue-600: #1f49ce;
+  --color-blue-700: #1a3db0;
 
   /* Sky → Lark secondary blue #00a1ff */
   --color-sky-50: #e6f7ff;

@@ -12,7 +12,7 @@ export function Card({
   className?: string;
 }) {
   return (
-    <section className={`rounded-xl border border-line bg-card p-5 shadow-[0_1px_3px_rgba(31,35,41,0.06)] ${className}`}>
+    <section className={`rounded-2xl border border-line bg-card p-5 shadow-[0_2px_14px_rgba(31,35,41,0.06)] ${className}`}>
       {children}
     </section>
   );
