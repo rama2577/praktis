@@ -299,9 +299,22 @@ model JournalLine {
   // F6B — dimensi pelaporan (proyek/channel): { "project": "Proyek A", "channel": "Online" }
   dimension Json?
 
+  // AI-enrich (Lark-inspired): asal deskripsi + confidence + waktu enrich.
+  descriptionSource EnrichSource @default(MANUAL)
+  enrichConfidence  Float?
+  enrichedAt        DateTime?
+  aiDescription     String?
+
   journalEntry JournalEntry @relation(fields: [journalEntryId], references: [id], onDelete: Cascade)
 
   @@index([journalEntryId])
+}
+
+
+enum EnrichSource {
+  MANUAL
+  RULE
+  AI
 }
 
 // ══════════ F2.5E — Periode tutup buku (PRD M4/A5) ══════════

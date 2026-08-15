@@ -16,6 +16,10 @@ function line(partial: Partial<JournalLine>): JournalLine {
     taxCode: partial.taxCode ?? null,
     taxBase: partial.taxBase ?? null,
     dimension: partial.dimension ?? null,
+    descriptionSource: partial.descriptionSource ?? "MANUAL",
+    enrichConfidence: partial.enrichConfidence ?? null,
+    enrichedAt: partial.enrichedAt ?? null,
+    aiDescription: partial.aiDescription ?? null,
   };
 }
 
