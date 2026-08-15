@@ -84,10 +84,10 @@ export function ManagementLetterView({
         <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
         <PeriodInput period={period} setPeriod={setPeriod} />
         <a href={exportUrl("md")} aria-disabled={!clientId}
-          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-slate-200 text-slate-800 hover:border-yellow-400/50" : "pointer-events-none opacity-40"}`}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-slate-200 text-slate-800 hover:border-accent/50" : "pointer-events-none opacity-40"}`}
         >↓ Markdown</a>
         <a href={exportUrl("csv")} aria-disabled={!clientId}
-          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-yellow-400/40 bg-yellow-400/10 text-amber-600 hover:bg-yellow-400/20" : "pointer-events-none opacity-40"}`}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/20" : "pointer-events-none opacity-40"}`}
         >↓ CSV</a>
       </div>
 
@@ -166,7 +166,7 @@ export function ManagementLetterView({
           </div>
 
           {/* Closing */}
-          <Card className="border-yellow-400/20 bg-yellow-400/5 p-5">
+          <Card className="border-accent/20 bg-accent/5 p-5">
             <h4 className="mb-2 text-sm font-medium text-slate-800">5. Tindak Lanjut & Rekomendasi</h4>
             <ul className="space-y-1 text-sm text-slate-700">
               {ml.narrative.map((n, i) => <li key={i}>• {n}</li>)}
@@ -189,7 +189,7 @@ function FindingCard({ finding, expanded, onToggle }: { finding: Finding; expand
   return (
     <div
       className={`cursor-pointer rounded-xl border transition ${
-        expanded ? "border-yellow-400/30 bg-slate-100" : "border-slate-200 bg-white hover:border-slate-200"
+        expanded ? "border-accent/30 bg-slate-100" : "border-slate-200 bg-white hover:border-slate-200"
       }`}
       onClick={onToggle}
     >
@@ -222,7 +222,7 @@ function FindingCard({ finding, expanded, onToggle }: { finding: Finding; expand
           </div>
           {finding.managementResponse && (
             <div>
-              <p className="text-xs font-medium text-amber-600">Tanggapan Manajemen</p>
+              <p className="text-xs font-medium text-accent">Tanggapan Manajemen</p>
               <p className="text-slate-700">{finding.managementResponse}</p>
             </div>
           )}

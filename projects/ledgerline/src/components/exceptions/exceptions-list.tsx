@@ -157,7 +157,7 @@ export function ExceptionsList() {
           <select
             value={clientFilter}
             onChange={(e) => setClientFilter(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
           >
             <option value="">Semua klien ({items.length})</option>
             {clients.map((c) => (
@@ -228,7 +228,7 @@ export function ExceptionsList() {
                               href={`/api/documents/${detail.document.id}/file`}
                               target="_blank"
                               rel="noreferrer"
-                              className="mt-2 inline-block rounded border border-yellow-400/40 bg-yellow-400/10 px-2 py-1 text-xs text-amber-600 hover:bg-yellow-400/20"
+                              className="mt-2 inline-block rounded border border-accent/40 bg-accent/10 px-2 py-1 text-xs text-accent hover:bg-accent/20"
                             >
                               🔍 Buka dokumen
                             </a>
@@ -245,7 +245,7 @@ export function ExceptionsList() {
                         {detail.rule ? (
                           <div className="space-y-1 text-sm">
                             <p className="text-slate-800">
-                              Deteksi: <span className="font-medium text-amber-600">{detail.rule.label}</span>
+                              Deteksi: <span className="font-medium text-accent">{detail.rule.label}</span>
                             </p>
                             <p className="text-xs text-slate-700">
                               Template {detail.rule.template} · {detail.rule.psakRef} · skor {detail.rule.score}%
@@ -307,19 +307,19 @@ export function ExceptionsList() {
 
                 <div className="space-y-3 border-t border-line pt-4">
                   <p className="text-xs text-slate-700">
-                    Resolusi mengirim jurnal ke antrian <span className="text-amber-600">Review Junior</span> untuk diproses ulang (EXCEPTION → JUNIOR_REVIEW).
+                    Resolusi mengirim jurnal ke antrian <span className="text-accent">Review Junior</span> untuk diproses ulang (EXCEPTION → JUNIOR_REVIEW).
                   </p>
                   <textarea
                     value={note}
                     onChange={(e) => setNote(e.target.value)}
                     placeholder="Catatan resolusi (mis. Faktur PPN sudah dilengkapi klien)…"
-                    className="min-h-[70px] w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/60 focus:outline-none"
+                    className="min-h-[70px] w-full rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/60 focus:outline-none"
                   />
                   <div className="flex justify-end">
                     <button
                       onClick={() => void resolve(item.id)}
                       disabled={busy || !note.trim()}
-                      className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
+                      className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1f49ce] disabled:cursor-not-allowed disabled:opacity-40"
                     >
                       {busy ? "Menyelesaikan…" : "Selesaikan Exception"}
                     </button>

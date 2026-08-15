@@ -51,7 +51,7 @@ const TYPE_LABEL: Record<string, string> = {
 
 const TYPE_TONE: Record<string, string> = {
   CUSTOMER: "text-sky-600",
-  VENDOR: "text-amber-600",
+  VENDOR: "text-accent",
   SHAREHOLDER: "text-violet-600",
   OTHER: "text-slate-700",
 };
@@ -197,7 +197,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
             <button
               type="button"
               onClick={() => setShowForm((s) => !s)}
-              className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] hover:bg-yellow-300"
+              className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] hover:bg-[#1f49ce]"
             >
               + Tambah
             </button>
@@ -269,7 +269,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                   <td className="px-3 py-2 text-right font-mono">{r.openingBalance ? formatCurrencyRp(r.openingBalance) : "—"}</td>
                   <td className="px-3 py-2 text-right font-mono">{r.debit ? formatCurrencyRp(r.debit) : "—"}</td>
                   <td className="px-3 py-2 text-right font-mono">{r.credit ? formatCurrencyRp(r.credit) : "—"}</td>
-                  <td className={`px-3 py-2 text-right font-mono font-semibold ${r.balance < 0 ? "text-amber-600" : "text-slate-900"}`}>
+                  <td className={`px-3 py-2 text-right font-mono font-semibold ${r.balance < 0 ? "text-accent" : "text-slate-900"}`}>
                     {formatCurrencyRp(r.balance)}
                   </td>
                   <td className="px-3 py-2 text-slate-700">{r.lastActivity ?? "—"}</td>
@@ -277,7 +277,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                     <button
                       type="button"
                       onClick={() => void openLedger(r.code)}
-                      className="rounded-md border border-slate-200 px-2 py-1 text-[10px] text-slate-700 hover:border-yellow-400/50"
+                      className="rounded-md border border-slate-200 px-2 py-1 text-[10px] text-slate-700 hover:border-accent/50"
                     >
                       Buku Besar
                     </button>

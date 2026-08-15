@@ -62,7 +62,7 @@ export default async function OutboxPage({
       <div className="grid grid-cols-3 gap-3">
         <Card className="p-4">
           <div className="text-xs text-slate-700">Pending</div>
-          <div className="font-display text-xl font-bold text-amber-600">{summary.pending}</div>
+          <div className="font-display text-xl font-bold text-accent">{summary.pending}</div>
         </Card>
         <Card className="p-4">
           <div className="text-xs text-slate-700">Terproses</div>

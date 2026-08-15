@@ -78,7 +78,7 @@ export function PortalJournals({ token }: { token: string }) {
               </div>
               <p className="mt-2 text-sm text-slate-700">{j.summary}</p>
               <details className="mt-2">
-                <summary className="cursor-pointer text-xs text-amber-600/90 hover:text-yellow-700">
+                <summary className="cursor-pointer text-xs text-accent/90 hover:text-accent">
                   Lihat penjelasan lengkap
                 </summary>
                 <p className="mt-2 text-sm leading-relaxed text-slate-700">{j.explanation}</p>

@@ -40,9 +40,9 @@ type OpsData = {
 
 const STAGE_STYLE: Record<string, { box: string; label: string }> = {
   draft: { box: "border-slate-300 bg-slate-100", label: "text-slate-800" },
-  ruleEngine: { box: "border-yellow-400/30 bg-yellow-400/5", label: "text-amber-600" },
-  junior: { box: "border-amber-500/30 bg-amber-500/5", label: "text-amber-600" },
-  senior: { box: "border-yellow-400/30 bg-yellow-400/5", label: "text-amber-600" },
+  ruleEngine: { box: "border-accent/30 bg-accent/5", label: "text-accent" },
+  junior: { box: "border-amber-500/30 bg-amber-500/5", label: "text-accent" },
+  senior: { box: "border-accent/30 bg-accent/5", label: "text-accent" },
   tax: { box: "border-sky-500/30 bg-sky-500/5", label: "text-sky-600" },
 };
 
@@ -248,7 +248,7 @@ function QualityByIndustry({ data }: { data: IndustryBreakdownItem[] }) {
               <tr key={d.industry} className="border-b border-slate-200/60 last:border-0">
                 <td className="py-1.5 pr-2 text-slate-800">{d.industry}</td>
                 <td className="py-1.5 pr-2 text-right tabular-nums text-slate-700">{d.totalJournals}</td>
-                <td className={`py-1.5 pr-2 text-right tabular-nums ${d.exceptionRate > 30 ? "text-amber-600" : "text-slate-700"}`}>{d.exceptionRate}%</td>
+                <td className={`py-1.5 pr-2 text-right tabular-nums ${d.exceptionRate > 30 ? "text-accent" : "text-slate-700"}`}>{d.exceptionRate}%</td>
                 <td className={`py-1.5 text-right tabular-nums ${d.firstPassRate < 50 ? "text-red-600" : "text-emerald-600"}`}>{d.firstPassRate}%</td>
               </tr>
             ))}
@@ -276,7 +276,7 @@ function QualityExceptionInsights({ data }: { data: ExceptionInsight[] }) {
                 terakhir {new Date(d.lastSeen).toLocaleDateString("id-ID", { day: "numeric", month: "short" })}
               </p>
             </div>
-            <span className="shrink-0 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium tabular-nums text-amber-600">
+            <span className="shrink-0 rounded-full bg-amber-500/10 px-2 py-0.5 text-[11px] font-medium tabular-nums text-accent">
               {d.count}x
             </span>
           </div>
@@ -356,7 +356,7 @@ export function DashboardPanels({
         <div className="mt-5">
           <div className="mb-2 flex items-center justify-between">
             <h2 className="font-medium text-slate-900">Antrian Review</h2>
-            <Link href="/dashboard/queues" className="text-xs text-amber-600 hover:underline">
+            <Link href="/dashboard/queues" className="text-xs text-accent hover:underline">
               Buka semua antrian →
             </Link>
           </div>

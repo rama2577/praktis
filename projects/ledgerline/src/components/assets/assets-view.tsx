@@ -208,7 +208,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
       type="month"
       value={value}
       onChange={(e) => onChange(e.target.value)}
-      className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
+      className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-accent/60 focus:outline-none"
     />
   );
 
@@ -228,7 +228,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-accent/60 focus:outline-none"
           >
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -243,13 +243,13 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
         </label>
         <button
           onClick={() => void runDepreciation()}
-          className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-yellow-300"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1f49ce]"
         >
           Hitung & Catat Penyusutan
         </button>
         <button
           onClick={() => setShowForm(!showForm)}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 hover:border-yellow-400/50 hover:text-amber-600"
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 hover:border-accent/50 hover:text-accent"
         >
           {showForm ? "Tutup Form" : "+ Daftarkan Aset"}
         </button>
@@ -258,33 +258,33 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
       {/* Form aset baru */}
       {showForm && (
         <div className="grid gap-3 rounded-xl border border-slate-200 bg-white p-4 sm:grid-cols-2 lg:grid-cols-4">
-          <input placeholder="Nama aset *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/60 focus:outline-none" />
-          <input placeholder="Kategori * (mis. Kendaraan)" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/60 focus:outline-none" />
+          <input placeholder="Nama aset *" value={form.name} onChange={(e) => setForm({ ...form, name: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/60 focus:outline-none" />
+          <input placeholder="Kategori * (mis. Kendaraan)" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/60 focus:outline-none" />
           <label className="flex flex-col gap-1 text-xs text-slate-700">
             Tanggal perolehan *
-            <input type="date" value={form.purchaseDate} onChange={(e) => setForm({ ...form, purchaseDate: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none" />
+            <input type="date" value={form.purchaseDate} onChange={(e) => setForm({ ...form, purchaseDate: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-accent/60 focus:outline-none" />
           </label>
-          <input placeholder="Biaya perolehan (Rp) *" type="number" min="0" value={form.purchaseCost} onChange={(e) => setForm({ ...form, purchaseCost: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/60 focus:outline-none" />
-          <input placeholder="Nilai sisa (Rp)" type="number" min="0" value={form.residualValue} onChange={(e) => setForm({ ...form, residualValue: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/60 focus:outline-none" />
+          <input placeholder="Biaya perolehan (Rp) *" type="number" min="0" value={form.purchaseCost} onChange={(e) => setForm({ ...form, purchaseCost: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/60 focus:outline-none" />
+          <input placeholder="Nilai sisa (Rp)" type="number" min="0" value={form.residualValue} onChange={(e) => setForm({ ...form, residualValue: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/60 focus:outline-none" />
           <label className="flex flex-col gap-1 text-xs text-slate-700">
             Metode
-            <select value={form.method} onChange={(e) => setForm({ ...form, method: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none">
+            <select value={form.method} onChange={(e) => setForm({ ...form, method: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-accent/60 focus:outline-none">
               <option value="STRAIGHT_LINE">Garis Lurus</option>
               <option value="DECLINING_BALANCE">Saldo Menurun (2×)</option>
             </select>
           </label>
-          <input placeholder="Umur komersial (bulan) *" type="number" min="1" value={form.commercialLifeMonths} onChange={(e) => setForm({ ...form, commercialLifeMonths: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/60 focus:outline-none" />
+          <input placeholder="Umur komersial (bulan) *" type="number" min="1" value={form.commercialLifeMonths} onChange={(e) => setForm({ ...form, commercialLifeMonths: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/60 focus:outline-none" />
           <label className="flex flex-col gap-1 text-xs text-slate-700">
             Kelompok fiskal (Pasal 11)
-            <select value={form.fiscalGroup} onChange={(e) => setForm({ ...form, fiscalGroup: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none">
+            <select value={form.fiscalGroup} onChange={(e) => setForm({ ...form, fiscalGroup: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-accent/60 focus:outline-none">
               {FISCAL_OPTIONS.map((o) => (
                 <option key={o.value} value={o.value}>{o.label}</option>
               ))}
             </select>
           </label>
-          <input placeholder="Catatan (opsional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/60 focus:outline-none sm:col-span-2 lg:col-span-4" />
+          <input placeholder="Catatan (opsional)" value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/60 focus:outline-none sm:col-span-2 lg:col-span-4" />
           <div className="flex justify-end sm:col-span-2 lg:col-span-4">
-            <button onClick={() => void createAsset()} disabled={saving || !form.name || !form.category || !form.purchaseDate || !form.purchaseCost || !form.commercialLifeMonths} className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40">
+            <button onClick={() => void createAsset()} disabled={saving || !form.name || !form.category || !form.purchaseDate || !form.purchaseCost || !form.commercialLifeMonths} className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1f49ce] disabled:cursor-not-allowed disabled:opacity-40">
               {saving ? "Menyimpan…" : "Simpan Aset"}
             </button>
           </div>
@@ -341,12 +341,12 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
           </div>
           <div className="flex items-center gap-2">
             {monthInput(reconPeriod, setReconPeriod)}
-            <button onClick={() => void loadRecon(clientId, reconPeriod)} className="rounded border border-slate-300 px-3 py-2 text-xs text-slate-800 hover:border-yellow-400/50 hover:text-amber-600">
+            <button onClick={() => void loadRecon(clientId, reconPeriod)} className="rounded border border-slate-300 px-3 py-2 text-xs text-slate-800 hover:border-accent/50 hover:text-accent">
               Muat
             </button>
             <a
               href={`/api/clients/${clientId}/assets/report?period=${reconPeriod}&format=csv`}
-              className="rounded border border-slate-300 px-3 py-2 text-xs text-slate-800 hover:border-yellow-400/50 hover:text-amber-600"
+              className="rounded border border-slate-300 px-3 py-2 text-xs text-slate-800 hover:border-accent/50 hover:text-accent"
             >
               ↓ CSV
             </a>
@@ -373,7 +373,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
                     <td className="px-4 py-3 text-right tabular-nums text-slate-700">{formatCurrencyRp(r.purchaseCost)}</td>
                     <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(r.bookValueCommercial)}</td>
                     <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(r.bookValueFiscal)}</td>
-                    <td className={`px-4 py-3 text-right tabular-nums ${r.temporaryDifference === 0 ? "text-slate-700" : "text-amber-600"}`}>
+                    <td className={`px-4 py-3 text-right tabular-nums ${r.temporaryDifference === 0 ? "text-slate-700" : "text-accent"}`}>
                       {formatCurrencyRp(r.temporaryDifference)}
                     </td>
                   </tr>
@@ -382,7 +382,7 @@ export function AssetsView({ clients }: { clients: { id: string; name: string }[
                   <td className="px-4 py-3 text-slate-900" colSpan={3}>Total</td>
                   <td className="px-4 py-3 text-right tabular-nums text-slate-900">{formatCurrencyRp(recon.totals.bookValueCommercial)}</td>
                   <td className="px-4 py-3 text-right tabular-nums text-slate-900">{formatCurrencyRp(recon.totals.bookValueFiscal)}</td>
-                  <td className={`px-4 py-3 text-right tabular-nums ${recon.totals.temporaryDifference === 0 ? "text-slate-700" : "text-amber-600"}`}>
+                  <td className={`px-4 py-3 text-right tabular-nums ${recon.totals.temporaryDifference === 0 ? "text-slate-700" : "text-accent"}`}>
                     {formatCurrencyRp(recon.totals.temporaryDifference)}
                   </td>
                 </tr>
@@ -423,7 +423,7 @@ function AssetRow({
         <td className="px-4 py-3 text-xs text-slate-700">{asset.fiscalGroupLabel}</td>
         <td className="px-4 py-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(asset.bookValueCommercial)}</td>
         <td className="px-4 py-3">
-          <button onClick={onToggle} className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600">
+          <button onClick={onToggle} className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:border-accent/50 hover:text-accent">
             {open ? "Tutup" : "Jadwal"}
           </button>
         </td>
@@ -464,7 +464,7 @@ function AssetRow({
                         <td className="py-2 pr-3 text-right tabular-nums text-slate-800">{formatCurrencyRp(s.bookValueFiscal)}</td>
                         <td className="py-2">
                           {s.journalEntryId ? (
-                            <a href={`/dashboard/reports/ledger`} className="text-amber-600/90 hover:underline">
+                            <a href={`/dashboard/reports/ledger`} className="text-accent/90 hover:underline">
                               ✓ tercatat
                             </a>
                           ) : (
@@ -509,7 +509,7 @@ function BulkUploadAssets({ clientId, onUploaded }: { clientId: string; onUpload
   };
 
   return (
-    <label className={`cursor-pointer rounded-lg border px-3 py-2 text-sm transition ${uploading ? "opacity-50" : "border-slate-200 text-slate-700 hover:border-yellow-400/50"}`}>
+    <label className={`cursor-pointer rounded-lg border px-3 py-2 text-sm transition ${uploading ? "opacity-50" : "border-slate-200 text-slate-700 hover:border-accent/50"}`}>
       {uploading ? "Mengupload..." : "⬇ Upload Spreadsheet"}
       <input type="file" accept=".csv,.txt,.tsv" onChange={handleUpload} className="hidden" disabled={uploading} />
       {msg && <span className={`ml-2 text-xs ${msg.startsWith("✅") ? "text-emerald-600" : "text-rose-600"}`}>{msg}</span>}

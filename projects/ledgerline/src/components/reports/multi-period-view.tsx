@@ -220,7 +220,7 @@ function UploadHistoricalReports({
           <input
             type="month" value={histPeriod}
             onChange={(e) => setHistPeriod(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
           />
         </label>
         <label className="flex flex-col gap-1 text-xs text-slate-700">
@@ -228,13 +228,13 @@ function UploadHistoricalReports({
           <input
             type="file" accept=".pdf,.xlsx,.xls,.csv,.jpg,.png"
             onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 file:mr-2 file:rounded file:border-0 file:bg-yellow-400/20 file:px-2 file:py-1 file:text-xs file:text-amber-600"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 file:mr-2 file:rounded file:border-0 file:bg-accent/20 file:px-2 file:py-1 file:text-xs file:text-accent"
           />
         </label>
         <button
           type="button" onClick={() => void handleUpload()}
           disabled={!file || !histPeriod || uploading}
-          className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-amber-600 transition hover:bg-yellow-400/20 disabled:opacity-40"
+          className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20 disabled:opacity-40"
         >
           {uploading ? "Mengupload…" : "Upload"}
         </button>

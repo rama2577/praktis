@@ -101,7 +101,7 @@ export function SignoffPanel({
         <div className="flex flex-wrap gap-2">
           {ws.canSubmit && (
             <button onClick={() => void action("submit")} disabled={acting}
-              className="rounded border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-1 text-xs text-amber-600 hover:bg-yellow-400/20 disabled:opacity-50"
+              className="rounded border border-accent/30 bg-accent/10 px-2.5 py-1 text-xs text-accent hover:bg-accent/20 disabled:opacity-50"
             >{acting ? "…" : "Submit for Review"}</button>
           )}
           {ws.canApprove && (
@@ -129,7 +129,7 @@ export function SignoffPanel({
 
 function Timeline({ active, label }: { active: boolean; label: string }) {
   return (
-    <span className={active ? "text-amber-600" : "text-slate-700"}>
+    <span className={active ? "text-accent" : "text-slate-700"}>
       {active ? "●" : "○"} {label}
     </span>
   );

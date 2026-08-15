@@ -23,7 +23,7 @@ export function CalkView({ clients, period, clientId, setClientId, setPeriod }: 
         <PeriodInput period={period} setPeriod={setPeriod} />
         <a
           href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=calk&format=xlsx` : "#"}
-          className={`rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-amber-600 transition hover:bg-yellow-400/20 ${
+          className={`rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20 ${
             clientId ? "" : "pointer-events-none opacity-40"
           }`}
         >
@@ -32,7 +32,7 @@ export function CalkView({ clients, period, clientId, setClientId, setPeriod }: 
         <a
           href={clientId ? `/api/clients/${clientId}/analytics?period=${period}&scope=calk&format=csv` : "#"}
           className={`rounded-lg border border-slate-200 px-3 py-2 text-sm transition ${
-            clientId ? "text-slate-800 hover:border-yellow-400/50 hover:text-amber-600" : "pointer-events-none opacity-40"
+            clientId ? "text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"
           }`}
         >
           ↓ CSV
@@ -51,7 +51,7 @@ export function CalkView({ clients, period, clientId, setClientId, setPeriod }: 
           <div className="space-y-6">
             {data.sections.map((s) => (
               <section key={s.number}>
-                <h3 className="mb-2 text-sm font-bold text-amber-600">
+                <h3 className="mb-2 text-sm font-bold text-accent">
                   {s.number}. {s.title}
                 </h3>
                 {s.paragraphs.map((p, i) => (

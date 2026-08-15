@@ -177,7 +177,7 @@ export function Spt1771View({
                 <h3 className="text-sm font-medium text-slate-900">🧾 Lampiran I — Rekonsiliasi Fiskal ({data.year})</h3>
                 <p className="text-xs text-slate-700">Koreksi otomatis dari heuristik; angka koreksi bisa diedit langsung.</p>
               </div>
-              <button onClick={exportRekonsiliasi} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-yellow-400/10">
+              <button onClick={exportRekonsiliasi} className="rounded-lg border border-accent/40 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/10">
                 ⬇ Export CSV Lampiran I
               </button>
             </div>
@@ -231,7 +231,7 @@ export function Spt1771View({
                     <td className="px-3 py-2 text-left" colSpan={2}>Koreksi Fiskal Negatif</td>
                     <td className="px-2 py-2" /><td className="px-2 py-2" /><td className="px-2 py-2 font-mono text-emerald-600">{fmt(totals.korNeg)}</td><td className="px-3 py-2" />
                   </tr>
-                  <tr className="border-t border-yellow-400/30 bg-yellow-400/5 font-bold text-yellow-700">
+                  <tr className="border-t border-accent/30 bg-accent/5 font-bold text-accent">
                     <td className="px-3 py-2 text-left" colSpan={2}>Laba Fiskal (Penghasilan Kena Pajak)</td>
                     <td className="px-2 py-2" /><td className="px-2 py-2" /><td className="px-2 py-2" />
                     <td className="px-3 py-2 font-mono">{fmt(totals.fiskal)}</td>
@@ -245,7 +245,7 @@ export function Spt1771View({
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
               <h3 className="text-sm font-medium text-slate-900">🏗️ Lampiran II — Penyusutan & Amortisasi Fiskal</h3>
-              <button onClick={exportPenyusutan} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-yellow-400/10">
+              <button onClick={exportPenyusutan} className="rounded-lg border border-accent/40 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/10">
                 ⬇ Export CSV Lampiran II
               </button>
             </div>
@@ -285,7 +285,7 @@ export function Spt1771View({
           <div className="overflow-hidden rounded-xl border border-slate-200 bg-white">
             <div className="flex flex-wrap items-center justify-between gap-2 border-b border-slate-200 px-4 py-3">
               <h3 className="text-sm font-medium text-slate-900">💰 Lampiran III — Perhitungan PPh Terutang</h3>
-              <button onClick={exportPph} className="rounded-lg border border-yellow-400/40 px-3 py-1.5 text-xs font-medium text-amber-600 hover:bg-yellow-400/10">
+              <button onClick={exportPph} className="rounded-lg border border-accent/40 px-3 py-1.5 text-xs font-medium text-accent hover:bg-accent/10">
                 ⬇ Export CSV Lampiran III
               </button>
             </div>

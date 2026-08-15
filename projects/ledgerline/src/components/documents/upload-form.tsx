@@ -137,7 +137,7 @@ export function UploadForm({ clientId }: { clientId: string }) {
         <button
           type="submit"
           disabled={uploading || !fileName}
-          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-yellow-300 disabled:cursor-not-allowed disabled:opacity-40"
+          className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-[#1f49ce] disabled:cursor-not-allowed disabled:opacity-40"
         >
           {uploading ? "Mengunggah..." : "Upload & Masukkan ke Pipeline"}
         </button>

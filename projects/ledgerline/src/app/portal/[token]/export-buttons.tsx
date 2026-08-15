@@ -49,7 +49,7 @@ export function ExportButtons({ token }: { token: string }) {
               type="button"
               disabled={busy === f.key}
               onClick={() => void download(f.key)}
-              className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-800 transition hover:border-yellow-400/50 hover:bg-slate-200 disabled:opacity-50"
+              className="flex items-center gap-1.5 rounded-lg border border-slate-300 bg-slate-100 px-3 py-2 text-xs font-medium text-slate-800 transition hover:border-accent/50 hover:bg-slate-200 disabled:opacity-50"
             >
               <span>{f.icon}</span>
               {busy === f.key ? "..." : f.label}

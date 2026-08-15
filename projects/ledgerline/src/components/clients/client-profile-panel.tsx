@@ -161,7 +161,7 @@ export function ClientProfilePanel({
             type="button"
             disabled={busy}
             onClick={() => void approve()}
-            className="mt-3 rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-slate-950 transition hover:bg-emerald-400 disabled:opacity-50"
+            className="mt-3 rounded-lg bg-emerald-500 px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-emerald-400 disabled:opacity-50"
           >
             {busy ? "Menyimpan…" : "✓ Setujui Mapping (→ Siap Dipakai)"}
           </button>
@@ -195,7 +195,7 @@ export function ClientProfilePanel({
               onChange={(e) => setRawList(e.target.value)}
               rows={5}
               placeholder={"1000 | Kas\n4110 | Penjualan Barang\n5100 | Beban Gaji"}
-              className="mt-2 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+              className="mt-2 w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-800 focus:border-accent/50 focus:outline-none"
             />
           </div>
           <div className="flex flex-wrap items-center gap-3">
@@ -203,12 +203,12 @@ export function ClientProfilePanel({
               value={sourcePeriod}
               onChange={(e) => setSourcePeriod(e.target.value)}
               placeholder="Periode sumber (mis. 2026-01)"
-              className="w-48 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+              className="w-48 rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-800 focus:border-accent/50 focus:outline-none"
             />
             <button
               type="submit"
               disabled={busy}
-              className="rounded-lg bg-yellow-400 px-3 py-2 text-xs font-semibold text-slate-950 transition hover:bg-yellow-300 disabled:opacity-50"
+              className="rounded-lg bg-accent px-3 py-2 text-xs font-semibold text-white transition hover:bg-[#1f49ce] disabled:opacity-50"
             >
               {busy ? "Memproses…" : "🤖 Belajar Mapping"}
             </button>

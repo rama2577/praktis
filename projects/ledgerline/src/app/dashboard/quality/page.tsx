@@ -15,7 +15,7 @@ const STATUS_TONE: Record<string, string> = {
   REJECTED: "bg-red-500",
   DRAFT: "bg-slate-500",
   JUNIOR_REVIEW: "bg-amber-400",
-  SENIOR_REVIEW: "bg-yellow-400",
+  SENIOR_REVIEW: "bg-accent",
   TAX_REVIEW: "bg-sky-500",
   PARTNER_APPROVAL: "bg-purple-500",
 };
@@ -85,7 +85,7 @@ export default async function QualityPage() {
   const cards = [
     { label: "Jurnal Total", value: String(m.totalJournals), hint: `${m.approvedCount} disetujui · ${m.rejectedCount} ditolak`, tone: "text-slate-900" },
     { label: "Lolos Tanpa Revisi", value: `${m.firstPassRate.toLocaleString("id-ID")}%`, hint: "task review tanpa reject", tone: "text-emerald-600" },
-    { label: "Exception Rate", value: `${m.exceptionRate.toLocaleString("id-ID")}%`, hint: `${m.exceptionCount} jurnal ber-exception`, tone: m.exceptionRate > 0 ? "text-amber-600" : "text-emerald-600" },
+    { label: "Exception Rate", value: `${m.exceptionRate.toLocaleString("id-ID")}%`, hint: `${m.exceptionCount} jurnal ber-exception`, tone: m.exceptionRate > 0 ? "text-accent" : "text-emerald-600" },
     { label: "Rata-rata Confidence", value: m.avgConfidenceAll === null ? "—" : `${pct(m.avgConfidenceAll * 100, 100)}%`, hint: "skor keyakinan AI", tone: "text-sky-600" },
   ];
 
@@ -180,7 +180,7 @@ export default async function QualityPage() {
                     <TD numeric className="text-right text-slate-700">
                       {c.avgMinutes === null ? "—" : `${c.avgMinutes} mnt`}
                     </TD>
-                    <TD numeric className={`text-right ${c.slaRate >= 80 ? "text-emerald-600" : c.slaRate >= 50 ? "text-amber-600" : "text-red-600"}`}>
+                    <TD numeric className={`text-right ${c.slaRate >= 80 ? "text-emerald-600" : c.slaRate >= 50 ? "text-accent" : "text-red-600"}`}>
                       {c.slaRate}%
                     </TD>
                   </TR>
@@ -195,7 +195,7 @@ export default async function QualityPage() {
         <CardHeader
           title="Jurnal Exception"
           action={
-            <Link href="/dashboard/exceptions" className="text-xs text-amber-600 hover:underline">
+            <Link href="/dashboard/exceptions" className="text-xs text-accent hover:underline">
               Kelola exception →
             </Link>
           }
@@ -283,7 +283,7 @@ async function OcrMetricsPanel({ firmId }: { firmId: string }) {
   const idr = new Intl.NumberFormat("id-ID", { maximumFractionDigits: 0 });
   const ocrCards = [
     { label: "Dokumen Diproses (30 hr)", value: String(ocr.totalDocuments), hint: `${ocr.localCount} OCR lokal · ${ocr.pdfTextCount} PDF digital · ${ocr.xlsxCount} XLSX`, tone: "text-slate-900" },
-    { label: "Fallback Vision", value: `${ocr.visionFallbackRate.toLocaleString("id-ID")}%`, hint: `${ocr.visionCount} dokumen ke vision LLM`, tone: ocr.visionFallbackRate > 30 ? "text-amber-600" : "text-emerald-600" },
+    { label: "Fallback Vision", value: `${ocr.visionFallbackRate.toLocaleString("id-ID")}%`, hint: `${ocr.visionCount} dokumen ke vision LLM`, tone: ocr.visionFallbackRate > 30 ? "text-accent" : "text-emerald-600" },
     { label: "Strong Model", value: `${ocr.strongRate.toLocaleString("id-ID")}%`, hint: "retry glm-4.6 utk hasil jelek", tone: "text-sky-600" },
     { label: "Est. Biaya OCR", value: ocr.totalEstCostUsd === 0 ? "Rp 0" : `Rp ${idr.format(ocr.totalEstCostIdr)}`, hint: `$${ocr.totalEstCostUsd.toFixed(4)} · ${idr.format(ocr.totalEstTokens)} token`, tone: "text-violet-600" },
   ];

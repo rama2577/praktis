@@ -192,7 +192,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
           <select
             value={clientId}
             onChange={(e) => { setClientId(e.target.value); setReport(null); }}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
           >
             {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
@@ -202,32 +202,32 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
           <input
             type="month" value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
           />
         </label>
         <a
           href={exportUrl("csv") ?? "#"} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-slate-200 text-slate-800 hover:border-yellow-400/50 hover:text-amber-600" : "pointer-events-none opacity-40"}`}
+            clientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
         >↓ Ekspor CSV</a>
         <a
           href={exportUrl("xlsx") ?? "#"} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-slate-200 text-slate-800 hover:border-yellow-400/50 hover:text-amber-600" : "pointer-events-none opacity-40"}`}
+            clientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
         >↓ Ekspor XLSX</a>
-        <span className="rounded-lg border border-yellow-400/30 bg-yellow-400/10 px-3 py-2 text-xs text-amber-600">
+        <span className="rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
           📋 10-Kolom Big 4
         </span>
         <a
           href={clientId ? `/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet-csv` : "#"}
           aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-yellow-400/40 bg-yellow-400/10 text-amber-600 hover:bg-yellow-400/20" : "pointer-events-none opacity-40"
+            clientId ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/20" : "pointer-events-none opacity-40"
           }`}
         >↓ Lajur CSV</a>
         {report?.periodStatus === "OPEN" && canLock && (
           <button type="button" onClick={() => void handleLock()} disabled={locking}
-            className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-amber-600 transition hover:bg-yellow-400/20 disabled:opacity-50">
+            className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20 disabled:opacity-50">
             {locking ? "Mengunci…" : "🔒 Kunci Periode"}
           </button>
         )}
@@ -328,12 +328,12 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                   <tbody>
                     {worksheet.lines.map((l) => {
                       const isLaba = l.accountName.includes("LABA");
-                      const rowBg = isLaba ? "bg-yellow-400/10" : "";
+                      const rowBg = isLaba ? "bg-accent/10" : "";
                       return (
                         <tr
                           key={l.no}
                           className={`border-b border-slate-200/60 ${
-                            isLaba ? "bg-yellow-400/10 font-semibold text-slate-900" : "text-slate-700"
+                            isLaba ? "bg-accent/10 font-semibold text-slate-900" : "text-slate-700"
                           } ${l.isAdjusting ? "ring-1 ring-inset ring-amber-400/30" : ""}`}
                         >
                           <td className={`sticky left-0 z-10 px-2 py-1.5 text-slate-700 ${rowBg}`}>{l.no}</td>
@@ -342,15 +342,15 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                             {l.accountCode ? (
                               <a
                                 href={`/dashboard/reports/ledger?clientId=${encodeURIComponent(report.clientId)}&accountCode=${encodeURIComponent(l.accountCode)}&period=${encodeURIComponent(worksheet.period)}`}
-                                className="text-slate-700 hover:text-amber-600 hover:underline transition"
+                                className="text-slate-700 hover:text-accent hover:underline transition"
                                 title={`Buku Besar ${l.accountName}`}
                               >{l.accountName}</a>
                             ) : l.accountName}
                           </td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.nsDebit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.nsCredit)}</td>
-                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-100/20 ${l.isAdjusting ? "text-amber-600" : ""}`}>{fmtOrEmpty(l.adjDebit)}</td>
-                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-100/20 ${l.isAdjusting ? "text-amber-600" : ""}`}>{fmtOrEmpty(l.adjCredit)}</td>
+                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-100/20 ${l.isAdjusting ? "text-accent" : ""}`}>{fmtOrEmpty(l.adjDebit)}</td>
+                          <td className={`px-2 py-1.5 text-right font-mono text-[11px] bg-slate-100/20 ${l.isAdjusting ? "text-accent" : ""}`}>{fmtOrEmpty(l.adjCredit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.adjNsDebit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.adjNsCredit)}</td>
                           <td className="px-2 py-1.5 text-right font-mono text-[11px]">{fmtOrEmpty(l.lrDebit)}</td>
@@ -433,7 +433,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
                     <TD className="font-mono">
                       <Link
                         href={`/dashboard/reports/ledger?clientId=${report.clientId}&accountCode=${encodeURIComponent(r.accountCode)}&period=${report.period}`}
-                        className="text-amber-600/90 underline-offset-2 hover:underline"
+                        className="text-accent/90 underline-offset-2 hover:underline"
                         title={`Buku besar ${r.accountName}`}
                       >
                         {r.accountCode}

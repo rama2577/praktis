@@ -116,7 +116,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
             <button
               type="button"
               onClick={() => fileRef.current?.click()}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 transition hover:border-yellow-400/50"
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 transition hover:border-accent/50"
             >
               {file ? `📎 ${file.name}` : "Pilih file .xlsx"}
             </button>
@@ -129,7 +129,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
             <button
               onClick={uploadPreview}
               disabled={!file || loading}
-              className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-yellow-300 disabled:opacity-40"
+              className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-[#1f49ce] disabled:opacity-40"
             >
               {loading ? "Memproses…" : "Tinjau →"}
             </button>
@@ -161,7 +161,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
           {/* Peringatan */}
           {preview.warnings.length > 0 && (
             <div className="rounded-lg border border-amber-500/30 bg-amber-500/5 p-3">
-              <p className="mb-1 text-xs font-semibold text-amber-600">⚠ {preview.warnings.length} peringatan</p>
+              <p className="mb-1 text-xs font-semibold text-accent">⚠ {preview.warnings.length} peringatan</p>
               <ul className="list-inside list-disc space-y-0.5 text-[11px] text-amber-700/80">
                 {preview.warnings.slice(0, 8).map((w, i) => (
                   <li key={i}>{w}</li>
@@ -238,7 +238,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
             <button
               onClick={commit}
               disabled={loading || !clientName.trim()}
-              className="rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-yellow-300 disabled:opacity-40"
+              className="rounded-md bg-accent px-4 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-[#1f49ce] disabled:opacity-40"
             >
               {loading ? "Mengimpor…" : `Import ${preview.stats.coaCount} akun + ${preview.stats.journalGroups} jurnal`}
             </button>
@@ -263,7 +263,7 @@ export function WorksheetImportWizard({ onDone }: { onDone: () => void }) {
             </button>
             <button
               onClick={() => router.push(`/dashboard/clients/${result.clientId}`)}
-              className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-yellow-300"
+              className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] transition hover:bg-[#1f49ce]"
             >
               Buka klien →
             </button>

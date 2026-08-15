@@ -100,7 +100,7 @@ export function MonthlyMatrixView({
                     {data.months.map((m) => (
                       <th key={m.period} className="px-2 py-2 font-medium">{monthLabel(m.period)}</th>
                     ))}
-                    <th className="px-3 py-2 font-medium text-amber-600">Total</th>
+                    <th className="px-3 py-2 font-medium text-accent">Total</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -114,7 +114,7 @@ export function MonthlyMatrixView({
                       {data.months.map((m) => (
                         <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-600" : ""}`}>{fmt(get(m))}</td>
                       ))}
-                      <td className="px-3 py-2 font-mono text-yellow-700">
+                      <td className="px-3 py-2 font-mono text-accent">
                         {fmt(label === "Pendapatan" ? data.totals.pendapatan : label === "Beban" ? data.totals.beban : data.totals.laba)}
                       </td>
                     </tr>
@@ -138,7 +138,7 @@ export function MonthlyMatrixView({
                     {data.months.map((m) => (
                       <th key={m.period} className="px-2 py-2 font-medium">{monthLabel(m.period)}</th>
                     ))}
-                    <th className="px-3 py-2 font-medium text-amber-600">Des (Akhir Th)</th>
+                    <th className="px-3 py-2 font-medium text-accent">Des (Akhir Th)</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -153,7 +153,7 @@ export function MonthlyMatrixView({
                       {data.months.map((m) => (
                         <td key={m.period} className={`px-2 py-2 font-mono ${get(m) < 0 ? "text-rose-600" : ""}`}>{fmt(get(m))}</td>
                       ))}
-                      <td className="px-3 py-2 font-mono text-yellow-700">
+                      <td className="px-3 py-2 font-mono text-accent">
                         {fmt(label === "Total Aset" ? data.totals.aset : label === "Total Liabilitas" ? data.totals.liabilitas : label === "Total Ekuitas (incl. laba YTD)" ? data.totals.ekuitas : data.months[11]?.labaKumulatif ?? 0)}
                       </td>
                     </tr>

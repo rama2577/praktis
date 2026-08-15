@@ -48,7 +48,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
       {/* Header — landing klien */}
       <div className="mb-8">
         <div className="flex items-center gap-2">
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-yellow-400/30 bg-yellow-400/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-amber-600">
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-accent/30 bg-accent/10 px-2.5 py-1 text-[11px] font-semibold uppercase tracking-wider text-accent">
             <svg
               width="12"
               height="12"
@@ -94,7 +94,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
               name="docType"
               defaultValue="BANK_STATEMENT"
               aria-label="Jenis dokumen"
-              className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+              className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
             >
               {ACTIVE_DOC_TYPES.map((value) => (
                 <option key={value} value={value}>
@@ -108,11 +108,11 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
               required
               accept=".pdf,.jpg,.jpeg,.xlsx"
               aria-label="Pilih berkas"
-              className="min-w-0 flex-1 text-sm text-slate-700 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-yellow-400 file:px-3 file:py-2 file:text-xs file:font-semibold file:text-slate-950 hover:file:bg-yellow-300"
+              className="min-w-0 flex-1 text-sm text-slate-700 file:mr-3 file:cursor-pointer file:rounded-lg file:border-0 file:bg-accent file:px-3 file:py-2 file:text-xs file:font-semibold file:text-white hover:file:bg-[#1f49ce]"
             />
             <button
               type="submit"
-              className="rounded-lg bg-yellow-400 px-4 py-2 text-sm font-semibold text-slate-950 transition hover:bg-yellow-300"
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-white transition hover:bg-[#1f49ce]"
             >
               Upload
             </button>
@@ -144,7 +144,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
           },
         ].map((item) => (
           <div key={item.step} className="rounded-xl border border-slate-200 bg-white p-4">
-            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-yellow-400/15 text-xs font-bold text-amber-600">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-accent/15 text-xs font-bold text-accent">
               {item.step}
             </div>
             <p className="mt-2 text-sm font-medium text-slate-800">{item.title}</p>
@@ -187,7 +187,7 @@ export default async function PortalPage({ params }: { params: Promise<{ token: 
                         className={`rounded-full px-2 py-1 ${
                           step.reached
                             ? i === item.stepIndex
-                              ? "bg-yellow-400 text-slate-950"
+                              ? "bg-accent text-white"
                               : "bg-emerald-500/20 text-emerald-600"
                             : "bg-slate-100 text-slate-700"
                         }`}

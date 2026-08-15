@@ -44,7 +44,7 @@ export function KnowledgeBrowser({ entries }: { entries: KnowledgeEntry[] }) {
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Cari referensi (mis. PPN, PSAK 72, piutang)…"
           aria-label="Cari knowledge base"
-          className="w-full max-w-md rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/50 focus:outline-none"
+          className="w-full max-w-md rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
         />
         <div className="flex flex-wrap gap-2 text-xs">
           {categories.map(([cat, count]) => (

@@ -62,7 +62,7 @@ export function HighlightsTable({ data, loading, formatPeriod }: { data: MultiPe
           <tr className="border-b border-slate-200 text-[11px] text-slate-700">
             <th className="px-3 py-2 font-medium">Pos</th>
             {periods.map((p) => (
-              <th key={p.period} className={`px-3 py-2 text-right font-medium ${p.period === latest.period ? "text-amber-600" : ""}`}>
+              <th key={p.period} className={`px-3 py-2 text-right font-medium ${p.period === latest.period ? "text-accent" : ""}`}>
                 {formatPeriod ? formatPeriod(p.period) : p.period}
               </th>
             ))}
@@ -71,7 +71,7 @@ export function HighlightsTable({ data, loading, formatPeriod }: { data: MultiPe
         <tbody>
           {/* Laba Rugi */}
           <tr className="bg-slate-100/30">
-            <td colSpan={periods.length + 1} className="px-3 py-1.5 text-[11px] font-semibold text-amber-600/80">
+            <td colSpan={periods.length + 1} className="px-3 py-1.5 text-[11px] font-semibold text-accent/80">
               LAPORAN LABA RUGI
             </td>
           </tr>
@@ -81,7 +81,7 @@ export function HighlightsTable({ data, loading, formatPeriod }: { data: MultiPe
 
           {/* Posisi Keuangan */}
           <tr className="bg-slate-100/30">
-            <td colSpan={periods.length + 1} className="px-3 py-1.5 text-[11px] font-semibold text-amber-600/80">
+            <td colSpan={periods.length + 1} className="px-3 py-1.5 text-[11px] font-semibold text-accent/80">
               POSISI KEUANGAN
             </td>
           </tr>
@@ -91,7 +91,7 @@ export function HighlightsTable({ data, loading, formatPeriod }: { data: MultiPe
 
           {/* Rasio */}
           <tr className="bg-slate-100/30">
-            <td colSpan={periods.length + 1} className="px-3 py-1.5 text-[11px] font-semibold text-amber-600/80">
+            <td colSpan={periods.length + 1} className="px-3 py-1.5 text-[11px] font-semibold text-accent/80">
               RASIO KEUANGAN
             </td>
           </tr>

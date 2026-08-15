@@ -144,7 +144,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
           <button
             type="button"
             onClick={() => setShowForm((v) => !v)}
-            className="rounded-lg bg-yellow-400 px-3 py-1.5 text-xs font-semibold text-slate-950 transition hover:bg-yellow-300"
+            className="rounded-lg bg-accent px-3 py-1.5 text-xs font-semibold text-white transition hover:bg-[#1f49ce]"
           >
             {showForm ? "Tutup Form" : "+ Versi Baru"}
           </button>
@@ -168,7 +168,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
               <select
                 value={fCategory}
                 onChange={(e) => setFCategory(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
               >
                 <option>Peraturan Pajak</option>
                 <option>Chart of Accounts (COA)</option>
@@ -189,7 +189,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                 value={fName}
                 onChange={(e) => setFName(e.target.value)}
                 placeholder="tax-rules-ppn"
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
               />
             </label>
           </div>
@@ -200,7 +200,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                 value={fTitle}
                 onChange={(e) => setFTitle(e.target.value)}
                 placeholder="Aturan PPN v2"
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
               />
             </label>
             <label className="block text-xs">
@@ -209,7 +209,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
                 type="date"
                 value={fEffective}
                 onChange={(e) => setFEffective(e.target.value)}
-                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
               />
             </label>
           </div>
@@ -220,7 +220,7 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
               onChange={(e) => setFContent(e.target.value)}
               rows={6}
               placeholder="Tulis konten aturan baru…"
-              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 font-mono text-xs text-slate-800 focus:border-accent/50 focus:outline-none"
             />
           </label>
           <label className="block text-xs">
@@ -229,13 +229,13 @@ export function KnowledgeAdmin({ canEdit }: { canEdit: boolean }) {
               value={fNote}
               onChange={(e) => setFNote(e.target.value)}
               placeholder="Alasan perubahan…"
-              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+              className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
             />
           </label>
           <button
             type="submit"
             disabled={busy === "new"}
-            className="rounded-lg bg-yellow-400 px-4 py-2 text-xs font-semibold text-slate-950 transition hover:bg-yellow-300 disabled:opacity-50"
+            className="rounded-lg bg-accent px-4 py-2 text-xs font-semibold text-white transition hover:bg-[#1f49ce] disabled:opacity-50"
           >
             {busy === "new" ? "Menyimpan…" : "Simpan Draf"}
           </button>

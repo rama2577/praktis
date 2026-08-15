@@ -25,7 +25,7 @@ export function OutboxClientFilter({
           const v = e.target.value;
           router.push(v ? `/dashboard/outbox?client=${encodeURIComponent(v)}` : "/dashboard/outbox");
         }}
-        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+        className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
       >
         <option value="">Semua klien ({total})</option>
         {clients.map((c) => (

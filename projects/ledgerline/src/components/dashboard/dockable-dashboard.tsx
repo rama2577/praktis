@@ -80,10 +80,10 @@ function KpiPanel({ kpi }: PanelProps) {
         <a
           key={c.label}
           href={c.href}
-          className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-yellow-400/40 hover:bg-slate-50"
+          className="rounded-xl border border-slate-200 bg-white p-4 transition hover:border-accent/40 hover:bg-slate-50"
         >
           <p className="text-[11px] text-slate-700">{c.label}</p>
-          <p className="mt-1 font-mono text-2xl font-semibold text-amber-600">{c.value}</p>
+          <p className="mt-1 font-mono text-2xl font-semibold text-accent">{c.value}</p>
           <p className="mt-1 text-[11px] text-slate-700">{c.sub}</p>
         </a>
       ))}
@@ -99,13 +99,13 @@ function PipelinePanel({ pipeline }: PanelProps) {
         <a
           key={s.key}
           href="/dashboard/pipeline"
-          className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 transition hover:border-yellow-400/40 hover:bg-slate-50"
+          className="flex items-center justify-between rounded-lg border border-slate-200 bg-white px-3 py-2 transition hover:border-accent/40 hover:bg-slate-50"
         >
           <div>
             <p className="text-sm font-medium text-slate-800">{s.label}</p>
             <p className="text-[11px] text-slate-700">{s.hint}</p>
           </div>
-          <span className="rounded-full bg-yellow-400/15 px-2.5 py-1 font-mono text-sm text-amber-600">{s.count}</span>
+          <span className="rounded-full bg-accent/15 px-2.5 py-1 font-mono text-sm text-accent">{s.count}</span>
         </a>
       ))}
     </div>
@@ -130,7 +130,7 @@ function SlaPanel({ sla }: PanelProps) {
           {sla.rows.map((r) => (
             <tr key={r.stage} className="border-b border-slate-200/50 text-slate-700 transition hover:bg-white">
               <td className="py-1.5">
-                <a href="/dashboard/sla" className="block text-slate-800 hover:text-amber-600">
+                <a href="/dashboard/sla" className="block text-slate-800 hover:text-accent">
                   {r.stage}
                 </a>
               </td>
@@ -160,7 +160,7 @@ function QualityPanel({ insights }: PanelProps) {
             <a key={t.weekLabel} href="/dashboard/quality" className="flex items-center gap-2 rounded transition hover:bg-white">
               <span className="w-16 text-[10px] text-slate-700">{t.weekLabel}</span>
               <div className="h-3 flex-1 overflow-hidden rounded bg-slate-100">
-                <div className="h-full bg-yellow-400/70" style={{ width: `${(t.totalJournals / max) * 100}%` }} />
+                <div className="h-full bg-accent/70" style={{ width: `${(t.totalJournals / max) * 100}%` }} />
               </div>
               <span className="w-16 text-right font-mono text-[10px] text-slate-700">{t.totalJournals}</span>
               {t.exceptionRate > 0 && <span className="font-mono text-[10px] text-rose-600">⚠{t.exceptionRate}%</span>}
@@ -175,7 +175,7 @@ function QualityPanel({ insights }: PanelProps) {
             <a
               key={ind.industry}
               href="/dashboard/quality"
-              className="flex justify-between rounded border border-slate-200 bg-white px-2 py-1 text-[11px] transition hover:border-yellow-400/40 hover:bg-slate-50"
+              className="flex justify-between rounded border border-slate-200 bg-white px-2 py-1 text-[11px] transition hover:border-accent/40 hover:bg-slate-50"
             >
               <span className="text-slate-700">{ind.industry}</span>
               <span className="font-mono text-slate-700">{ind.totalJournals} jurnal · exc {ind.exceptionRate}% · fp {ind.firstPassRate}%</span>
@@ -332,7 +332,7 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
             aria-label="Ganti preset layout"
             value={activeRole}
             onChange={(e) => applyPreset(e.target.value)}
-            className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] text-slate-700 transition hover:border-yellow-400/50"
+            className="rounded-md border border-slate-200 bg-slate-50 px-2 py-1 text-[11px] text-slate-700 transition hover:border-accent/50"
           >
             {PRESET_OPTIONS.map((o) => (
               <option key={o.role} value={o.role}>
@@ -351,7 +351,7 @@ export function DockableDashboard({ data, role = "ADMIN" }: { data: PanelProps; 
       </div>
       <div className="h-[70vh] overflow-hidden rounded-xl border border-slate-200">
         <DockviewReact
-          className="dockview-theme-dark"
+          className="dockview-theme-light"
           components={{
             kpi: () => <KpiPanel kpi={data.kpi} />,
             pipeline: () => <PipelinePanel pipeline={data.pipeline} />,

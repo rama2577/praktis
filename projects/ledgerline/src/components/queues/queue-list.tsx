@@ -232,9 +232,9 @@ export function QueueList() {
 
       {/* EN-06: Batch approve bar — muncul saat ada task terpilih */}
       {selected.size > 0 && (
-        <div className="sticky top-2 z-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-yellow-400/40 bg-slate-50/95 px-4 py-3 shadow-lg backdrop-blur">
+        <div className="sticky top-2 z-10 flex flex-wrap items-center justify-between gap-3 rounded-xl border border-accent/40 bg-slate-50/95 px-4 py-3 shadow-lg backdrop-blur">
           <p className="text-sm text-slate-800">
-            <span className="font-semibold text-amber-600">{selected.size}</span> task dipilih · confidence ≥{" "}
+            <span className="font-semibold text-accent">{selected.size}</span> task dipilih · confidence ≥{" "}
             {Math.round(BATCH_CONFIDENCE_MIN * 100)}%
           </p>
           <div className="flex items-center gap-2">
@@ -250,7 +250,7 @@ export function QueueList() {
               type="button"
               disabled={batchBusy}
               onClick={() => void submitBatch()}
-              className="rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-slate-900 hover:bg-yellow-300 disabled:opacity-50"
+              className="rounded-lg bg-accent px-4 py-1.5 text-sm font-semibold text-slate-900 hover:bg-[#1f49ce] disabled:opacity-50"
             >
               {batchBusy ? "Memproses…" : `Setujui ${selected.size}`}
             </button>
@@ -265,7 +265,7 @@ export function QueueList() {
           <select
             value={clientFilter}
             onChange={(e) => setClientFilter(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
           >
             <option value="">Semua klien ({data?.data.length ?? 0})</option>
             {clients.map((c) => (
@@ -316,7 +316,7 @@ export function QueueList() {
                             ? `Confidence di bawah ambang batch (${Math.round(BATCH_CONFIDENCE_MIN * 100)}%)`
                             : "Pilih untuk batch approve"
                         }
-                        className="h-4 w-4 shrink-0 rounded border-slate-300 bg-slate-100 accent-yellow-400 disabled:cursor-not-allowed disabled:opacity-40"
+                        className="h-4 w-4 shrink-0 rounded border-slate-300 bg-slate-100 accent-[#2b5aed] disabled:cursor-not-allowed disabled:opacity-40"
                       />
                       <span className="font-medium text-slate-900">{task.journalEntry.client.name}</span>
                       {task.urgent && <StatusBadge label="Urgent" tone="danger" />}
@@ -424,7 +424,7 @@ export function QueueList() {
                         onChange={(e) => setNote(e.target.value)}
                         placeholder="Catatan review (wajib untuk Tolak)…"
                         rows={2}
-                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/50 focus:outline-none"
+                        className="w-full rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
                       />
                       <div className="flex flex-wrap gap-2">
                         <button
@@ -437,7 +437,7 @@ export function QueueList() {
                         <button
                           disabled={busy}
                           onClick={() => submitAction(task.id, "return")}
-                          className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-amber-600 hover:bg-amber-500/20 disabled:opacity-50"
+                          className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-4 py-2 text-sm font-medium text-accent hover:bg-amber-500/20 disabled:opacity-50"
                         >
                           Kembalikan <kbd className="ml-1 rounded border border-amber-500/30 bg-amber-500/10 px-1 py-0.5 text-[10px]">R</kbd>
                         </button>

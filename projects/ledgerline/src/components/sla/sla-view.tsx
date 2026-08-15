@@ -88,7 +88,7 @@ export function SlaView() {
         </Card>
         <Card className="p-4">
           <div className="text-xs text-slate-700">Menjelang batas</div>
-          <div className="font-display text-xl font-bold text-amber-600">{counts.AT_RISK ?? 0}</div>
+          <div className="font-display text-xl font-bold text-accent">{counts.AT_RISK ?? 0}</div>
         </Card>
         <Card className="p-4">
           <div className="text-xs text-slate-700">Terlambat</div>

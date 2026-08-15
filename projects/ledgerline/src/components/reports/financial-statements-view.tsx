@@ -124,8 +124,8 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
               onClick={() => setTab(t.value)}
               className={`rounded-lg px-3 py-2 text-sm font-medium transition ${
                 tab === t.value
-                  ? "bg-yellow-400/20 text-amber-600 ring-1 ring-yellow-400/40"
-                  : "border border-slate-200 text-slate-700 hover:border-yellow-400/40"
+                  ? "bg-accent/20 text-accent ring-1 ring-accent/40"
+                  : "border border-slate-200 text-slate-700 hover:border-accent/40"
               }`}
             >
               {t.label}

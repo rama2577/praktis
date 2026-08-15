@@ -86,7 +86,7 @@ export function AnalysisView({ clients, period, clientId, setClientId, setPeriod
           </div>
           {/* AI Variance Decomposition */}
           {variance && (
-            <Card className="border-yellow-400/20 bg-yellow-400/5 p-5">
+            <Card className="border-accent/20 bg-accent/5 p-5">
               <div className="mb-3 flex items-center gap-2">
                 <h3 className="font-display text-sm font-bold text-slate-900">🤖 Analisis Varians AI</h3>
                 <Badge label={`${variance.currentPeriod} vs ${variance.priorPeriod}`} tone="accent" />

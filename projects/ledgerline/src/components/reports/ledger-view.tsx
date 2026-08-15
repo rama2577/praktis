@@ -174,7 +174,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
       <div className="flex flex-wrap items-center justify-between gap-3">
         <Link
           href={backHref}
-          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-yellow-400/50 hover:text-amber-600"
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-700 transition hover:border-accent/50 hover:text-accent"
         >
           ← Kembali ke Neraca Percobaan
         </Link>
@@ -221,13 +221,13 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
               <div className="flex gap-2">
                 <a
                   href={`/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}&format=csv`}
-                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-yellow-400/50 hover:text-amber-600"
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-accent/50 hover:text-accent"
                 >
                   ↓ CSV
                 </a>
                 <a
                   href={`/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}&format=xlsx`}
-                  className="rounded-lg border border-yellow-400/40 bg-yellow-400/10 px-3 py-2 text-sm text-amber-600 transition hover:bg-yellow-400/20"
+                  className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20"
                 >
                   ↓ XLSX
                 </a>
@@ -236,7 +236,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
           </div>
 
           {report.status === "CLOSED" && (
-            <div className="rounded-xl border border-yellow-400/30 bg-yellow-400/5 px-4 py-3 text-sm text-yellow-700">
+            <div className="rounded-xl border border-accent/30 bg-accent/5 px-4 py-3 text-sm text-accent">
               Periode sudah dikunci — jurnal tidak bisa di-reclass. Perbaikan hanya lewat{" "}
               <Link href="/dashboard/journals" className="underline">
                 jurnal penyesuaian
@@ -285,7 +285,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                         <button
                           type="button"
                           onClick={() => void startEdit(e)}
-                          className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 transition hover:border-yellow-400/50 hover:text-amber-600"
+                          className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 transition hover:border-accent/50 hover:text-accent"
                         >
                           Reclass
                         </button>
@@ -337,27 +337,27 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                     value={l.accountCode}
                     onChange={(e) => updateLine(i, { accountCode: e.target.value })}
                     placeholder="Kode akun"
-                    className="col-span-2 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                    className="col-span-2 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-slate-800 focus:border-accent/50 focus:outline-none"
                   />
                   <input
                     value={l.accountName}
                     onChange={(e) => updateLine(i, { accountName: e.target.value })}
                     placeholder="Nama akun"
-                    className="col-span-4 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                    className="col-span-4 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-slate-800 focus:border-accent/50 focus:outline-none"
                   />
                   <input
                     value={l.debit}
                     onChange={(e) => updateLine(i, { debit: e.target.value })}
                     placeholder="Debit"
                     inputMode="decimal"
-                    className="col-span-2 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-right font-mono text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                    className="col-span-2 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-right font-mono text-slate-800 focus:border-accent/50 focus:outline-none"
                   />
                   <input
                     value={l.credit}
                     onChange={(e) => updateLine(i, { credit: e.target.value })}
                     placeholder="Kredit"
                     inputMode="decimal"
-                    className="col-span-2 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-right font-mono text-slate-800 focus:border-yellow-400/50 focus:outline-none"
+                    className="col-span-2 rounded border border-slate-200 bg-slate-50 px-2 py-1.5 text-right font-mono text-slate-800 focus:border-accent/50 focus:outline-none"
                   />
                   <button
                     type="button"
@@ -375,7 +375,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
               <button
                 type="button"
                 onClick={addLine}
-                className="rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600"
+                className="rounded border border-slate-200 px-2 py-1.5 text-xs text-slate-700 hover:border-accent/50 hover:text-accent"
               >
                 + Tambah baris
               </button>
@@ -398,7 +398,7 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                 type="button"
                 onClick={() => void saveEdit()}
                 disabled={saving || !balanced || editLines.length < 2}
-                className="rounded-lg bg-yellow-400 px-3 py-2 text-sm font-medium text-slate-950 transition hover:bg-yellow-300 disabled:opacity-50"
+                className="rounded-lg bg-accent px-3 py-2 text-sm font-medium text-white transition hover:bg-[#1f49ce] disabled:opacity-50"
               >
                 {saving ? "Menyimpan…" : "Simpan Reclass"}
               </button>

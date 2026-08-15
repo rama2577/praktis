@@ -160,7 +160,7 @@ export default async function ClientDetailPage({
                     <td className="px-4 py-3 text-slate-700">
                       {DOC_TYPE_LABELS[doc.type]}
                       {isReferenceDocType(doc.type) && (
-                        <span className="ml-2 rounded bg-yellow-400/10 px-1.5 py-0.5 text-[10px] font-medium text-amber-600">
+                        <span className="ml-2 rounded bg-accent/10 px-1.5 py-0.5 text-[10px] font-medium text-accent">
                           Referensi
                         </span>
                       )}

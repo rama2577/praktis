@@ -56,7 +56,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
     {
       label: "Jobs in Progress",
       value: fmt(data.jobsInProgress),
-      valueTone: "text-amber-600",
+      valueTone: "text-accent",
       hint: `${fmt(data.aiDraftJobs)} draft AI · ${fmt(data.reviewJobs)} menunggu review`,
       icon: "⚙️",
     },
@@ -90,7 +90,7 @@ export function KpiCards({ data }: { data: DashboardData }) {
             key={card.label}
             className={`card-hover rounded-xl border bg-card p-5 ${
               isHero
-                ? "border-accent/30 shadow-[0_0_20px_rgba(245,197,24,0.08)]"
+                ? "border-accent/30 shadow-[0_0_20px_rgba(43,90,237,0.10)]"
                 : "border-line"
             }`}
           >

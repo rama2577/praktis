@@ -97,7 +97,7 @@ export function RatioCard({ r }: {
         <span className={`rounded px-1.5 py-0.5 text-[10px] font-medium ${
           tone === "positive" ? "bg-emerald-400/10 text-emerald-600" :
           tone === "danger" ? "bg-rose-400/10 text-rose-600" :
-          tone === "warning" ? "bg-amber-400/10 text-amber-600" :
+          tone === "warning" ? "bg-amber-400/10 text-accent" :
           "bg-slate-200 text-slate-700"
         }`}>{r.verdict}</span>
       </div>

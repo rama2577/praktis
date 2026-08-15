@@ -151,7 +151,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
             className={`rounded-full px-2.5 py-0.5 text-xs font-medium ${
               balance.ok
                 ? "bg-emerald-500/15 text-emerald-600"
-                : "bg-amber-500/15 text-amber-600"
+                : "bg-amber-500/15 text-accent"
             }`}
             role="status"
           >
@@ -191,7 +191,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     value={r.accountCode}
                     onChange={(e) => updateRow(r.key, { accountCode: e.target.value })}
                     placeholder="1-1100"
-                    className="w-24 rounded border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-xs text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-24 rounded border border-slate-200 bg-slate-50 px-2 py-1 font-mono text-xs text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -199,7 +199,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     value={r.accountName}
                     onChange={(e) => updateRow(r.key, { accountName: e.target.value })}
                     placeholder="Kas dan Setara Kas"
-                    className="w-full min-w-40 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full min-w-40 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -208,7 +208,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     onChange={(e) => updateRow(r.key, { debit: e.target.value })}
                     inputMode="decimal"
                     placeholder="0"
-                    className="w-full rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-xs text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-xs text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -217,7 +217,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     onChange={(e) => updateRow(r.key, { credit: e.target.value })}
                     inputMode="decimal"
                     placeholder="0"
-                    className="w-full rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-xs text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full rounded border border-slate-200 bg-slate-50 px-2 py-1 text-right font-mono text-xs text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
                   />
                 </td>
                 <td className="px-2 py-1.5">
@@ -225,7 +225,7 @@ export function JournalLinesEditor({ taskId, initialLines, onSaved, onCancel }: 
                     value={r.notes}
                     onChange={(e) => updateRow(r.key, { notes: e.target.value })}
                     placeholder="Catatan baris (opsional)"
-                    className="w-full min-w-36 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-800 placeholder:text-slate-700 focus:border-yellow-400/50 focus:outline-none"
+                    className="w-full min-w-36 rounded border border-slate-200 bg-slate-50 px-2 py-1 text-xs text-slate-800 placeholder:text-slate-700 focus:border-accent/50 focus:outline-none"
                   />
                 </td>
               </tr>

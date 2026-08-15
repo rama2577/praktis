@@ -155,7 +155,7 @@ export function PortalFinancial({ token }: { token: string }) {
                 </thead>
                 <tbody>
                   {data.worksheet.lines.map((l) => (
-                    <tr key={l.no} className={`border-b border-slate-200/60 ${l.accountName.includes("LABA") ? "bg-yellow-400/10 font-semibold" : "text-slate-700"}`}>
+                    <tr key={l.no} className={`border-b border-slate-200/60 ${l.accountName.includes("LABA") ? "bg-accent/10 font-semibold" : "text-slate-700"}`}>
                       <td className="px-2 py-1.5 text-slate-700">{l.no}</td>
                       <td className="px-2 py-1.5">{l.accountName}</td>
                       <td className="px-2 py-1.5 text-right font-mono">{l.nsDebit ? rp(l.nsDebit) : ""}</td>
@@ -194,7 +194,7 @@ export function PortalFinancial({ token }: { token: string }) {
           <Card className="p-4">
             <h4 className="mb-2 text-sm font-bold text-slate-900">
               Analisa Pajak — Tax Ratio:{" "}
-              <span className="font-mono text-amber-600">
+              <span className="font-mono text-accent">
                 {data.taxAnalysis.taxRatio.value === null ? "N/A" : `${(data.taxAnalysis.taxRatio.value * 100).toFixed(1)}%`}
               </span>
             </h4>
@@ -211,7 +211,7 @@ export function PortalFinancial({ token }: { token: string }) {
             <div className="space-y-4">
               {data.calk.sections.map((s) => (
                 <div key={s.number}>
-                  <h5 className="mb-1 text-xs font-semibold text-amber-600">
+                  <h5 className="mb-1 text-xs font-semibold text-accent">
                     {s.number}. {s.title}
                   </h5>
                   {s.paragraphs.map((p, i) => (

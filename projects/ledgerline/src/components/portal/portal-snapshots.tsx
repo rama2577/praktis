@@ -78,13 +78,13 @@ export function PortalSnapshots({ token }: { token: string }) {
               <div className="flex gap-2">
                 <a
                   href={`/api/portal/${token}/snapshots?id=${s.id}&format=csv`}
-                  className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600"
+                  className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 hover:border-accent/50 hover:text-accent"
                 >
                   ↓ CSV
                 </a>
                 <a
                   href={`/api/portal/${token}/snapshots?id=${s.id}&format=xlsx`}
-                  className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600"
+                  className="rounded border border-slate-200 px-2 py-1 text-xs text-slate-700 hover:border-accent/50 hover:text-accent"
                 >
                   ↓ XLSX
                 </a>

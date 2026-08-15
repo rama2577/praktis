@@ -324,7 +324,7 @@ export function JournalManager({ canWrite }: { canWrite: boolean }) {
                 ) : coaError ? (
                   <span className="text-red-600">{coaError}</span>
                 ) : clientId ? (
-                  <span className="text-amber-600/90">
+                  <span className="text-accent/90">
                     COA klien belum dipetakan — akun bebas sementara. Petakan COA di profil klien
                     agar akun jurnal terkunci.
                   </span>

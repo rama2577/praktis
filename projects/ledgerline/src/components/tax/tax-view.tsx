@@ -126,7 +126,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
           <select
             value={clientId}
             onChange={(e) => setClientId(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-accent/60 focus:outline-none"
           >
             {clients.map((c) => (
               <option key={c.id} value={c.id}>
@@ -141,12 +141,12 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
             type="month"
             value={period}
             onChange={(e) => setPeriod(e.target.value)}
-            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-yellow-400/60 focus:outline-none"
+            className="rounded-lg border border-slate-200 bg-slate-50/60 px-3 py-2 text-sm text-slate-800 focus:border-accent/60 focus:outline-none"
           />
         </label>
         <button
           onClick={() => void load(clientId, period)}
-          className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 hover:border-yellow-400/50 hover:text-amber-600"
+          className="rounded-lg border border-slate-300 px-4 py-2 text-sm text-slate-800 hover:border-accent/50 hover:text-accent"
         >
           Muat
         </button>
@@ -155,7 +155,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
             <a
               key={t.value}
               href={`/api/clients/${clientId}/tax/export?period=${period}&type=${t.value}`}
-              className="rounded-lg bg-yellow-400/10 px-3 py-2 text-xs font-medium text-amber-600 ring-1 ring-yellow-400/30 hover:bg-yellow-400/20"
+              className="rounded-lg bg-accent/10 px-3 py-2 text-xs font-medium text-accent ring-1 ring-accent/30 hover:bg-accent/20"
             >
               ↓ {t.label}
             </a>
@@ -228,7 +228,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                               onChange={(e) =>
                                 setLineOverrides((prev) => ({ ...prev, [l.lineId]: { taxCode: ov?.taxCode ?? "", taxBase: e.target.value } }))
                               }
-                              className="w-28 rounded border border-slate-200 bg-slate-50/60 px-2 py-1 text-right text-xs text-slate-800 focus:border-yellow-400/60 focus:outline-none"
+                              className="w-28 rounded border border-slate-200 bg-slate-50/60 px-2 py-1 text-right text-xs text-slate-800 focus:border-accent/60 focus:outline-none"
                             />
                           </td>
                           <td className="px-4 py-2.5">
@@ -237,7 +237,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                               onChange={(e) =>
                                 setLineOverrides((prev) => ({ ...prev, [l.lineId]: { taxCode: e.target.value, taxBase: ov?.taxBase ?? "" } }))
                               }
-                              className="max-w-[220px] rounded border border-slate-200 bg-slate-50/60 px-2 py-1 text-xs text-slate-800 focus:border-yellow-400/60 focus:outline-none"
+                              className="max-w-[220px] rounded border border-slate-200 bg-slate-50/60 px-2 py-1 text-xs text-slate-800 focus:border-accent/60 focus:outline-none"
                             >
                               <option value="">Auto: {current || "—"}</option>
                               {TAX_CODE_OPTIONS.map((o) => (
@@ -250,7 +250,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
                           <td className="px-4 py-2.5">
                             <button
                               onClick={() => void saveOverride(l.lineId)}
-                              className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:border-yellow-400/50 hover:text-amber-600"
+                              className="rounded border border-slate-300 px-2 py-1 text-xs text-slate-700 hover:border-accent/50 hover:text-accent"
                             >
                               Simpan
                             </button>
@@ -270,7 +270,7 @@ export function TaxView({ clients }: { clients: { id: string; name: string }[] }
 }
 
 function SummaryCard({ label, value, sub, tone = "default" }: { label: string; value: number; sub: string; tone?: "default" | "emerald" | "amber" | "slate" }) {
-  const valueTone = tone === "emerald" ? "text-emerald-600" : tone === "amber" ? "text-amber-600" : tone === "slate" ? "text-slate-700" : "text-amber-600";
+  const valueTone = tone === "emerald" ? "text-emerald-600" : tone === "amber" ? "text-accent" : tone === "slate" ? "text-slate-700" : "text-accent";
   return (
     <div className="rounded-xl border border-slate-200 bg-white p-4">
       <p className="text-xs uppercase tracking-wider text-slate-700">{label}</p>

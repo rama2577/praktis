@@ -252,7 +252,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
             </Card>
             <Card className="p-4">
               <div className="text-xs text-slate-700">Outstanding mutasi</div>
-              <div className="font-display text-xl font-bold text-amber-600">{s.outstandingMutations.length}</div>
+              <div className="font-display text-xl font-bold text-accent">{s.outstandingMutations.length}</div>
               <div className="mt-1 text-xs text-slate-700">Mutasi bank tanpa jurnal</div>
             </Card>
             <Card className="p-4">
@@ -312,7 +312,7 @@ export function ReconView({ initialClients = [] }: { initialClients?: Client[] }
                           <TD>
                             {m.matchStatus === "UNMATCHED" && sug ? (
                               <div className="flex items-center gap-2">
-                                <span className="text-xs text-amber-600" title={sug.reason}>
+                                <span className="text-xs text-accent" title={sug.reason}>
                                   {Math.round(sug.score * 100)}% · {sug.journalDescription ?? sug.journalId.slice(-6)}
                                 </span>
                                 <Button size="sm" variant="secondary" onClick={() => void applySuggestion(m.id, sug.journalId)} disabled={busy}>

@@ -32,7 +32,7 @@ export function TaxAnalysisView({ clients, period, clientId, setClientId, setPer
           <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
             <Card className="p-4">
               <p className="text-xs text-slate-700">Tax Ratio</p>
-              <p className="mt-1 font-mono text-2xl text-amber-600">
+              <p className="mt-1 font-mono text-2xl text-accent">
                 {data.taxRatio.value === null ? "N/A" : `${(data.taxRatio.value * 100).toFixed(1)}%`}
               </p>
               <p className="mt-1 text-xs text-slate-700">{data.taxRatio.formula}</p>

@@ -77,14 +77,14 @@ export function ClientsManager({
             <button
               type="button"
               onClick={openCreate}
-              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-yellow-300"
+              className="rounded-lg bg-accent px-4 py-2 text-sm font-semibold text-[#ffffff] transition hover:bg-[#1f49ce]"
             >
               + Tambah Klien
             </button>
             <button
               type="button"
               onClick={openImport}
-              className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 transition hover:border-yellow-400/50"
+              className="rounded-lg border border-slate-200 px-4 py-2 text-sm text-slate-700 transition hover:border-accent/50"
             >
               📥 Import Kertas Kerja
             </button>
