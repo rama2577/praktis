@@ -3,7 +3,14 @@
 10 layar mockup (dark navy, konsisten dengan produk) yang menggambarkan app bekerja
 di tiap tahap proses. Siap di-embed ke deck.
 
-## Deck selesai ✅
+## Deck + Manual Book AKTIF (Agustus 2026) ✅
+
+- **`V8 Praktis Deck.html`** — 18 slide 16:9, **tema Lark light** (biru `#2B5AED` + ungu AI `#7C4DFF`), Bahasa Indonesia. Memakai **27 screenshot modul retina** (`images-modul/mod-40..66`): Pipeline, Antrian Review + Editor Koreksi (3 jenis koreksi), Dropdown COA + Saran AI deskripsi, Buku Besar seluruh akun, Laporan Custom AI, Aset Tetap + Penyusutan, Core Tax SPT, Rekonsiliasi, Subledger & Aging, SLA, Kualitas, Outbox, Command AI (⌘K), Knowledge Base.
+- **`Praktis Manual Book v3.html`** — panduan 22 modul, tema Lark, A4, lengkap dengan langkah penggunaan + screenshot tiap modul.
+- PDF export: `V8 Praktis Deck.pdf` (1920×1080) & `Praktis Manual Book v3.pdf` (A4) via `scripts/export-both.js`.
+- Versi lama (V6/V7 deck, manual v1/v2) tetap tersedia; V1–V5 di `archive/`.
+
+## Deck sebelumnya
 
 **`V6 Praktis Deck.html`** (aktif) — 18 slide 16:9 (1920×1080), **hybrid** (cover & CTA dark, isi light),
 Bahasa Indonesia. Upgrade dari V4: **+5 slide modul baru** (10–14) memakai 10 screenshot retina
