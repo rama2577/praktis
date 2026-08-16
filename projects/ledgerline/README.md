@@ -1,5 +1,7 @@
 # LedgerLine — AI Bookkeeping Platform
 
+![coverage](https://img.shields.io/badge/coverage-33%25-blue) ![build](https://img.shields.io/badge/build-passing-brightgreen)
+
 Platform operasional untuk kantor akuntan Indonesia: dokumen klien (PDF/JPG/XLSX) → AI pipeline menghasilkan **draft jurnal** (PSAK/PPN/PPh-aware, confidence score) → **review manusia 4 lapis** (Junior → Senior → Tax → Partner) → jurnal final, dengan dashboard operasional real-time. UI Bahasa Indonesia, tema dark navy.
 
 ## Quickstart (≤ 15 menit)
@@ -20,7 +22,7 @@ npm run worker                  # pipeline AI (butuh Redis berjalan)
 redis-cli ping                  # pastikan Redis aktif
 ```
 
-**Login demo** (password `password123`):
+**Login demo** (password dari `DEMO_PASSWORD`, default `password123` hanya untuk dev lokal):
 `admin@ledgerline.dev` (ADMIN dev — akses semua modul) · `budi@` / `dwi@` (JUNIOR) · `rina@` (SENIOR) · `sari@` (TAX) · `andi@` (PARTNER)
 
 **Coba alur utama:** login admin → *Klien* → pilih klien → upload PDF/XLSX → ~2 detik kemudian jurnal draft muncul di *Antrian Review* → setujui berlapis hingga APPROVED. Exception (dokumen tak jelas) muncul di *Pengecualian*.
@@ -31,10 +33,17 @@ redis-cli ping                  # pastikan Redis aktif
 |---|---|---|
 | `DATABASE_URL` | ✅ | PostgreSQL, contoh `postgresql://staff@localhost:5432/ledgerline` |
 | `AUTH_SECRET` | ✅ | Rahasia sesi NextAuth (`openssl rand -base64 32`) |
+| `DEMO_PASSWORD` | ⚠️ prod | Password akun demo (seed). Default `password123` hanya untuk dev; produksi wajib set kuat + `npx tsx prisma/reset-demo-password.ts` |
 | `AUTH_TRUST_HOST` | dev | `true` untuk localhost |
 | `REDIS_URL` | ⚠️ | BullMQ/rate limit; default `redis://localhost:6379` |
 | `STORAGE_ENCRYPTION_KEY` | ⚠️ prod | Kunci enkripsi at-rest dokumen, hex 64 (`openssl rand -hex 32`); tanpa ini memakai kunci DEV |
 | `LLM_API_KEY` / `LLM_BASE_URL` / `LLM_MODEL` | opsional | LLM OpenAI-compatible (default GLM `https://api.z.ai/api/paas/v4`, `glm-4.6`); pipeline jalan tanpa key via rule engine |
+
+## E2E & Tooling Dev (QW-3, QW-4)
+
+- **Chrome pinned:** script E2E memakai Google Chrome for Testing build `chromium-1234` (path di `scripts/chrome-path.ts`). Override via env `CHROMIUM_PATH`.
+- **Tooling deck** (screenshot slide/manual book) terpisah di `scripts/deck/`, bukan E2E app. Jalankan dari root app: `npx tsx scripts/deck/screenshot-all-modules.ts` (output ke `../praktis-deck/images-modul`).
+- **Reset password demo di produksi:** `DEMO_PASSWORD="<kuat>" npx tsx prisma/reset-demo-password.ts` (TD-16 / QW-1).
 
 ## Arsitektur
 

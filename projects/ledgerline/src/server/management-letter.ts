@@ -66,7 +66,7 @@ type BuildInput = {
   taxAnalysis?: TaxAnalysis | null;
   qualityMetrics?: QualityMetrics | null;
   exceptions?: { accountName: string; reason: string; status: string }[];
-  slaBreaches?: { stage: string; count: number; avgMinutes: number }[];
+  slaBreaches?: { stage: string; count: number; rate: number }[];
   priorFindings?: Finding[];
 };
 
@@ -139,8 +139,8 @@ export function buildManagementLetter(input: BuildInput): ManagementLetter {
         id: `F-${String(++idx).padStart(3, "0")}`,
         area: "PROCESS",
         title: `Bottleneck proses: ${b.stage}`,
-        severity: b.avgMinutes > 1440 ? "HIGH" : "MEDIUM",
-        description: `Tahap ${b.stage} mengalami ${b.count} breach SLA dengan rata-rata waktu ${b.avgMinutes.toFixed(0)} menit.`,
+        severity: b.rate > 25 ? "HIGH" : "MEDIUM",
+        description: `Tahap ${b.stage} mengalami ${b.count} breach SLA (${b.rate.toFixed(0)}% dari total task).`,
         impact: "Keterlambatan penyelesaian laporan keuangan. Dapat menyebabkan penalti keterlambatan pelaporan dan ketidakpuasan klien.",
         recommendation: `Tinjau alur kerja tahap ${b.stage}. Identifikasi bottleneck dan alokasikan sumber daya tambahan atau sederhanakan prosedur.`,
         source: "system",

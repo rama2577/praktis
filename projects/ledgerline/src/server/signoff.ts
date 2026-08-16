@@ -97,7 +97,7 @@ export async function saveReportSnapshot(input: {
       type: input.type,
       status: "IN_REVIEW", // auto-submit saat disimpan
       version: nextVersion,
-      payload: input.payload as any,
+      payload: input.payload as Prisma.InputJsonValue,
       notes: input.notes ?? null,
       createdById: input.createdById ?? null,
     },
@@ -155,7 +155,22 @@ export async function getReportSnapshots(
 
 // ── Helper ───────────────────────────────────────────────────────────────────
 
-function mapSnapshot(s: any): SnapshotMeta {
+function mapSnapshot(s: {
+  id: string;
+  clientId: string;
+  client?: { name: string | null } | null;
+  period: string;
+  type: string;
+  status: ReportSnapshotStatus;
+  version: number;
+  notes: string | null;
+  createdAt: Date;
+  reviewedAt?: Date | null;
+  reviewedBy?: { name: string | null } | null;
+  approvedAt?: Date | null;
+  approvedBy?: { name: string | null } | null;
+  deliveredAt?: Date | null;
+}): SnapshotMeta {
   return {
     id: s.id,
     clientId: s.clientId,

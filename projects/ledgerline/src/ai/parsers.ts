@@ -124,7 +124,7 @@ export async function ocrScannedPdf(buffer: Buffer): Promise<{ text: string; met
 
 async function parseXlsx(buffer: Buffer): Promise<string> {
   const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.load(buffer as any);
+  await workbook.xlsx.load(buffer as unknown as Parameters<typeof workbook.xlsx.load>[0]);
   const lines: string[] = [];
   for (const sheet of workbook.worksheets) {
     if (sheet.rowCount === 0) continue;

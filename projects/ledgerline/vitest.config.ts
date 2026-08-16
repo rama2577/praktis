@@ -14,9 +14,9 @@ export default defineConfig({
       include: ["src/lib/**", "src/server/**", "src/ai/**", "src/components/**"],
       exclude: ["src/ai/knowledge/**", "src/ai/**/*.d.ts"],
       thresholds: {
-        // SQ-01: quality gate — naikkan bertahap di F2 (baseline 2026-08-09)
+        // SQ-01: quality gate — naikkan bertahap (baseline 2026-08-09; QW-6 naikkan branches)
         statements: 33,
-        branches: 32,
+        branches: 35,
         functions: 25,
         lines: 33,
       },

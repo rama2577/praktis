@@ -24,8 +24,10 @@ const prisma = new PrismaClient();
 const NOW = new Date();
 const minutesAgo = (m: number) => new Date(NOW.getTime() - m * 60_000);
 
-// Password semua akun demo: password123
-const PASSWORD_HASH = bcrypt.hashSync("password123", 10);
+// Password semua akun demo: dari env DEMO_PASSWORD (default "password123" hanya untuk dev lokal).
+// Produksi wajib set DEMO_PASSWORD ke nilai kuat, lalu jalankan reset-demo-password.ts.
+const DEMO_PASSWORD = process.env.DEMO_PASSWORD ?? "password123";
+const PASSWORD_HASH = bcrypt.hashSync(DEMO_PASSWORD, 10);
 
 type StageTaskMap = Partial<
   Record<ReviewStage, { status: ReviewTaskStatus; assignee: string; offsetMinutes?: number }>

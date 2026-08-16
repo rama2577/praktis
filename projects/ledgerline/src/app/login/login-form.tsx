@@ -87,8 +87,7 @@ export function LoginForm() {
       </button>
 
       <p className="text-center text-xs text-slate-700">
-        Akun demo: <span className="font-mono">admin@ledgerline.dev</span> · password{" "}
-        <span className="font-mono">password123</span>
+        Akun demo: <span className="font-mono">admin@ledgerline.dev</span> · kredensial lihat README
       </p>
     </form>
   );

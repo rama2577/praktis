@@ -43,9 +43,11 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
     take: 10,
   }).catch(() => []);
 
-  const exceptions = reviewTasks.map((t: any) => ({
-    accountName: t.accountCode ?? "",
-    reason: t.note ?? t.aiSuggestion ?? "",
+  const exceptions = reviewTasks.map((t) => ({
+    // TODO(QW-5): ReviewTask tidak punya accountCode — ambil dari journalEntry.accountCode
+    // saat management letter di-upgrade (saat ini menghasilkan "" untuk semua baris).
+    accountName: "",
+    reason: t.note ?? "",
     status: t.status === "REJECTED" ? "OPEN" : "IN_REVIEW",
   }));
 
@@ -65,7 +67,7 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
     analysis,
     qualityMetrics,
     exceptions,
-    slaBreaches: slaBreaches as any,
+    slaBreaches,
   });
 
   if (format === "md") {
