@@ -1,6 +1,7 @@
 import { requireRole } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { getClerkMetrics, getFirmMetrics, getQualityMetrics, getCorrectionInsights, correctionFieldLabel, pct, getOcrMetrics } from "@/server/metrics";
+import { getRuleFixes } from "@/server/feedback";
 import type { StatusConfidence, StageBreachRate } from "@/server/metrics";
 import Link from "next/link";
 import { Card, CardHeader } from "@/components/ui/card";
@@ -81,6 +82,7 @@ export default async function QualityPage() {
   const clerks = await getClerkMetrics(session.user.firmId);
   const firm = await getFirmMetrics(session.user.firmId);
   const corrections = await getCorrectionInsights(session.user.firmId);
+  const fixes = await getRuleFixes(session.user.firmId);
 
   const cards = [
     { label: "Jurnal Total", value: String(m.totalJournals), hint: `${m.approvedCount} disetujui · ${m.rejectedCount} ditolak`, tone: "text-slate-900" },
@@ -269,6 +271,35 @@ export default async function QualityPage() {
               </div>
             </div>
           </div>
+        )}
+      </Card>
+
+      {/* EN-03: saran perbaikan aturan dari pola koreksi akun */}
+      <Card className="border-accent/30">
+        <CardHeader
+          title="Saran Perbaikan Aturan (AI)"
+          description="Pola koreksi akun yang berulang diubah menjadi saran update aturan/template. Ambang minimal: 2 koreksi yang sama."
+        />
+        {fixes.length === 0 ? (
+          <p className="text-sm text-slate-700">
+            Belum ada pola koreksi yang cukup kuat. Saat reviewer berulang kali mengoreksi akun yang sama ke akun yang sama, saran otomatis muncul di sini.
+          </p>
+        ) : (
+          <ul className="divide-y divide-line">
+            {fixes.map((f) => (
+              <li key={`${f.before}-${f.after}`} className="flex flex-wrap items-center gap-2 py-3">
+                <span className="shrink-0 rounded-full bg-accent/10 px-2 py-0.5 text-xs font-medium text-accent">
+                  {f.count}×
+                </span>
+                <span className="font-mono text-xs text-slate-500">{f.before}</span>
+                <span className="text-slate-400">→</span>
+                <span className="font-mono text-xs text-sky-600">{f.after}</span>
+                <span className="text-sm text-slate-700">
+                  pertimbangkan update aturan/template agar draft memakai <span className="font-mono text-xs">{f.after}</span>.
+                </span>
+              </li>
+            ))}
+          </ul>
         )}
       </Card>
 
