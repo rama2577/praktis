@@ -89,12 +89,16 @@ Fokus: durability data & monilisasi. Beberapa butuh pilihan provider/ops.
 
 Fokus: makin pintar + skala + operasional.
 
-- **P-1 · Feedback loop AI (EN-03):** rekam koreksi user → insight → update rule.
-- **P-2 · RBAC multi-segmen:** implementasi peran 5 segmen (deck V9) — permission matrix + modul flag per tenant.
-- **P-3 · Cutover PostingRuleEngine shadow→live:** multi-week, ganti rule lama.
-- **P-4 · Konektor & export standar (EN-09):** import CSV bank (BCA/Mandiri/BRI), export PDF/XLSX.
-- **P-5 · Metrik operasional per clerk/firm (EN-10):** first-pass rate, exception rate, cycle time.
+- **P-1 · Feedback loop AI (EN-03):** rekam koreksi user → insight → update rule. (Insight sudah ada di `getCorrectionInsights`; auto-update rule belum.)
+- ✅ **P-2 · RBAC multi-segmen** — selesai (2026-08-16): enum Segment + matriks modul + sidebar per segmen.
+- ✅ **P-4 · Konektor bank (EN-09)** — parsing BCA/Mandiri/BRI + route sudah ada.
+- ✅ **P-5 · Metrik clerk/firm (EN-10)** — `getClerkMetrics`/`getQualityMetrics` sudah ada.
 - **P-6 · Playwright CI penuh + SAST (SQ-02, SQ-07):** E2E otomatis di CI + security hotspots per PR.
+- **P-7 · Migrasi data-fetching ke TanStack Query/SWR** (dari rule lint `set-state-in-effect` yang di-off).
+
+> Catatan: "Cutover PostingRuleEngine shadow→live" DIBUANG dari daftar ini — itu backlog
+> proyek **Mio ERP (MBS)**, bukan Praktis/LedgerLine (lihat MEMORY.md baris MBS).
+> Rule-engine LedgerLine (`src/ai/rule-engine.ts`) sudah live: deterministik-dulu, LLM-fallback.
 
 ---
 
