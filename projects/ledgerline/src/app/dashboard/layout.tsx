@@ -2,6 +2,7 @@ import { redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { DashboardShell } from "@/components/layout/dashboard-shell";
+import { Providers } from "@/components/providers";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { canAccess } from "@/lib/roles";
 
@@ -29,13 +30,15 @@ export default async function DashboardLayout({
   });
 
   return (
-    <DashboardShell
-      userName={session.user.name ?? "User"}
-      userRole={session.user.role}
-      segment={firm?.segment ?? "FIRMA_AKUNTAN"}
-      today={today}
-    >
-      {children}
-    </DashboardShell>
+    <Providers>
+      <DashboardShell
+        userName={session.user.name ?? "User"}
+        userRole={session.user.role}
+        segment={firm?.segment ?? "FIRMA_AKUNTAN"}
+        today={today}
+      >
+        {children}
+      </DashboardShell>
+    </Providers>
   );
 }

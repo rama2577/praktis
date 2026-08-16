@@ -5,9 +5,9 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
-type ReportSnapshotStatus = "DRAFT" | "IN_REVIEW" | "APPROVED" | "DELIVERED";
 import { getWorkflowStatus, STATUS_LABELS, STATUS_TONES } from "@/server/signoff";
 import type { SnapshotMeta } from "@/server/signoff";
 
@@ -18,48 +18,41 @@ export function SignoffPanel({
   period: string;
   type: string; // "TRIAL_BALANCE" | "ANNUAL_REPORT" etc
 }) {
-  const [snapshot, setSnapshot] = useState<SnapshotMeta | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [acting, setActing] = useState(false);
   const [message, setMessage] = useState<string | null>(null);
+  const queryClient = useQueryClient();
 
-  const load = useCallback(async () => {
-    if (!clientId) return;
-    setLoading(true);
-    try {
+  const qkey = ["report-snapshots", clientId, period, type];
+
+  const { data: snapshot, isLoading } = useQuery({
+    queryKey: qkey,
+    queryFn: async () => {
       const res = await fetch(`/api/clients/${clientId}/report-snapshots?period=${period}`);
-      if (!res.ok) return;
+      if (!res.ok) return null;
       const { data } = await res.json() as { data: SnapshotMeta[] };
-      const match = data.find((s) => s.type === type);
-      setSnapshot(match ?? null);
-    } catch { /* silent */ }
-    finally { setLoading(false); }
-  }, [clientId, period, type]);
+      return data.find((s) => s.type === type) ?? null;
+    },
+    enabled: !!clientId,
+  });
 
-  useEffect(() => { void load(); }, [load]);
-
-  const action = async (act: string) => {
-    if (!snapshot) return;
-    setActing(true);
-    setMessage(null);
-    try {
+  const action = useMutation({
+    mutationFn: async (act: string) => {
+      if (!snapshot) throw new Error("Tidak ada snapshot");
       const res = await fetch(`/api/clients/${clientId}/report-snapshots`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ snapshotId: snapshot.id, action: act }),
       });
       if (!res.ok) throw new Error((await res.json().catch(() => ({ error: "Gagal" }))).error ?? "Gagal");
-      const { data } = await res.json() as { data: SnapshotMeta };
-      setSnapshot(data);
+      return (await res.json()) as { data: SnapshotMeta };
+    },
+    onSuccess: ({ data }) => {
+      queryClient.setQueryData(qkey, data);
       setMessage(`✅ Status: ${STATUS_LABELS[data.status]}`);
-    } catch (e) {
-      setMessage(`❌ ${(e as Error).message}`);
-    } finally {
-      setActing(false);
-    }
-  };
+    },
+    onError: (e) => setMessage(`❌ ${(e as Error).message}`),
+  });
 
-  if (loading) return <div className="text-xs text-slate-700">Memuat status…</div>;
+  if (isLoading) return <div className="text-xs text-slate-700">Memuat status…</div>;
 
   if (!snapshot) {
     return (
@@ -100,24 +93,24 @@ export function SignoffPanel({
       {!ws.isFinal && (
         <div className="flex flex-wrap gap-2">
           {ws.canSubmit && (
-            <button onClick={() => void action("submit")} disabled={acting}
+            <button onClick={() => action.mutate("submit")} disabled={action.isPending}
               className="rounded border border-accent/30 bg-accent/10 px-2.5 py-1 text-xs text-accent hover:bg-accent/20 disabled:opacity-50"
-            >{acting ? "…" : "Submit for Review"}</button>
+            >{action.isPending ? "…" : "Submit for Review"}</button>
           )}
           {ws.canApprove && (
             <>
-              <button onClick={() => void action("approve")} disabled={acting}
+              <button onClick={() => action.mutate("approve")} disabled={action.isPending}
                 className="rounded border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-xs text-emerald-600 hover:bg-emerald-400/20 disabled:opacity-50"
-              >{acting ? "…" : "✓ Approve"}</button>
-              <button onClick={() => void action("reject")} disabled={acting}
+              >{action.isPending ? "…" : "✓ Approve"}</button>
+              <button onClick={() => action.mutate("reject")} disabled={action.isPending}
                 className="rounded border border-rose-400/30 bg-rose-400/10 px-2.5 py-1 text-xs text-rose-600 hover:bg-rose-400/20 disabled:opacity-50"
-              >{acting ? "…" : "✗ Reject"}</button>
+              >{action.isPending ? "…" : "✗ Reject"}</button>
             </>
           )}
           {ws.canDeliver && (
-            <button onClick={() => void action("deliver")} disabled={acting}
+            <button onClick={() => action.mutate("deliver")} disabled={action.isPending}
               className="rounded border border-sky-400/30 bg-sky-400/10 px-2.5 py-1 text-xs text-sky-600 hover:bg-sky-400/20 disabled:opacity-50"
-            >{acting ? "…" : "📤 Deliver ke Klien"}</button>
+            >{action.isPending ? "…" : "📤 Deliver ke Klien"}</button>
           )}
         </div>
       )}

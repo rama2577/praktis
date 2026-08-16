@@ -5,7 +5,8 @@
 
 "use client";
 
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo, useState } from "react";
 import { formatCurrencyRp } from "@/lib/format";
 import { SelectClient, PeriodInput } from "./analytics-views";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -54,35 +55,62 @@ export function Spt1771View({
   setClientId: (v: string) => void;
   setPeriod: (v: string) => void;
 }) {
-  const [data, setData] = useState<SptData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [mode, setMode] = useState<Mode>("31e");
-  const [rows, setRows] = useState<(RekRow & { isBeban: boolean })[]>([]);
 
-  const load = useCallback(async () => {
-    if (!clientId) return;
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading: loading, error, refetch } = useQuery({
+    queryKey: ["spt-1771", clientId, period, mode],
+    queryFn: async () => {
       const year = parseInt(period.slice(0, 4), 10);
       const res = await fetch(`/api/clients/${clientId}/spt-1771?year=${year}&mode=${mode}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Gagal memuat SPT 1771");
-      const d = json.data as SptData;
-      setData(d);
-      setRows([
-        ...d.pendapatan.map((r) => ({ ...r, isBeban: false })),
-        ...d.beban.map((r) => ({ ...r, isBeban: true })),
-      ]);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [clientId, period, mode]);
+      return json.data as SptData;
+    },
+    enabled: !!clientId,
+  });
 
-  useEffect(() => { void load(); }, [load]);
+  // Baris dasar (dari server), lalu diedit lewat overlay `koreksi` (tanpa setState di effect).
+  const baseRows = useMemo(() => {
+    if (!data) return [] as (RekRow & { isBeban: boolean })[];
+    return [
+      ...data.pendapatan.map((r) => ({ ...r, isBeban: false })),
+      ...data.beban.map((r) => ({ ...r, isBeban: true })),
+    ];
+  }, [data]);
+
+  const [koreksi, setKoreksi] = useState<Record<number, { koreksiPositif: number; koreksiNegatif: number }>>({});
+  // Reset overlay saat klien/periode/mode berubah (pola "reset state saat key berubah").
+  const koreksiKey = `${clientId}|${period}|${mode}`;
+  const [lastKoreksiKey, setLastKoreksiKey] = useState(koreksiKey);
+  if (lastKoreksiKey !== koreksiKey) {
+    setLastKoreksiKey(koreksiKey);
+    setKoreksi({});
+  }
+
+  const rows = useMemo(
+    () =>
+      baseRows.map((r, i) => {
+        const k = koreksi[i];
+        if (!k) return r;
+        return {
+          ...r,
+          koreksiPositif: k.koreksiPositif,
+          koreksiNegatif: k.koreksiNegatif,
+          fiskal: r.komersial + k.koreksiPositif - k.koreksiNegatif,
+        };
+      }),
+    [baseRows, koreksi],
+  );
+
+  const updateRow = (idx: number, field: "koreksiPositif" | "koreksiNegatif", value: number) => {
+    setKoreksi((prev) => {
+      const base = prev[idx] ?? {
+        koreksiPositif: baseRows[idx]?.koreksiPositif ?? 0,
+        koreksiNegatif: baseRows[idx]?.koreksiNegatif ?? 0,
+      };
+      return { ...prev, [idx]: { ...base, [field]: value } };
+    });
+  };
 
   const totals = useMemo(() => {
     const labaKom = rows.reduce((s, r) => s + (r.isBeban ? -r.komersial : r.komersial), 0);
@@ -90,10 +118,6 @@ export function Spt1771View({
     const korNeg = rows.reduce((s, r) => s + r.koreksiNegatif, 0);
     return { labaKom, korPos, korNeg, fiskal: labaKom + korPos - korNeg };
   }, [rows]);
-
-  const updateRow = (idx: number, field: "koreksiPositif" | "koreksiNegatif", value: number) => {
-    setRows((prev) => prev.map((r, i) => (i === idx ? { ...r, [field]: value, fiskal: r.komersial + (field === "koreksiPositif" ? value : r.koreksiPositif) - (field === "koreksiNegatif" ? value : r.koreksiNegatif) } : r)));
-  };
 
   const download = (filename: string, content: string) => {
     const blob = new Blob([content], { type: "text/csv;charset=utf-8" });
@@ -165,7 +189,7 @@ export function Spt1771View({
         </div>
       </div>
 
-      {error && <ErrorState message={error} onRetry={() => void load()} />}
+      {error && <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />}
       {loading && <p className="p-4 text-sm text-slate-700">Menyusun SPT 1771…</p>}
 
       {!loading && data && (

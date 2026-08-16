@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { formatCurrencyRp } from "@/lib/format";
 import { SelectClient, PeriodInput } from "./analytics-views";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -46,28 +46,17 @@ export function MonthlyMatrixView({
   setClientId: (v: string) => void;
   setPeriod: (v: string) => void;
 }) {
-  const [data, setData] = useState<Matrix | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const load = useCallback(async () => {
-    if (!clientId) return;
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading: loading, error, refetch } = useQuery({
+    queryKey: ["monthly-matrix", clientId, period],
+    queryFn: async () => {
       const year = parseInt(period.slice(0, 4), 10);
       const res = await fetch(`/api/clients/${clientId}/monthly-matrix?year=${year}`);
       const json = await res.json();
       if (!res.ok) throw new Error(json.error ?? "Gagal memuat matrix");
-      setData(json.data);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [clientId, period]);
-
-  useEffect(() => { void load(); }, [load]);
+      return json.data as Matrix;
+    },
+    enabled: !!clientId,
+  });
 
   if (!clientId) return <EmptyState title="Pilih klien" description="Pilih klien untuk melihat matrix 12 bulan." />;
 
@@ -80,7 +69,7 @@ export function MonthlyMatrixView({
         <PeriodInput period={period} setPeriod={setPeriod} />
       </div>
 
-      {error && <ErrorState message={error} onRetry={() => void load()} />}
+      {error && <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />}
 
       {loading && <p className="p-4 text-sm text-slate-700">Menghitung matrix 12 bulan…</p>}
 

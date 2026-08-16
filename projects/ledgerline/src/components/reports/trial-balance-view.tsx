@@ -1,6 +1,7 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Badge } from "@/components/ui/badge";
@@ -99,85 +100,72 @@ type WorksheetSrv = {
 // ──────────────────────────────────────────────────────────────────────────────
 
 export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
-  const [clients, setClients] = useState<Client[]>([]);
-  const [clientId, setClientId] = useState("");
+  const [clientId, setClientId] = useState(""); // kosong = auto ke klien pertama
   const [period, setPeriod] = useState(currentMonth());
-  const [report, setReport] = useState<Report | null>(null);
-  const [worksheet, setWorksheet] = useState<WorksheetSrv | null>(null);
   const [mode, setMode] = useState<"standar" | "lajur">("lajur");
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [locking, setLocking] = useState(false);
+  const [lockError, setLockError] = useState<string | null>(null);
   const router = useRouter();
+  const queryClient = useQueryClient();
 
-  const loadClients = useCallback(async () => {
-    try {
+  const { data: clientsData } = useQuery({
+    queryKey: ["clients"],
+    queryFn: async () => {
       const res = await fetch("/api/clients");
       if (!res.ok) throw new Error("Gagal memuat daftar klien");
-      const data = (await res.json()) as { data: Client[] };
-      setClients(data.data);
-      if (data.data.length > 0) setClientId(data.data[0].id);
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  }, []);
+      return ((await res.json()) as { data: Client[] }).data;
+    },
+  });
+  const clients = clientsData ?? [];
+  const effectiveClientId = clientId || clients[0]?.id || "";
 
-  useEffect(() => {
-    void loadClients();
-  }, [loadClients]);
-
-  const load = useCallback(async () => {
-    if (!clientId) return;
-    setLoading(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/clients/${clientId}/trial-balance?period=${period}`);
+  const reportKey = ["trial-balance", effectiveClientId, period];
+  const { data: report, isLoading: loading, error, refetch } = useQuery({
+    queryKey: reportKey,
+    queryFn: async () => {
+      const res = await fetch(`/api/clients/${effectiveClientId}/trial-balance?period=${period}`);
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { error?: string } | null;
         throw new Error(body?.error ?? "Gagal memuat neraca percobaan");
       }
-      const data = (await res.json()) as { data: Report };
-      setReport(data.data);
-      if (mode === "lajur") {
-        const wsRes = await fetch(`/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet`);
-        if (wsRes.ok) {
-          const ws = (await wsRes.json()) as { data: WorksheetSrv };
-          setWorksheet(ws.data);
-        }
-      }
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [clientId, period, mode]);
+      return ((await res.json()) as { data: Report }).data;
+    },
+    enabled: !!effectiveClientId,
+  });
 
-  useEffect(() => {
-    void load();
-  }, [load]);
+  const { data: worksheet } = useQuery({
+    queryKey: ["trial-balance-worksheet", effectiveClientId, period],
+    queryFn: async () => {
+      const res = await fetch(`/api/clients/${effectiveClientId}/trial-balance?period=${period}&format=worksheet`);
+      if (!res.ok) throw new Error("Gagal memuat lajur");
+      return ((await res.json()) as { data: WorksheetSrv }).data;
+    },
+    enabled: !!effectiveClientId && mode === "lajur",
+  });
 
-  const exportUrl = (format: "csv" | "xlsx") =>
-    clientId ? `/api/clients/${clientId}/trial-balance?period=${period}&format=${format}` : null;
-
-  const handleLock = async () => {
-    if (!clientId || !report || report.periodStatus !== "OPEN") return;
-    if (!window.confirm("Kunci periode ini? Jurnal APPROVED akan menjadi FINALIZED dan tidak bisa diedit langsung — perbaikan hanya lewat jurnal penyesuaian.")) return;
-    setLocking(true);
-    setError(null);
-    try {
-      const res = await fetch(`/api/clients/${clientId}/periods/${period}/lock`, { method: "POST" });
+  const lockMutation = useMutation({
+    mutationFn: async () => {
+      const res = await fetch(`/api/clients/${effectiveClientId}/periods/${period}/lock`, { method: "POST" });
       if (!res.ok) {
         const body = (await res.json().catch(() => null)) as { error?: string } | null;
         throw new Error(body?.error ?? "Gagal mengunci periode");
       }
-      const data = (await res.json()) as { data: { status: string; finalized: number } };
-      setReport({ ...report, periodStatus: data.data.status as "OPEN" | "CLOSED" });
+      return ((await res.json()) as { data: { status: string; finalized: number } }).data;
+    },
+    onSuccess: (d) => {
+      queryClient.setQueryData(reportKey, (old: Report | undefined) => (old ? { ...old, periodStatus: d.status as "OPEN" | "CLOSED" } : old));
+      setLockError(null);
       router.refresh();
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLocking(false);
-    }
+    },
+    onError: (e) => setLockError((e as Error).message),
+  });
+
+  const exportUrl = (format: "csv" | "xlsx") =>
+    effectiveClientId ? `/api/clients/${effectiveClientId}/trial-balance?period=${period}&format=${format}` : null;
+
+  const handleLock = () => {
+    if (!effectiveClientId || !report || report.periodStatus !== "OPEN") return;
+    if (!window.confirm("Kunci periode ini? Jurnal APPROVED akan menjadi FINALIZED dan tidak bisa diedit langsung — perbaikan hanya lewat jurnal penyesuaian.")) return;
+    lockMutation.mutate();
   };
 
   // ── Helper: render amt atau kosong ─────────────────────────────────────────
@@ -190,8 +178,8 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
         <label className="flex flex-col gap-1 text-xs text-slate-700">
           Klien
           <select
-            value={clientId}
-            onChange={(e) => { setClientId(e.target.value); setReport(null); }}
+            value={effectiveClientId}
+            onChange={(e) => setClientId(e.target.value)}
             className="rounded-lg border border-slate-200 bg-slate-50 px-3 py-2 text-sm text-slate-800 focus:border-accent/50 focus:outline-none"
           >
             {clients.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
@@ -206,34 +194,35 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
           />
         </label>
         <a
-          href={exportUrl("csv") ?? "#"} aria-disabled={!clientId}
+          href={exportUrl("csv") ?? "#"} aria-disabled={!effectiveClientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
+            effectiveClientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
         >↓ Ekspor CSV</a>
         <a
-          href={exportUrl("xlsx") ?? "#"} aria-disabled={!clientId}
+          href={exportUrl("xlsx") ?? "#"} aria-disabled={!effectiveClientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
+            effectiveClientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
         >↓ Ekspor XLSX</a>
         <span className="rounded-lg border border-accent/30 bg-accent/10 px-3 py-2 text-xs text-accent">
           📋 10-Kolom Big 4
         </span>
         <a
-          href={clientId ? `/api/clients/${clientId}/trial-balance?period=${period}&format=worksheet-csv` : "#"}
-          aria-disabled={!clientId}
+          href={effectiveClientId ? `/api/clients/${effectiveClientId}/trial-balance?period=${period}&format=worksheet-csv` : "#"}
+          aria-disabled={!effectiveClientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${
-            clientId ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/20" : "pointer-events-none opacity-40"
+            effectiveClientId ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/20" : "pointer-events-none opacity-40"
           }`}
         >↓ Lajur CSV</a>
         {report?.periodStatus === "OPEN" && canLock && (
-          <button type="button" onClick={() => void handleLock()} disabled={locking}
+          <button type="button" onClick={handleLock} disabled={lockMutation.isPending}
             className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20 disabled:opacity-50">
-            {locking ? "Mengunci…" : "🔒 Kunci Periode"}
+            {lockMutation.isPending ? "Mengunci…" : "🔒 Kunci Periode"}
           </button>
         )}
+        {lockError && <span className="text-xs text-rose-600">{lockError}</span>}
       </div>
 
-      {error && <ErrorState message={error} onRetry={() => void load()} />}
+      {error && <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />}
 
       {loading && (
         <div className="rounded-xl border border-slate-200 bg-white p-8 text-center text-sm text-slate-700">

@@ -6,9 +6,9 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useState } from "react";
 import { formatCurrencyRp } from "@/lib/format";
-import { EmptyState } from "@/components/ui/empty-state";
 import { ErrorState } from "@/components/ui/error-state";
 
 type SubledgerRow = {
@@ -57,56 +57,40 @@ const TYPE_TONE: Record<string, string> = {
 };
 
 export function SubledgerView({ clientId }: { clientId: string }) {
-  const [rows, setRows] = useState<SubledgerRow[] | null>(null);
-  const [aging, setAging] = useState<AgingRow[] | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const queryClient = useQueryClient();
   const [typeFilter, setTypeFilter] = useState("");
   const [activeCode, setActiveCode] = useState<string | null>(null);
-  const [ledger, setLedger] = useState<LedgerRow[] | null>(null);
-  const [ledgerLoading, setLedgerLoading] = useState(false);
   const [showForm, setShowForm] = useState(false);
   const [form, setForm] = useState({ code: "", name: "", type: "CUSTOMER", openingBalance: "" });
+  const [saveError, setSaveError] = useState<string | null>(null);
 
-  const load = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading, error, refetch } = useQuery({
+    queryKey: ["subledger", clientId],
+    queryFn: async () => {
       const [r, a] = await Promise.all([
         fetch(`/api/clients/${clientId}/subledgers`),
         fetch(`/api/clients/${clientId}/subledgers/aging`),
       ]);
       if (!r.ok || !a.ok) throw new Error("Gagal memuat subledger");
-      setRows(((await r.json()) as { data: SubledgerRow[] }).data);
-      setAging(((await a.json()) as { data: AgingRow[] }).data);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [clientId]);
+      return {
+        rows: ((await r.json()) as { data: SubledgerRow[] }).data,
+        aging: ((await a.json()) as { data: AgingRow[] }).data,
+      };
+    },
+  });
 
-  useEffect(() => { void load(); }, [load]);
-
-  const openLedger = useCallback(async (code: string) => {
-    setActiveCode(code);
-    setLedgerLoading(true);
-    setLedger(null);
-    try {
-      const res = await fetch(`/api/clients/${clientId}/subledgers/${encodeURIComponent(code)}/ledger`);
+  const { data: ledger, isLoading: ledgerLoading, error: ledgerError } = useQuery({
+    queryKey: ["subledger-ledger", clientId, activeCode],
+    queryFn: async () => {
+      const res = await fetch(`/api/clients/${clientId}/subledgers/${encodeURIComponent(activeCode!)}/ledger`);
       if (!res.ok) throw new Error("Gagal memuat buku besar pembantu");
-      setLedger(((await res.json()) as { data: LedgerRow[] }).data);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLedgerLoading(false);
-    }
-  }, [clientId]);
+      return ((await res.json()) as { data: LedgerRow[] }).data;
+    },
+    enabled: !!activeCode,
+  });
 
-  const createSubledger = useCallback(async () => {
-    if (!form.code.trim() || !form.name.trim()) return;
-    setError(null);
-    try {
+  const createSubledger = useMutation({
+    mutationFn: async () => {
       const res = await fetch(`/api/clients/${clientId}/subledgers`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -119,18 +103,23 @@ export function SubledgerView({ clientId }: { clientId: string }) {
       });
       const json = (await res.json()) as { error?: string };
       if (!res.ok) throw new Error(json.error ?? "Gagal menyimpan");
+    },
+    onSuccess: () => {
       setShowForm(false);
       setForm({ code: "", name: "", type: "CUSTOMER", openingBalance: "" });
-      await load();
-    } catch (e) {
-      setError((e as Error).message);
-    }
-  }, [clientId, form, load]);
+      setSaveError(null);
+      void queryClient.invalidateQueries({ queryKey: ["subledger", clientId] });
+    },
+    onError: (e) => setSaveError((e as Error).message),
+  });
 
-  if (loading) return <div className="p-6 text-sm text-slate-700">Memuat buku besar pembantu…</div>;
-  if (error) return <ErrorState message={error} onRetry={() => void load()} />;
+  if (isLoading) return <div className="p-6 text-sm text-slate-700">Memuat buku besar pembantu…</div>;
+  if (error) return <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />;
 
-  const filtered = typeFilter ? (rows ?? []).filter((r) => r.type === typeFilter) : (rows ?? []);
+  const rows = data?.rows ?? [];
+  const aging = data?.aging;
+
+  const filtered = typeFilter ? rows.filter((r) => r.type === typeFilter) : rows;
 
   return (
     <div className="space-y-5">
@@ -236,12 +225,13 @@ export function SubledgerView({ clientId }: { clientId: string }) {
             />
             <button
               type="button"
-              onClick={() => void createSubledger()}
-              disabled={!form.code.trim() || !form.name.trim()}
+              onClick={() => createSubledger.mutate()}
+              disabled={createSubledger.isPending || !form.code.trim() || !form.name.trim()}
               className="rounded-md bg-accent px-3 py-1.5 text-xs font-semibold text-[#ffffff] disabled:opacity-40"
             >
               Simpan
             </button>
+            {saveError && <p className="text-xs text-rose-600 md:col-span-5">{saveError}</p>}
           </div>
         )}
 
@@ -276,7 +266,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
                   <td className="px-3 py-2">
                     <button
                       type="button"
-                      onClick={() => void openLedger(r.code)}
+                      onClick={() => setActiveCode(r.code)}
                       className="rounded-md border border-slate-200 px-2 py-1 text-[10px] text-slate-700 hover:border-accent/50"
                     >
                       Buku Besar
@@ -305,7 +295,7 @@ export function SubledgerView({ clientId }: { clientId: string }) {
             </h3>
             <button
               type="button"
-              onClick={() => { setActiveCode(null); setLedger(null); }}
+              onClick={() => setActiveCode(null)}
               className="text-xs text-slate-700 hover:text-slate-700"
             >
               ✕ Tutup
@@ -313,6 +303,8 @@ export function SubledgerView({ clientId }: { clientId: string }) {
           </div>
           {ledgerLoading ? (
             <p className="p-4 text-xs text-slate-700">Memuat…</p>
+          ) : ledgerError ? (
+            <p className="p-4 text-xs text-rose-600">{(ledgerError as Error).message}</p>
           ) : !ledger || ledger.length === 0 ? (
             <p className="p-4 text-xs text-slate-700">Belum ada transaksi untuk subledger ini.</p>
           ) : (

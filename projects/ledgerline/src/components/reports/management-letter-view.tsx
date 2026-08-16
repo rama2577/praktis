@@ -5,7 +5,8 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Card } from "@/components/ui/card";
 import { Skeleton } from "@/components/ui/skeleton";
@@ -41,28 +42,18 @@ export function ManagementLetterView({
   setClientId: (v: string) => void;
   setPeriod: (v: string) => void;
 }) {
-  const [ml, setMl] = useState<ManagementLetter | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   const [expanded, setExpanded] = useState<Set<string>>(new Set());
 
-  const load = useCallback(async () => {
-    if (!clientId) return;
-    setLoading(true);
-    setError(null);
-    try {
+  const { data: ml, isLoading: loading, error, refetch } = useQuery({
+    queryKey: ["management-letter", clientId, period],
+    queryFn: async () => {
       const res = await fetch(`/api/clients/${clientId}/management-letter?period=${period}`);
       if (!res.ok) throw new Error((await res.json().catch(() => ({ error: "Gagal" }))).error ?? "Gagal");
       const { data } = await res.json() as { data: ManagementLetter };
-      setMl(data);
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [clientId, period]);
-
-  useEffect(() => { void load(); }, [load]);
+      return data;
+    },
+    enabled: !!clientId,
+  });
 
   const toggle = (id: string) => {
     setExpanded((prev) => {
@@ -91,7 +82,7 @@ export function ManagementLetterView({
         >↓ CSV</a>
       </div>
 
-      {error && <ErrorState message={error} onRetry={() => void load()} />}
+      {error && <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />}
       {loading && <Skeleton className="h-64 w-full" />}
 
       {!loading && !error && ml && (

@@ -26,15 +26,6 @@ const eslintConfig = defineConfig([
     "scripts/record-clips.js",
     "scripts/record-demo.js",
   ]),
-  {
-    rules: {
-      // react-hooks v7: rule ini menandai setLoading(true) sinkron di awal
-      // fetch-on-mount + refetch-on-deps (pola umum & benar). Perbaikan jangka
-      // panjang = migrasi data-fetching ke TanStack Query/SWR; untuk sekarang
-      // matikan agar tidak memblokir build (bukan bug correctness).
-      "react-hooks/set-state-in-effect": "off",
-    },
-  },
 ]);
 
 export default eslintConfig;

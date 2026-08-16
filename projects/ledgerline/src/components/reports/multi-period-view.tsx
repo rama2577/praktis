@@ -5,7 +5,8 @@
 
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { useState } from "react";
 import { HighlightsTable } from "./highlights-table";
 import { DonutChart, HBarChart, TrendChart, VBarChart, withColors } from "@/components/charts/svg-chart";
 import { SelectClient, PeriodInput } from "./analytics-views";
@@ -38,25 +39,17 @@ export function MultiPeriodView({
   setClientId: (v: string) => void;
   setPeriod: (v: string) => void;
 }) {
-  const [highlights, setHighlights] = useState<MultiPeriodHighlights | null>(null);
-  const [analysis, setAnalysis] = useState<AnalysisData | null>(null);
-  const [loading, setLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
   // Mode perbandingan: "tahunan" = 5 tahun terakhir; "bulanan" = 12 bulan dalam tahun yang sama.
   const [mode, setMode] = useState<"tahunan" | "bulanan">("tahunan");
 
-  const load = useCallback(async () => {
-    if (!clientId) return;
-    setLoading(true);
-    setError(null);
-    try {
+  const { data, isLoading: loading, error, refetch } = useQuery({
+    queryKey: ["multi-period", clientId, period, mode],
+    queryFn: async () => {
       const [y, m] = period.split("-").map(Number);
       const periods: string[] = [];
       if (mode === "bulanan") {
-        // Periodik bulanan: Jan–Des pada tahun yang sama dengan periode aktif.
         for (let i = 1; i <= 12; i++) periods.push(`${y}-${String(i).padStart(2, "0")}`);
       } else {
-        // Tahunan: 5 tahun terakhir, dibandingkan pada bulan yang sama.
         for (let i = 0; i < 5; i++) {
           const ym = y! - i;
           if (ym < 2020) break; // oldest 2020
@@ -70,22 +63,17 @@ export function MultiPeriodView({
         fetch(`/api/clients/${clientId}/analytics?period=${encodeURIComponent(period)}`),
       ]);
 
-      if (hlRes.ok) {
-        const { data } = await hlRes.json() as { data: MultiPeriodHighlights };
-        setHighlights(data);
-      }
-      if (anRes.ok) {
-        const { data } = await anRes.json() as { data: AnalysisData };
-        setAnalysis(data);
-      }
-    } catch (e) {
-      setError((e as Error).message);
-    } finally {
-      setLoading(false);
-    }
-  }, [clientId, period, mode]);
+      let highlights: MultiPeriodHighlights | null = null;
+      let analysis: AnalysisData | null = null;
+      if (hlRes.ok) highlights = ((await hlRes.json()) as { data: MultiPeriodHighlights }).data;
+      if (anRes.ok) analysis = ((await anRes.json()) as { data: AnalysisData }).data;
+      return { highlights, analysis };
+    },
+    enabled: !!clientId,
+  });
 
-  useEffect(() => { void load(); }, [load]);
+  const highlights = data?.highlights ?? null;
+  const analysis = data?.analysis ?? null;
 
   if (!clientId) return <EmptyState title="Pilih klien" description="Pilih klien untuk melihat ikhtisar." />;
 
@@ -112,7 +100,7 @@ export function MultiPeriodView({
         </div>
       </div>
 
-      {error && <div className="rounded-lg border border-red-800 bg-red-950/20 p-3 text-xs text-red-600">{error}</div>}
+      {error && <div className="rounded-lg border border-red-800 bg-red-950/20 p-3 text-xs text-red-600">{(error as Error).message}</div>}
 
       {/* ── 1. Highlights Table ── */}
       <div className="rounded-xl border border-slate-200 bg-white">
@@ -162,7 +150,7 @@ export function MultiPeriodView({
       )}
 
       {/* ── 4. Upload Laporan Historis ── */}
-      <UploadHistoricalReports clientId={clientId} period={period} onUploaded={load} />
+      <UploadHistoricalReports clientId={clientId} period={period} onUploaded={() => void refetch()} />
     </div>
   );
 }
