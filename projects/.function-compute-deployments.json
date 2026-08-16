@@ -7,12 +7,13 @@
       "folderName": "website-f3df21083647c108f9375d2f",
       "projectName": "Praktis — Landing Page Klien",
       "environment": "nginx",
-      "status": "preview-ready",
+      "status": "published",
       "functionId": "fc-b97b5042",
       "previewUrl": "https://0ifqi00u.autoclawai.space/",
       "stableUrl": "https://8vagzfpe.autoclawai.space/",
       "contentHash": "sha256:ae92b4d98116893e1050ab556ac08b2a2069546fad902d618aedfbca720e2698",
-      "updatedAt": "2026-08-15T17:36:40.003Z"
+      "updatedAt": "2026-08-15T17:41:44.052Z",
+      "publishedAt": "2026-08-15T17:41:44.052Z"
     }
   }
 }
