@@ -62,6 +62,12 @@ jobs:
         run: npm run security:audit
         continue-on-error: true # naikkan jadi gate setelah daftar vuln bersih
 
+      - name: SAST (Semgrep)
+        uses: semgrep/semgrep-action@v1
+        continue-on-error: true # naikkan jadi gate setelah temuan bersih
+        with:
+          config: p/default
+
       - name: Lint
         run: npm run lint
 
@@ -76,6 +82,9 @@ jobs:
           npx prisma migrate deploy
           npx prisma db seed
 
+      - name: Install Playwright chromium
+        run: npx playwright install --with-deps chromium
+
       - name: Integration (pipeline + review E2E)
         run: |
           npm run worker > /tmp/worker.log 2>&1 &
@@ -84,3 +93,4 @@ jobs:
           npx tsx scripts/e2e-review.ts
           npx tsx scripts/e2e-upload.ts
           npx tsx scripts/e2e-isolation.ts
+          npx playwright test
