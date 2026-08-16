@@ -172,9 +172,9 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
     }
   };
 
-  const exportCsv = (template: Template) => {
+  const download = (template: Template, format: "csv" | "pdf" | "xlsx") => {
     if (!clientId) return;
-    window.location.href = `/api/clients/${clientId}/custom-reports?period=${period}&templateId=${template.id}&format=csv`;
+    window.location.href = `/api/clients/${clientId}/custom-reports?period=${period}&templateId=${template.id}&format=${format}`;
   };
 
   const total = useMemo(() => rows?.reduce((s, r) => s + r.amount, 0) ?? 0, [rows]);
@@ -294,8 +294,14 @@ export function CustomReportView({ initialClients = [] }: { initialClients?: Cli
                 <Button size="sm" onClick={() => void run(t)} disabled={busy}>
                   Jalankan
                 </Button>
-                <Button size="sm" variant="secondary" onClick={() => exportCsv(t)}>
+                <Button size="sm" variant="secondary" onClick={() => download(t, "csv")}>
                   ↓ CSV
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => download(t, "pdf")}>
+                  ↓ PDF
+                </Button>
+                <Button size="sm" variant="secondary" onClick={() => download(t, "xlsx")}>
+                  ↓ XLSX
                 </Button>
                 <Button size="sm" variant="danger" onClick={() => void remove(t)} disabled={busy}>
                   Hapus

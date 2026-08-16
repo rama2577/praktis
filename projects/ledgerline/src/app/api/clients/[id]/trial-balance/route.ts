@@ -4,6 +4,7 @@ import { OPERATIONAL_ROLES } from "@/lib/roles";
 import { prisma } from "@/lib/db";
 import { withTenantApi } from "@/lib/tenant-api";
 import { getTrialBalance, parsePeriod, trialBalanceCsv, trialBalanceXlsx } from "@/server/trial-balance";
+import { renderPdf, pdfResponse } from "@/server/export";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -58,6 +59,40 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
         "Content-Disposition": `attachment; filename="neraca-percobaan-${period}.xlsx"`,
       },
     });
+  }
+
+  if (format === "pdf") {
+    const buffer = await renderPdf({
+      title: `Neraca Percobaan — ${client.name}`,
+      subtitle: `Periode ${period}${report.prevPeriod ? ` · komparatif ${report.prevPeriod}` : ""}`,
+      tables: [
+        {
+          columns: [
+            { header: "Kode", ratio: 1.1 },
+            { header: "Akun", ratio: 2.6 },
+            { header: "Klasifikasi", ratio: 1.4 },
+            { header: "Debit", align: "right", ratio: 1.4 },
+            { header: "Kredit", align: "right", ratio: 1.4 },
+            { header: "Saldo", align: "right", ratio: 1.4 },
+            { header: "Bulan Lalu", align: "right", ratio: 1.4 },
+          ],
+          rows: report.rows.map((r) => [
+            r.accountCode,
+            r.accountName,
+            r.classification,
+            r.debit,
+            r.credit,
+            r.balance,
+            r.prevBalance ?? "",
+          ]),
+          footer: [
+            `Total Debit: ${report.totalDebit.toLocaleString("id-ID")}   ·   Total Kredit: ${report.totalCredit.toLocaleString("id-ID")}`,
+            report.balanced ? "Status: Seimbang" : "Status: TIDAK seimbang",
+          ],
+        },
+      ],
+    });
+    return pdfResponse(buffer, `neraca-percobaan-${period}.pdf`);
   }
 
   if (format === "worksheet" || format === "worksheet-csv") {

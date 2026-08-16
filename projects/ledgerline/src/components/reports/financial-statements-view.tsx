@@ -61,6 +61,16 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
     window.location.href = `/api/clients/${clientId}/financial-statements?period=${period}&type=${tab}&format=csv&rounding=${rounding}`;
   };
 
+  const exportPdf = () => {
+    if (!clientId) return;
+    window.location.href = `/api/clients/${clientId}/financial-statements?period=${period}&type=${tab}&format=pdf&rounding=${rounding}`;
+  };
+
+  const exportXlsx = () => {
+    if (!clientId) return;
+    window.location.href = `/api/clients/${clientId}/financial-statements?period=${period}&type=${tab}&format=xlsx&rounding=${rounding}`;
+  };
+
   const displayLines = stmt ? applyRounding(stmt.lines, rounding) : [];
   const displayFmt = (n: number) => {
     const divisor = rounding === "juta" ? 1_000_000 : rounding === "ribu" ? 1_000 : 1;
@@ -134,6 +144,12 @@ export function FinancialStatementsView({ initialClients = [] }: { initialClient
         </div>
         <Button variant="secondary" onClick={exportCsv} disabled={!stmt}>
           ↓ CSV
+        </Button>
+        <Button variant="secondary" onClick={exportPdf} disabled={!stmt}>
+          ↓ PDF
+        </Button>
+        <Button variant="secondary" onClick={exportXlsx} disabled={!stmt}>
+          ↓ XLSX
         </Button>
       </div>
 

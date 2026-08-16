@@ -77,6 +77,12 @@ export function ManagementLetterView({
         <a href={exportUrl("md")} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-slate-200 text-slate-800 hover:border-accent/50" : "pointer-events-none opacity-40"}`}
         >↓ Markdown</a>
+        <a href={exportUrl("pdf")} aria-disabled={!clientId}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-slate-200 text-slate-800 hover:border-accent/50" : "pointer-events-none opacity-40"}`}
+        >↓ PDF</a>
+        <a href={exportUrl("xlsx")} aria-disabled={!clientId}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-slate-200 text-slate-800 hover:border-accent/50" : "pointer-events-none opacity-40"}`}
+        >↓ XLSX</a>
         <a href={exportUrl("csv")} aria-disabled={!clientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${clientId ? "border-accent/40 bg-accent/10 text-accent hover:bg-accent/20" : "pointer-events-none opacity-40"}`}
         >↓ CSV</a>

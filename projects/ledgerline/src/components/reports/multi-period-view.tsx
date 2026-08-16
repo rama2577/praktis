@@ -42,21 +42,26 @@ export function MultiPeriodView({
   // Mode perbandingan: "tahunan" = 5 tahun terakhir; "bulanan" = 12 bulan dalam tahun yang sama.
   const [mode, setMode] = useState<"tahunan" | "bulanan">("tahunan");
 
+  const buildPeriods = (p: string, md: "tahunan" | "bulanan"): string[] => {
+    const [y, m] = p.split("-").map(Number);
+    const periods: string[] = [];
+    if (md === "bulanan") {
+      for (let i = 1; i <= 12; i++) periods.push(`${y}-${String(i).padStart(2, "0")}`);
+    } else {
+      for (let i = 0; i < 5; i++) {
+        const ym = y! - i;
+        if (ym < 2020) break; // oldest 2020
+        periods.push(`${ym}-${String(m!).padStart(2, "0")}`);
+      }
+      periods.reverse(); // oldest → newest
+    }
+    return periods;
+  };
+
   const { data, isLoading: loading, error, refetch } = useQuery({
     queryKey: ["multi-period", clientId, period, mode],
     queryFn: async () => {
-      const [y, m] = period.split("-").map(Number);
-      const periods: string[] = [];
-      if (mode === "bulanan") {
-        for (let i = 1; i <= 12; i++) periods.push(`${y}-${String(i).padStart(2, "0")}`);
-      } else {
-        for (let i = 0; i < 5; i++) {
-          const ym = y! - i;
-          if (ym < 2020) break; // oldest 2020
-          periods.push(`${ym}-${String(m!).padStart(2, "0")}`);
-        }
-        periods.reverse(); // oldest → newest
-      }
+      const periods = buildPeriods(period, mode);
 
       const [hlRes, anRes] = await Promise.all([
         fetch(`/api/clients/${clientId}/multi-period?periods=${encodeURIComponent(periods.join(","))}`),
@@ -74,6 +79,9 @@ export function MultiPeriodView({
 
   const highlights = data?.highlights ?? null;
   const analysis = data?.analysis ?? null;
+
+  const exportUrl = (f: string) =>
+    `/api/clients/${clientId}/multi-period?periods=${encodeURIComponent(buildPeriods(period, mode).join(","))}&format=${f}`;
 
   if (!clientId) return <EmptyState title="Pilih klien" description="Pilih klien untuk melihat ikhtisar." />;
 
@@ -98,6 +106,15 @@ export function MultiPeriodView({
             </button>
           ))}
         </div>
+        <a href={exportUrl("csv")}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-accent/50 hover:text-accent"
+        >↓ CSV</a>
+        <a href={exportUrl("pdf")}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-accent/50 hover:text-accent"
+        >↓ PDF</a>
+        <a href={exportUrl("xlsx")}
+          className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20"
+        >↓ XLSX</a>
       </div>
 
       {error && <div className="rounded-lg border border-red-800 bg-red-950/20 p-3 text-xs text-red-600">{(error as Error).message}</div>}

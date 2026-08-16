@@ -14,6 +14,7 @@ import {
   statementCsv,
   type FinancialStatement,
 } from "@/server/financial-statements";
+import { renderPdf, pdfResponse, xlsxBuffer, xlsxResponse } from "@/server/export";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -82,5 +83,38 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
       },
     });
   }
+
+  if (format === "pdf" || format === "xlsx") {
+    const lines = applyRounding(stmt.lines, rounding);
+    const label = (l: (typeof lines)[number]) => "  ".repeat(l.indent ?? 0) + l.label;
+    if (format === "xlsx") {
+      const buffer = await xlsxBuffer([
+        {
+          name: stmt.title,
+          columns: [
+            { header: "Keterangan", key: "label", width: 56 },
+            { header: "Jumlah (Rp)", key: "amount", width: 22 },
+          ],
+          rows: lines.map((l) => ({ label: label(l), amount: l.amount })),
+        },
+      ]);
+      return xlsxResponse(buffer, `${type}-${period}.xlsx`);
+    }
+    const buffer = await renderPdf({
+      title: stmt.title,
+      subtitle: `${stmt.clientName} · Periode ${stmt.period}`,
+      tables: [
+        {
+          columns: [
+            { header: "Keterangan", ratio: 3.2 },
+            { header: "Jumlah (Rp)", align: "right", ratio: 1.8 },
+          ],
+          rows: lines.map((l) => [label(l), l.amount]),
+        },
+      ],
+    });
+    return pdfResponse(buffer, `${type}-${period}.pdf`);
+  }
+
   return NextResponse.json({ data: stmt });
 });

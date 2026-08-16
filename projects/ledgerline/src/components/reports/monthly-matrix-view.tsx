@@ -61,12 +61,23 @@ export function MonthlyMatrixView({
   if (!clientId) return <EmptyState title="Pilih klien" description="Pilih klien untuk melihat matrix 12 bulan." />;
 
   const fmt = (n: number) => (n === 0 ? "—" : formatCurrencyRp(n));
+  const year = parseInt(period.slice(0, 4), 10) || new Date().getFullYear();
+  const exportUrl = (f: string) => `/api/clients/${clientId}/monthly-matrix?year=${year}&format=${f}`;
 
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap items-end gap-3">
         <SelectClient clients={clients} clientId={clientId} setClientId={setClientId} />
         <PeriodInput period={period} setPeriod={setPeriod} />
+        <a href={exportUrl("csv")}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-accent/50 hover:text-accent"
+        >↓ CSV</a>
+        <a href={exportUrl("pdf")}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-accent/50 hover:text-accent"
+        >↓ PDF</a>
+        <a href={exportUrl("xlsx")}
+          className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20"
+        >↓ XLSX</a>
       </div>
 
       {error && <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />}

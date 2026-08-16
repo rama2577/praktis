@@ -159,7 +159,7 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
     onError: (e) => setLockError((e as Error).message),
   });
 
-  const exportUrl = (format: "csv" | "xlsx") =>
+  const exportUrl = (format: "csv" | "xlsx" | "pdf") =>
     effectiveClientId ? `/api/clients/${effectiveClientId}/trial-balance?period=${period}&format=${format}` : null;
 
   const handleLock = () => {
@@ -198,6 +198,11 @@ export function TrialBalanceView({ canLock = false }: { canLock?: boolean }) {
           className={`rounded-lg border px-3 py-2 text-sm transition ${
             effectiveClientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
         >↓ Ekspor CSV</a>
+        <a
+          href={exportUrl("pdf") ?? "#"} aria-disabled={!effectiveClientId}
+          className={`rounded-lg border px-3 py-2 text-sm transition ${
+            effectiveClientId ? "border-slate-200 text-slate-800 hover:border-accent/50 hover:text-accent" : "pointer-events-none opacity-40"}`}
+        >↓ Ekspor PDF</a>
         <a
           href={exportUrl("xlsx") ?? "#"} aria-disabled={!effectiveClientId}
           className={`rounded-lg border px-3 py-2 text-sm transition ${

@@ -10,6 +10,7 @@ import {
   listReportTemplates,
   type ReportTemplate,
 } from "@/server/custom-report";
+import { renderPdf, pdfResponse, xlsxBuffer, xlsxResponse } from "@/server/export";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -62,5 +63,41 @@ export const GET = withTenantApi<Ctx>(async (req, ctx) => {
       },
     });
   }
+
+  if (format === "pdf") {
+    const buffer = await renderPdf({
+      title: `Laporan ${template.name}`,
+      subtitle: `${client.name} · Periode ${period} · ${template.kind}`,
+      tables: [
+        {
+          columns: [
+            { header: "Keterangan", ratio: 3.2 },
+            { header: "Jumlah (Rp)", align: "right", ratio: 1.8 },
+          ],
+          rows: result.rows.map((r) => [r.label, r.amount]),
+          footer: [`Total: ${result.total.toLocaleString("id-ID")}`],
+        },
+      ],
+    });
+    return pdfResponse(buffer, `laporan-${template.id}-${period}.pdf`);
+  }
+
+  if (format === "xlsx") {
+    const buffer = await xlsxBuffer([
+      {
+        name: template.name,
+        columns: [
+          { header: "Keterangan", key: "label", width: 56 },
+          { header: "Jumlah (Rp)", key: "amount", width: 22 },
+        ],
+        rows: [
+          ...result.rows.map((r) => ({ label: r.label, amount: r.amount })),
+          { label: "Total", amount: result.total },
+        ],
+      },
+    ]);
+    return xlsxResponse(buffer, `laporan-${template.id}-${period}.xlsx`);
+  }
+
   return NextResponse.json({ data: { template, period, rows: result.rows, total: result.total, filteredLines: result.filteredLines } });
 });

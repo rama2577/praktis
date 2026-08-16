@@ -12,6 +12,7 @@ import { getTrialBalance } from "@/server/trial-balance";
 import { buildAnalysis } from "@/server/financial-analysis";
 import { getQualityMetrics } from "@/server/metrics";
 import { buildManagementLetter, managementLetterMarkdown, managementLetterCsv } from "@/server/management-letter";
+import { renderPdf, pdfResponse, xlsxBuffer, xlsxResponse } from "@/server/export";
 
 type Ctx = { params: Promise<{ id: string }> };
 
@@ -80,5 +81,84 @@ export const GET = withTenantApi<Ctx>(async (request, ctx) => {
       headers: { "Content-Type": "text/csv; charset=utf-8" },
     });
   }
+
+  if (format === "pdf") {
+    const buffer = await renderPdf({
+      title: `Management Letter — ${client.name}`,
+      subtitle: `Periode ${period} · ${ml.reference}`,
+      tables: [
+        {
+          title: "Ringkasan Eksekutif",
+          columns: [],
+          rows: [],
+          paragraphs: [ml.executiveSummary, ...ml.narrative],
+        },
+        {
+          title: "Temuan Audit",
+          columns: [
+            { header: "Area", ratio: 1.4 },
+            { header: "Judul", ratio: 2.2 },
+            { header: "Severity", ratio: 1.1 },
+            { header: "Status", ratio: 1.3 },
+            { header: "Rekomendasi", ratio: 2.6 },
+          ],
+          rows: ml.findings.map((f) => [
+            f.area,
+            f.title,
+            f.severity,
+            f.status,
+            f.recommendation,
+          ]),
+          footer: [
+            `Temuan: ${ml.summary.total} (High ${ml.summary.high} · Medium ${ml.summary.medium} · Low ${ml.summary.low} · Observasi ${ml.summary.observation}) · Resolved ${ml.summary.resolved}`,
+          ],
+        },
+      ],
+    });
+    return pdfResponse(buffer, `management-letter-${period}.pdf`);
+  }
+
+  if (format === "xlsx") {
+    const buffer = await xlsxBuffer([
+      {
+        name: "Temuan",
+        columns: [
+          { header: "Area", key: "area", width: 18 },
+          { header: "Judul", key: "title", width: 40 },
+          { header: "Severity", key: "severity", width: 12 },
+          { header: "Status", key: "status", width: 14 },
+          { header: "Deskripsi", key: "description", width: 48 },
+          { header: "Dampak", key: "impact", width: 36 },
+          { header: "Rekomendasi", key: "recommendation", width: 48 },
+        ],
+        rows: ml.findings.map((f) => ({
+          area: f.area,
+          title: f.title,
+          severity: f.severity,
+          status: f.status,
+          description: f.description,
+          impact: f.impact,
+          recommendation: f.recommendation,
+        })),
+      },
+      {
+        name: "Ringkasan",
+        columns: [
+          { header: "Keterangan", key: "label", width: 28 },
+          { header: "Jumlah", key: "value", width: 12 },
+        ],
+        rows: [
+          { label: "High", value: ml.summary.high },
+          { label: "Medium", value: ml.summary.medium },
+          { label: "Low", value: ml.summary.low },
+          { label: "Observasi", value: ml.summary.observation },
+          { label: "Total", value: ml.summary.total },
+          { label: "Resolved", value: ml.summary.resolved },
+        ],
+      },
+    ]);
+    return xlsxResponse(buffer, `management-letter-${period}.xlsx`);
+  }
+
   return NextResponse.json({ data: ml });
 });

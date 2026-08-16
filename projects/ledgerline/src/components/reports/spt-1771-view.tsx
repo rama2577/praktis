@@ -169,6 +169,9 @@ export function Spt1771View({
   if (!clientId) return <EmptyState title="Pilih klien" description="Pilih klien untuk menyusun SPT 1771." />;
 
   const fmt = (n: number) => (n === 0 ? "—" : formatCurrencyRp(n));
+  const year = parseInt(period.slice(0, 4), 10) || new Date().getFullYear();
+  const exportUrl = (f: string) =>
+    `/api/clients/${clientId}/spt-1771?year=${year}&mode=${mode}&format=${f}`;
 
   return (
     <div className="space-y-5">
@@ -187,6 +190,12 @@ export function Spt1771View({
             ))}
           </select>
         </div>
+        <a href={exportUrl("pdf")}
+          className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-accent/50 hover:text-accent"
+        >↓ PDF (semua lampiran)</a>
+        <a href={exportUrl("xlsx")}
+          className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20"
+        >↓ XLSX (semua lampiran)</a>
       </div>
 
       {error && <ErrorState message={(error as Error).message} onRetry={() => void refetch()} />}

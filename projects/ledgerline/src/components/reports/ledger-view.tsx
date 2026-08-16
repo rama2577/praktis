@@ -380,6 +380,12 @@ export function LedgerView({ canEdit = false }: { canEdit?: boolean }) {
                   ↓ CSV
                 </a>
                 <a
+                  href={`/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}&format=pdf`}
+                  className="rounded-lg border border-slate-200 px-3 py-2 text-sm text-slate-800 transition hover:border-accent/50 hover:text-accent"
+                >
+                  ↓ PDF
+                </a>
+                <a
                   href={`/api/clients/${clientId}/ledger?accountCode=${encodeURIComponent(accountCode)}&period=${period}&format=xlsx`}
                   className="rounded-lg border border-accent/40 bg-accent/10 px-3 py-2 text-sm text-accent transition hover:bg-accent/20"
                 >
