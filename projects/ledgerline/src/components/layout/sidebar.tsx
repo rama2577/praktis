@@ -4,13 +4,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { signOut } from "next-auth/react";
 import { ROLE_LABELS } from "@/lib/roles";
-import type { Role } from "@prisma/client";
+import { isModuleEnabled, SEGMENT_LABELS, SEGMENT_ROLE_LABELS, type ModuleKey } from "@/lib/segments";
+import type { Role, Segment } from "@prisma/client";
 
 type NavItem = {
   label: string;
   href: string;
   ready: boolean;
   task?: string;
+  module?: ModuleKey;
 };
 
 const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
@@ -18,22 +20,22 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
     group: "Operasional",
     items: [
       { label: "Dashboard", href: "/dashboard", ready: true },
-      { label: "Pipeline Produksi", href: "/dashboard/pipeline", ready: true },
-      { label: "Antrian Review", href: "/dashboard/queues", ready: true },
-      { label: "Jurnal Manual", href: "/dashboard/journals", ready: true },
-      { label: "Pengecualian", href: "/dashboard/exceptions", ready: true },
+      { label: "Pipeline Produksi", href: "/dashboard/pipeline", ready: true, module: "pipeline" },
+      { label: "Antrian Review", href: "/dashboard/queues", ready: true, module: "review" },
+      { label: "Jurnal Manual", href: "/dashboard/journals", ready: true, module: "review" },
+      { label: "Pengecualian", href: "/dashboard/exceptions", ready: true, module: "pipeline" },
     ],
   },
   {
     group: "Laporan",
     items: [
-      { label: "Neraca Percobaan", href: "/dashboard/reports/trial-balance", ready: true },
-      { label: "Buku Besar", href: "/dashboard/reports/ledger", ready: true },
-      { label: "Laporan Keuangan", href: "/dashboard/reports/financial", ready: true },
-      { label: "Laporan Custom AI", href: "/dashboard/reports/custom", ready: true },
-      { label: "Aset Tetap", href: "/dashboard/assets", ready: true },
-      { label: "Core Tax", href: "/dashboard/tax", ready: true },
-      { label: "Rekonsiliasi Bank", href: "/dashboard/recon", ready: true },
+      { label: "Neraca Percobaan", href: "/dashboard/reports/trial-balance", ready: true, module: "ledger" },
+      { label: "Buku Besar", href: "/dashboard/reports/ledger", ready: true, module: "ledger" },
+      { label: "Laporan Keuangan", href: "/dashboard/reports/financial", ready: true, module: "ledger" },
+      { label: "Laporan Custom AI", href: "/dashboard/reports/custom", ready: true, module: "custom-ai" },
+      { label: "Aset Tetap", href: "/dashboard/assets", ready: true, module: "assets" },
+      { label: "Core Tax", href: "/dashboard/tax", ready: true, module: "core-tax" },
+      { label: "Rekonsiliasi Bank", href: "/dashboard/recon", ready: true, module: "ledger" },
     ],
   },
   {
@@ -47,8 +49,8 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
   {
     group: "Pengelolaan",
     items: [
-      { label: "Klien", href: "/dashboard/clients", ready: true },
-      { label: "Knowledge Base", href: "/dashboard/knowledge", ready: true },
+      { label: "Klien", href: "/dashboard/clients", ready: true, module: "portal" },
+      { label: "Knowledge Base", href: "/dashboard/knowledge", ready: true, module: "knowledge" },
       { label: "Billing", href: "/dashboard/billing", ready: true },
       { label: "Pengaturan", href: "/dashboard/settings", ready: true },
     ],
@@ -58,10 +60,12 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
 export function Sidebar({
   userName,
   userRole,
+  segment,
   onNavigate,
 }: {
   userName: string;
   userRole: Role;
+  segment: Segment;
   onNavigate?: () => void;
 }) {
   const pathname = usePathname();
@@ -74,54 +78,58 @@ export function Sidebar({
         </div>
         <div>
           <p className="font-heading text-sm font-semibold leading-tight">Praktis</p>
-          <p className="text-[11px] text-muted">AI Bookkeeping</p>
+          <p className="text-[11px] text-muted">{SEGMENT_LABELS[segment]}</p>
         </div>
       </div>
 
       <nav className="flex-1 overflow-y-auto px-3 py-4" aria-label="Navigasi utama">
-        {NAV_GROUPS.map(({ group, items }) => (
-          <div key={group} className="mb-5">
-            <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-700">
-              {group}
-            </p>
-            <ul className="flex flex-col gap-0.5">
-              {items.map((item) => {
-                const active = pathname === item.href;
-                if (!item.ready) {
+        {NAV_GROUPS.map(({ group, items }) => {
+          const visible = items.filter((item) => !item.module || isModuleEnabled(segment, item.module));
+          if (visible.length === 0) return null;
+          return (
+            <div key={group} className="mb-5">
+              <p className="px-2 pb-2 text-[11px] font-semibold uppercase tracking-wider text-slate-700">
+                {group}
+              </p>
+              <ul className="flex flex-col gap-0.5">
+                {visible.map((item) => {
+                  const active = pathname === item.href;
+                  if (!item.ready) {
+                    return (
+                      <li key={item.href}>
+                        <span
+                          title={`Modul ini hadir di ${item.task}`}
+                          className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 opacity-60"
+                        >
+                          {item.label}
+                          <span className="rounded border border-line px-1.5 py-0.5 text-[10px] text-slate-700">
+                            {item.task}
+                          </span>
+                        </span>
+                      </li>
+                    );
+                  }
                   return (
                     <li key={item.href}>
-                      <span
-                        title={`Modul ini hadir di ${item.task}`}
-                        className="flex cursor-not-allowed items-center justify-between rounded-lg px-3 py-2 text-sm text-slate-700 opacity-60"
+                      <Link
+                        href={item.href}
+                        onClick={onNavigate}
+                        aria-current={active ? "page" : undefined}
+                        className={`flex items-center rounded-lg px-3 py-2 text-sm transition ${
+                          active
+                            ? "bg-accent/10 font-medium text-accent"
+                            : "text-muted hover:bg-hover hover:text-foreground"
+                        }`}
                       >
                         {item.label}
-                        <span className="rounded border border-line px-1.5 py-0.5 text-[10px] text-slate-700">
-                          {item.task}
-                        </span>
-                      </span>
+                      </Link>
                     </li>
                   );
-                }
-                return (
-                  <li key={item.href}>
-                    <Link
-                      href={item.href}
-                      onClick={onNavigate}
-                      aria-current={active ? "page" : undefined}
-                      className={`flex items-center rounded-lg px-3 py-2 text-sm transition ${
-                        active
-                          ? "bg-accent/10 font-medium text-accent"
-                          : "text-muted hover:bg-hover hover:text-foreground"
-                      }`}
-                    >
-                      {item.label}
-                    </Link>
-                  </li>
-                );
-              })}
-            </ul>
-          </div>
-        ))}
+                })}
+              </ul>
+            </div>
+          );
+        })}
       </nav>
 
       {/* ── Security badge strip ── */}
@@ -143,7 +151,7 @@ export function Sidebar({
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-medium">{userName}</p>
             <p className="truncate text-[11px] text-slate-700">
-              {ROLE_LABELS[userRole]}
+              {SEGMENT_ROLE_LABELS[segment][userRole] ?? ROLE_LABELS[userRole]}
             </p>
           </div>
           <button

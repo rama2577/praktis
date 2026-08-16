@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
 import { requireRole } from "@/lib/rbac";
 import { OPERATIONAL_ROLES } from "@/lib/roles";
+import { SEGMENT_LABELS } from "@/lib/segments";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { TH, TD, TR, Table } from "@/components/ui/table";
@@ -48,6 +49,10 @@ export default async function SettingsPage() {
           <div>
             <dt className="text-xs text-slate-700">Klien aktif</dt>
             <dd className="text-slate-800">{clients}</dd>
+          </div>
+          <div>
+            <dt className="text-xs text-slate-700">Segmen</dt>
+            <dd className="text-slate-800">{firm ? SEGMENT_LABELS[firm.segment] : "—"}</dd>
           </div>
           <div>
             <dt className="text-xs text-slate-700">Sesi Anda</dt>

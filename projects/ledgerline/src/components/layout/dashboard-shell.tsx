@@ -4,16 +4,18 @@ import { useState } from "react";
 import { Sidebar } from "@/components/layout/sidebar";
 import { Breadcrumb } from "@/components/ui/breadcrumb";
 import { AiCommandPalette } from "@/components/layout/ai-command-palette";
-import type { Role } from "@prisma/client";
+import type { Role, Segment } from "@prisma/client";
 
 export function DashboardShell({
   userName,
   userRole,
+  segment,
   today,
   children,
 }: {
   userName: string;
   userRole: Role;
+  segment: Segment;
   today: string;
   children: React.ReactNode;
 }) {
@@ -44,7 +46,7 @@ export function DashboardShell({
           mobileOpen ? "translate-x-0" : ""
         }`}
       >
-        <Sidebar userName={userName} userRole={userRole} onNavigate={() => setMobileOpen(false)} />
+        <Sidebar userName={userName} userRole={userRole} segment={segment} onNavigate={() => setMobileOpen(false)} />
       </div>
 
       <div className="flex min-w-0 flex-1 flex-col">

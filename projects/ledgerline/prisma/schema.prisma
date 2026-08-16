@@ -116,6 +116,14 @@ enum BillingMode {
   QUOTA_ONLY
 }
 
+enum Segment {
+  FIRMA_AKUNTAN
+  KONSULTAN_PAJAK
+  KONSULTAN_MANAJEMEN
+  MAHASISWA_MAGANG
+  KARYAWAN_AKUNTANSI
+}
+
 model Firm {
   id        String   @id @default(cuid())
   name      String
@@ -126,6 +134,9 @@ model Firm {
   // Billing (F-5): kuota-only per klien; annualPaidAt unlock modul SPT Tahunan.
   billingMode  BillingMode @default(QUOTA_ONLY)
   annualPaidAt DateTime? // paywall SPT Tahunan (null = terkunci)
+
+  // Ekspansi segmen (deck V9): menentukan RBAC & modul aktif per firma.
+  segment Segment @default(FIRMA_AKUNTAN)
 
   users               User[]
   clients             Client[]
