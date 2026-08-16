@@ -5,6 +5,15 @@
 > Dokumen ini mendaftar **gap yang tersisa** sebelum bisa berjalan komersial (GA),
 > diprioritaskan. Update terakhir: 2026-08-16.
 
+## Timeline
+
+- **Sekarang (POC)**: jaga POC mulus, pantau aktivitas user, kumpulkan feedback,
+  iterasi fitur. Backlog kode tersisa: P-7 (TanStack Query), P-1 lanjutan
+  (auto-apply rule), dan fix CI/CD (workflow pindah ke root).
+- **GA kickoff (setelah POC berjalan baik)**: eksekusi P0 di bawah + P1 + non-kode.
+- **Keputusan 2026-08-16**: hardening keamanan kredensial (rotasi password Coolify,
+  rotasi Supabase token, scrub history repo publik) **ditunda** sampai GA kickoff.
+
 ## P0 — Blocker (harus selesai sebelum terima revenue / multi-firma produksi)
 
 1. **Payment + invoicing** — saat ini billing hanya flag (`BILLING_ENFORCE`) +
