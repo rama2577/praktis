@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { StatusBadge } from "@/components/ui/status-badge";
 
 const PIPELINE_STEPS = [
@@ -25,7 +26,7 @@ export default function Home() {
               <p className="text-sm text-slate-700">AI Bookkeeping Platform</p>
             </div>
           </div>
-          <StatusBadge label="Fase 1 · Foundation" tone="accent" />
+          <StatusBadge label="Pilot terbatas · menuju GA" tone="accent" />
         </div>
 
         <p className="mt-8 leading-relaxed text-slate-700">
@@ -49,22 +50,15 @@ export default function Home() {
         </ol>
 
         <div className="mt-10 flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between">
-          <button
-            type="button"
-            disabled
-            title="Modul autentikasi dikerjakan di Task 3"
-            className="cursor-not-allowed rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-[#ffffff] opacity-40 transition hover:opacity-60"
+          <Link
+            href="/login"
+            className="rounded-lg bg-accent px-5 py-2.5 text-sm font-semibold text-[#ffffff] transition hover:bg-accent/90"
           >
             Masuk ke Dashboard
-          </button>
+          </Link>
           <p className="text-xs leading-relaxed text-slate-700">
-            Autentikasi hadir di Task 3 (login per-reviewer + akun admin dev).
-            <br />
-            Sementara itu, verifikasi dengan{" "}
-            <code className="rounded bg-black/10 px-1.5 py-0.5 font-mono text-[0.85em]">
-              npm run dev
-            </code>{" "}
-            → buka http://localhost:3000
+            Login untuk mengakses dashboard — draft jurnal, review berjenjang,
+            dan laporan.
           </p>
         </div>
       </div>
