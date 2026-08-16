@@ -49,6 +49,7 @@ const NAV_GROUPS: Array<{ group: string; items: NavItem[] }> = [
     items: [
       { label: "Klien", href: "/dashboard/clients", ready: true },
       { label: "Knowledge Base", href: "/dashboard/knowledge", ready: true },
+      { label: "Billing", href: "/dashboard/billing", ready: true },
       { label: "Pengaturan", href: "/dashboard/settings", ready: true },
     ],
   },

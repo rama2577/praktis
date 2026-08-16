@@ -112,12 +112,20 @@ enum SlaStatus {
 
 // ── Entitas ──────────────────────────────────────────────────────────────
 
+enum BillingMode {
+  QUOTA_ONLY
+}
+
 model Firm {
   id        String   @id @default(cuid())
   name      String
   slug      String   @unique
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+
+  // Billing (F-5): kuota-only per klien; annualPaidAt unlock modul SPT Tahunan.
+  billingMode  BillingMode @default(QUOTA_ONLY)
+  annualPaidAt DateTime? // paywall SPT Tahunan (null = terkunci)
 
   users               User[]
   clients             Client[]
@@ -133,6 +141,24 @@ model Firm {
   fixedAssets         FixedAsset[]
   bankMutations       BankMutation[]
   subledgers          Subledger[]
+  usageMeters         UsageMeter[]
+}
+
+model UsageMeter {
+  id        String   @id @default(cuid())
+  firmId    String
+  clientId  String
+  period    String // "YYYY-MM"
+  lineCount Int      @default(0) // jumlah baris jurnal APPROVED pada periode
+  overQuota Int      @default(0) // baris di atas kuota
+  countedAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  firm   Firm   @relation(fields: [firmId], references: [id], onDelete: Cascade)
+  client Client @relation(fields: [clientId], references: [id], onDelete: Cascade)
+
+  @@unique([clientId, period])
+  @@index([firmId, period])
 }
 
 model User {
@@ -176,6 +202,7 @@ model Client {
   industry  Industry
   status    ClientStatus @default(ACTIVE)
   taxId     String? // NPWP
+  quotaMonthly Int? // override kuota bulanan (null → default tier)
   createdAt DateTime     @default(now())
   updatedAt DateTime     @updatedAt
 
@@ -190,6 +217,7 @@ model Client {
   fixedAssets         FixedAsset[]
   bankMutations       BankMutation[]
   subledgers          Subledger[]
+  usageMeters         UsageMeter[]
 
   @@index([firmId, status])
 }

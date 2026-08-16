@@ -94,9 +94,9 @@ Upload (PDF/JPG/XLSX)
 
 ## Checklist implementasi (setelah keputusan)
 
+- [x] Backup: Postgres PITR + prosedur restore terdokumentasi (`infra/backup-restore.md`, F-2) — drill bulanan masih manual
+- [x] IaC-lite: spesifikasi layanan Railway + env referensi (`infra/railway-services.md`, F-4) — Terraform penuh tersisa
 - [ ] Abstraksi storage: `src/lib/storage.ts` → interface + impl filesystem (dev) & object storage (prod) — kode sudah siap di-refactor
-- [ ] Env schema produksi: `DATABASE_URL`, `REDIS_URL`, `STORAGE_DRIVER`, `STORAGE_*`, `SECRETS_*` — satu sumber di secret manager
-- [ ] Backup: Postgres PITR + object versioning + prosedur restore teruji (drill bulanan)
 - [ ] Key rotation: dukung `STORAGE_ENCRYPTION_KEY_<version>` + re-encrypt on rotate
 - [ ] IaC: konfigurasi Redis/Postgres/storage sebagai kode (Terraform/OpenTofu) — ganti `redis.conf` manual
 - [ ] Monitoring: health check (sudah `/api/health`) + alert SLA breach ke email (TD-14, lanjutan EN-05 F2)

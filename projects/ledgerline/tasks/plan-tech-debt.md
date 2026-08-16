@@ -4,7 +4,13 @@
 > Prinsip: **quick win dulu** (cepat, risiko rendah, dampak terasa) → fondasi produksi → post-GA.
 > Setiap item: ID · apa · dampak · effort · kriteria selesai.
 
+## Status (2026-08-16)
+
+- ✅ **Wave 1 selesai** (QW-1..QW-6) — kecuali rotasi password prod (ditahan sampai POC selesai, keputusan Rama).
+- 🚧 **Wave 2 berjalan**: F-5 (billing+paywall) ✅ · F-2 (backup runbook) ✅ · F-4 (IaC-lite) ✅ · F-6 (smoke LLM) ✅ · F-1 (storage) ⛔ butuh keputusan provider · F-3 (secret manager) ⛔ butuh keputusan.
+
 ---
+
 
 ## Wave 1 · Quick Wins (target: minggu ini, total ±8 jam)
 
