@@ -58,7 +58,7 @@ export function MultiPeriodView({
       } else {
         // Tahunan: 5 tahun terakhir, dibandingkan pada bulan yang sama.
         for (let i = 0; i < 5; i++) {
-          let ym = y! - i;
+          const ym = y! - i;
           if (ym < 2020) break; // oldest 2020
           periods.push(`${ym}-${String(m!).padStart(2, "0")}`);
         }

@@ -52,8 +52,6 @@ async function main() {
   let status = "";
   for (let i = 0; i < 40; i++) {
     await sleep(3_000);
-    const d = (await (await req(`/api/documents/${docId}/file`)).json().catch(() => ({}))) as any;
-    // Status via dokumen detail tidak tersedia di sini; pakai endpoint documents list.
     const docs = (await (await req("/api/documents")).json()) as { data: Array<{ id: string; status: string }> };
     const doc = docs.data.find((x) => x.id === docId);
     status = doc?.status ?? "?";
