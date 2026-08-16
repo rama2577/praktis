@@ -94,9 +94,8 @@ Upload (PDF/JPG/XLSX)
 
 ## Checklist implementasi (setelah keputusan)
 
-- [x] Backup: Postgres PITR + prosedur restore terdokumentasi (`infra/backup-restore.md`, F-2) — drill bulanan masih manual
-- [x] IaC-lite: spesifikasi layanan Railway + env referensi (`infra/railway-services.md`, F-4) — Terraform penuh tersisa
-- [ ] Abstraksi storage: `src/lib/storage.ts` → interface + impl filesystem (dev) & object storage (prod) — kode sudah siap di-refactor
+- [x] Backup: Postgres PITR + prosedur restore terdokumentasi (`infra/backup-restore.md`, F-2) — drill bulanan masih manual- [x] IaC-lite: spesifikasi layanan Railway + env referensi (`infra/railway-services.md`, F-4) — Terraform penuh tersisa
+- [x] Abstraksi storage: `src/lib/storage/` (interface + filesystem + S3-compatible driver) — pilih backend via `STORAGE_DRIVER` env (F-1, 2026-08-16). S3 driver sudah mendukung R2/S3/MinIO; tinggal set env & buat bucket.
 - [ ] Key rotation: dukung `STORAGE_ENCRYPTION_KEY_<version>` + re-encrypt on rotate
 - [ ] IaC: konfigurasi Redis/Postgres/storage sebagai kode (Terraform/OpenTofu) — ganti `redis.conf` manual
 - [ ] Monitoring: health check (sudah `/api/health`) + alert SLA breach ke email (TD-14, lanjutan EN-05 F2)

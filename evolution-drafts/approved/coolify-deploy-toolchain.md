@@ -1,3 +1,30 @@
+# Evolution Proposal: Rama mulai memakai Coolify untuk deploy/redeploy app — mencatatnya di daftar toolchain agar tugas deploy berikutnya langsung cek detail server & project Coolify.
+
+- Proposal-ID: evo-2026-08-16-coolify-deploy-toolchain
+- Status: approved
+- Signature: coolify-deploy-toolchain
+- Created-At: 2026-08-16 12:10
+- Last-Seen-At: 2026-08-16 12:10
+- Target-File: MEMORY.md
+- Trigger-Type: preference
+- Confidence: medium
+
+## Why This Matters
+- Rama mulai memakai Coolify untuk deploy/redeploy app — mencatatnya di daftar toolchain agar tugas deploy berikutnya langsung cek detail server & project Coolify.
+
+## Evidence
+- Interactive proposal card was present in the session UI.
+- The original pending draft file was unavailable at approval time.
+- AutoClaw reconstructed this draft from the proposal payload so the review result can still be recorded.
+
+## Duplicate Check
+- Checked: pending draft path + signature/proposal fallback
+- Result: original draft file missing
+- Decision: create surrogate draft from proposal payload
+
+## Proposed Change
+### MEMORY.md — toolchain deploy (Coolify)
+
 ---
 summary: "Long-term memory record"
 autoclaw.schema: "agent-profile/v1"
@@ -107,3 +134,15 @@ OpenClaw 三层记忆：
 ## 技能索引
 见 workspace/.agents/skills/ 目录下的 SKILL.md 文件
 - **proposal-mileapp**: skill membuat proposal (zip dari Rama, terpasang 2026-08-14 di ~/.openclaw-autoclaw/skills/proposal-mileapp/) — pakai saat Rama minta dibuatkan proposal (mis. untuk Mile.app)
+
+## Apply Plan
+1. Keep this reconstructed draft as the approval artifact.
+2. Record the proposal content exactly as shown in the interactive card.
+3. Append an audit note after approval or rejection.
+
+## User Approval
+- Approve: 批准 evo-2026-08-16-coolify-deploy-toolchain
+- Reject: 拒绝 evo-2026-08-16-coolify-deploy-toolchain
+
+## Audit
+- 2026-08-16 12:10 — Rama APPROVE `evo-2026-08-16-coolify-deploy-toolchain`. Applied: menambah baris **Coolify** di MEMORY.md (## 开发工具链).

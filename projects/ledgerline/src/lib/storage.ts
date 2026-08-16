@@ -1,17 +1,38 @@
-import { mkdir, readFile, writeFile } from "node:fs/promises";
-import path from "node:path";
+/**
+ * Lapisan penyimpanan dokumen — API publik (F-1 / TD-04).
+ *
+ * `saveUpload` / `readStoredFile` menjaga kontrak yang sama bagi pemanggil,
+ * sementara backend fisik dipilih via `STORAGE_DRIVER`:
+ *   - `filesystem` (default): `uploads/` lokal (dev/demo), terenkripsi at-rest.
+ *   - `s3`: object storage S3-compatible (R2 / S3 / MinIO).
+ *
+ * Enkripsi AES-256-GCM (AES-256-GCM) selalu diterapkan DI ATAS driver, sehingga
+ * data terenkripsi at-rest apa pun backend-nya.
+ */
 import { sanitizeFileName } from "@/server/documents";
 import { decryptBuffer, encryptBuffer } from "@/lib/crypto";
+import { resolveStorageDriverName, type StorageDriver } from "./storage/types";
+import { FilesystemDriver } from "./storage/filesystem";
 
-const UPLOAD_ROOT = path.join(process.cwd(), "uploads");
+let driver: StorageDriver | null = null;
+let driverName: "filesystem" | "s3" | null = null;
 
-function absolutePath(relative: string): string {
-  return path.join(UPLOAD_ROOT, relative.replace(/^uploads[\\/]/, ""));
+async function getDriver(): Promise<StorageDriver> {
+  const name = resolveStorageDriverName();
+  if (driver && driverName === name) return driver;
+  if (name === "s3") {
+    const { S3Driver } = await import("./storage/s3");
+    driver = new S3Driver();
+  } else {
+    driver = new FilesystemDriver();
+  }
+  driverName = name;
+  return driver;
 }
 
 /**
- * Simpan buffer upload ke `uploads/{clientId}/{id}-{namaAman}` (dev: filesystem),
- * TERENKRIPSI AES-256-GCM (enkripsi at-rest). Return path relatif.
+ * Simpan buffer upload → key relatif `uploads/{clientId}/{id}-{namaAman}`,
+ * TERENKRIPSI AES-256-GCM. Return key (disimpan ke `Document.filePath`).
  */
 export async function saveUpload(opts: {
   id: string;
@@ -19,33 +40,16 @@ export async function saveUpload(opts: {
   fileName: string;
   buffer: Buffer;
 }): Promise<string> {
-  const dir = path.join(UPLOAD_ROOT, opts.clientId);
-  await mkdir(dir, { recursive: true });
-
   const safeName = sanitizeFileName(opts.fileName);
-  const relative = path.join("uploads", opts.clientId, `${opts.id}-${safeName}`);
-  await writeFile(absolutePath(relative), encryptBuffer(opts.buffer));
-  return relative;
+  const key = `uploads/${opts.clientId}/${opts.id}-${safeName}`;
+  const d = await getDriver();
+  await d.save(key, encryptBuffer(opts.buffer));
+  return key;
 }
 
-/** Baca file tersimpan lalu dekripsi. Melempar error jika key salah / file rusak.
- *  Di service worker (WORKER_MODE=1), file dibaca dari web service via HTTP
- *  internal (token), karena worker & web tidak berbagi filesystem di Railway. */
+/** Baca file tersimpan lalu dekripsi. Lempar error jika key salah / file rusak. */
 export async function readStoredFile(relativePath: string): Promise<Buffer> {
-  if (process.env.WORKER_MODE === "1") {
-    const base = process.env.WEB_INTERNAL_URL ?? "";
-    const token = process.env.STORAGE_INTERNAL_TOKEN ?? "";
-    if (!base || !token) {
-      throw new Error("worker storage misconfigured: WEB_INTERNAL_URL & STORAGE_INTERNAL_TOKEN wajib di-set");
-    }
-    const encoded = relativePath.split("/").map(encodeURIComponent).join("/");
-    const res = await fetch(`${base.replace(/\/$/, "")}/api/internal/files/${encoded}`, {
-      headers: { "x-internal-token": token },
-    });
-    if (!res.ok) throw new Error(`worker fetch file ${relativePath}: HTTP ${res.status}`);
-    const raw = Buffer.from(await res.arrayBuffer());
-    return decryptBuffer(raw);
-  }
-  const raw = await readFile(absolutePath(relativePath));
+  const d = await getDriver();
+  const raw = await d.read(relativePath);
   return decryptBuffer(raw);
 }

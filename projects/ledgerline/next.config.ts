@@ -18,7 +18,7 @@ const nextConfig: NextConfig = {
   // Railway/Vercel production: server standalone (output tracing otomatis)
   output: "standalone",
   // PDFKit, mupdf (wasm) & tesseract.js (OCR lokal) — jangan di-bundle webpack
-  serverExternalPackages: ["pdfkit", "mupdf", "tesseract.js", "tesseract.js-core"],
+  serverExternalPackages: ["pdfkit", "mupdf", "tesseract.js", "tesseract.js-core", "@aws-sdk/client-s3"],
   // Font PDFKit, wasm mupdf/tesseract & tessdata perlu ikut di standalone output
   outputFileTracingIncludes: {
     "/api/documents/*": [

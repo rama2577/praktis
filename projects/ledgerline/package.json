@@ -15,6 +15,7 @@
     "security:audit": "npm audit --audit-level=high"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1111.0",
     "@prisma/client": "^6.19.3",
     "bcryptjs": "^3.0.3",
     "bullmq": "^6.0.9",
