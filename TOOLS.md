@@ -63,3 +63,32 @@ ssh root@147.93.157.45 "echo '<B64>' | base64 -d | docker exec -i coolify php ar
 ## Related
 
 - [Agent workspace](/concepts/agent-workspace)
+
+## Supabase (Mio ERP)
+
+- **Project ref**: `dgaqjgwtjopgbadrszoj` · API URL `https://dgaqjgwtjopgbadrszoj.supabase.co`
+- **Keys**: publishable `sb_publishable_...`, secret `sb_secret_...` (di .env.local repo Mio)
+- **Management token**: `sbp_<REDACTED>` (utk run SQL via Management API)
+- **DB direct**: `db.dgaqjgwtjopgbadrszoj.supabase.co:5432` (IPv6-ONLY, user `postgres.dgaqjgwtjopgbadrszoj`, sslmode=require). Mac lokal TANPA IPv6 → pakai VPS: `docker run --rm --network host postgres:15-alpine psql ...`
+- **Pooler**: `aws-0-<region>.pooler.supabase.com` — "tenant not found" (pooling disabled/region tak jelas)
+- **Password DB `DB_PASSWORD_<REDACTED>` DITOLAK** (auth failed) — jangan dipakai; belum ketemu nilai benar (Rama tak mau reset)
+- **GLM_API_KEY** (z.ai): `GLM_API_KEY_<REDACTED>`
+
+### Run SQL via Management API (butuh browser User-Agent!)
+```bash
+curl -s -X POST "https://api.supabase.com/v1/projects/dgaqjgwtjopgbadrszoj/database/query" \
+  -H "Authorization: Bearer sbp_<REDACTED>" \
+  -H "Content-Type: application/json" \
+  -H "User-Agent: Mozilla/5.0 ... Chrome/126.0" \
+  -d '{"query":"select 1;"}'
+```
+- ⚠️ User-Agent wajib browser (Python-urllib/curl default → Cloudflare 1010).
+- ⚠️ Rate limit: max 10 req/menit, 1 req/detik. Statement pecah per `;`, jeda 1.3s.
+- Response: array hasil (SELECT) atau `[]` (DDL sukses).
+
+### Set env var Coolify (tanpa UI/API token)
+via tinker (auto-encrypt), app internal id=1, resourceable_type=App\Models\Application:
+```php
+$ev = \App\Models\EnvironmentVariable::where('resourceable_id',1)->where('key','GLM_API_KEY')->first();
+$ev->value = '...'; $ev->save();  // atau new + save() utk key baru
+```
