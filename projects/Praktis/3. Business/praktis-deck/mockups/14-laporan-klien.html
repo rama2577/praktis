@@ -1,0 +1,90 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#0b1120; color:#e5e9f2; min-height:100vh; display:flex; flex-direction:column; }
+/* topbar */
+.top { display:flex; align-items:center; gap:14px; padding:12px 28px; border-bottom:1px solid #1e2a45; background:#0d1526; }
+.logo { display:flex; align-items:center; gap:10px; }
+.logo .badge { width:32px; height:32px; border-radius:9px; background:#f5c518; color:#0b1120; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.logo b { font-size:14px; } .logo small { display:block; color:#64748b; font-size:10px; }
+.div { width:1px; height:26px; background:#1e2a45; }
+.client { display:flex; align-items:center; gap:9px; }
+.client .av { width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,.18); color:#f5c518; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:12px; }
+.client b { font-size:13px; } .client small { display:block; color:#64748b; font-size:10px; }
+.sp { flex:1; }
+.pill { display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(16,185,129,.35); background:rgba(16,185,129,.1); color:#34d399; padding:3px 10px; border-radius:99px; font-weight:600; font-size:10px; }
+.dot { width:6px; height:6px; border-radius:50%; background:#34d399; }
+/* nav */
+.nav { display:flex; gap:4px; padding:0 28px; background:#0d1526; border-bottom:1px solid #1e2a45; }
+.nav a { padding:11px 16px; font-size:13px; color:#94a3b8; text-decoration:none; border-bottom:2px solid transparent; }
+.nav a.on { color:#f5c518; border-bottom-color:#f5c518; font-weight:600; }
+/* content */
+.content { padding:24px 28px; display:flex; flex-direction:column; gap:18px; flex:1; }
+.h1 { font-size:21px; font-weight:700; } .sub { font-size:12px; color:#64748b; margin-top:3px; }
+.grid { display:grid; gap:14px; } .g2 { grid-template-columns:repeat(2,1fr); } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.card { background:#101a30; border:1px solid #1e2a45; border-radius:14px; padding:16px; }
+.card .ct { font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:#64748b; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.kpi .v { font-size:26px; font-weight:700; margin-top:8px; } .kpi .h { font-size:10px; color:#64748b; margin-top:4px; }
+.grn{color:#34d399} .ylw{color:#f5c518} .red{color:#f87171} .sky{color:#38bdf8} .slt{color:#e5e9f2}
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { text-align:left; color:#64748b; font-weight:500; font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:8px 10px; border-bottom:1px solid #1e2a45; }
+td { padding:10px; border-bottom:1px solid #141f38; color:#cbd5e1; }
+.mono { font-family:'SF Mono',Menlo,monospace; font-size:11px; }
+.btn { border-radius:9px; padding:9px 16px; font-size:12px; font-weight:600; border:none; cursor:pointer; text-decoration:none; display:inline-block; }
+.b-gold{background:#f5c518;color:#0b1120} .b-out{background:transparent;color:#f5c518;border:1px solid rgba(245,197,24,.45)}
+.b-slate{background:#1e293b;color:#cbd5e1;border:1px solid #334155}
+.chip { font-size:10px; padding:2px 9px; border-radius:99px; font-weight:600; }
+.c-ok{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.35)}
+.c-wait{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.4)}
+.c-red{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.4)}
+.drop { border:2px dashed #334155; border-radius:14px; padding:46px; text-align:center; color:#64748b; background:rgba(13,21,38,.5); }
+.drop .ic { font-size:34px; margin-bottom:10px; } .drop b { color:#cbd5e1; font-size:15px; }
+.row { display:flex; align-items:center; gap:10px; } .mt { margin-top:12px; } .small { font-size:11px; color:#64748b; }
+.insight { border-left:3px solid #f5c518; background:#101a30; border:1px solid #1e2a45; border-radius:12px; padding:14px 16px; }
+.insight .tag { font-size:10px; color:#f5c518; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.bar-h { height:10px; border-radius:99px; background:#1e2a45; overflow:hidden; margin-top:6px; }
+.bar-h > i { display:block; height:100%; border-radius:99px; }
+.alert { border:1px solid rgba(248,113,113,.4); background:rgba(248,113,113,.08); color:#fca5a5; border-radius:10px; padding:10px 14px; font-size:12px; }
+.foot { padding:14px 28px; border-top:1px solid #1e2a45; font-size:11px; color:#475569; display:flex; justify-content:space-between; }
+</style></head><body>
+<div class="top">
+  <div class="logo"><div class="badge">P</div><div><b>Praktis</b><small>Portal Klien</small></div></div>
+  <div class="div"></div><div class="client"><div class="av">SR</div><div><b>PT Sentosa Raya</b><small>Retail · Jakarta</small></div></div>
+  <div class="sp"></div>
+  <span class="pill"><span class="dot"></span>Semua sistem normal</span>
+</div>
+<div class="nav"><a class="" href="#">Beranda</a><a class="" href="#">Dokumen</a><a class="on" href="#">Laporan</a><a class="" href="#">Analisa</a><a class="" href="#">Wawasan AI</a></div>
+<div class="content">
+<div class="row"><div><div class="h1">Laporan keuangan</div><div class="sub">Laporan standar per periode — unduh PDF/XLSX kapan saja</div></div>
+<div class="sp"></div>
+<span class="pill"><span class="dot"></span>Laporan Juli 2026 · final ✓</span></div>
+<div class="grid g2">
+  <div class="card"><div class="ct">Periode</div>
+    <table>
+      <tr><th>Periode</th><th>Status</th><th style="text-align:right">Aksi</th></tr>
+      <tr><td><b>Juli 2026</b></td><td><span class="chip c-ok">Final · H+3</span></td><td style="text-align:right"><a href="#" class="btn b-gold" style="padding:5px 10px">Buka</a></td></tr>
+      <tr><td><b>Juni 2026</b></td><td><span class="chip c-ok">Final</span></td><td style="text-align:right"><a href="#" class="btn b-out" style="padding:5px 10px">Buka</a></td></tr>
+      <tr><td><b>Mei 2026</b></td><td><span class="chip c-ok">Final</span></td><td style="text-align:right"><a href="#" class="btn b-out" style="padding:5px 10px">Buka</a></td></tr>
+      <tr><td><b>Agustus 2026</b></td><td><span class="chip c-wait">Dalam proses</span></td><td style="text-align:right"><span class="small">—</span></td></tr>
+    </table>
+  </div>
+  <div class="card"><div class="ct">Laba rugi · Juli 2026 <a href="#" style="color:#f5c518;font-size:11px">Neraca · Arus kas · PPN →</a></div>
+    <table>
+      <tr><th>Akun</th><th style="text-align:right">Jumlah</th></tr>
+      <tr><td>Pendapatan penjualan</td><td class="ta-r mono">385.400.000</td></tr>
+      <tr><td>Harga pokok penjualan</td><td class="ta-r mono">(296.800.000)</td></tr>
+      <tr><td><b>Laba kotor</b></td><td class="ta-r mono" style="color:#f5c518"><b>88.600.000</b></td></tr>
+      <tr><td>Beban usaha</td><td class="ta-r mono">(46.200.000)</td></tr>
+      <tr><td><b>Laba usaha</b></td><td class="ta-r mono" style="color:#34d399"><b>42.400.000</b></td></tr>
+      <tr><td>Estimasi pajak (0,5% final)</td><td class="ta-r mono">(1.927.000)</td></tr>
+      <tr><td><b>Laba bersih</b></td><td class="ta-r mono" style="color:#34d399"><b>40.473.000</b></td></tr>
+    </table>
+    <div class="row mt" style="gap:8px">
+      <a href="#" class="btn b-gold" style="padding:7px 14px">Unduh PDF</a>
+      <a href="#" class="btn b-slate" style="padding:7px 14px">Unduh XLSX</a>
+      <a href="#" class="btn b-out" style="padding:7px 14px">Kirim ke email</a>
+    </div>
+  </div>
+</div>
+</div>
+<div class="foot"><span>Praktis Portal Klien · PT Sentosa Raya</span><span>Disediakan oleh konsultan akuntan Anda</span></div>
+</body></html>

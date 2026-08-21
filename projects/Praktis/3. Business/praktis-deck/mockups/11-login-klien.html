@@ -1,0 +1,36 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#0b1120; color:#e5e9f2; min-height:100vh; display:flex; align-items:center; justify-content:center;
+  background-image:radial-gradient(700px 420px at 85% -10%,rgba(245,197,24,.12),transparent 60%),radial-gradient(600px 400px at -10% 110%,rgba(56,189,248,.08),transparent 60%); }
+.box { width:420px; background:#0d1526; border:1px solid #1e2a45; border-radius:18px; padding:38px 36px; box-shadow:0 24px 60px rgba(0,0,0,.4); }
+.logo { display:flex; align-items:center; gap:12px; justify-content:center; }
+.logo .badge { width:40px; height:40px; border-radius:11px; background:#f5c518; color:#0b1120; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:17px; }
+.logo b { font-size:17px; } .logo small { display:block; color:#64748b; font-size:11px; text-align:left; }
+h1 { font-size:20px; text-align:center; margin:22px 0 4px; } p.sub { text-align:center; color:#64748b; font-size:12px; margin-bottom:22px; }
+label { display:block; font-size:11px; color:#94a3b8; margin:14px 0 6px; }
+input { width:100%; border-radius:10px; border:1px solid #334155; background:#0b1120; color:#e5e9f2; padding:11px 13px; font-size:13px; }
+input:focus { outline:none; border-color:#f5c518; }
+.btn { width:100%; margin-top:22px; border-radius:10px; padding:12px; background:#f5c518; color:#0b1120; font-weight:700; font-size:14px; border:none; cursor:pointer; }
+.hint { text-align:center; font-size:11px; color:#475569; margin-top:14px; }
+.firm { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:20px; padding-top:18px; border-top:1px solid #1e2a45; font-size:11px; color:#64748b; }
+.firm .av { width:22px; height:22px; border-radius:6px; background:rgba(245,197,24,.18); color:#f5c518; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:10px; }
+.sec { text-align:center; font-size:10px; color:#475569; margin-top:10px; }
+</style></head><body>
+<div class="box">
+  <div class="logo"><div class="badge">P</div><div><b>Praktis</b><small>Portal Klien</small></div></div>
+  <h1>Masuk ke portal Anda</h1>
+  <p class="sub">Akses dokumen, laporan keuangan, dan wawasan AI Anda</p>
+  <form>
+    <label for="e">Email</label><input id="e" type="email" value="bendahara@sentosaraya.co.id" placeholder="nama@perusahaan.com">
+    <label for="p">Kata sandi</label><input id="p" type="password" value="••••••••••" placeholder="••••••••••">
+    <div class="row" style="justify-content:space-between;margin-top:10px;font-size:11px">
+      <label style="margin:0;display:flex;gap:6px;align-items:center;color:#94a3b8"><input type="checkbox" checked style="width:auto">Ingat saya</label>
+      <a href="#" style="color:#f5c518;text-decoration:none">Lupa kata sandi?</a>
+    </div>
+    <button class="btn" type="button">Masuk</button>
+  </form>
+  <div class="hint">Belum punya akun? Hubungi konsultan akuntan Anda</div>
+  <div class="firm"><div class="av">KA</div><span>Disediakan oleh <b>Konsultan Akuntan Anda</b></span></div>
+  <div class="sec">🔒 Terenkripsi · Hanya untuk Anda</div>
+</div>
+</body></html>

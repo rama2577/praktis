@@ -1,0 +1,109 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family: -apple-system, 'Segoe UI', Roboto, sans-serif; background:#0b1120; color:#e5e9f2; display:flex; min-height:100vh; }
+/* sidebar */
+.side { width:220px; background:#0d1526; border-right:1px solid #1e2a45; padding:18px 12px; display:flex; flex-direction:column; gap:4px; flex-shrink:0; }
+.logo { display:flex; align-items:center; gap:10px; padding:0 8px 16px; border-bottom:1px solid #1e2a45; margin-bottom:14px; }
+.logo .badge { width:34px; height:34px; border-radius:9px; background:#f5c518; color:#0b1120; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:15px; }
+.logo b { font-size:14px; } .logo small { display:block; color:#64748b; font-size:10px; }
+.menu { font-size:10px; color:#475569; text-transform:uppercase; letter-spacing:.08em; padding:10px 8px 4px; }
+.mi { padding:8px 10px; border-radius:8px; font-size:13px; color:#94a3b8; }
+.mi.on { background:rgba(245,197,24,.12); color:#f5c518; font-weight:600; }
+.mi.off { color:#475569; }
+.sp { flex:1; }
+.me { display:flex; align-items:center; gap:9px; border-top:1px solid #1e2a45; padding:12px 8px 0; }
+.av { width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,.18); color:#f5c518; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:12px; }
+/* main */
+.main { flex:1; display:flex; flex-direction:column; min-width:0; }
+.top { display:flex; align-items:center; justify-content:space-between; padding:12px 26px; border-bottom:1px solid #1e2a45; background:rgba(16,26,48,.5); }
+.top h3 { font-size:13px; font-weight:500; color:#cbd5e1; }
+.tright { display:flex; align-items:center; gap:12px; font-size:11px; color:#64748b; }
+.pill { display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(16,185,129,.35); background:rgba(16,185,129,.1); color:#34d399; padding:3px 10px; border-radius:99px; font-weight:600; font-size:10px; }
+.dot { width:6px; height:6px; border-radius:50%; background:#34d399; }
+.content { padding:24px 26px; display:flex; flex-direction:column; gap:18px; }
+.h1 { font-size:21px; font-weight:700; } .sub { font-size:12px; color:#64748b; margin-top:3px; }
+/* cards & grid */
+.grid { display:grid; gap:14px; }
+.g5 { grid-template-columns:repeat(5,1fr); } .g2 { grid-template-columns:repeat(2,1fr); } .g3 { grid-template-columns:repeat(3,1fr); }
+.card { background:#101a30; border:1px solid #1e2a45; border-radius:14px; padding:16px; }
+.kpi .l { font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:#64748b; display:flex; justify-content:space-between; }
+.kpi .v { font-size:26px; font-weight:700; margin-top:8px; } .kpi .h { font-size:10px; color:#64748b; margin-top:4px; }
+.grn{color:#34d399} .ylw{color:#f5c518} .red{color:#f87171} .sky{color:#38bdf8} .slt{color:#e5e9f2}
+/* pipeline */
+.pipe { display:flex; align-items:stretch; gap:8px; }
+.stage { flex:1; border-radius:12px; border:1px solid #1e2a45; background:#0d1526; padding:14px; min-width:0; }
+.stage .t { font-size:10px; text-transform:uppercase; letter-spacing:.06em; color:#64748b; }
+.stage .n { font-size:24px; font-weight:700; margin-top:6px; }
+.stage .d { font-size:9px; color:#475569; margin-top:3px; }
+.arrow { align-self:center; color:#334155; font-size:16px; }
+/* bars */
+.bar { height:8px; border-radius:99px; background:#1e2a45; overflow:hidden; margin-top:6px; }
+.bar > i { display:block; height:100%; border-radius:99px; }
+/* table */
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { text-align:left; color:#64748b; font-weight:500; font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:8px 10px; border-bottom:1px solid #1e2a45; }
+td { padding:9px 10px; border-bottom:1px solid #141f38; color:#cbd5e1; }
+.mono { font-family:'SF Mono',Menlo,monospace; font-size:11px; }
+/* buttons */
+.btn { border-radius:9px; padding:9px 16px; font-size:12px; font-weight:600; border:none; cursor:pointer; }
+.b-green{background:#059669;color:#fff} .b-amber{background:rgba(245,197,24,.15);color:#f5c518;border:1px solid rgba(245,197,24,.4)}
+.b-red{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.4)} .b-slate{background:#1e293b;color:#cbd5e1}
+/* queue cards */
+.q { border:1px solid #1e2a45; border-radius:12px; background:#0d1526; padding:14px; display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.q.urgent { border-color:rgba(248,113,113,.45); }
+.chip { font-size:10px; padding:2px 9px; border-radius:99px; font-weight:600; }
+.c-j{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.4)}
+.c-s{background:rgba(245,197,24,.14);color:#f5c518;border:1px solid rgba(245,197,24,.4)}
+.c-t{background:rgba(56,189,248,.12);color:#38bdf8;border:1px solid rgba(56,189,248,.35)}
+.c-p{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.4)}
+.c-urgent{background:rgba(248,113,113,.18);color:#f87171;border:1px solid rgba(248,113,113,.5)}
+.c-ok{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.35)}
+/* upload */
+.drop { border:2px dashed #334155; border-radius:14px; padding:38px; text-align:center; color:#64748b; background:rgba(13,21,38,.5); }
+.drop b { color:#cbd5e1; font-size:14px; } .drop .ic { font-size:30px; margin-bottom:8px; }
+/* misc */
+.row { display:flex; align-items:center; gap:10px; }
+.mt { margin-top:10px; } .mb { margin-bottom:10px; } .small { font-size:11px; color:#64748b; }
+.right { margin-left:auto; } .ta-r { text-align:right; }
+.step { display:flex; align-items:center; gap:10px; padding:9px 0; border-bottom:1px solid #141f38; font-size:13px; }
+.ok { color:#34d399; font-weight:700; } .wait { color:#64748b; } .spin { display:inline-block; width:14px; height:14px; border:2px solid #334155; border-top-color:#f5c518; border-radius:50%; animation:sp 1s linear infinite; }
+@keyframes sp { to { transform:rotate(360deg); } }
+.alert { border:1px solid rgba(248,113,113,.4); background:rgba(248,113,113,.08); color:#fca5a5; border-radius:10px; padding:10px 14px; font-size:12px; }
+textarea { width:100%; border-radius:9px; border:1px solid #334155; background:#0b1120; color:#cbd5e1; padding:9px 11px; font-size:12px; font-family:inherit; resize:none; }
+.conf { font-size:11px; color:#f5c518; font-weight:600; }
+</style></head><body>
+<div class="side">
+  <div class="logo"><div class="badge">P</div><div><b>Praktis</b><small>AI Bookkeeping</small></div></div>
+  <div class="menu">Operasional</div><div class="mi off">Dashboard</div><div class="menu">Analitik</div><div class="menu">Sistem</div><div class="mi off">Klien</div>
+  <div class="sp"></div>
+  <div class="me"><div class="av">BS</div><div><div style="font-size:12px">Budi Santoso</div><div style="font-size:10px;color:#64748b">Junior Accountant</div></div></div>
+</div>
+<div class="main">
+  <div class="top"><h3>Operations Dashboard</h3>
+    <div class="tright"><span>Sabtu, 8 Agustus 2026</span><span class="pill"><span class="dot"></span>AI Online</span></div>
+  </div>
+  <div class="content">
+<div><div class="h1">Antrian Review</div><div class="sub">Jurnal yang menunggu persetujuan Anda · diurutkan berdasarkan urgensi</div></div>
+<div class="card"><div class="row mb"><span class="chip c-t">Review Pajak</span><span class="small">2 menunggu</span></div>
+<div class="q mb"><div><div class="row"><b style="font-size:13px">PT Sentosa Raya</b><span class="chip c-s">Lulus Senior</span><span class="conf">94%</span></div>
+<div class="small mt">Penjualan kredit — INV-2026-0812 · Tahap: Review Pajak</div></div>
+<div class="ta-r"><div class="small">Tenggat</div><span>3 jam</span></div></div>
+</div>
+<div class="grid g2">
+  <div class="card"><b style="font-size:13px">Pemeriksaan Pajak</b>
+    <div class="mt step"><span class="ok">✓</span><span>PPN Keluaran 11% — DPP Rp 8.500.000 → Rp 935.000</span></div>
+    <div class="mt step"><span class="ok">✓</span><span>Faktur pajak 010.000-22.12345678 terverifikasi</span></div>
+    <div class="mt step"><span class="ok">✓</span><span>Kode akun PPN sesuai (2-2000)</span></div>
+    <div class="mt step"><span class="ok">✓</span><span>PPN masukan terkait: Rp 312.000 (beban operasional)</span></div>
+    <div class="mt step"><span class="ok">✓</span><span>Siap untuk rekap SPT Masa PPN Juli</span></div>
+  </div>
+  <div class="card"><b style="font-size:13px">Ringkasan PPN Masa — Juli 2026</b>
+    <div class="mt row" style="justify-content:space-between"><span class="small">PPN Keluaran</span><b class="mono">Rp 128.400.000</b></div>
+    <div class="mt row" style="justify-content:space-between"><span class="small">PPN Masukan</span><b class="mono">Rp 86.250.000</b></div>
+    <div class="mt row" style="justify-content:space-between"><span class="small">PPN Kurang Bayar</span><b class="mono ylw">Rp 42.150.000</b></div>
+    <div class="mt row" style="justify-content:space-between"><span class="small">Jatuh tempo pelaporan</span><b>31 Agustus 2026</b></div>
+    <button class="btn b-green mt" style="width:100%">Setujui → Persetujuan Partner</button>
+  </div>
+</div></div>
+</div>
+</body></html>

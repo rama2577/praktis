@@ -1,0 +1,96 @@
+<!DOCTYPE html><html lang="id"><head><meta charset="utf-8"><style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { font-family:-apple-system,'Segoe UI',Roboto,sans-serif; background:#0b1120; color:#e5e9f2; min-height:100vh; display:flex; flex-direction:column; }
+/* topbar */
+.top { display:flex; align-items:center; gap:14px; padding:12px 28px; border-bottom:1px solid #1e2a45; background:#0d1526; }
+.logo { display:flex; align-items:center; gap:10px; }
+.logo .badge { width:32px; height:32px; border-radius:9px; background:#f5c518; color:#0b1120; font-weight:800; display:flex; align-items:center; justify-content:center; font-size:14px; }
+.logo b { font-size:14px; } .logo small { display:block; color:#64748b; font-size:10px; }
+.div { width:1px; height:26px; background:#1e2a45; }
+.client { display:flex; align-items:center; gap:9px; }
+.client .av { width:30px; height:30px; border-radius:50%; background:rgba(245,197,24,.18); color:#f5c518; font-weight:700; display:flex; align-items:center; justify-content:center; font-size:12px; }
+.client b { font-size:13px; } .client small { display:block; color:#64748b; font-size:10px; }
+.sp { flex:1; }
+.pill { display:inline-flex; align-items:center; gap:6px; border:1px solid rgba(16,185,129,.35); background:rgba(16,185,129,.1); color:#34d399; padding:3px 10px; border-radius:99px; font-weight:600; font-size:10px; }
+.dot { width:6px; height:6px; border-radius:50%; background:#34d399; }
+/* nav */
+.nav { display:flex; gap:4px; padding:0 28px; background:#0d1526; border-bottom:1px solid #1e2a45; }
+.nav a { padding:11px 16px; font-size:13px; color:#94a3b8; text-decoration:none; border-bottom:2px solid transparent; }
+.nav a.on { color:#f5c518; border-bottom-color:#f5c518; font-weight:600; }
+/* content */
+.content { padding:24px 28px; display:flex; flex-direction:column; gap:18px; flex:1; }
+.h1 { font-size:21px; font-weight:700; } .sub { font-size:12px; color:#64748b; margin-top:3px; }
+.grid { display:grid; gap:14px; } .g2 { grid-template-columns:repeat(2,1fr); } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.card { background:#101a30; border:1px solid #1e2a45; border-radius:14px; padding:16px; }
+.card .ct { font-size:10px; text-transform:uppercase; letter-spacing:.07em; color:#64748b; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center; }
+.kpi .v { font-size:26px; font-weight:700; margin-top:8px; } .kpi .h { font-size:10px; color:#64748b; margin-top:4px; }
+.grn{color:#34d399} .ylw{color:#f5c518} .red{color:#f87171} .sky{color:#38bdf8} .slt{color:#e5e9f2}
+table { width:100%; border-collapse:collapse; font-size:12px; }
+th { text-align:left; color:#64748b; font-weight:500; font-size:10px; text-transform:uppercase; letter-spacing:.05em; padding:8px 10px; border-bottom:1px solid #1e2a45; }
+td { padding:10px; border-bottom:1px solid #141f38; color:#cbd5e1; }
+.mono { font-family:'SF Mono',Menlo,monospace; font-size:11px; }
+.btn { border-radius:9px; padding:9px 16px; font-size:12px; font-weight:600; border:none; cursor:pointer; text-decoration:none; display:inline-block; }
+.b-gold{background:#f5c518;color:#0b1120} .b-out{background:transparent;color:#f5c518;border:1px solid rgba(245,197,24,.45)}
+.b-slate{background:#1e293b;color:#cbd5e1;border:1px solid #334155}
+.chip { font-size:10px; padding:2px 9px; border-radius:99px; font-weight:600; }
+.c-ok{background:rgba(16,185,129,.12);color:#34d399;border:1px solid rgba(16,185,129,.35)}
+.c-wait{background:rgba(245,158,11,.14);color:#fbbf24;border:1px solid rgba(245,158,11,.4)}
+.c-red{background:rgba(248,113,113,.12);color:#f87171;border:1px solid rgba(248,113,113,.4)}
+.drop { border:2px dashed #334155; border-radius:14px; padding:46px; text-align:center; color:#64748b; background:rgba(13,21,38,.5); }
+.drop .ic { font-size:34px; margin-bottom:10px; } .drop b { color:#cbd5e1; font-size:15px; }
+.row { display:flex; align-items:center; gap:10px; } .mt { margin-top:12px; } .small { font-size:11px; color:#64748b; }
+.insight { border-left:3px solid #f5c518; background:#101a30; border:1px solid #1e2a45; border-radius:12px; padding:14px 16px; }
+.insight .tag { font-size:10px; color:#f5c518; font-weight:700; text-transform:uppercase; letter-spacing:.06em; }
+.bar-h { height:10px; border-radius:99px; background:#1e2a45; overflow:hidden; margin-top:6px; }
+.bar-h > i { display:block; height:100%; border-radius:99px; }
+.alert { border:1px solid rgba(248,113,113,.4); background:rgba(248,113,113,.08); color:#fca5a5; border-radius:10px; padding:10px 14px; font-size:12px; }
+.foot { padding:14px 28px; border-top:1px solid #1e2a45; font-size:11px; color:#475569; display:flex; justify-content:space-between; }
+</style></head><body>
+<div class="top">
+  <div class="logo"><div class="badge">P</div><div><b>Praktis</b><small>Portal Klien</small></div></div>
+  <div class="div"></div><div class="client"><div class="av">SR</div><div><b>PT Sentosa Raya</b><small>Retail · Jakarta</small></div></div>
+  <div class="sp"></div>
+  <span class="pill"><span class="dot"></span>Semua sistem normal</span>
+</div>
+<div class="nav"><a class="" href="#">Beranda</a><a class="" href="#">Dokumen</a><a class="" href="#">Laporan</a><a class="on" href="#">Analisa</a><a class="" href="#">Wawasan AI</a></div>
+<div class="content">
+<div class="row"><div><div class="h1">Analisa keuangan</div><div class="sub">Tren, rasio, dan perbandingan — diperbarui otomatis tiap laporan final</div></div>
+<div class="sp"></div><span class="chip c-ok">Data s.d. Juli 2026</span></div>
+<div class="grid g2">
+  <div class="card"><div class="ct">Pendapatan 6 bulan (Rp jt) · margin kotor</div>
+    <svg viewBox="0 0 560 210" width="100%" height="210" font-family="inherit">
+      <defs><linearGradient id="g1" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#f5c518" stop-opacity=".35"/><stop offset="1" stop-color="#f5c518" stop-opacity="0"/></linearGradient></defs>
+      <line x1="40" y1="180" x2="540" y2="180" stroke="#1e2a45"/><line x1="40" y1="120" x2="540" y2="120" stroke="#16223c"/>
+      <line x1="40" y1="60" x2="540" y2="60" stroke="#16223c"/>
+      <path d="M40 173 L124 170 L208 163 L292 156 L376 150 L460 128 L540 116 L540 180 L40 180 Z" fill="url(#g1)"/>
+      <polyline points="40,173 124,170 208,163 292,156 376,150 460,128 540,116" fill="none" stroke="#f5c518" stroke-width="3" stroke-linecap="round"/>
+      <g fill="#e5e9f2" font-size="10" text-anchor="middle">
+        <circle cx="40" cy="173" r="4" fill="#f5c518"/><text y="188">Feb 274</text>
+        <circle cx="124" cy="170" r="4" fill="#f5c518"/><text y="188">Mar 291</text>
+        <circle cx="208" cy="163" r="4" fill="#f5c518"/><text y="188">Apr 305</text>
+        <circle cx="292" cy="156" r="4" fill="#f5c518"/><text y="188">Mei 310</text>
+        <circle cx="376" cy="150" r="4" fill="#f5c518"/><text y="188">Jun 352</text>
+        <circle cx="460" cy="128" r="4" fill="#f5c518"/><text y="188">Jul 385</text>
+        <circle cx="540" cy="116" r="5" fill="#f5c518"/><text y="188" fill="#f5c518" font-weight="700">+9,5%</text>
+      </g>
+      <polyline points="40,60 124,63 208,66 292,68 376,64 460,58 540,52" fill="none" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4 3"/>
+    </svg>
+    <p class="small">— Pendapatan (gold) · — Margin kotor % (biru, turun 25,1% → 23,0%)</p>
+  </div>
+  <div class="card"><div class="ct">Beban per kategori · Juli 2026</div>
+    <div class="row"><span class="small" style="width:110px">HPP</span><div class="fill"><div class="bar-h"><i style="width:92%;background:#f5c518"></i></div></div><span class="mono small">296,8 jt</span></div>
+    <div class="row"><span class="small" style="width:110px">Gaji &amp; tunjangan</span><div class="fill"><div class="bar-h"><i style="width:26%;background:#38bdf8"></i></div></div><span class="mono small">24,0 jt</span></div>
+    <div class="row"><span class="small" style="width:110px">Sewa toko</span><div class="fill"><div class="bar-h"><i style="width:14%;background:#38bdf8"></i></div></div><span class="mono small">12,0 jt</span></div>
+    <div class="row"><span class="small" style="width:110px">Operasional</span><div class="fill"><div class="bar-h"><i style="width:11%;background:#38bdf8"></i></div></div><span class="mono small">10,2 jt</span></div>
+    <div class="row"><span class="small" style="width:110px">Lain-lain</span><div class="fill"><div class="bar-h"><i style="width:5%;background:#38bdf8"></i></div></div><span class="mono small">4,0 jt</span></div>
+  </div>
+</div>
+<div class="grid g4">
+  <div class="card kpi"><div class="ct">Margin kotor</div><div class="v">23,0%</div><div class="h red">▼ 1,3 poin (3 bln terakhir)</div></div>
+  <div class="card kpi"><div class="ct">Rasio lancar</div><div class="v">1,8×</div><div class="h grn">Sehat · ≥ 1,5</div></div>
+  <div class="card kpi"><div class="ct">Perputaran piutang</div><div class="v">27 hari</div><div class="h ylw">Naik 4 hari dari Juni</div></div>
+  <div class="card kpi"><div class="ct">Rasio beban/pendapatan</div><div class="v">12,0%</div><div class="h grn">Efisien · < 15%</div></div>
+</div>
+</div>
+<div class="foot"><span>Praktis Portal Klien · PT Sentosa Raya</span><span>Disediakan oleh konsultan akuntan Anda</span></div>
+</body></html>

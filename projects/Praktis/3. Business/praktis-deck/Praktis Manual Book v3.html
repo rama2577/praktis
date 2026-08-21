@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Praktis · Manual Book v3 — AI Bookkeeping untuk Firma Akuntansi</title>
+<style>
+:root{
+  --ink:#1f2329; --ink-2:#646a73; --ink-3:#8a93a0;
+  --bg:#eef3fa; --bg-soft:#f5f8ff; --bg-soft-2:#eef1f7;
+  --border:#e5e6eb; --border-strong:#d3d9e3;
+  --accent:#2b5aed; --accent-soft:rgba(43,90,237,.1);
+  --ai:#7c4dff; --ai-soft:rgba(124,77,255,.1);
+  --good:#1f9e14; --good-soft:rgba(52,199,36,.1);
+  --warn:#b45309; --warn-soft:rgba(255,136,0,.12);
+  --bad:#c53030;
+  --font-sans:Inter,-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;
+  --font-mono:'SF Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);font-family:var(--font-sans);line-height:1.6;-webkit-font-smoothing:antialiased;font-size:15px}
+img{max-width:100%;display:block}
+@page{size:A4;margin:14mm 13mm 16mm}
+@media print{
+  body{background:#fff;font-size:11.5pt}
+  .page{box-shadow:none;margin:0;padding:0;break-after:page}
+  .no-print{display:none!important}
+}
+.page{max-width:900px;margin:22px auto;background:#fff;padding:44px 52px;box-shadow:0 2px 18px rgba(31,35,41,.08);border-radius:10px}
+h1{font-size:30px;line-height:1.2;margin:0 0 6px;letter-spacing:-.02em}
+h2{font-size:22px;margin:0 0 8px;letter-spacing:-.01em;border-bottom:2px solid var(--border);padding-bottom:8px}
+h3{font-size:17px;margin:26px 0 8px}
+h4{font-size:15px;margin:18px 0 6px}
+p{margin:8px 0}
+.cover{text-align:center;padding:70px 40px}
+.cover .logo{display:inline-block;width:64px;height:64px;border-radius:16px;background:linear-gradient(135deg,#2b5aed,#7c4dff);color:#fff;font-weight:900;font-size:34px;line-height:64px;margin-bottom:18px}
+.cover h1{font-size:40px}
+.cover .sub{color:var(--ink-2);font-size:18px}
+.cover .meta{margin-top:34px;color:var(--ink-3);font-size:13px}
+.toc{columns:2;column-gap:34px;font-size:14px}
+.toc ol{padding-left:22px;margin:8px 0}
+.toc li{margin:4px 0;break-inside:avoid}
+.kicker{font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);margin:0 0 4px}
+.kicker.ai{color:var(--ai)}
+.shot{border:1px solid var(--border-strong);border-radius:10px;overflow:hidden;margin:12px 0;background:var(--bg-soft)}
+.shot img{width:100%}
+.shot .cap{padding:9px 13px;font-size:12.5px;color:var(--ink-2);background:#fff;border-top:1px solid var(--border)}
+.steps{margin:10px 0;padding-left:0;list-style:none;counter-reset:step}
+.steps li{counter-increment:step;margin:7px 0;padding-left:34px;position:relative}
+.steps li::before{content:counter(step);position:absolute;left:0;top:2px;width:24px;height:24px;border-radius:50%;background:var(--accent-soft);color:var(--accent);font-weight:800;font-size:13px;display:flex;align-items:center;justify-content:center}
+table{width:100%;border-collapse:collapse;margin:10px 0;font-size:13.5px}
+th{text-align:left;background:var(--bg-soft);color:var(--ink-2);padding:8px 10px;border:1px solid var(--border);font-size:12px;text-transform:uppercase;letter-spacing:.05em}
+td{padding:8px 10px;border:1px solid var(--border);vertical-align:top}
+.note{background:var(--accent-soft);border-left:3px solid var(--accent);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+.ai-note{background:var(--ai-soft);border-left:3px solid var(--ai);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+.tip{background:var(--good-soft);border-left:3px solid var(--good);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+.warn{background:var(--warn-soft);border-left:3px solid var(--warn);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;font-size:13.5px}
+code{font-family:var(--font-mono);font-size:12.5px;background:var(--bg-soft);padding:1px 6px;border-radius:5px;border:1px solid var(--border)}
+.pagebreak{break-before:page}
+.footer-note{display:none}
+</style>
+</head>
+<body>
+
+<!-- COVER -->
+<section class="page cover">
+  <div class="logo">P</div>
+  <p class="kicker">AI Bookkeeping untuk Firma Akuntansi</p>
+  <h1>Manual Book Praktis</h1>
+  <p class="sub">Panduan penggunaan seluruh modul — dari klien baru sampai laporan &amp; SPT</p>
+  <p class="meta">Versi 3.0 · Agustus 2026<br>Mencakup 24 modul: Dashboard · Command AI · Pipeline · Review &amp; Koreksi · Buku Besar · Laporan Custom AI · Aset Tetap · Core Tax · Rekonsiliasi · SLA · Kualitas · Portal Klien · dan lainnya</p>
+</section>
+
+<!-- DAFTAR ISI -->
+<section class="page">
+  <p class="kicker">Isi</p>
+  <h2>Daftar Isi</h2>
+  <div class="toc">
+    <ol>
+      <li>Pendahuluan &amp; Alur Kerja</li>
+      <li>Login &amp; Dashboard Workspace</li>
+      <li>Command AI (⌘K)</li>
+      <li>Pipeline Produksi</li>
+      <li>Antrian Review &amp; Editor Koreksi</li>
+      <li>Dropdown COA &amp; Saran AI</li>
+      <li>Jurnal Manual</li>
+      <li>Pengecualian</li>
+      <li>Neraca Percobaan</li>
+      <li>Buku Besar (seluruh akun &amp; detail)</li>
+      <li>Laporan Keuangan</li>
+      <li>Laporan Custom AI</li>
+      <li>Aset Tetap &amp; Penyusutan</li>
+      <li>Core Tax (SPT)</li>
+      <li>Rekonsiliasi Bank</li>
+      <li>Monitoring SLA</li>
+      <li>Metrik Kualitas</li>
+      <li>Outbox Event</li>
+      <li>Manajemen Klien</li>
+      <li>Profil Klien &amp; Subledger</li>
+      <li>Knowledge Base</li>
+      <li>Pengaturan</li>
+    </ol>
+  </div>
+</section>
+
+<!-- 1 · PENDAHULUAN -->
+<section class="page">
+  <p class="kicker">Pendahuluan</p>
+  <h2>1 · Alur Kerja</h2>
+  <p>Praktis mengotomatiskan siklus akuntansi firma: dari dokumen klien masuk, sampai laporan keuangan &amp; SPT keluar. Junior accountant berubah dari juru ketik menjadi <b>reviewer</b> — AI menyusun draft, manusia yang memutuskan.</p>
+  <div class="steps">
+    <li><b>Upload</b> — klien mengunggah dokumen (PDF/JPG/XLSX) lewat portal pribadi.</li>
+    <li><b>AI Pipeline</b> — OCR lokal → deteksi event → draft jurnal (PSAK, PPN 11%) → validasi saldo → skor keyakinan.</li>
+    <li><b>Review 4 lapis</b> — Junior → Senior → Tax → Partner, dengan confidence scoring.</li>
+    <li><b>Laporan</b> — trial balance, laba rugi, neraca, dan SPT ter-generate otomatis.</li>
+  </div>
+  <div class="ai-note">✨ <b>Fungsi AI ditandai warna ungu</b> di seluruh aplikasi — badge "AI Online", tombol ✨ AI, saran deskripsi, laporan custom. Warna biru adalah aksi/brand.</div>
+</section>
+
+<!-- 2 · LOGIN & DASHBOARD -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>2 · Login &amp; Dashboard Workspace</h2>
+  <p>Masuk dengan akun firma, lalu Anda mendarat di dashboard workspace yang bisa diatur per akuntan (dockable panels).</p>
+  <div class="shot"><img src="images-modul/mod-40-login.png" alt="Halaman login Praktis"><div class="cap">Login Praktis — akun firma akuntansi</div></div>
+  <div class="shot"><img src="images-modul/mod-41-dashboard.png" alt="Dashboard workspace dockable"><div class="cap">Dashboard workspace: KPI, pipeline, SLA, kualitas — panel bisa di-drag</div></div>
+  <div class="steps">
+    <li>Masuk dengan email &amp; password firma.</li>
+    <li>Atur panel sesuai peran (partner, senior, junior, tax officer).</li>
+    <li>Pantau KPI, pipeline, deadline pajak, dan kualitas dari satu layar.</li>
+  </div>
+  <div class="tip">Panel "Hari Ini" menampilkan deadline pajak &amp; jurnal yang menunggu review.</div>
+</section>
+
+<!-- 3 · COMMAND AI -->
+<section class="page">
+  <p class="kicker ai">AI Assistant</p>
+  <h2>3 · Command AI (⌘K)</h2>
+  <p>Tanya AI dari mana saja dalam aplikasi. AI menjawab dengan konteks data firma — klien, KPI, dan jurnal.</p>
+  <div class="shot"><img src="images-modul/mod-42-command-ai.png" alt="Command bar AI"><div class="cap">Command bar AI — tekan ⌘K atau tombol "Tanya AI"</div></div>
+  <div class="steps">
+    <li>Tekan <code>⌘K</code> (atau klik "Tanya AI").</li>
+    <li>Ketik pertanyaan, mis. "berapa klien aktif bulan ini?".</li>
+    <li>AI menjawab ringkas dengan konteks data — bukan tebakan.</li>
+  </div>
+  <div class="ai-note">✨ AI mendukung intent: <b>ask</b> (tanya), <b>draft</b> (susun), <b>explain</b> (jelaskan), <b>help</b>.</div>
+</section>
+
+<!-- 4 · PIPELINE -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>4 · Pipeline Produksi</h2>
+  <p>Lihat seluruh dokumen &amp; jurnal yang sedang diproses — dari draft sampai final, dengan trace ID tiap item.</p>
+  <div class="shot"><img src="images-modul/mod-43-pipeline.png" alt="Pipeline produksi"><div class="cap">Pipeline: Draft → Review Junior → Senior → Pajak → Selesai</div></div>
+  <div class="steps">
+    <li>Filter berdasarkan tahap, klien, atau periode.</li>
+    <li>Klik item untuk membuka detail jurnal.</li>
+    <li>Pantau bottleneck di tahap mana (biasanya review senior).</li>
+  </div>
+</section>
+
+<!-- 5 · REVIEW & KOREKSI -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>5 · Antrian Review &amp; Editor Koreksi</h2>
+  <p>Antrian review menampilkan draft AI yang menunggu keputusan manusia. Saat mengoreksi, judul aksinya adalah <b>Koreksi</b> — dengan tiga jenis koreksi.</p>
+  <div class="shot"><img src="images-modul/mod-44-antrian-review.png" alt="Antrian review"><div class="cap">Antrian review dengan status &amp; aksi setujui/kembalikan/tolak</div></div>
+  <div class="shot"><img src="images-modul/mod-45-editor-koreksi.png" alt="Editor koreksi jurnal"><div class="cap">Editor koreksi — pilih jenis koreksi &amp; sunting baris jurnal</div></div>
+  <div class="steps">
+    <li>Buka <b>Antrian Review</b>, klik <b>Edit</b> pada draft.</li>
+    <li>Pilih <b>jenis koreksi</b>: Penyesuaian angka · Perubahan deskripsi · Perubahan akun (reclass).</li>
+    <li>Simpan — perubahan tercatat di audit trail.</li>
+  </div>
+  <div class="note">Koreksi "angka" menyesuaikan nominal, "deskripsi" mengubah keterangan, "akun" memindahkan baris ke akun lain (reclass).</div>
+</section>
+
+<!-- 6 · DROPDOWN COA & SARAN AI -->
+<section class="page">
+  <p class="kicker ai">AI + COA</p>
+  <h2>6 · Dropdown COA &amp; Saran AI Deskripsi</h2>
+  <p>Saat mengedit jurnal, akun dipilih dari <b>dropdown COA milik klien</b> (bukan ketik kode bebas), dengan pencarian nama akun abjad. AI juga bisa menyusun deskripsi transaksi.</p>
+  <div class="shot"><img src="images-modul/mod-46-dropdown-coa.png" alt="Dropdown COA klien"><div class="cap">Dropdown COA — cari nama akun, terurut abjad</div></div>
+  <div class="steps">
+    <li>Klik kolom akun pada baris jurnal.</li>
+    <li>Ketik nama akun (mis. "kas") — daftar terfilter abjad.</li>
+    <li>Klik <b>✨ AI</b> pada field "Deskripsi transaksi" untuk menyusun keterangan.</li>
+  </div>
+  <div class="ai-note">✨ Deskripsi AI adalah <b>saran</b> — selalu bisa diedit sebelum disimpan.</div>
+</section>
+
+<!-- 7 · JURNAL MANUAL -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>7 · Jurnal Manual</h2>
+  <p>Untuk transaksi yang tidak masuk pipeline (adjustment, penyusutan, akrual), buat jurnal manual — saldo debit–kredit harus seimbang sebelum tersimpan.</p>
+  <div class="shot"><img src="images-modul/mod-47-jurnal-manual.png" alt="Jurnal manual"><div class="cap">Jurnal manual — debit &amp; kredit harus seimbang</div></div>
+  <div class="steps">
+    <li>Pilih klien, tanggal, dan referensi.</li>
+    <li>Isi baris debit &amp; kredit.</li>
+    <li>Simpan — sistem memvalidasi keseimbangan saldo.</li>
+  </div>
+</section>
+
+<!-- 8 · PENGECUALIAN -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>8 · Pengecualian</h2>
+  <p>Draft dengan keyakinan rendah atau masalah data dikumpulkan di antrian pengecualian — AI tidak pernah memaksakan keputusan.</p>
+  <div class="shot"><img src="images-modul/mod-48-pengecualian.png" alt="Antrian pengecualian"><div class="cap">Pengecualian — flag "faktur PPN tidak ditemukan", saldo tidak seimbang, dll.</div></div>
+  <div class="steps">
+    <li>Buka antrian pengecualian.</li>
+    <li>Periksa alasan flag (confidence rendah, dokumen tidak lengkap).</li>
+    <li>Resolve: lengkapi data atau koreksi manual.</li>
+  </div>
+</section>
+
+<!-- 9 · NERACA PERCOBAAN -->
+<section class="page">
+  <p class="kicker">Laporan</p>
+  <h2>9 · Neraca Percobaan</h2>
+  <p>Ringkasan saldo debit–kredit seluruh akun per periode — dasar audit yang selalu seimbang.</p>
+  <div class="shot"><img src="images-modul/mod-49-neraca-percobaan.png" alt="Neraca percobaan"><div class="cap">Neraca percobaan — saldo debit/kredit per akun</div></div>
+  <div class="steps">
+    <li>Pilih klien &amp; periode.</li>
+    <li>Klik kode akun untuk membuka buku besar akun tersebut.</li>
+    <li>Export CSV/XLSX bila perlu.</li>
+  </div>
+</section>
+
+<!-- 10 · BUKU BESAR -->
+<section class="page">
+  <p class="kicker">Laporan</p>
+  <h2>10 · Buku Besar (Seluruh Akun &amp; Detail)</h2>
+  <p>Tarik <b>seluruh akun</b> buku besar cukup dengan memilih klien + bulan — tanpa harus berangkat dari neraca percobaan. Klik akun untuk detail running balance.</p>
+  <div class="shot"><img src="images-modul/mod-50-buku-besar-semua.png" alt="Buku besar seluruh akun"><div class="cap">Buku besar seluruh akun — filter klien + bulan</div></div>
+  <div class="shot"><img src="images-modul/mod-51-buku-besar-akun.png" alt="Buku besar detail akun"><div class="cap">Detail akun — running balance, referensi, status</div></div>
+  <div class="steps">
+    <li>Pilih klien &amp; bulan, klik "Tampilkan Buku Besar".</li>
+    <li>Lihat daftar semua akun (debit, kredit, saldo).</li>
+    <li>Klik kode akun untuk membuka detail transaksi.</li>
+  </div>
+</section>
+
+<!-- 11 · LAPORAN KEUANGAN -->
+<section class="page">
+  <p class="kicker">Laporan</p>
+  <h2>11 · Laporan Keuangan</h2>
+  <p>Laba rugi, neraca, dan arus kas ter-generate otomatis dari jurnal APPROVED — standar SAK/PSAK.</p>
+  <div class="shot"><img src="images-modul/mod-52-laporan-keuangan.png" alt="Laporan keuangan"><div class="cap">Laba rugi &amp; neraca — otomatis dari jurnal APPROVED</div></div>
+  <div class="steps">
+    <li>Pilih klien &amp; periode.</li>
+    <li>Pilih jenis laporan (laba rugi / neraca / arus kas).</li>
+    <li>Export ke PDF/CSV untuk klien.</li>
+  </div>
+</section>
+
+<!-- 12 · LAPORAN CUSTOM AI -->
+<section class="page">
+  <p class="kicker ai">AI Assistant</p>
+  <h2>12 · Laporan Custom AI</h2>
+  <p>Minta laporan dengan bahasa natural — "arus kas bulanan", "penjualan per channel" — AI menyusun struktur &amp; menghitungnya. Template tersimpan untuk dijalankan ulang tiap periode.</p>
+  <div class="shot"><img src="images-modul/mod-53-laporan-custom.png" alt="Template laporan custom"><div class="cap">Template tersimpan — daftar laporan custom</div></div>
+  <div class="shot"><img src="images-modul/mod-64-laporan-custom-hasil.png" alt="Hasil laporan custom"><div class="cap">Hasil run — angka terhitung per kategori</div></div>
+  <div class="steps">
+    <li>Ketik permintaan, mis. "analisis beban operasional".</li>
+    <li>AI mengusulkan struktur → klik <b>Setujui &amp; Simpan Template</b>.</li>
+    <li>Klik <b>Jalankan</b> untuk menghitung data periode berjalan.</li>
+  </div>
+</section>
+
+<!-- 13 · ASET TETAP -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>13 · Aset Tetap &amp; Penyusutan</h2>
+  <p>Register aset dengan penyusutan <b>komersial (PSAK 216)</b> dan <b>fiskal (Pasal 11)</b> dihitung paralel, plus jurnal penyusutan otomatis.</p>
+  <div class="shot"><img src="images-modul/mod-54-aset-tetap.png" alt="Register aset tetap"><div class="cap">Register aset — kategori, nilai perolehan, nilai buku</div></div>
+  <div class="shot"><img src="images-modul/mod-65-aset-jadwal-penyusutan.png" alt="Jadwal penyusutan"><div class="cap">Jadwal penyusutan — bulanan, akumulasi, nilai buku</div></div>
+  <div class="steps">
+    <li>Tambah aset: nama, kategori, tanggal perolehan, nilai.</li>
+    <li>Klik <b>Hitung &amp; Catat Penyusutan</b> tiap periode.</li>
+    <li>Lihat jadwal penyusutan &amp; rekonsiliasi fiskal.</li>
+  </div>
+</section>
+
+<!-- 14 · CORE TAX -->
+<section class="page">
+  <p class="kicker">Perpajakan</p>
+  <h2>14 · Core Tax (SPT)</h2>
+  <p>Angka PPN, PPh 21/23, dan SPT 1771 disiapkan langsung dari jurnal APPROVED — koreksi fiskal otomatis, dilengkapi pengingat deadline.</p>
+  <div class="shot"><img src="images-modul/mod-55-core-tax.png" alt="Core tax SPT"><div class="cap">Core Tax — PPN, PPh, SPT 1771</div></div>
+  <div class="steps">
+    <li>Pilih klien &amp; periode pajak.</li>
+    <li>Periksa PPN &amp; PPh terutang yang sudah dihitung.</li>
+    <li>Export CSV per lampiran untuk dilaporkan.</li>
+  </div>
+  <div class="tip">Deadline otomatis: PPN akhir bulan+1 · PPh 21/23 tanggal 20 · SPT Tahunan 30 April.</div>
+</section>
+
+<!-- 15 · REKONSILIASI -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>15 · Rekonsiliasi Bank</h2>
+  <p>Cocokkan mutasi bank dengan jurnal kas — selisih ditandai untuk ditindaklanjuti, bukan diabaikan.</p>
+  <div class="shot"><img src="images-modul/mod-56-rekonsiliasi.png" alt="Rekonsiliasi bank"><div class="cap">Rekonsiliasi — match mutasi ↔ jurnal kas</div></div>
+  <div class="steps">
+    <li>Import mutasi bank (CSV) atau input manual.</li>
+    <li>Match otomatis dengan jurnal kas berdasarkan nominal &amp; tanggal.</li>
+    <li>Tandai selisih &amp; selesaikan secara manual.</li>
+  </div>
+</section>
+
+<!-- 16 · SLA -->
+<section class="page">
+  <p class="kicker">Operasional</p>
+  <h2>16 · Monitoring SLA</h2>
+  <p>Pantau tenggat layanan per klien &amp; per tahap — dengan eskalasi otomatis saat mendekati deadline.</p>
+  <div class="shot"><img src="images-modul/mod-57-sla.png" alt="Monitoring SLA"><div class="cap">Monitoring SLA — tenggat per klien &amp; tahap</div></div>
+  <div class="steps">
+    <li>Lihat status SLA seluruh klien.</li>
+    <li>Filter yang mendekati atau lewat tenggat.</li>
+    <li>Eskalasi otomatis ke penanggung jawab.</li>
+  </div>
+</section>
+
+<!-- 17 · KUALITAS -->
+<section class="page">
+  <p class="kicker ai">Metrik</p>
+  <h2>17 · Metrik Kualitas</h2>
+  <p>Ukur akurasi OCR, exception rate, dan turnaround — supaya kualitas AI terus terpantau, bukan asumsi.</p>
+  <div class="shot"><img src="images-modul/mod-58-kualitas.png" alt="Metrik kualitas"><div class="cap">Metrik kualitas — akurasi OCR, exception, turnaround</div></div>
+  <div class="steps">
+    <li>Buka dashboard kualitas.</li>
+    <li>Pantau tren akurasi OCR &amp; tingkat pengecualian.</li>
+    <li>Gunakan data untuk menyempurnakan rule engine.</li>
+  </div>
+</section>
+
+<!-- 18 · OUTBOX -->
+<section class="page">
+  <p class="kicker">Operasional</p>
+  <h2>18 · Outbox Event</h2>
+  <p>Jejak seluruh pengiriman otomatis — email, webhook, notifikasi — dengan status terkirim/retry.</p>
+  <div class="shot"><img src="images-modul/mod-59-outbox.png" alt="Outbox event"><div class="cap">Outbox — email, webhook, notifikasi + retry</div></div>
+  <div class="steps">
+    <li>Lihat antrian outbox.</li>
+    <li>Pantau status terkirim / gagal / retry.</li>
+    <li>Kirim ulang event yang gagal.</li>
+  </div>
+</section>
+
+<!-- 19 · MANAJEMEN KLIEN -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>19 · Manajemen Klien</h2>
+  <p>Kelola seluruh klien firma — tambah klien baru dengan 17 template industri, lihat status, dan akses cepat ke portal.</p>
+  <div class="shot"><img src="images-modul/mod-60-klien.png" alt="Manajemen klien"><div class="cap">Daftar klien — industri, status, aksi</div></div>
+  <div class="steps">
+    <li>Tambah klien → pilih industri (template COA otomatis).</li>
+    <li>Lihat status tiap klien (aktif / baru / pending).</li>
+    <li>Salin link portal untuk dibagikan ke klien.</li>
+  </div>
+</section>
+
+<!-- 20 · PROFIL KLIEN & SUBLEDGER -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>20 · Profil Klien &amp; Subledger</h2>
+  <p>Profil klien menampilkan aging piutang &amp; subledger (buku pembantu) yang dibangun otomatis dari jurnal — konsisten dengan buku besar utama.</p>
+  <div class="shot"><img src="images-modul/mod-61-profil-klien.png" alt="Profil klien dengan aging piutang"><div class="cap">Profil klien — aging piutang &amp; master subledger</div></div>
+  <div class="shot"><img src="images-modul/mod-66-subledger-ledger.png" alt="Buku besar pembantu"><div class="cap">Buku besar pembantu — invoice, pembayaran, running balance</div></div>
+  <div class="steps">
+    <li>Buka profil klien → lihat aging piutang (4 bucket).</li>
+    <li>Klik <b>Buku Besar</b> pada kode bantu untuk detail.</li>
+    <li>Gunakan sebagai dasar konfirmasi saldo.</li>
+  </div>
+</section>
+
+<!-- 21 · KNOWLEDGE -->
+<section class="page">
+  <p class="kicker ai">AI</p>
+  <h2>21 · Knowledge Base</h2>
+  <p>Prinsip SAK/PSAK dan aturan pajak Indonesia tersimpan sebagai acuan AI — sehingga AI punya dasar, bukan mengarang.</p>
+  <div class="shot"><img src="images-modul/mod-62-knowledge.png" alt="Knowledge base"><div class="cap">Knowledge base — prinsip akuntansi &amp; pajak</div></div>
+  <div class="steps">
+    <li>Telusuri artikel pengetahuan.</li>
+    <li>Tambah atau setujui item baru.</li>
+    <li>AI merujuk knowledge base saat menyusun draft &amp; penjelasan.</li>
+  </div>
+</section>
+
+<!-- 22 · PENGATURAN -->
+<section class="page">
+  <p class="kicker">Modul</p>
+  <h2>22 · Pengaturan</h2>
+  <p>Konfigurasi firma — profil, peran &amp; izin (RBAC), integrasi, dan preferensi lainnya.</p>
+  <div class="shot"><img src="images-modul/mod-63-pengaturan.png" alt="Pengaturan"><div class="cap">Pengaturan firma — profil, RBAC, integrasi</div></div>
+  <div class="steps">
+    <li>Atur profil firma &amp; logo.</li>
+    <li>Kelola peran pengguna (partner, senior, junior, tax officer).</li>
+    <li>Konfigurasi integrasi &amp; webhook.</li>
+  </div>
+</section>
+
+<!-- PENUTUP -->
+<section class="page">
+  <p class="kicker">Penutup</p>
+  <h2>Ringkasan</h2>
+  <p>Praktis menyatukan seluruh siklus akuntansi dalam satu platform: <b>upload → AI draft → review 4 lapis → laporan &amp; SPT</b>. Dengan AI sebagai asisten (ditandai ungu), akuntan tetap memegang kendali penuh atas setiap keputusan.</p>
+  <table>
+    <tr><th>Aspek</th><th>Nilai</th></tr>
+    <tr><td>Waktu per transaksi</td><td>2,5–3,5 mnt → 5–10 dtk (−95%)</td></tr>
+    <tr><td>Cycle days</td><td>12–20 hari → 3–6 hari (−70%)</td></tr>
+    <tr><td>Klien per junior</td><td>4–5 → 25–30 (6×)</td></tr>
+    <tr><td>Overhead komunikasi</td><td>325 mnt → 75 mnt (−77%)</td></tr>
+  </table>
+  <div class="note">Untuk pertanyaan atau onboarding, hubungi tim Praktis — pilot 1 klien tersedia tanpa biaya setup.</div>
+</section>
+
+</body>
+</html>
