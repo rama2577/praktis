@@ -20,3 +20,4 @@ npm-debug.log*
 # Internal runtime state (bukan deliverable)
 .openclaw-attachments/
 .autoclaw/
+output/praktis-bisnis/
